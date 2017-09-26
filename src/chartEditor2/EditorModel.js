@@ -222,7 +222,8 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'icon': 'pie-chart.svg',
     'series': ['pie'],
     'dataSetCtor': 'set',
-    'settingsExcludes' : ['series', 'grids', 'axes']
+    'settingsExcludes' : ['series', 'grids', 'axes'],
+    'singleSeries': true
   },
   'map': {
     'value': 'map',
@@ -511,7 +512,8 @@ anychart.chartEditor2Module.EditorModel.prototype.createDefaultMappings = functi
  */
 anychart.chartEditor2Module.EditorModel.prototype.createPlotMapping = function() {
   var result = [];
-
+  var chartType = this.model_['chart']['type'];
+  var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
   var numValues = 1;
   if (this.model_['chart']['seriesType'] == 'bubble')
     numValues = 2;
@@ -521,13 +523,13 @@ anychart.chartEditor2Module.EditorModel.prototype.createPlotMapping = function()
   var plotIndex = this.model_['dataSettings']['mappings'].length;
   var numSeries;
   var fieldIndex;
-  if (this.model_['chart']['type']== 'pie' || this.model_['chart']['type']== 'map' ||
-      (this.model_['chart']['type']== 'stock' && this.model_['chart']['seriesType'] == 'column' && plotIndex == 1))
+  if (singleSeries || chartType== 'map' ||
+      (chartType == 'stock' && this.model_['chart']['seriesType'] == 'column' && plotIndex == 1))
     numSeries = 1;
   else
     numSeries = Math.floor(this.fieldsState_.numbersCount / numValues);
 
-  if (this.model_['chart']['type']== 'stock' && this.model_['chart']['seriesType'] == 'column' && plotIndex == 1)
+  if (chartType== 'stock' && this.model_['chart']['seriesType'] == 'column' && plotIndex == 1)
     fieldIndex = 4; // try to set volume plot
 
   for (var i = 0; i < numSeries; i += numValues) {
@@ -1464,7 +1466,8 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
   }
   result.push('');
 
-  if (chartType == 'pie') {
+  var singleSeriesChart = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+  if (singleSeriesChart) {
     chart['data'](mappingInstancesList[0][0]);
     result.push(
         '// Setting data to the chart',

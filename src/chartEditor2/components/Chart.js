@@ -56,9 +56,10 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var rawData = model.getRawData();
   var settings = model.getModel();
+  var chartType = settings['chart']['type'];
   var rebuild = !arguments.length || arguments[0].rebuildChart;
 
-  if (!settings['chart']['type'])
+  if (!chartType)
     return;
 
   // Global settings
@@ -73,9 +74,9 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
       this.chart_ = null;
     }
 
-    this.chart_ = this.anychart[settings['chart']['type']]();
+    this.chart_ = this.anychart[chartType]();
 
-    if (settings['chart']['type'] == 'map') {
+    if (chartType == 'map') {
       var geoData = model.getRawData(true);
       if (geoData) {
         this.chart_['geoData'](geoData);
@@ -86,7 +87,7 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
     }
 
     // Create data set
-    var dsCtor = anychart.chartEditor2Module.EditorModel.chartTypes[settings['chart']['type']]['dataSetCtor'];
+    var dsCtor = anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['dataSetCtor'];
     var opt_keyColumnIndex = dsCtor == 'table' ? settings['dataSettings']['field'] : void 0;
     var dataSet = this.anychart['data'][dsCtor](opt_keyColumnIndex);
 
@@ -108,17 +109,18 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
 
         var mappingInstance = dataSet['mapAs'](mappingObj);
 
-        if (settings['chart']['type'] == 'pie') {
+        var singleSeriesChart = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+        if (singleSeriesChart) {
           this.chart_['data'](mappingInstance);
 
         } else {
           var seriesCtor = plotMapping[j]['ctor'];
           var series;
-          if (settings['chart']['type'] == 'stock') {
+          if (chartType == 'stock') {
             var plot = this.chart_['plot'](i);
             series = plot[seriesCtor](mappingInstance);
           } else {
-            if (settings['chart']['type'] == 'map') {
+            if (chartType == 'map') {
               seriesCtor = seriesCtor.split('-')[0];
             }
             series = this.chart_[seriesCtor](mappingInstance);

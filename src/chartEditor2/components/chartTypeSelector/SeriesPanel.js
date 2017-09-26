@@ -52,7 +52,8 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createDom = function() {
   this.getKey();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
-  if (chartType != 'pie') {
+  var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+  if (!singleSeries) {
     var mappings = model.getValue([['dataSettings'], ['mappings', this.plotIndex_]]);
     var keyStr = chartType == 'stock' ? 'plot(' + this.plotIndex_ + ').' : '';
     var id = goog.isDef(mappings[this.index_]['id']) ? mappings[this.index_]['id'] : this.index_;

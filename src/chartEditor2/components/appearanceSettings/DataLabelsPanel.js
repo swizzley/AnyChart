@@ -59,7 +59,8 @@ anychart.chartEditor2Module.DataLabelsPanel.prototype.update = function(opt_evt)
         if (lastKey == stringKey) {
 
           var chartType = model.getValue([['chart'], 'type']);
-          if (chartType != 'pie') {
+          var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+          if (!singleSeries) {
             var mappings = model.getValue([['dataSettings'], 'mappings']);
             for (var i = 0; i < mappings.length; i++) {
               for (var j = 0; j < mappings[i].length; j++) {
