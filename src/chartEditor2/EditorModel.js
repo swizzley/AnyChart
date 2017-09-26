@@ -138,14 +138,16 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Line',
     'icon': 'line-chart-1.svg', // 'http://www.anychart.com/_design/img/upload/charts/types/'
     'series': ['line', 'spline', 'column', 'area', 'ohlc'], // first value is default
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'area': {
     'value': 'area',
     'name': 'Area',
     'icon': 'area-chart.svg',
     'series': ['area', 'line', 'spline', 'column', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'area-stacked-value': {
     'value': 'area',
@@ -153,7 +155,8 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Area stacked (value)',
     'icon': 'stacked-area-chart.svg',
     'series': ['area', 'line', 'spline', 'column', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'area-stacked-percent': {
     'value': 'area',
@@ -161,14 +164,16 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Area stacked (percent)',
     'icon': 'percent-stacked-area-chart.svg',
     'series': ['area', 'line', 'spline', 'column', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'bar': {
     'value': 'bar',
     'name': 'Bar',
     'icon': 'bar-chart.svg',
     'series': ['bar', 'line', 'spline', 'area', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'bar-stacked-value': {
     'value': 'bar',
@@ -176,7 +181,8 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Bar stacked (value)',
     'icon': 'stacked-bar-chart.svg',
     'series': ['bar', 'line', 'spline', 'area', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'bar-stacked-percent': {
     'value': 'bar',
@@ -184,14 +190,16 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Bar stacked (percent)',
     'icon': 'percent-stacked-bar-chart.svg',
     'series': ['bar', 'line', 'spline', 'area', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'column': {
     'value': 'column',
     'name': 'Column',
     'icon': 'column-chart.svg',
     'series': ['column', 'line', 'spline', 'area', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'column-stacked-value': {
     'value': 'column',
@@ -199,7 +207,8 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Column stacked (value)',
     'icon': 'stacked-column-chart.svg',
     'series': ['column', 'line', 'spline', 'area', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'column-stacked-percent': {
     'value': 'column',
@@ -207,14 +216,16 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'name': 'Column stacked (percent)',
     'icon': 'percent-stacked-step-line-area-chart.svg',
     'series': ['column', 'line', 'spline', 'area', 'ohlc'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'scatter': {
     'value': 'scatter',
     'name': 'Scatter',
     'icon': 'scatter-chart.svg',
     'series': ['marker', 'bubble', 'line'],
-    'dataSetCtor': 'set'
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['colorScale']
   },
   'pie': {
     'value': 'pie',
@@ -222,8 +233,8 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'icon': 'pie-chart.svg',
     'series': ['pie'],
     'dataSetCtor': 'set',
-    'settingsExcludes' : ['series', 'grids', 'axes'],
-    'singleSeries': true
+    'settingsExcludes' : ['series', 'grids', 'axes', 'colorScale'],
+    'singleSeries': true,
   },
   'map': {
     'value': 'map',
@@ -231,7 +242,7 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'icon': 'choropleth-map.svg',
     'series': ['marker-by-id', 'marker-by-coordinates', 'bubble-by-id', 'bubble-by-coordinates', 'choropleth'],
     'dataSetCtor': 'set',
-    'settingsExcludes' : ['grids', 'axes']
+    'settingsExcludes' : ['grids', 'axes', 'colorScale']
   },
   'stock': {
     'value': 'stock',
@@ -239,7 +250,16 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'icon': 'stock-chart.svg',
     'series': ['ohlc', 'candlestick', 'line', 'spline', 'column', 'area'],
     'dataSetCtor': 'table',
-    'settingsExcludes' : ['data-labels', 'axes']
+    'settingsExcludes' : ['data-labels', 'axes', 'colorScale']
+  },
+  'heatMap': {
+    'value': 'heatMap',
+    'name': 'Heat Map',
+    'icon': 'heatmap-chart.svg',
+    'series': ['heatMap'],
+    'dataSetCtor': 'set',
+    'settingsExcludes' : ['series'],
+    'singleSeries': true
   }
 };
 
@@ -322,8 +342,13 @@ anychart.chartEditor2Module.EditorModel.series = {
       {'field': 'id', 'name': 'Id'},
       {'field': 'value', 'name': 'Value'}
     ]
+  },
+  'heatMap': {
+    'fields': [
+      {'field': 'y', 'name': 'Y'},
+      {'field': 'heat', 'name': 'Heat'}
+    ]
   }
-  // 'connector': {'fields': [{'field': 'value', 'name': 'Y Value'}]}
 };
 // endregion
 
@@ -513,27 +538,29 @@ anychart.chartEditor2Module.EditorModel.prototype.createDefaultMappings = functi
 anychart.chartEditor2Module.EditorModel.prototype.createPlotMapping = function() {
   var result = [];
   var chartType = this.model_['chart']['type'];
+  var seriesType = this.model_['chart']['seriesType'];
   var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+
   var numValues = 1;
-  if (this.model_['chart']['seriesType'] == 'bubble')
+  if (seriesType == 'bubble')
     numValues = 2;
-  else if (this.model_['chart']['seriesType'] == 'ohlc')
+  else if (seriesType == 'ohlc' || seriesType == 'candlestick')
     numValues = 4;
 
   var plotIndex = this.model_['dataSettings']['mappings'].length;
   var numSeries;
   var fieldIndex;
   if (singleSeries || chartType== 'map' ||
-      (chartType == 'stock' && this.model_['chart']['seriesType'] == 'column' && plotIndex == 1))
+      (chartType == 'stock' && seriesType == 'column' && plotIndex == 1))
     numSeries = 1;
   else
     numSeries = Math.floor(this.fieldsState_.numbersCount / numValues);
 
-  if (chartType== 'stock' && this.model_['chart']['seriesType'] == 'column' && plotIndex == 1)
+  if (chartType== 'stock' && seriesType == 'column' && plotIndex == 1)
     fieldIndex = 4; // try to set volume plot
 
   for (var i = 0; i < numSeries; i += numValues) {
-    var seriesConfig = this.createSeriesConfig(i, /** @type {string} */(this.model_['chart']['seriesType']), void 0, fieldIndex);
+    var seriesConfig = this.createSeriesConfig(i, /** @type {string} */(seriesType), void 0, fieldIndex);
     result.push(seriesConfig);
   }
 
@@ -595,9 +622,12 @@ anychart.chartEditor2Module.EditorModel.prototype.needResetMappings = function(p
   if (goog.array.indexOf(anychart.chartEditor2Module.EditorModel.chartTypes[this.model_['chart']['type']]['series'], prevSeriesType) == -1)
     return true;
 
-  return (prevChartType == 'stock' || this.model_['chart']['type'] == 'stock') ||
-      (prevChartType == 'map' || this.model_['chart']['type'] == 'map') ||
-      this.model_['chart']['type'] == 'pie';
+  var chartType = this.model_['chart']['type'];
+
+  return (prevChartType == 'stock' || chartType == 'stock') ||
+      (prevChartType == 'map' || chartType == 'map') ||
+      (prevChartType == 'heatMap' || chartType == 'heatMap') ||
+      chartType == 'pie';
 };
 
 

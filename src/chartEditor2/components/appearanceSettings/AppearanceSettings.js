@@ -13,6 +13,7 @@ goog.require('anychart.chartEditor2Module.SeriesSettingsPanel');
 goog.require('anychart.chartEditor2Module.TooltipPanel');
 goog.require('anychart.chartEditor2Module.XAxesPanel');
 goog.require('anychart.chartEditor2Module.YAxesPanel');
+goog.require('anychart.chartEditor2Module.ColorScalePanel');
 
 
 
@@ -38,6 +39,7 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, opt_domHelper) 
     {classFunc: anychart.chartEditor2Module.YAxesPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.TooltipPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.GridsPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
     {classFunc: anychart.chartEditor2Module.ContextMenuPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.CreditsPanel, instance: null}
   ];

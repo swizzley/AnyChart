@@ -312,6 +312,10 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  */
 anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(target) {
+  if (!this.key || !this.key.length) {
+    console.warn("Control with no key!");
+    return;
+  }
   this.target = target;
 
   var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
@@ -376,12 +380,4 @@ anychart.chartEditor2Module.select.Base.prototype.updateCaption = function() {
         goog.a11y.aria.getLabel(itemElement) : this.initialAriaLabel_);
     this.updateAriaActiveDescendant_();
   }
-};
-
-
-/** @inheritDoc */
-anychart.chartEditor2Module.select.Base.prototype.addItemAt = function(item, index) {
-  anychart.chartEditor2Module.select.Base.base(this, 'addItemAt', item, index);
-
-
 };
