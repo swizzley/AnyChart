@@ -14,6 +14,8 @@ goog.require('anychart.chartEditor2Module.select.ColorScaleType');
 anychart.chartEditor2Module.settings.ColorScale = function(model, name, opt_domHelper) {
   anychart.chartEditor2Module.settings.ColorScale.base(this, 'constructor', model, opt_domHelper);
   this.name = name;
+
+  this.scaleType_ = '';
 };
 goog.inherits(anychart.chartEditor2Module.settings.ColorScale, anychart.chartEditor2Module.SettingsPanel);
 
@@ -58,6 +60,8 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
       goog.dom.TagName.DIV,
       goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
+  this.specificEl_ = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.appendChild(content, this.specificEl_);
 };
 
 
@@ -78,7 +82,57 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.onChartDraw = function
   anychart.chartEditor2Module.settings.ColorScale.base(this, 'onChartDraw', evt);
 
   var target = evt.chart;
-  if (this.typeSelect_) this.typeSelect_.setValueByTarget(target);
+  if (this.typeSelect_) {
+    this.typeSelect_.setValueByTarget(target);
+    this.updateSpecific();
+  }
+};
+
+
+anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = function() {
+  var newScaleType = this.typeSelect_.getValue();
+  if (newScaleType && newScaleType != this.scaleType_) {
+    this.scaleType_ = newScaleType;
+    var dom = this.getDomHelper();
+    // var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+
+    if (this.scaleType_ == 'linear-color') {
+      goog.dom.appendChild(this.specificEl_, goog.dom.createDom(
+          goog.dom.TagName.DIV,
+          goog.getCssName('anychart-chart-editor-settings-item-gap'), 'LINEAR'));
+
+      var colorsLabel = goog.dom.createDom(
+          goog.dom.TagName.LABEL,
+          [
+            goog.ui.INLINE_BLOCK_CLASSNAME,
+            goog.getCssName('settings-label')
+          ],
+          'Colors');
+      goog.dom.appendChild(this.specificEl_, colorsLabel);
+
+      var colors = new anychart.chartEditor2Module.input.Palette('Comma separated colors');
+      this.addChild(colors, true);
+      goog.dom.classlist.add(colors.getElement(), 'input-palette');
+      goog.dom.classlist.add(colors.getElement(), 'anychart-chart-editor-settings-control-right');
+      this.colors_ = colors;
+
+      goog.dom.appendChild(this.specificEl_, goog.dom.createDom(
+          goog.dom.TagName.DIV,
+          goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
+
+    } else {
+      // ordinal-color
+      if (this.colors_) {
+        this.removeChild(this.colors_, true);
+        this.colors_ = null;
+      }
+      dom.removeChildren(this.specificEl_);
+
+      goog.dom.appendChild(this.specificEl_, goog.dom.createDom(
+          goog.dom.TagName.DIV,
+          goog.getCssName('anychart-chart-editor-settings-item-gap'), 'ORDINAL'));
+    }
+  }
 };
 
 

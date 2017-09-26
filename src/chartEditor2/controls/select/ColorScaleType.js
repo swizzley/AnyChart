@@ -67,3 +67,11 @@ anychart.chartEditor2Module.select.ColorScaleType.prototype.setValueByTarget = f
     this.suspendDispatch = false;
   }
 };
+
+
+/**
+ * @return {?(anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear)}
+ */
+anychart.chartEditor2Module.select.ColorScaleType.prototype.getScale = function() {
+  return this.scale_;
+};

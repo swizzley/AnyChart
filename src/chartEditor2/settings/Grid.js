@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditor2Module.settings.Grid');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.checkbox.Base');
-goog.require('anychart.chartEditor2Module.input.GridPalette');
+goog.require('anychart.chartEditor2Module.input.Palette');
 goog.require('anychart.chartEditor2Module.settings.Stroke');
 
 
@@ -58,9 +58,9 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
       'Palette');
   goog.dom.appendChild(content, paletteLabel);
 
-  var paletteInput = new anychart.chartEditor2Module.input.GridPalette('Comma separated colors');
+  var paletteInput = new anychart.chartEditor2Module.input.Palette('Comma separated colors');
   this.addChild(paletteInput, true);
-  goog.dom.classlist.add(paletteInput.getElement(), 'grid-palette');
+  goog.dom.classlist.add(paletteInput.getElement(), 'input-palette');
   goog.dom.classlist.add(paletteInput.getElement(), 'anychart-chart-editor-settings-control-right');
   this.palette_ = paletteInput;
 

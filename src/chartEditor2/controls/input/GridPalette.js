@@ -1,4 +1,4 @@
-goog.provide('anychart.chartEditor2Module.input.GridPalette');
+goog.provide('anychart.chartEditor2Module.input.Palette');
 
 
 goog.require('anychart.chartEditor2Module.input.Base');
@@ -11,15 +11,15 @@ goog.require('anychart.chartEditor2Module.input.Base');
  * @constructor
  * @extends {anychart.chartEditor2Module.input.Base}
  */
-anychart.chartEditor2Module.input.GridPalette = function(opt_label, opt_domHelper) {
-  anychart.chartEditor2Module.input.GridPalette.base(this, 'constructor', opt_label, opt_domHelper);
+anychart.chartEditor2Module.input.Palette = function(opt_label, opt_domHelper) {
+  anychart.chartEditor2Module.input.Palette.base(this, 'constructor', opt_label, opt_domHelper);
 };
-goog.inherits(anychart.chartEditor2Module.input.GridPalette, anychart.chartEditor2Module.input.Base);
+goog.inherits(anychart.chartEditor2Module.input.Palette, anychart.chartEditor2Module.input.Base);
 
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.input.GridPalette.prototype.onChange = function() {
+anychart.chartEditor2Module.input.Palette.prototype.onChange = function() {
   var value = this.getValue();
 
   if (!this.noDispatch && value != this.lastValue && this.editorModel) {
@@ -43,7 +43,7 @@ anychart.chartEditor2Module.input.GridPalette.prototype.onChange = function() {
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  * @param {boolean=} opt_force
  */
-anychart.chartEditor2Module.input.GridPalette.prototype.setValueByTarget = function(target, opt_force) {
+anychart.chartEditor2Module.input.Palette.prototype.setValueByTarget = function(target, opt_force) {
   if (!opt_force && this.revisionCount1 - this.revisionCount2 > 1) return;
   this.revisionCount2 = this.revisionCount1;
   this.target = target;
