@@ -47,18 +47,49 @@ anychart.chartEditor2Module.input.Palette.prototype.setValueByTarget = function(
   this.revisionCount2 = this.revisionCount1;
   this.target = target;
   var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
-  var value = /** @type {string} */(anychart.bindingModule.exec(this.target, stringKey));
-  var tmp;
+  var value = /** @type {*} */(anychart.bindingModule.exec(this.target, stringKey));
+  value = this.valueToString(value);
 
-  if (goog.isObject(value) && goog.isFunction(value.items)) {
-    tmp = value.items();
+  this.noDispatch = true;
+  this.setValue(value);
+  this.noDispatch = false;
+
+  this.lastValue = value;
+};
+
+
+/**
+ * @param {?*} colors
+ */
+anychart.chartEditor2Module.input.Palette.prototype.setValueByColors = function(colors) {
+  this.noDispatch = true;
+  var value = this.valueToString(colors);
+  this.setValue(value);
+  this.noDispatch = false;
+};
+
+
+/**
+ * @param {*=} opt_value
+ * @return {string}
+ */
+anychart.chartEditor2Module.input.Palette.prototype.valueToString = function(opt_value) {
+  if (!goog.isDef(opt_value))
+    return '';
+
+  if (goog.isString(opt_value))
+    return opt_value;
+
+  var tmp;
+  if (goog.isObject(opt_value) && goog.isFunction(opt_value.items)) {
+    tmp = opt_value.items();
     tmp = goog.array.filter(tmp, function(i) {
       return goog.isString(i);
     });
-    value = tmp.join();
+    opt_value = tmp.join();
 
-  } else if (goog.isArray(value)) {
-    tmp = goog.array.map(value, function(item) {
+  } else if (goog.isArray(opt_value)) {
+    tmp = goog.array.map(opt_value, function(item) {
       var color;
       if (goog.isString(item))
         color = item;
@@ -70,16 +101,10 @@ anychart.chartEditor2Module.input.Palette.prototype.setValueByTarget = function(
       }
       return color;
     });
-    value = tmp.join();
+    opt_value = tmp.join();
+  }
 
-  } else if (!goog.isDef(value))
-    value = '';
-
-  this.lastValue = value;
-
-  this.noDispatch = true;
-  this.setValue(value);
-  this.noDispatch = false;
+  return opt_value;
 };
 
 

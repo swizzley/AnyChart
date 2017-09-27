@@ -93,14 +93,7 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.onChartDraw = function
   this.scale_ = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(anychart.bindingModule.exec(target, stringKey));
 
   if (this.scale_) {
-    if(this.colors_) {
-      debugger;
-      var colors = this.scale_.colors();
-      this.colors_.setValueByTarget(this.scale_, true);
-    }
-
     if (this.typeSelect_) {
-
       var type = this.scale_.getType();
       this.typeSelect_.suspendDispatch(true);
       this.typeSelect_.setValue(type);
@@ -108,7 +101,10 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.onChartDraw = function
       this.updateSpecific();
     }
 
-
+    if(this.colors_) {
+      var colors = this.scale_.colors();
+      this.colors_.setValueByColors(colors);
+    }
   }
 };
 
@@ -137,7 +133,6 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = funct
       goog.dom.appendChild(this.specificEl_, colors.getElement());
       goog.dom.classlist.add(colors.getElement(), 'input-palette');
       goog.dom.classlist.add(colors.getElement(), 'anychart-chart-editor-settings-control-right');
-      debugger;
       colors.init(model, this.genKey('colors', true));
       this.colors_ = colors;
 
@@ -148,9 +143,10 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = funct
     } else {
       // ordinal-color
       if (this.colors_) {
-        this.removeChild(this.colors_, true);
+        // This draws chart again!
+        model.removeByKey(this.colors_.getKey());
+        this.removeChild(this.colors_);
         this.colors_ = null;
-        model.removeByKey(this.key, true);
       }
       dom.removeChildren(this.specificEl_);
 
