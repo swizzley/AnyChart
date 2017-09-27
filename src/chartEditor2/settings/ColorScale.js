@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditor2Module.settings.ColorScale');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
+goog.require('anychart.chartEditor2Module.input.Palette');
 goog.require('anychart.chartEditor2Module.select.Base');
 
 
@@ -72,18 +73,6 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
 };
 
 
-// /**
-//  * Update model keys.
-//  */
-// anychart.chartEditor2Module.settings.ColorScale.prototype.updateKeys = function() {
-//   anychart.chartEditor2Module.settings.ColorScale.base(this, 'updateKeys');
-//   if (this.isExcluded()) return;
-//
-//   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-//   // if (this.typeSelect_) this.typeSelect_.init(model, [['chart'], ['settings'], 'colorScale()']);
-// };
-
-
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.ColorScale.prototype.onChartDraw = function(evt) {
   anychart.chartEditor2Module.settings.ColorScale.base(this, 'onChartDraw', evt);
@@ -109,6 +98,9 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.onChartDraw = function
 };
 
 
+/**
+ * Creates dom for specific section.
+ */
 anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = function() {
   var newScaleType = this.typeSelect_.getValue();
   if (newScaleType && newScaleType != this.scaleType_) {

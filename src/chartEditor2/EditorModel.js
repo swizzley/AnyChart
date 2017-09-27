@@ -234,7 +234,7 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'series': ['pie'],
     'dataSetCtor': 'set',
     'settingsExcludes' : ['series', 'grids', 'axes', 'colorScale'],
-    'singleSeries': true,
+    'singleSeries': true
   },
   'map': {
     'value': 'map',
@@ -469,9 +469,9 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
       chartType = 'scatter';
   }
 
-  // this.model_['chart']['type'] = chartType;
+  this.model_['chart']['type'] = chartType;
   // debug
-  this.model_['chart']['type'] = 'heatMap';
+  //this.model_['chart']['type'] = 'heatMap';
 };
 
 

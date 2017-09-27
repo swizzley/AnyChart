@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditor2Module.AppearanceSettings');
 
 goog.require('anychart.chartEditor2Module.ChartTitlePanel');
+goog.require('anychart.chartEditor2Module.ColorScalePanel');
 goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.ContextMenuPanel');
 goog.require('anychart.chartEditor2Module.CreditsPanel');
@@ -13,7 +14,6 @@ goog.require('anychart.chartEditor2Module.SeriesSettingsPanel');
 goog.require('anychart.chartEditor2Module.TooltipPanel');
 goog.require('anychart.chartEditor2Module.XAxesPanel');
 goog.require('anychart.chartEditor2Module.YAxesPanel');
-goog.require('anychart.chartEditor2Module.ColorScalePanel');
 
 
 

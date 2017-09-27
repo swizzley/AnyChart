@@ -18,6 +18,14 @@ goog.inherits(anychart.chartEditor2Module.input.Palette, anychart.chartEditor2Mo
 
 
 /** @inheritDoc */
+anychart.chartEditor2Module.input.Palette.prototype.enterDocument = function() {
+  anychart.chartEditor2Module.input.Palette.base(this, 'enterDocument');
+  goog.events.unlisten(this.inputHandler_, goog.events.InputHandler.EventType.INPUT, this.onChange, false, this);
+  goog.events.listen(this.getElement(), goog.events.EventType.BLUR, this.onChange, false, this);
+};
+
+
+/** @inheritDoc */
 anychart.chartEditor2Module.input.Palette.prototype.onChange = function() {
   var value = this.getValue();
 
@@ -78,7 +86,7 @@ anychart.chartEditor2Module.input.Palette.prototype.valueToString = function(opt
     return '';
 
   if (goog.isString(opt_value))
-    return opt_value;
+    return /** @type {string} */(opt_value);
 
   var tmp;
   if (goog.isObject(opt_value) && goog.isFunction(opt_value.items)) {
@@ -104,16 +112,26 @@ anychart.chartEditor2Module.input.Palette.prototype.valueToString = function(opt
     opt_value = tmp.join();
   }
 
-  return opt_value;
+  return /** @type {string} */(opt_value);
 };
 
 
+/**
+ * @param {number} c
+ * @return {string}
+ */
 anychart.chartEditor2Module.input.Palette.componentToHex = function(c) {
   var hex = c.toString(16);
   return hex.length == 1 ? "0" + hex : hex;
 };
 
 
+/**
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @return {string}
+ */
 anychart.chartEditor2Module.input.Palette.rgbToHex = function(r, g, b) {
   return "#" + anychart.chartEditor2Module.input.Palette.componentToHex(r) +
       anychart.chartEditor2Module.input.Palette.componentToHex(g) +
