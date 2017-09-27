@@ -32,21 +32,3 @@ anychart.chartEditor2Module.ColorScalePanel.prototype.createDom = function() {
   chartColorScale.setKey([['chart'], ['settings'], 'colorScale()']);
   this.addChild(chartColorScale, true);
 };
-
-
-// /** @inheritDoc */
-// anychart.chartEditor2Module.ColorScalePanel.prototype.enterDocument = function() {
-//   anychart.chartEditor2Module.ColorScalePanel.base(this, 'enterDocument');
-// };
-
-
-// /** @inheritDoc */
-// anychart.chartEditor2Module.ColorScalePanel.prototype.exitDocument = function() {
-//   anychart.chartEditor2Module.ColorScalePanel.base(this, 'exitDocument');
-// };
-//
-//
-// /** @override */
-// anychart.chartEditor2Module.ColorScalePanel.prototype.disposeInternal = function() {
-//   anychart.chartEditor2Module.ColorScalePanel.base(this, 'disposeInternal');
-// };

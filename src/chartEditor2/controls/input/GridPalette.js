@@ -17,7 +17,6 @@ anychart.chartEditor2Module.input.Palette = function(opt_label, opt_domHelper) {
 goog.inherits(anychart.chartEditor2Module.input.Palette, anychart.chartEditor2Module.input.Base);
 
 
-
 /** @inheritDoc */
 anychart.chartEditor2Module.input.Palette.prototype.onChange = function() {
   var value = this.getValue();
@@ -49,11 +48,30 @@ anychart.chartEditor2Module.input.Palette.prototype.setValueByTarget = function(
   this.target = target;
   var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
   var value = /** @type {string} */(anychart.bindingModule.exec(this.target, stringKey));
+  var tmp;
 
   if (goog.isObject(value) && goog.isFunction(value.items)) {
-    var tmp = value.items();
-    tmp = goog.array.filter(tmp, function(i){return goog.isString(i);});
+    tmp = value.items();
+    tmp = goog.array.filter(tmp, function(i) {
+      return goog.isString(i);
+    });
     value = tmp.join();
+
+  } else if (goog.isArray(value)) {
+    tmp = goog.array.map(value, function(item) {
+      var color;
+      if (goog.isString(item))
+        color = item;
+      else if (item.color) {
+        if (goog.isString(item.color))
+          color = item.color;
+        else if (goog.isArray(item.color))
+          color = anychart.chartEditor2Module.input.Palette.rgbToHex(item.color[0], item.color[1], item.color[2]);
+      }
+      return color;
+    });
+    value = tmp.join();
+
   } else if (!goog.isDef(value))
     value = '';
 
@@ -62,4 +80,17 @@ anychart.chartEditor2Module.input.Palette.prototype.setValueByTarget = function(
   this.noDispatch = true;
   this.setValue(value);
   this.noDispatch = false;
+};
+
+
+anychart.chartEditor2Module.input.Palette.componentToHex = function(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+};
+
+
+anychart.chartEditor2Module.input.Palette.rgbToHex = function(r, g, b) {
+  return "#" + anychart.chartEditor2Module.input.Palette.componentToHex(r) +
+      anychart.chartEditor2Module.input.Palette.componentToHex(g) +
+      anychart.chartEditor2Module.input.Palette.componentToHex(b);
 };

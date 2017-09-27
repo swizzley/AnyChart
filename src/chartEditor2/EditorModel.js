@@ -469,7 +469,9 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
       chartType = 'scatter';
   }
 
-  this.model_['chart']['type'] = chartType;
+  // this.model_['chart']['type'] = chartType;
+  // debug
+  this.model_['chart']['type'] = 'heatMap';
 };
 
 
@@ -1090,15 +1092,16 @@ anychart.chartEditor2Module.EditorModel.prototype.getValue = function(key) {
 
 /**
  * @param {anychart.chartEditor2Module.EditorModel.Key} key
+ * @param {boolean=} opt_noDispatch
  */
-anychart.chartEditor2Module.EditorModel.prototype.removeByKey = function(key) {
+anychart.chartEditor2Module.EditorModel.prototype.removeByKey = function(key, opt_noDispatch) {
   var target = this.model_;
   var level;
   for (var i = 0; i < key.length; i++) {
     level = key[i];
     if (i == key.length - 1) {
       // remove
-      if (goog.isArray(level)) {
+      if (goog.isArray(level) && goog.isArray(target[level[0]])) {
         goog.array.splice(target[level[0]], level[1], 1);
       }
       else if (goog.isString(level)) {
@@ -1116,7 +1119,8 @@ anychart.chartEditor2Module.EditorModel.prototype.removeByKey = function(key) {
         break;
     }
   }
-  this.dispatchUpdate();
+  if (!opt_noDispatch)
+    this.dispatchUpdate();
 };
 
 

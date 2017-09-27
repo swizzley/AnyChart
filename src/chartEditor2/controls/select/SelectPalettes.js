@@ -29,7 +29,7 @@ goog.inherits(anychart.chartEditor2Module.select.Palettes, anychart.chartEditor2
 
 /** @inheritDoc */
 anychart.chartEditor2Module.select.Palettes.prototype.onChange = function(evt) {
-  if (!this.suspendDispatch)
+  if (!this.noDispatch)
     this.editorModel.dropChartSettings(/getSeries\('\w+'\)\.color\(\)/);
 
   anychart.chartEditor2Module.select.Palettes.base(this, 'onChange', evt);
@@ -55,8 +55,8 @@ anychart.chartEditor2Module.select.Palettes.prototype.setValueByTarget = functio
       }
     }
 
-    this.suspendDispatch = true;
+    this.noDispatch = true;
     this.setValue(stringValue);
-    this.suspendDispatch = false;
+    this.noDispatch = false;
   }
 };

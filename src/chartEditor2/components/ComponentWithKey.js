@@ -63,9 +63,10 @@ anychart.chartEditor2Module.ComponentWithKey.prototype.getKey = function(opt_com
  * Returns new key with added string to last key's element.
  *
  * @param {string=} opt_completion
+ * @param {boolean=} opt_asObjectKey
  * @return {anychart.chartEditor2Module.EditorModel.Key}
  */
-anychart.chartEditor2Module.ComponentWithKey.prototype.genKey = function(opt_completion) {
+anychart.chartEditor2Module.ComponentWithKey.prototype.genKey = function(opt_completion, opt_asObjectKey) {
   var result = [];
 
   for (var i = 0, count = this.key.length; i < count; i++) {
@@ -74,7 +75,11 @@ anychart.chartEditor2Module.ComponentWithKey.prototype.genKey = function(opt_com
         result.push(this.key[i]);
         result.push(opt_completion);
       } else
-        result.push(this.key[i] + '.' + opt_completion);
+        if (opt_asObjectKey) {
+          result.push([this.key[i]]);
+          result.push(opt_completion);
+        } else
+          result.push(this.key[i] + '.' + opt_completion);
 
     } else
       result.push(this.key[i]);

@@ -37,8 +37,8 @@ anychart.chartEditor2Module.steps.VisualAppearance.prototype.createDom = functio
   this.appearanceSettings_ = new anychart.chartEditor2Module.AppearanceSettings(model);
   this.addChild(this.appearanceSettings_, true);
 
-  // this.generalSettings_ = new anychart.chartEditor2Module.GeneralSettings(model);
-  // this.addChild(this.generalSettings_, true);
+  this.generalSettings_ = new anychart.chartEditor2Module.GeneralSettings(model);
+  this.addChild(this.generalSettings_, true);
 };
 
 

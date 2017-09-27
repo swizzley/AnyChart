@@ -31,17 +31,17 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, opt_domHelper) 
   this.setModel(model);
 
   this.panels_ = [
-    // {classFunc: anychart.chartEditor2Module.ChartTitlePanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.LegendPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.DataLabelsPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.SeriesSettingsPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.XAxesPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.YAxesPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.TooltipPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.GridsPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.ContextMenuPanel, instance: null},
-    // {classFunc: anychart.chartEditor2Module.CreditsPanel, instance: null}
+    {classFunc: anychart.chartEditor2Module.ChartTitlePanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.LegendPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.DataLabelsPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.SeriesSettingsPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.XAxesPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.YAxesPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.TooltipPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.GridsPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.ContextMenuPanel, instance: null},
+    {classFunc: anychart.chartEditor2Module.CreditsPanel, instance: null}
   ];
 
   this.currentPanel_ = 0;

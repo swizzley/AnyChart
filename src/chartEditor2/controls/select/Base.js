@@ -44,7 +44,7 @@ anychart.chartEditor2Module.select.Base = function(opt_caption, opt_menu, opt_re
    * @type {boolean}
    * @protected
    */
-  this.suspendDispatch = false;
+  this.noDispatch = false;
 
   /**
    * @type {boolean}
@@ -228,7 +228,7 @@ anychart.chartEditor2Module.select.Base.prototype.onChange = function(evt) {
   evt.preventDefault();
   evt.stopPropagation();
 
-  if (!this.suspendDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
+  if (!this.noDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
     if (this.callback)
       this.editorModel.callbackByString(this.callback, this);
     else
@@ -290,7 +290,7 @@ anychart.chartEditor2Module.select.Base.prototype.setValue = function(value, opt
  */
 anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt_value2) {
   var value;
-  this.suspendDispatch = true;
+  this.noDispatch = true;
 
   if (this.editorModel && this.key)
     value = this.editorModel.getValue(this.key);
@@ -302,7 +302,7 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt
     console.warn("no model value by key:", this.key);
   }
 
-  this.suspendDispatch = false;
+  this.noDispatch = false;
 };
 
 
@@ -321,9 +321,9 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(ta
   var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
   var value = /** @type {string} */(anychart.bindingModule.exec(this.target, stringKey));
 
-  this.suspendDispatch = true;
+  this.noDispatch = true;
   this.setValue(value);
-  this.suspendDispatch = false;
+  this.noDispatch = false;
 };
 
 
@@ -380,4 +380,12 @@ anychart.chartEditor2Module.select.Base.prototype.updateCaption = function() {
         goog.a11y.aria.getLabel(itemElement) : this.initialAriaLabel_);
     this.updateAriaActiveDescendant_();
   }
+};
+
+
+/**
+ * @param {boolean} value
+ */
+anychart.chartEditor2Module.select.Base.prototype.suspendDispatch = function(value) {
+  this.noDispatch = value;
 };

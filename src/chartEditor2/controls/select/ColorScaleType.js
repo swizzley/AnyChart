@@ -22,7 +22,6 @@ goog.require('anychart.chartEditor2Module.select.Base');
 anychart.chartEditor2Module.select.ColorScaleType = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
   anychart.chartEditor2Module.select.ColorScaleType.base(this, 'constructor', opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer);
 
-
   /**
    * Scale instance.
    * @type {?(anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear)}
@@ -41,7 +40,7 @@ anychart.chartEditor2Module.select.ColorScaleType.prototype.onChange = function(
   evt.preventDefault();
   evt.stopPropagation();
 
-  if (!this.suspendDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
+  if (!this.noDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
     if (this.callback)
       this.editorModel.callbackByString(this.callback, this);
     else
@@ -62,9 +61,9 @@ anychart.chartEditor2Module.select.ColorScaleType.prototype.setValueByTarget = f
   this.scale_ = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(anychart.bindingModule.exec(this.target, stringKey));
   if (this.scale_) {
     var value = this.scale_.getType();
-    this.suspendDispatch = true;
+    this.noDispatch = true;
     this.setValue(value);
-    this.suspendDispatch = false;
+    this.noDispatch = false;
   }
 };
 
