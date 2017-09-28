@@ -48,15 +48,20 @@ anychart.chartEditor2Module.DataSetPanelList.prototype.update = function() {
   goog.disposeAll(this.panels_);
   this.panels_.length = 0;
 
-  var chartType = this.getModel().getValue([['chart'], 'type']);
   var active = this.getModel().getActive();
   var activeGeo = this.getModel().getActiveGeo();
   var data = this.getModel().getPreparedData();
 
+  var step = /** @type {anychart.chartEditor2Module.steps.Base} */(this.getParent());
+
   for(var i = 0; i < data.length; i++) {
-    this.panels_.push(new anychart.chartEditor2Module.DataSetPanel(data[i]));
-    this.addChild(this.panels_[i], true);
-    this.panels_[i].setDisabled(this.panels_[i].getSetFullId() != active);
-    this.panels_[i].setActiveGeo(chartType == 'map' && this.panels_[i].getSetFullId() == activeGeo);
+    if (step.getIndex() == 1 || data[i].type != anychart.chartEditor2Module.EditorModel.dataType.GEO) {
+      this.panels_.push(new anychart.chartEditor2Module.DataSetPanel(data[i]));
+      this.addChild(this.panels_[i], true);
+    }
+    this.panels_[i].setDisabled(step.getIndex() == 0 || this.panels_[i].getSetFullId() != active);
+
+    if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
+      this.panels_[i].setActiveGeo(this.panels_[i].getSetFullId() == activeGeo);
   }
 };

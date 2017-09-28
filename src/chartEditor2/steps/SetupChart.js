@@ -34,12 +34,19 @@ anychart.chartEditor2Module.steps.SetupChart.prototype.createDom = function() {
   anychart.chartEditor2Module.steps.SetupChart.base(this, 'createDom');
 
   var element = /** @type {Element} */(this.getElement());
+  var dom = this.getDomHelper();
   goog.dom.classlist.add(element, 'step-setup-chart');
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
+  this.chartWrapperEl_ = dom.createDom(goog.dom.TagName.DIV);
+  dom.appendChild(element, this.chartWrapperEl_);
 
+  var panelsListWrapper = dom.createDom(goog.dom.TagName.DIV, 'data-set-panel-list-wrapper');
+  // element.appendChild(panelsListWrapper);
+  dom.appendChild(element, panelsListWrapper);
   this.panelsList_ = new anychart.chartEditor2Module.DataSetPanelList(model);
   this.addChild(this.panelsList_, true);
+  dom.appendChild(panelsListWrapper, this.panelsList_.getElement());
 
   this.chartTypeSelector_ = new anychart.chartEditor2Module.ChartTypeSelector(model);
   this.addChild(this.chartTypeSelector_, true);
@@ -55,7 +62,8 @@ anychart.chartEditor2Module.steps.SetupChart.prototype.enterDocument = function(
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
   this.chart_ = new anychart.chartEditor2Module.Chart(model);
-  this.addChildAt(this.chart_, 0, true);
+  this.addChild(this.chart_, true);
+  this.getDomHelper().appendChild(this.chartWrapperEl_, this.chart_.getElement());
 };
 
 
