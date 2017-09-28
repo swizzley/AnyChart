@@ -74,6 +74,7 @@ anychart.chartEditor2Module.PredefinedDataSet.prototype.enterDocument = function
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
   this.getHandler().listen(model, anychart.chartEditor2Module.events.EventType.EDITOR_MODEL_UPDATE, this.onModelUpdate);
+  this.onModelUpdate();
 
   this.getHandler().listen(this.downloadButton, goog.events.EventType.CLICK, this.onClickDownload_);
   this.getHandler().listen(this.removeButton, goog.events.EventType.CLICK, this.onClickRemove_);
