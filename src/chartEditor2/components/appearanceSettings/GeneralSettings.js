@@ -62,11 +62,13 @@ anychart.chartEditor2Module.GeneralSettings.prototype.createDom = function() {
       paletteNames.push(paletteName);
     }
   }
-  this.paletteSelect = new anychart.chartEditor2Module.select.Palettes("-- Choose palette --");
-  this.paletteSelect.setOptions(paletteNames);
-  this.paletteSelect.updateOptions('defaultPalette');
-  this.paletteSelect.init(model, [['chart'], ['settings'], 'palette()']);
-  this.addChild(this.paletteSelect, true);
+
+  var paletteSelect = new anychart.chartEditor2Module.select.Palettes("-- Choose palette --");
+  paletteSelect.setOptions(paletteNames);
+  paletteSelect.updateOptions('defaultPalette');
+  paletteSelect.init(model, [['chart'], ['settings'], 'palette()']);
+  this.addChild(paletteSelect, true);
+  this.paletteSelect = paletteSelect;
 
   content.appendChild(dom.createDom(goog.dom.TagName.DIV, 'fields-row', this.themeSelect.getElement(), this.paletteSelect.getElement()));
 
@@ -104,52 +106,50 @@ anychart.chartEditor2Module.GeneralSettings.prototype.createDom = function() {
   this.legendEnabled.setCaption('Legend');
   this.addChild(this.legendEnabled, true);
 
-  this.animationnabled = new anychart.chartEditor2Module.checkbox.Base();
-  this.animationnabled.init(model, [['chart'], ['settings'], 'animation().enabled()']);
-  this.animationnabled.setCaption('Animation');
-  this.addChild(this.animationnabled, true);
+  this.animationEnabled = new anychart.chartEditor2Module.checkbox.Base();
+  this.animationEnabled.init(model, [['chart'], ['settings'], 'animation().enabled()']);
+  this.animationEnabled.setCaption('Animation');
+  this.addChild(this.animationEnabled, true);
 };
 
 
 /** @inheritDoc */
 anychart.chartEditor2Module.GeneralSettings.prototype.update = function() {
+  if (this.paletteSelect) this.paletteSelect.updateExclusion();
+  if (this.legendEnabled) this.legendEnabled.updateExclusion();
+  if (this.animationEnabled) this.animationEnabled.updateExclusion();
+
   anychart.chartEditor2Module.GeneralSettings.base(this, 'update');
 };
 
+
+/** @inheritDoc */
+anychart.chartEditor2Module.GeneralSettings.prototype.updateKeys = function() {
+  anychart.chartEditor2Module.GeneralSettings.base(this, 'updateKeys');
+
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  if (this.animationEnabled) {
+    this.animationEnabled.init(model, [['chart'], ['settings'], 'animation().enabled()']);
+    goog.dom.classlist.enable(this.animationEnabled.getElement(), goog.getCssName('hidden'), this.animationEnabled.isExcluded());
+  }
+
+  if (this.legendEnabled) {
+    this.legendEnabled.init(model, [['chart'], ['settings'], 'legend().enabled()']);
+    goog.dom.classlist.enable(this.legendEnabled.getElement(), goog.getCssName('hidden'), this.legendEnabled.isExcluded());
+  }
+};
+
+
 /** @inheritDoc */
 anychart.chartEditor2Module.GeneralSettings.prototype.onChartDraw = function(evt) {
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  var settings = model.getModel();
-  var chartType = settings['chart']['type'];
   if (evt.rebuild) {
-    this.themeSelect.setValueByTarget(goog.dom.getWindow()['anychart']);
+    if (this.titleEnabled) this.titleEnabled.setValueByTarget(evt.chart);
+    if (this.titleText) this.titleText.setValueByTarget(evt.chart);
 
-    if (chartType == 'stock' || chartType == 'map') {
-      this.animationnabled.setKey(null);
-    } else {
-      this.animationnabled.setKey([['chart'], ['settings'], 'animation().enabled()']);
-      this.animationnabled.setValueByTarget(evt.chart);
-    }
+    if (this.themeSelect) this.themeSelect.setValueByTarget(goog.dom.getWindow()['anychart']);
+    if (this.paletteSelect) this.paletteSelect.setValueByTarget(evt.chart);
 
-    if (chartType == 'stock') {
-      this.paletteSelect.hide();
-      this.legendEnabled.setKey(null);
-
-    } else {
-      this.paletteSelect.setValueByTarget(evt.chart);
-      this.paletteSelect.show();
-
-      this.legendEnabled.setKey([['chart'], ['settings'], 'legend().enabled()']);
-      this.legendEnabled.setValueByTarget(evt.chart);
-    }
-
-    if (this.legendEnabled)
-      goog.dom.classlist.enable(this.legendEnabled.getElement(), goog.getCssName('hidden'), chartType == 'stock');
-
-    if (this.animationnabled)
-      goog.dom.classlist.enable(this.animationnabled.getElement(), goog.getCssName('hidden'), (chartType == 'stock' || chartType == 'map'));
-
-    this.titleEnabled.setValueByTarget(evt.chart);
-    this.titleText.setValueByTarget(evt.chart);
+    if (this.animationEnabled) this.animationEnabled.setValueByTarget(evt.chart);
+    if (this.legendEnabled) this.legendEnabled.setValueByTarget(evt.chart);
   }
 };

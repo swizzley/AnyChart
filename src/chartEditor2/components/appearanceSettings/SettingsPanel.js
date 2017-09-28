@@ -85,14 +85,16 @@ anychart.chartEditor2Module.SettingsPanel.prototype.getStringId = function() {
 
 /** @param {boolean} value */
 anychart.chartEditor2Module.SettingsPanel.prototype.exclude = function(value) {
-  for (var i = 0, count = this.getChildCount(); i < count; i++) {
-    var child = this.getChildAt(i);
-    if (goog.isFunction(child.exclude))
-      child.exclude(value);
-  }
+  if (this.excluded != value) {
+    for (var i = 0, count = this.getChildCount(); i < count; i++) {
+      var child = this.getChildAt(i);
+      if (goog.isFunction(child.exclude))
+        child.exclude(value);
+    }
 
-  this.excluded = value;
-  this.updateKeys();
+    this.excluded = value;
+    this.updateKeys();
+  }
 };
 
 
@@ -259,7 +261,6 @@ anychart.chartEditor2Module.SettingsPanel.prototype.onRemoveAction = function(ev
 /** @inheritDoc */
 anychart.chartEditor2Module.SettingsPanel.prototype.update = function() {
   if (this.isExcluded()) return;
-
   anychart.chartEditor2Module.SettingsPanel.base(this, 'update');
 };
 

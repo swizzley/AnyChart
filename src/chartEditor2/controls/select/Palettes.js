@@ -29,6 +29,8 @@ goog.inherits(anychart.chartEditor2Module.select.Palettes, anychart.chartEditor2
 
 /** @inheritDoc */
 anychart.chartEditor2Module.select.Palettes.prototype.onChange = function(evt) {
+  if (this.excluded) return;
+
   if (!this.noDispatch)
     this.editorModel.dropChartSettings(/getSeries\('\w+'\)\.color\(\)/);
 
@@ -38,8 +40,9 @@ anychart.chartEditor2Module.select.Palettes.prototype.onChange = function(evt) {
 
 /** @inheritDoc */
 anychart.chartEditor2Module.select.Palettes.prototype.setValueByTarget = function(target) {
-  this.target = target;
+  if (this.excluded) return;
 
+  this.target = target;
   var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
   var value = anychart.bindingModule.exec(this.target, stringKey);
 

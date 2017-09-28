@@ -147,8 +147,8 @@ goog.addDependency('../../../../src/chartEditor2/controls/select/Base.js', ['any
 goog.addDependency('../../../../src/chartEditor2/controls/select/ChartType.js', ['anychart.chartEditor2Module.select.ChartType'], ['anychart.chartEditor2Module.select.Base', 'anychart.chartEditor2Module.select.MenuItemWithTwoValues'], false);
 goog.addDependency('../../../../src/chartEditor2/controls/select/FontFamily.js', ['anychart.chartEditor2Module.select.FontFamily'], ['anychart.chartEditor2Module.select.Base'], false);
 goog.addDependency('../../../../src/chartEditor2/controls/select/MenuItemWithTwoValues.js', ['anychart.chartEditor2Module.select.MenuItemWithTwoValues'], ['goog.ui.MenuItem'], false);
+goog.addDependency('../../../../src/chartEditor2/controls/select/Palettes.js', ['anychart.chartEditor2Module.select.Palettes'], ['anychart.chartEditor2Module.select.Base'], false);
 goog.addDependency('../../../../src/chartEditor2/controls/select/Renderer.js', ['anychart.chartEditor2Module.select.Renderer'], ['goog.ui.FlatMenuButtonRenderer', 'goog.ui.INLINE_BLOCK_CLASSNAME'], false);
-goog.addDependency('../../../../src/chartEditor2/controls/select/SelectPalettes.js', ['anychart.chartEditor2Module.select.Palettes'], ['anychart.chartEditor2Module.select.Base'], false);
 goog.addDependency('../../../../src/chartEditor2/controls/select/SelectWithLabel.js', ['anychart.chartEditor2Module.select.SelectWithLabel'], ['anychart.chartEditor2Module.select.Base', 'anychart.chartEditor2Module.select.SelectWithLabelRenderer', 'goog.ui.Component'], false);
 goog.addDependency('../../../../src/chartEditor2/controls/select/SelectWithLabelRenderer.js', ['anychart.chartEditor2Module.select.SelectWithLabelRenderer'], ['goog.ui.MenuButtonRenderer'], false);
 goog.addDependency('../../../../src/chartEditor2/events.js', ['anychart.chartEditor2Module.events'], ['goog.events'], false);

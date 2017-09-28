@@ -143,30 +143,6 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
     anychart.bindingModule.exec(self.chart_, key, value);
   });
 
-  // Chart settings by objects (for example colorScale())
-  // if (settings['chart']['objects']) {
-  //   goog.object.forEach(settings['chart']['objects'], function(settings, objectCtor) {
-  //     if (goog.isArray(settings)) {
-  //       for (var i = 0; i < settings.length; i++) {
-  //         var objectSettings = settings[i];
-  //         if (goog.isDef(objectSettings[objectCtor])) {
-  //           // First we set it
-  //           anychart.bindingModule.exec(self.chart_, objectCtor, objectSettings[objectCtor]);
-  //
-  //           // Then we get it
-  //           var object = anychart.bindingModule.exec(self.chart_, objectCtor);
-  //           if (object) {
-  //             for (var settingKey in objectSettings) {
-  //               if (settingKey != objectCtor)
-  //                 anychart.bindingModule.exec(object, settingKey, objectSettings[settingKey]);
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
-
   this.getHandler().listenOnce(this.chart_, 'chartdraw', function() {
     model.onChartDraw(self.chart_, rebuild);
   });
