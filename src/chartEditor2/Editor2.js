@@ -194,8 +194,6 @@ anychart.chartEditor2Module.Editor.prototype.waitForImages_ = function() {
 anychart.chartEditor2Module.Editor.prototype.onComplete_ = function(evt) {
   if (this.dialog_)
     this.dialog_.setVisible(false);
-
-  console.log(evt.code);
 };
 
 
@@ -418,8 +416,8 @@ anychart.chartEditor2Module.Editor.prototype.prevBtnClickHandler_ = function() {
 anychart.chartEditor2Module.Editor.prototype.nextBtnClickHandler_ = function() {
   if (this.isLastStep_()) {
     this.dispatchEvent({
-      type: anychart.enums.EventType.COMPLETE,
-      code: this.getChartAsJsCode()
+      type: anychart.enums.EventType.COMPLETE
+      //code: this.getChartAsJsCode()
     });
   } else
     this.changeStep_(this.currentStep_.getIndex() + 1);
