@@ -15,6 +15,7 @@ goog.require('goog.fx.Transition.EventType');
 goog.require('goog.fx.dom');
 goog.require('goog.net.ImageLoader');
 goog.require('goog.ui.Dialog');
+goog.require('anychart.chartEditor2.controls.select.SelectWithIcon');
 
 
 
@@ -75,6 +76,9 @@ anychart.chartEditor2Module.Editor = function(opt_domHelper) {
   this.listen(anychart.chartEditor2Module.events.EventType.DATA_ADD, this.onDataAdd_);
   this.listen(anychart.chartEditor2Module.events.EventType.DATA_REMOVE, this.onDataRemove_);
   this.listen(anychart.chartEditor2Module.events.EventType.WAIT, this.onWait_);
+
+  var select = new anychart.chartEditor2.controls.select.SelectWithIcon();
+  select.setKey('hello');
 };
 goog.inherits(anychart.chartEditor2Module.Editor, anychart.chartEditor2Module.Component);
 
