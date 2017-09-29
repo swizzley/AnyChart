@@ -6,6 +6,7 @@
     <script>
         goog.require('anychart.chartEditor2.controls.select.SelectWithIcon');
         goog.require('anychart.chartEditor2.controls.select.MenuItemWithIcon');
+        goog.require('anychart.chartEditor2Module.Breadcrumbs');
     </script>
     <link rel="stylesheet" href="../out/anychart-ui.css">
 
@@ -17,9 +18,27 @@
         .anychart-ui-menu-item-with-icon {
             width: 362px;
         }
+
+        #select {
+            width: 500px;
+            margin: 20px 0;
+        }
+
     </style>
+
+    <style>
+
+
+    </style>
+
+
 </head>
 <body>
+<div id="select"></div>
+
+<div id="breadcrumbs"></div>
+
+
 <script>
     var select = new anychart.chartEditor2.controls.select.SelectWithIcon('Select your char type');
 
@@ -43,9 +62,22 @@
         value: 'percent-stacked-column-chart',
         icon: 'http://www.anychart.com/_design/img/upload/charts/types/percent-stacked-column-chart.svg'
     }));
-    select.render();
-
+    select.render(document.getElementById('select'));
     select.setValue('percent-stacked-column-chart')
+</script>
+
+<script>
+    breadcrumbs = new anychart.chartEditor2Module.Breadcrumbs();
+    breadcrumbs.render(document.getElementById('breadcrumbs'));
+    breadcrumbs.setStep(1);
+    goog.events.listen(breadcrumbs, [
+        anychart.chartEditor2Module.Breadcrumbs.EventType.COMPLETE,
+        anychart.chartEditor2Module.Breadcrumbs.EventType.NEXT,
+        anychart.chartEditor2Module.Breadcrumbs.EventType.PREV,
+        anychart.chartEditor2Module.Breadcrumbs.EventType.CHANGE_STEP
+    ], function (e) {
+        console.log(e.type, e.step)
+    })
 </script>
 </body>
 
