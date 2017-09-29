@@ -47,6 +47,21 @@ anychart.chartEditor2.controls.select.SelectWithIcon.prototype.handleSelectionCh
 };
 
 
+/** @inheritDoc */
+anychart.chartEditor2.controls.select.SelectWithIcon.prototype.setValue = function (value) {
+    if (goog.isDefAndNotNull(value) && this.getSelectionModel()) {
+        for (var i = 0, item; item = this.getSelectionModel().getItemAt(i); i++) {
+            if (item && typeof item.getValue == 'function' && item.getValue().value == value) {
+                this.setSelectedItem(/** @type {!goog.ui.MenuItem} */ (item));
+                return;
+            }
+        }
+    }
+
+    this.setSelectedItem(null);
+};
+
+
 /** @param {anychart.chartEditor2Module.EditorModel.Key} value */
 anychart.chartEditor2.controls.select.SelectWithIcon.prototype.setKey = function (value) {
     this.key_ = value;
@@ -73,11 +88,21 @@ goog.addSingletonGetter(anychart.chartEditor2.controls.select.SelectWithIconRend
 
 /** @inheritDoc */
 anychart.chartEditor2.controls.select.SelectWithIconRenderer.prototype.createDom = function (control) {
-    var model = control.getSelectedItem().getModel();
-    return control.getDomHelper().createDom(goog.dom.TagName.DIV, this.getClassNames(control).join(' '), [
-        control.getDomHelper().createDom(goog.dom.TagName.IMG, {'src': model.icon}),
+    var selectedItem = control.getSelectedItem();
+    var icon = control.getDomHelper().createDom(goog.dom.TagName.IMG);
+    var element = control.getDomHelper().createDom(goog.dom.TagName.DIV, this.getClassNames(control).join(' '), [
+        icon,
         control.getDomHelper().createDom(goog.dom.TagName.SPAN, '', control.getContent())
     ]);
+
+    if (selectedItem) {
+        var model = selectedItem.getModel();
+        goog.dom.setProperties(icon, {'src': model.icon});
+    } else {
+        goog.style.setElementShown(icon, false);
+    }
+
+    return element;
 };
 
 
@@ -94,9 +119,15 @@ anychart.chartEditor2.controls.select.SelectWithIconRenderer.prototype.getConten
 anychart.chartEditor2.controls.select.SelectWithIconRenderer.prototype.updateIcon = function (control) {
     var element = control.getElement();
     if (element) {
-        var model = control.getSelectedItem().getModel();
         var iconElement = goog.dom.getElementsByTagName(goog.dom.TagName.IMG, element)[0];
-        goog.dom.setProperties(iconElement, {'src': model.icon});
+        var selectedItem = control.getSelectedItem();
+        if (selectedItem) {
+            var model = selectedItem.getModel();
+            goog.dom.setProperties(iconElement, {'src': model.icon});
+            if (iconElement) goog.style.setElementShown(iconElement, true);
+        } else {
+            if (iconElement) goog.style.setElementShown(iconElement, false);
+        }
     }
 };
 // endregion

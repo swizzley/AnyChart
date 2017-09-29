@@ -1,0 +1,52 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="../libs/closure-library/closure/goog/base.js"></script>
+    <script src="../src/deps.js"></script>
+    <script>
+        goog.require('anychart.chartEditor2.controls.select.SelectWithIcon');
+        goog.require('anychart.chartEditor2.controls.select.MenuItemWithIcon');
+    </script>
+    <link rel="stylesheet" href="../out/anychart-ui.css">
+
+    <style>
+        .anychart-ui-select-with-icon {
+            width: 400px;
+        }
+
+        .anychart-ui-menu-item-with-icon {
+            width: 362px;
+        }
+    </style>
+</head>
+<body>
+<script>
+    var select = new anychart.chartEditor2.controls.select.SelectWithIcon('Select your char type');
+
+    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+        caption: 'Pie Chart',
+        value: 'pie-chart',
+        icon: 'http://www.anychart.com/_design/img/upload/charts/types/pie-chart.svg'
+    }));
+    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+        caption: 'Bar Chart',
+        value: 'bar-chart',
+        icon: 'http://www.anychart.com/_design/img/upload/charts/types/bar-chart.svg'
+    }));
+    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+        caption: 'Column Chart',
+        value: 'column-chart',
+        icon: 'http://www.anychart.com/_design/img/upload/charts/types/column-chart.svg'
+    }));
+    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+        caption: 'Percent Stacked Column Chart',
+        value: 'percent-stacked-column-chart',
+        icon: 'http://www.anychart.com/_design/img/upload/charts/types/percent-stacked-column-chart.svg'
+    }));
+    select.render();
+
+    select.setValue('percent-stacked-column-chart')
+</script>
+</body>
+
+</html>

@@ -13,7 +13,7 @@ goog.require('goog.ui.MenuItemRenderer');
 anychart.chartEditor2.controls.select.MenuItemWithIcon = function(opt_model, opt_domHelper, opt_renderer) {
     goog.ui.MenuItem.call(
         this,
-        opt_model.caption,
+        opt_model ? opt_model.caption : '',
         opt_model,
         opt_domHelper,
         opt_renderer || anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.getInstance()
