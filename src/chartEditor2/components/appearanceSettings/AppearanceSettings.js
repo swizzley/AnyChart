@@ -82,7 +82,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
   var panel;
   var button;
   var settings = model.getModel();
-  var panelExcludes = anychart.chartEditor2Module.EditorModel.chartTypes[settings['chart']['type']]['settingsExcludes'];
+  var panelsExcludes = anychart.chartEditor2Module.EditorModel.chartTypes[settings['chart']['type']]['panelsExcludes'];
   var excluded;
 
   for (var i = 0; i < this.panels_.length; i++) {
@@ -90,7 +90,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
     if (!panel) {
       var classFunc = this.panels_[i].classFunc;
       panel = this.panels_[i].instance = new classFunc(model);
-      excluded = panelExcludes && goog.array.indexOf(panelExcludes, panel.getStringId()) != -1;
+      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) != -1;
       panel.exclude(excluded);
       this.addChild(panel, true);
       this.panelsEl_.appendChild(panel.getElement());
@@ -100,7 +100,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
       this.buttons_.push(button);
       this.buttonsEl_.appendChild(button);
     } else {
-      excluded = panelExcludes && goog.array.indexOf(panelExcludes, panel.getStringId()) != -1;
+      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) != -1;
       if (excluded && this.currentPanel_ == i)
         this.currentPanel_ = 0;
       panel.exclude(excluded);

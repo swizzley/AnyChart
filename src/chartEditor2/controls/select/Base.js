@@ -207,8 +207,9 @@ anychart.chartEditor2Module.select.Base.prototype.createContentElements = functi
 /** @override */
 anychart.chartEditor2Module.select.Base.prototype.enterDocument = function() {
   anychart.chartEditor2Module.select.Base.base(this, 'enterDocument');
-
-  goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
+  goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+  if (!this.excluded)
+    goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
 };
 
 
@@ -227,6 +228,7 @@ anychart.chartEditor2Module.select.Base.prototype.exitDocument = function() {
 anychart.chartEditor2Module.select.Base.prototype.onChange = function(evt) {
   evt.preventDefault();
   evt.stopPropagation();
+  if (this.excluded) return;
 
   if (!this.noDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
     if (this.callback)
@@ -258,6 +260,8 @@ anychart.chartEditor2Module.select.Base.prototype.init = function(model, key, op
   this.callback = opt_callback;
 
   this.noRebuild = !!opt_noRebuild;
+
+  this.updateExclusion();
 };
 
 
@@ -312,6 +316,8 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  */
 anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(target) {
+  if (this.excluded) return;
+
   if (!this.key || !this.key.length) {
     console.warn("Control with no key!");
     return;
@@ -335,22 +341,6 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(ta
 anychart.chartEditor2Module.select.Base.prototype.getValue2 = function() {
   var selectedItem = /** @type {?(goog.ui.MenuItem|anychart.chartEditor2Module.select.MenuItemWithTwoValues)} */(this.getSelectedItem());
   return selectedItem ? selectedItem.getValue2() : null;
-};
-
-
-/**
- * Hides control by assigning 'hidden' class
- */
-anychart.chartEditor2Module.select.Base.prototype.hide = function() {
-  goog.dom.classlist.add(this.getElement(), 'hidden');
-};
-
-
-/**
- * Shows control by removing 'hidden' class
- */
-anychart.chartEditor2Module.select.Base.prototype.show = function() {
-  goog.dom.classlist.remove(this.getElement(), 'hidden');
 };
 
 
@@ -388,4 +378,36 @@ anychart.chartEditor2Module.select.Base.prototype.updateCaption = function() {
  */
 anychart.chartEditor2Module.select.Base.prototype.suspendDispatch = function(value) {
   this.noDispatch = value;
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ */
+anychart.chartEditor2Module.select.Base.prototype.exclude = function(value) {
+  this.excluded = value;
+  if (this.isInDocument())
+    goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+  if (this.excluded)
+    this.editorModel.removeByKey(this.key, true);
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.chartEditor2Module.select.Base.prototype.isExcluded = function() {
+  return this.excluded;
+};
+
+
+/**
+ * @public
+ */
+anychart.chartEditor2Module.select.Base.prototype.updateExclusion = function() {
+  if (!this.key || !this.key.length) return;
+
+  var stringKey = this.editorModel.getStringKey(this.key);
+  this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
 };

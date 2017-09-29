@@ -34,6 +34,8 @@ anychart.chartEditor2Module.checkbox.Base = function(opt_checked, opt_domHelper,
    * @protected
    */
   this.noDispatch = false;
+
+  this.excluded = false;
 };
 goog.inherits(anychart.chartEditor2Module.checkbox.Base, goog.ui.Checkbox);
 
@@ -79,8 +81,9 @@ anychart.chartEditor2Module.checkbox.Base.prototype.setKey = function(value) {
 /** @override */
 anychart.chartEditor2Module.checkbox.Base.prototype.enterDocument = function() {
   anychart.chartEditor2Module.checkbox.Base.base(this, 'enterDocument');
-
-  goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
+  goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+  if (!this.excluded)
+    goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
 };
 
 
@@ -112,6 +115,8 @@ anychart.chartEditor2Module.checkbox.Base.prototype.init = function(model, key, 
   this.callback = opt_callback;
 
   this.noRebuild = !!opt_noRebuild;
+
+  this.updateExclusion();
 };
 
 
@@ -121,6 +126,7 @@ anychart.chartEditor2Module.checkbox.Base.prototype.init = function(model, key, 
  */
 anychart.chartEditor2Module.checkbox.Base.prototype.onChange = function(evt) {
   evt.stopPropagation();
+  if (this.excluded) return;
 
   if (!this.noDispatch && this.editorModel) {
     //var value = this.isChecked() ? this.checkedValue_ : this.normalValue_;
@@ -139,7 +145,7 @@ anychart.chartEditor2Module.checkbox.Base.prototype.onChange = function(evt) {
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  */
 anychart.chartEditor2Module.checkbox.Base.prototype.setValueByTarget = function(target) {
-  if (!this.key) return;
+  if (!this.key || this.excluded) return;
 
   this.target = target;
 
@@ -149,4 +155,36 @@ anychart.chartEditor2Module.checkbox.Base.prototype.setValueByTarget = function(
   this.noDispatch = true;
   this.setChecked(value);
   this.noDispatch = false;
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ */
+anychart.chartEditor2Module.checkbox.Base.prototype.exclude = function(value) {
+  this.excluded = value;
+  if (this.isInDocument())
+    goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+  if (this.excluded)
+    this.editorModel.removeByKey(this.key, true);
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.chartEditor2Module.checkbox.Base.prototype.isExcluded = function() {
+  return this.excluded;
+};
+
+
+/**
+ * @public
+ */
+anychart.chartEditor2Module.checkbox.Base.prototype.updateExclusion = function() {
+  if (!this.key || !this.key.length) return;
+
+  var stringKey = this.editorModel.getStringKey(this.key);
+  this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
 };

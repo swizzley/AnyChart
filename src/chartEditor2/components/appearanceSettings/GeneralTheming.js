@@ -51,29 +51,26 @@ anychart.chartEditor2Module.GeneralTheming.prototype.createDom = function() {
 
 
 /** @inheritDoc */
+anychart.chartEditor2Module.GeneralTheming.prototype.update = function() {
+  if (this.paletteSelect) this.paletteSelect.updateExclusion();
+  anychart.chartEditor2Module.GeneralTheming.base(this, 'update');
+};
+
+
+/** @inheritDoc */
 anychart.chartEditor2Module.GeneralTheming.prototype.onChartDraw = function(evt) {
   anychart.chartEditor2Module.GeneralTheming.base(this, 'onChartDraw', evt);
-
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-
   if (evt.rebuild) {
-    this.themeSelect.setValueByTarget(goog.dom.getWindow()['anychart']);
-
-    var chartType = model.getValue([['chart'], 'type']);
-    if (chartType == 'stock') {
-      this.paletteSelect.hide();
-    } else {
-      this.paletteSelect.setValueByTarget(evt.chart);
-      this.paletteSelect.show();
-    }
+    if (this.themeSelect) this.themeSelect.setValueByTarget(goog.dom.getWindow()['anychart']);
+    if (this.paletteSelect) this.paletteSelect.setValueByTarget(evt.chart);
   }
 };
 
 
 /** @override */
 anychart.chartEditor2Module.GeneralTheming.prototype.disposeInternal = function() {
-  this.itemsLayout_ = null;
-  this.itemsOrientation_ = null;
+  this.themeSelect = null;
+  this.paletteSelect = null;
 
   anychart.chartEditor2Module.GeneralTheming.base(this, 'disposeInternal');
 };

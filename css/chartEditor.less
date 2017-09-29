@@ -123,10 +123,11 @@
     display: none;
   }
   .section {
-    width: 100%;
+    //width: 100%;
     //height: 33.333%;
     overflow: hidden;
     position: relative;
+    float: left;
 
     .inner {
       padding: 60px 25px 15px;
@@ -163,9 +164,6 @@
 }
 
 .data-selector {
-  clear: both;
-  height: 70%;
-
   .data-set {
     width: 240px;
     height: 230px;
@@ -220,18 +218,15 @@
 //.step-prepare-data {}
 
 .connect-data {
-  height: 30% !important;
+  width: 25%;
   .inner {
     padding-top: 64px;
   }
-  .buttons {
-    width: 50%;
-    float: left;
-
+  .connect-data-buttons {
     button {
       width: 50px;
       height: 60px;
-      margin-bottom: 1em;
+      margin-bottom: 3em;
       background: #ffffff no-repeat center center;
       background-size: cover;
       text-indent: -9999px;
@@ -272,44 +267,11 @@
       background-image: url('https://cdn.anychart.com/anydata/editor/spreadsh_s.png');
     }
   }
-  .uploaded {
-    width: 49%;
-    float: left;
-    background-color: @color-gray;
-    border: 1px dotted @color-dark-gray;
-    .b-radius-5;
-
-    .empty {
-      padding: 10px 15px;
-      height: 60px;
-    }
-    .panel {
-      float: left;
-      margin: 10px;
-      padding: 7px;
-      background-color: white;
-      border: 1px solid red;
-      width: 88px;
-      height: 85px;
-      position: relative;
-
-      .title {
-        font-weight: bolder;
-      }
-
-      .remove {
-        position: absolute;
-        left: 8px;
-        bottom: 8px;
-        margin-top: 1em;
-        display: inline-block;
-        color: #fff;
-      }
-    }
-  }
 }
 
-//.predefined-data-selector {}
+.predefined-data-selector {
+  width: 60%;
+}
 
 .geo-data-selector {
   .data-set {
@@ -341,13 +303,15 @@
   }
 }
 
-.data-set-panel-list {
+.data-set-panel-list-wrapper {
   width: 15%;
   height: 100%;
   float: left;
   overflow-x: visible;
   //overflow-y: auto; // конфликтует с меню
+}
 
+.data-set-panel-list {
   .panel {
     width: 80%;
     margin: 15px 0 15px 15px;

@@ -1,12 +1,11 @@
 goog.provide('anychart.chartEditor2Module.steps.PrepareData');
 
 goog.require('anychart.chartEditor2Module.DataDialog');
+goog.require('anychart.chartEditor2Module.DataSetPanelList');
 goog.require('anychart.chartEditor2Module.PredefinedDataSelector');
-goog.require('anychart.chartEditor2Module.UploadedDataSetPanelList');
 goog.require('anychart.chartEditor2Module.events');
 goog.require('anychart.chartEditor2Module.steps.Base');
 goog.require('anychart.dataAdapterModule.entry');
-goog.require('goog.dom.classlist');
 goog.require('goog.ui.Button');
 
 goog.forwardDeclare('anychart.data.Mapping');
@@ -40,10 +39,16 @@ goog.inherits(anychart.chartEditor2Module.steps.PrepareData, anychart.chartEdito
 anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function() {
   goog.base(this, 'createDom');
 
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
   var element = /** @type {Element} */(this.getElement());
+  var dom = this.getDomHelper();
   goog.dom.classlist.add(element, 'step-prepare-data');
 
-  var dom = this.getDomHelper();
+  var panelsListWrapper = dom.createDom(goog.dom.TagName.DIV, 'data-set-panel-list-wrapper');
+  element.appendChild(panelsListWrapper);
+  this.panelsList_ = new anychart.chartEditor2Module.DataSetPanelList(model);
+  this.addChild(this.panelsList_, true);
+  panelsListWrapper.appendChild(this.panelsList_.getElement());
 
   var buttonsMap = [
     {name: 'file-csv', img: 'csv'},
@@ -54,8 +59,7 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function() {
     // {name: 'string-xml', img: 'xml'},
     {name: 'google-spreadsheets', img: 'google-spreadsheets'}
   ];
-
-  var buttonsBar = dom.createDom(goog.dom.TagName.DIV, 'buttons');
+  var buttonsBar = dom.createDom(goog.dom.TagName.DIV, 'connect-data-buttons');
   for (var i = 0; i < buttonsMap.length; i++) {
     var name = buttonsMap[i].name;
     var button = new goog.ui.Button(name);
@@ -67,16 +71,13 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function() {
     button.listen(goog.ui.Component.EventType.ACTION, this.onUploadButtonClick, false, this);
   }
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
-  var uploadedDataSetsPanelList = new anychart.chartEditor2Module.UploadedDataSetPanelList(model);
-  this.addChild(uploadedDataSetsPanelList, true);
   this.connectDataEl_ = dom.createDom(goog.dom.TagName.DIV, 'connect-data',
       dom.createDom(goog.dom.TagName.DIV, 'section-content',
           dom.createDom(goog.dom.TagName.DIV, 'inner',
               dom.createDom(goog.dom.TagName.DIV, 'top',
                   dom.createDom(goog.dom.TagName.H2, null, 'Connect your data')),
               buttonsBar,
-              uploadedDataSetsPanelList.getElement(),
+              // uploadedDataSetsPanelList.getElement(),
               dom.createDom(goog.dom.TagName.DIV, 'cb'))));
   goog.dom.classlist.add(this.connectDataEl_, 'section');
   element.appendChild(this.connectDataEl_);
