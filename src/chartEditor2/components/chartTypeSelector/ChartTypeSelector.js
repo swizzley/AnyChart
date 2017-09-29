@@ -4,9 +4,9 @@ goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.GeoDataInputs');
 goog.require('anychart.chartEditor2Module.PlotPanel');
 goog.require('anychart.chartEditor2Module.select.ChartType');
-goog.require('anychart.chartEditor2Module.select.MenuItemWithTwoValues');
 goog.require('anychart.chartEditor2Module.select.SelectWithLabel');
 goog.require('goog.ui.Button');
+goog.require('goog.ui.MenuItem');
 
 
 
@@ -41,13 +41,11 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createDom = function() {
   anychart.chartEditor2Module.ChartTypeSelector.base(this, 'createDom');
 
   goog.dom.classlist.add(this.getElement(), 'chart-type-selector');
-  var dom = this.getDomHelper();
 
-  this.typeIcon_ = dom.createDom(goog.dom.TagName.IMG, {'class': 'type-image'/*, 'src': this.chartTypeSelect_.getIcon()*/});
-  dom.appendChild(this.getElement(), this.typeIcon_);
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
   this.chartTypeSelect_ = new anychart.chartEditor2Module.select.ChartType();
-  this.chartTypeSelect_.init(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()), [['chart'], 'type'], 'setChartType');
+  this.chartTypeSelect_.init(model, [['chart'], 'type'], 'setChartType');
   this.chartTypeSelect_.initOptions(goog.object.getValues(anychart.chartEditor2Module.EditorModel.chartTypes));
   this.addChild(this.chartTypeSelect_, true);
 
@@ -63,8 +61,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
   var stackMode = model.getValue([['chart'], ['settings'], 'yScale().stackMode()']);
-  this.chartTypeSelect_.setValueByModel(stackMode);
-  this.typeIcon_.setAttribute('src', this.chartTypeSelect_.getChartIcon());
+  this.chartTypeSelect_.setValueByModel({stackMode: stackMode});
 
   if (this.activeAndFieldSelect_) {
     this.removeChild(this.activeAndFieldSelect_, true);
@@ -82,7 +79,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.addChild(this.activeAndFieldSelect_, true);
 
     this.createDataSetsOptions_();
-    this.activeAndFieldSelect_.setValueByModel(model.getActive());
+    this.activeAndFieldSelect_.setValueByModel({active: model.getActive()});
 
   } else {
     this.geoDataInputs_.hide();
@@ -93,7 +90,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.addChild(this.activeAndFieldSelect_, true);
 
     this.createActiveAndFieldOptions_();
-    this.activeAndFieldSelect_.setValueByModel(model.getActive());
+    this.activeAndFieldSelect_.setValueByModel({active: model.getActive()});
   }
   goog.dom.classlist.add(this.activeAndFieldSelect_.getElement(), 'x-value-select');
 
@@ -164,8 +161,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createDataSetsOptions_ =
       continue;
 
     var caption = data[i].title;
-    var setFullId = data[i].setFullId;
-    var item = new anychart.chartEditor2Module.select.MenuItemWithTwoValues(caption, field, setFullId);
+    var item = new goog.ui.MenuItem(caption, {value: field, active: data[i].setFullId});
     this.activeAndFieldSelect_.addItem(item);
   }
 
@@ -190,9 +186,8 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOpti
     var fields = data[i].fields;
     for (var j = 0; j < fields.length; j++) {
       var caption = data.length == 1 ? fields[j].name : data[i].title + ' - ' + fields[j].name;
-      // var setFullId = data[i]['type'] + data[i]['setId'];
       var setFullId = data[i].setFullId;
-      var item = new anychart.chartEditor2Module.select.MenuItemWithTwoValues(caption, fields[j].key, setFullId);
+      var item = new goog.ui.MenuItem(caption, {value: fields[j].key, active: setFullId});
       this.activeAndFieldSelect_.addItem(item);
     }
   }

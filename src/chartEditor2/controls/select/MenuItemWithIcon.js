@@ -5,20 +5,21 @@ goog.require('goog.ui.MenuItemRenderer');
 
 
 /**
- * @param {{caption:string, icon:string}} opt_model
+ * @param {Object=} opt_model
  * @param {goog.dom.DomHelper=} opt_domHelper
  * @param {goog.ui.MenuItemRenderer=} opt_renderer
  * @constructor
+ * @extends {goog.ui.MenuItem}
  */
 anychart.chartEditor2.controls.select.MenuItemWithIcon = function(opt_model, opt_domHelper, opt_renderer) {
-    goog.ui.MenuItem.call(
-        this,
-        opt_model ? opt_model.caption : '',
-        opt_model,
-        opt_domHelper,
-        opt_renderer || anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.getInstance()
-    );
-    this.addClassName(anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS);
+  goog.ui.MenuItem.call(
+      this,
+      opt_model ? opt_model.caption : '',
+      opt_model,
+      opt_domHelper,
+      opt_renderer || anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.getInstance()
+  );
+  this.addClassName(anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS);
 };
 goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIcon, goog.ui.MenuItem);
 
@@ -26,13 +27,12 @@ goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIcon, goog.ui.Me
 anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS = goog.getCssName('anychart-ui-menu-item-with-icon');
 
 
-
 /**
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
  */
 anychart.chartEditor2.controls.select.MenuItemWithIconRenderer = function() {
-    goog.ui.MenuItemRenderer.call(this);
+  goog.ui.MenuItemRenderer.call(this);
 };
 goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIconRenderer, goog.ui.MenuItemRenderer);
 goog.addSingletonGetter(anychart.chartEditor2.controls.select.MenuItemWithIconRenderer);
@@ -46,11 +46,11 @@ goog.addSingletonGetter(anychart.chartEditor2.controls.select.MenuItemWithIconRe
  * @override
  */
 anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.prototype.createDom = function(item) {
-    var element = anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.base(this, 'createDom', item);
-    var iconUrl = item.getModel().icon;
+  var element = anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.base(this, 'createDom', item);
+  var iconUrl = item.getModel().icon;
 
-    var content = this.getContentElement(element);
-    var icon = goog.dom.createDom('img', {'src': iconUrl});
-    goog.dom.insertChildAt(content, icon, 0);
-    return element;
+  var content = this.getContentElement(element);
+  var icon = goog.dom.createDom('img', {'src': iconUrl});
+  goog.dom.insertChildAt(content, icon, 0);
+  return element;
 };

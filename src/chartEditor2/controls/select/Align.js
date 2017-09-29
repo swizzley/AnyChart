@@ -43,7 +43,7 @@ anychart.chartEditor2Module.select.Align.prototype.setOrientationKey = function(
  * @param {string} orientationValue
  */
 anychart.chartEditor2Module.select.Align.prototype.updateIcons = function(orientationValue) {
-  goog.events.unlisten(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
+  this.noDispatch = true;
   if (this.orientation_ != orientationValue) {
     this.orientation_ = orientationValue;
     if (orientationValue == 'top' || orientationValue == 'bottom') {
@@ -55,5 +55,5 @@ anychart.chartEditor2Module.select.Align.prototype.updateIcons = function(orient
     }
     this.updateOptions();
   }
-  goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
+  this.noDispatch = false;
 };

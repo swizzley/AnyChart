@@ -43,7 +43,7 @@ anychart.chartEditor2Module.DataSetPanelList.prototype.enterDocument = function(
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.DataSetPanelList.prototype.update = function() {
+anychart.chartEditor2Module.DataSetPanelList.prototype.update = function(opt_evt) {
   this.removeChildren(true);
   goog.disposeAll(this.panels_);
   this.panels_.length = 0;
@@ -58,10 +58,11 @@ anychart.chartEditor2Module.DataSetPanelList.prototype.update = function() {
     if (step.getIndex() == 1 || data[i].type != anychart.chartEditor2Module.EditorModel.dataType.GEO) {
       this.panels_.push(new anychart.chartEditor2Module.DataSetPanel(data[i]));
       this.addChild(this.panels_[i], true);
-    }
-    this.panels_[i].setDisabled(step.getIndex() == 0 || this.panels_[i].getSetFullId() != active);
 
-    if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
-      this.panels_[i].setActiveGeo(this.panels_[i].getSetFullId() == activeGeo);
+      this.panels_[i].setDisabled(step.getIndex() == 0 || this.panels_[i].getSetFullId() != active);
+
+      if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
+        this.panels_[i].setActiveGeo(this.panels_[i].getSetFullId() == activeGeo);
+    }
   }
 };

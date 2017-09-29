@@ -792,8 +792,9 @@ anychart.chartEditor2Module.EditorModel.prototype.dropSeries = function(plotInde
  * @param {anychart.chartEditor2Module.select.Base} input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setActiveAndField = function(input) {
-  var field = /** @type {string} */(input.getValue());
-  var active = /** @type {string} */(input.getValue2());
+  var selectValue = /** @type {Object} */(input.getValue());
+  var field = selectValue.value;
+  var active = selectValue.active;
 
   this.suspendDispatch();
 
@@ -823,7 +824,8 @@ anychart.chartEditor2Module.EditorModel.prototype.setActiveAndField = function(i
 anychart.chartEditor2Module.EditorModel.prototype.setChartType = function(input) {
   var prevChartType = /** @type {string} */(this.model_['chart']['type']);
   var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
-  this.model_['chart']['type']= /** @type {string} */(input.getValue());
+  var selectValue = /** @type {Object} */(input.getValue());
+  this.model_['chart']['type'] = selectValue.value;
 
   if (prevChartType == 'map') {
     delete this.data_[this.model_['dataSettings']['activeGeo']];
@@ -852,7 +854,7 @@ anychart.chartEditor2Module.EditorModel.prototype.setChartType = function(input)
     }
   }
 
-  this.setStackMode(/** @type {string} */(input.getValue2()));
+  this.setStackMode(selectValue.stackMode);
 
   this.dispatchUpdate();
 };

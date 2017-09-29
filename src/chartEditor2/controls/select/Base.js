@@ -208,24 +208,11 @@ anychart.chartEditor2Module.select.Base.prototype.createContentElements = functi
 anychart.chartEditor2Module.select.Base.prototype.enterDocument = function() {
   anychart.chartEditor2Module.select.Base.base(this, 'enterDocument');
   goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
-  if (!this.excluded)
-    goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
 };
 
 
-/** @override */
-anychart.chartEditor2Module.select.Base.prototype.exitDocument = function() {
-  goog.events.unlisten(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
-
-  anychart.chartEditor2Module.select.Base.base(this, 'exitDocument');
-};
-
-
-/**
- * @param {goog.events.Event} evt
- * @protected
- */
-anychart.chartEditor2Module.select.Base.prototype.onChange = function(evt) {
+/** @inheritDoc */
+anychart.chartEditor2Module.select.Base.prototype.handleSelectionChange = function (evt) {
   evt.preventDefault();
   evt.stopPropagation();
   if (this.excluded) return;
@@ -247,6 +234,7 @@ anychart.chartEditor2Module.select.Base.prototype.onChange = function(evt) {
  * @param {string=} opt_callback Callback function that will be called on control's value change instead of simple change value in model.
  *  This function should be model's public method.
  * @param {boolean=} opt_noRebuild Should or not rebuild target (chart) on change value of this control.
+ * @public
  */
 anychart.chartEditor2Module.select.Base.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
   /**
@@ -267,43 +255,56 @@ anychart.chartEditor2Module.select.Base.prototype.init = function(model, key, op
 
 /**
  * @param {*} value
- * @param {?string=} opt_value2
+ * @param {Object=} opt_additionalValues
  */
-anychart.chartEditor2Module.select.Base.prototype.setValue = function(value, opt_value2) {
+anychart.chartEditor2Module.select.Base.prototype.setValue = function(value, opt_additionalValues) {
   var selectionModel = this.getSelectionModel();
   if (goog.isDefAndNotNull(value) && selectionModel) {
     for (var i = 0, item; item = selectionModel.getItemAt(i); i++) {
-      if (item &&
-          typeof item.getValue == 'function' && item.getValue() == value &&
-          (!goog.isDef(opt_value2) || typeof item.getValue2 == 'function' && item.getValue2() == opt_value2)
-      ) {
-        this.setSelectedItem(/** @type {!goog.ui.MenuItem} */ (item));
-        return;
+      if (item && typeof item.getValue == 'function') {
+        var itemModel = item.getValue();
+        if (itemModel == value || itemModel.value == value) {
+          var additionalMatch = true;
+          if (goog.isObject(opt_additionalValues)) {
+            for (var j in opt_additionalValues) {
+              if (opt_additionalValues[j] != itemModel[j]) {
+                additionalMatch = false;
+                break;
+              }
+            }
+          }
+          if (additionalMatch) {
+            this.setSelectedItem(/** @type {!goog.ui.MenuItem} */ (item));
+            this.updateCaption();
+            return;
+          }
+        }
       }
     }
   }
 
   this.setSelectedItem(null);
+  this.updateCaption();
 };
 
 
 /**
  * Sets value of this control to model's value.
  *
- * @param {?string=} opt_value2 Second value in case of using OptionWithTwoValues.
+ * @param {Object=} opt_additionalValues Object of additional values.
  */
-anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt_value2) {
-  var value;
+anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt_additionalValues) {
+  var modelValue;
   this.noDispatch = true;
 
   if (this.editorModel && this.key)
-    value = this.editorModel.getValue(this.key);
+    modelValue = this.editorModel.getValue(this.key);
 
-  if (goog.isDef(value))
-    this.setValue(value, opt_value2);
+  if (goog.isDef(modelValue))
+    this.setValue(modelValue, opt_additionalValues);
 
   if (!this.getSelectedItem()) {
-    console.warn("no model value by key:", this.key);
+    console.warn("No model value by key:", this.key);
   }
 
   this.noDispatch = false;
@@ -330,17 +331,6 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(ta
   this.noDispatch = true;
   this.setValue(value);
   this.noDispatch = false;
-};
-
-
-/**
- * Returns value2 of selected option (if option are anychart.chartEditor2Module.select.MenuItemWithTwoValues instances.
- *
- * @return {?string}
- */
-anychart.chartEditor2Module.select.Base.prototype.getValue2 = function() {
-  var selectedItem = /** @type {?(goog.ui.MenuItem|anychart.chartEditor2Module.select.MenuItemWithTwoValues)} */(this.getSelectedItem());
-  return selectedItem ? selectedItem.getValue2() : null;
 };
 
 
