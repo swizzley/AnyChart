@@ -7,6 +7,7 @@
         goog.require('anychart.chartEditor2.controls.select.SelectWithIcon');
         goog.require('anychart.chartEditor2.controls.select.MenuItemWithIcon');
         goog.require('anychart.chartEditor2Module.Breadcrumbs');
+        goog.require('anychart.chartEditor2Module.UserData');
     </script>
     <link rel="stylesheet" href="../out/anychart-ui.css">
 
@@ -24,6 +25,12 @@
             margin: 20px 0;
         }
 
+        #userdata {
+            margin-top: 20px;
+            background: #ecf0f3;
+            width: 400px;
+        }
+
     </style>
 
     <style>
@@ -37,6 +44,7 @@
 <div id="select"></div>
 
 <div id="breadcrumbs"></div>
+<div id="userdata"></div>
 
 
 <script>
@@ -77,6 +85,21 @@
         anychart.chartEditor2Module.Breadcrumbs.EventType.CHANGE_STEP
     ], function (e) {
         console.log(e.type, e.step)
+    })
+</script>
+
+<script>
+    var userData = new anychart.chartEditor2Module.UserData([
+        {id: 'google-spreadsheet', type: 'connect', caption: 'Google Spreadsheet', icon: '../dist/img/google-spreadsheet.png'},
+        {id: 'csv-string', type: 'upload', caption: 'CSV String', icon: '../dist/img/csv-string.png'},
+        {id: 'csv-file', type: 'upload', caption: 'CSV File', icon: '../dist/img/csv-file.png'},
+        {id: 'json-string', type: 'upload', caption: 'JSON String', icon: '../dist/img/json-string.png'},
+        {id: 'json-file', type: 'upload', caption: 'JSON File', icon: '../dist/img/json-file.png'}
+    ]);
+    userData.render(document.getElementById('userdata'));
+
+    goog.events.listen(userData, anychart.chartEditor2Module.UserData.EventType.ACTION, function(e) {
+        console.log(e.value);
     })
 </script>
 </body>

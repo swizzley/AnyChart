@@ -19,7 +19,7 @@
 }
 .anychart-chart-editor {
   position: relative;
-  background: @color-white;
+  background: #ecf0f3;
   color: #000;
   font-family: Arial, sans-serif;
   font-size: 13px;
@@ -215,57 +215,11 @@
   }
 }
 
-//.step-prepare-data {}
 
 .connect-data {
   width: 25%;
   .inner {
     padding-top: 64px;
-  }
-  .connect-data-buttons {
-    button {
-      width: 50px;
-      height: 60px;
-      margin-bottom: 3em;
-      background: #ffffff no-repeat center center;
-      background-size: cover;
-      text-indent: -9999px;
-      position: relative;
-
-      &::after {
-        display: block;
-        text-indent: 0;
-        position: absolute;
-        bottom: -30px;
-      }
-    }
-    .upload-file-csv {
-      background-image: url('https://cdn.anychart.com/anydata/editor/csv_s.png');
-      &::after {
-        content: "FILE";
-      }
-    }
-    .upload-string-csv {
-      background-image: url('https://cdn.anychart.com/anydata/editor/csv_s.png');
-      &::after {
-        content: "STRING";
-      }
-    }
-    .upload-file-json {
-      background-image: url('https://cdn.anychart.com/anydata/editor/json_s.png');
-      &::after {
-        content: "FILE";
-      }
-    }
-    .upload-string-json {
-      background-image: url('https://cdn.anychart.com/anydata/editor/json_s.png');
-      &::after {
-        content: "STRING";
-      }
-    }
-    .upload-google-spreadsheets {
-      background-image: url('https://cdn.anychart.com/anydata/editor/spreadsh_s.png');
-    }
   }
 }
 
