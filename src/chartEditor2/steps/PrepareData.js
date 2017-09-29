@@ -51,6 +51,10 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function () 
     this.addChild(this.panelsList_, true);
     panelsListWrapper.appendChild(this.panelsList_.getElement());
 
+    var wrapper = new anychart.ui.Component();
+    wrapper.addClassName('anychart-prepare-data-step-wrapper');
+    this.addChild(wrapper, true);
+
     var userData = new anychart.chartEditor2Module.UserData([
         {id: 'google-spreadsheets', type: 'connect', caption: 'Google Spreadsheet', icon: '../dist/img/google-spreadsheet.png'},
         {id: 'string-csv', type: 'upload', caption: 'CSV String', icon: '../dist/img/csv-string.png'},
@@ -58,7 +62,7 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function () 
         {id: 'string-json', type: 'upload', caption: 'JSON String', icon: '../dist/img/json-string.png'},
         {id: 'file-json', type: 'upload', caption: 'JSON File', icon: '../dist/img/json-file.png'}
     ]);
-    this.addChild(userData, true);
+    wrapper.addChild(userData, true);
     this.getHandler().listen(userData, anychart.chartEditor2Module.UserData.EventType.ACTION, function(e) {
         var tmp = e.value.split('-');
         this.openDataDialog(tmp[0], tmp[1]);
@@ -66,7 +70,7 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function () 
 
 
     var predefinedDataSelector = new anychart.chartEditor2Module.PredefinedDataSelector(model);
-    this.addChild(predefinedDataSelector, true);
+    wrapper.addChild(predefinedDataSelector, true);
     goog.dom.classlist.add(predefinedDataSelector.getElement(), 'section');
 };
 
