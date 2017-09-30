@@ -13,6 +13,12 @@
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
+
+.anychart-border-box {
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+}
 // endregion
 
 
@@ -22,6 +28,16 @@
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.anychart-chart-editor .anychart-predefined-datasets {
+  position: absolute;
+  left: 30%;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .anychart-chart-editor .anychart-user-data {
@@ -44,16 +60,6 @@
   top: 0;
   bottom: 0;
   width: 30%;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.anychart-chart-editor-step .section {
-  position: absolute;
-  left: 30%;
-  top: 0;
-  bottom: 0;
-  right: 0;
   overflow-x: hidden;
   overflow-y: auto;
 }

@@ -80,9 +80,9 @@ anychart.chartEditor2Module.Breadcrumbs.prototype.createDom = function () {
     buttons.addClassName('anychart-breadcrumbs-buttons');
     this.addChild(buttons, true);
 
-    var buttonsRenderer = goog.ui.ControlRenderer.getCustomRenderer(
+    var buttonsRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
         goog.ui.ButtonRenderer,
-        'anychart-breadcrumbs-button');
+        'anychart-breadcrumbs-button'));
 
     var next = new goog.ui.Button('Next', buttonsRenderer);
     next.addClassName('anychart-breadcrumbs-right');
