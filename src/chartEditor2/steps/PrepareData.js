@@ -39,22 +39,19 @@ goog.inherits(anychart.chartEditor2Module.steps.PrepareData, anychart.chartEdito
 anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function () {
     goog.base(this, 'createDom');
 
-    var element = /** @type {Element} */(this.getElement());
     var editor = /** @type {anychart.chartEditor2Module.Editor} */(this.getParent());
     var model = /** @type {anychart.chartEditor2Module.EditorModel} */(editor.getModel());
 
-    var dom = this.getDomHelper();
-
-    var panelsListWrapper = dom.createDom(goog.dom.TagName.DIV, 'data-set-panel-list-wrapper');
-    element.appendChild(panelsListWrapper);
+    // connected data sets section
     this.panelsList_ = new anychart.chartEditor2Module.DataSetPanelList(model);
     this.addChild(this.panelsList_, true);
-    panelsListWrapper.appendChild(this.panelsList_.getElement());
 
+    // user data and predefined data sets sections wrapper
     var wrapper = new anychart.ui.Component();
     wrapper.addClassName('anychart-prepare-data-step-wrapper');
     this.addChild(wrapper, true);
 
+    // user data section
     var userData = new anychart.chartEditor2Module.UserData([
         {id: 'google-spreadsheets', type: 'connect', caption: 'Google Spreadsheet', icon: '../dist/img/google-spreadsheet.png'},
         {id: 'string-csv', type: 'upload', caption: 'CSV String', icon: '../dist/img/csv-string.png'},
@@ -68,10 +65,9 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function () 
         this.openDataDialog(tmp[0], tmp[1]);
     });
 
-
+    // predefined data set section
     var predefinedDataSelector = new anychart.chartEditor2Module.PredefinedDataSelector(model);
     wrapper.addChild(predefinedDataSelector, true);
-    goog.dom.classlist.add(predefinedDataSelector.getElement(), 'section');
 };
 
 

@@ -170,11 +170,11 @@ anychart.chartEditor2Module.Breadcrumbs.prototype.onItemAction_ = function (e) {
  * @private
  */
 anychart.chartEditor2Module.Breadcrumbs.prototype.onButtonAction_ = function (e) {
-  if (e.target === this.next_) {
+  if (e.currentTarget === this.next_) {
       this.dispatchEvent(anychart.chartEditor2Module.Breadcrumbs.EventType.NEXT);
-  } else if (e.target === this.prev_) {
+  } else if (e.currentTarget === this.prev_) {
       this.dispatchEvent(anychart.chartEditor2Module.Breadcrumbs.EventType.PREV);
-  } else if (e.target === this.complete_) {
+  } else if (e.currentTarget === this.complete_) {
       this.dispatchEvent(anychart.chartEditor2Module.Breadcrumbs.EventType.COMPLETE);
   }
 };

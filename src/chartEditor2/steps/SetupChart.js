@@ -11,7 +11,6 @@ goog.require('goog.format.JsonPrettyPrinter');
 goog.forwardDeclare('anychart.data.Mapping');
 
 
-
 /**
  * Chart Editor Step Class.
  * @constructor
@@ -19,57 +18,61 @@ goog.forwardDeclare('anychart.data.Mapping');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @extends {anychart.chartEditor2Module.steps.Base}
  */
-anychart.chartEditor2Module.steps.SetupChart = function(index, opt_domHelper) {
-  anychart.chartEditor2Module.steps.SetupChart.base(this, 'constructor', index, opt_domHelper);
+anychart.chartEditor2Module.steps.SetupChart = function (index, opt_domHelper) {
+    anychart.chartEditor2Module.steps.SetupChart.base(this, 'constructor', index, opt_domHelper);
 
-  this.name('Setup Chart');
-  this.title('Setup Chart');
+    this.name('Setup Chart');
+    this.title('Setup Chart');
+    this.addClassName('anychart-setup-chart-step');
 };
 goog.inherits(anychart.chartEditor2Module.steps.SetupChart, anychart.chartEditor2Module.steps.Base);
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.steps.SetupChart.prototype.createDom = function() {
-  anychart.chartEditor2Module.steps.SetupChart.base(this, 'createDom');
+anychart.chartEditor2Module.steps.SetupChart.prototype.createDom = function () {
+    anychart.chartEditor2Module.steps.SetupChart.base(this, 'createDom');
+    var editor = /** @type {anychart.chartEditor2Module.Editor} */(this.getParent());
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(editor.getModel());
 
-  var element = /** @type {Element} */(this.getElement());
-  var dom = this.getDomHelper();
-  goog.dom.classlist.add(element, 'step-setup-chart');
+    // connected data sets section
+    var connectedDataSets = new anychart.chartEditor2Module.DataSetPanelList(model);
+    this.addChild(connectedDataSets, true);
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
-  this.chartWrapperEl_ = dom.createDom(goog.dom.TagName.DIV);
-  dom.appendChild(element, this.chartWrapperEl_);
+    // user data and predefined data sets sections wrapper
+    var wrapper = new anychart.ui.Component();
+    wrapper.addClassName('anychart-prepare-data-step-wrapper');
+    this.addChild(wrapper, true);
 
-  var panelsListWrapper = dom.createDom(goog.dom.TagName.DIV, 'data-set-panel-list-wrapper');
-  // element.appendChild(panelsListWrapper);
-  dom.appendChild(element, panelsListWrapper);
-  this.panelsList_ = new anychart.chartEditor2Module.DataSetPanelList(model);
-  this.addChild(this.panelsList_, true);
-  dom.appendChild(panelsListWrapper, this.panelsList_.getElement());
+    var chartDataSettings = new anychart.chartEditor2Module.ChartTypeSelector(model);
+    wrapper.addChild(chartDataSettings, true);
 
-  this.chartTypeSelector_ = new anychart.chartEditor2Module.ChartTypeSelector(model);
-  this.addChild(this.chartTypeSelector_, true);
+    var chartPreview = new anychart.ui.Component();
+    chartPreview.addClassName('anychart-border-box');
+    chartPreview.addClassName('anychart-chart-preview');
+    wrapper.addChild(chartPreview, true);
+
+    this.chartWrapperEl_ = chartPreview.getElement();
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.steps.SetupChart.prototype.enterDocument = function() {
-  anychart.chartEditor2Module.steps.SetupChart.base(this, 'enterDocument');
+anychart.chartEditor2Module.steps.SetupChart.prototype.enterDocument = function () {
+    anychart.chartEditor2Module.steps.SetupChart.base(this, 'enterDocument');
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
-  this.chart_ = new anychart.chartEditor2Module.Chart(model);
-  this.addChild(this.chart_, true);
-  this.getDomHelper().appendChild(this.chartWrapperEl_, this.chart_.getElement());
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
+    this.chart_ = new anychart.chartEditor2Module.Chart(model);
+    this.addChild(this.chart_, true);
+    this.getDomHelper().appendChild(this.chartWrapperEl_, this.chart_.getElement());
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.steps.SetupChart.prototype.exitDocument = function() {
-  anychart.chartEditor2Module.steps.SetupChart.base(this, 'exitDocument');
+anychart.chartEditor2Module.steps.SetupChart.prototype.exitDocument = function () {
+    anychart.chartEditor2Module.steps.SetupChart.base(this, 'exitDocument');
 
-  if (this.chart_) {
-    this.removeChild(this.chart_, true);
-    this.chart_.dispose();
-    this.chart_ = null;
-  }
+    if (this.chart_) {
+        this.removeChild(this.chart_, true);
+        this.chart_.dispose();
+        this.chart_ = null;
+    }
 };

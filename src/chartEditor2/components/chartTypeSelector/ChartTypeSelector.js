@@ -30,8 +30,10 @@ anychart.chartEditor2Module.ChartTypeSelector = function(model, opt_domHelper) {
    * @private
    */
   this.plots_ = [];
-
   this.geoDataInputs_ = null;
+
+  this.addClassName('anychart-border-box');
+  this.addClassName('anychart-chart-data-settings');
 };
 goog.inherits(anychart.chartEditor2Module.ChartTypeSelector, anychart.chartEditor2Module.Component);
 
@@ -39,8 +41,6 @@ goog.inherits(anychart.chartEditor2Module.ChartTypeSelector, anychart.chartEdito
 /** @inheritDoc */
 anychart.chartEditor2Module.ChartTypeSelector.prototype.createDom = function() {
   anychart.chartEditor2Module.ChartTypeSelector.base(this, 'createDom');
-
-  goog.dom.classlist.add(this.getElement(), 'chart-type-selector');
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
@@ -69,7 +69,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.activeAndFieldSelect_ = null;
   }
 
-  if (chartType == 'map') {
+  if (chartType === 'map') {
     this.geoDataInputs_.show();
     this.geoDataInputs_.update();
 

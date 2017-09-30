@@ -187,15 +187,6 @@
 }
 /** endof STEPS **/
 
-.anychart-chart-editor-step {
-  .chart-container {
-    float: right;
-    width: 56%;
-    height: 65%;
-    margin: 15px 15px 15px 0;
-  }
-}
-
 .general-settings {
   float: right;
   width: 56%;
@@ -203,76 +194,6 @@
 
   .fields-row {
     margin-bottom: 1em;
-  }
-}
-
-.data-set-panel-list-wrapper {
-  width: 195px;
-  height: 100%;
-  float: left;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.data-set-panel-list {
-  .panel {
-    width: 80%;
-    margin: 15px 0 15px 15px;
-    border: 1px solid @color-dark-gray;
-    position: relative;
-
-    .gear {
-      position: absolute;
-      z-index: 10;
-      top: 0;
-      right: 0;
-      background: none;
-      font-size: 1.5em;
-      padding-right: 5px;
-
-      &:hover {
-        font-weight: bold;
-      }
-
-      .anychart-menu-button-dropdown {
-        display: none;
-      }
-      .anychart-menu-button-caption {
-        padding: 0;
-      }
-      .anychart-menu-button-inner-box,
-      .anychart-menu-button-outer-box {
-        border: none;
-      }
-    }
-
-    h4 {
-      margin: 1em 0;
-    }
-  }
-  .field {
-    padding: 3px 5px;
-    margin-bottom: 5px;
-    border: 1px solid @color-dark-gray;
-    background-color: @color-light-gray;
-    //cursor: move;
-    text-transform: uppercase;
-    &:hover {
-      background-color: @color-gray;
-    }
-  }
-  .disabled {
-    background-color: @color-dark-gray;
-    .field {
-      opacity: 0.7;
-      background-color: @color-gray;
-      &:hover {
-        background-color: @color-gray;
-      }
-    }
-  }
-  .active-geo {
-    background-color: @color-dark-blue;
   }
 }
 
@@ -288,11 +209,8 @@
   }
 }
 
-.chart-type-selector {
-  width: 26%;
-  height: 100%;
-  float: left;
-  padding: 15px 0;
+.anychart-chart-data-settings {
+
   img.type-image {
     float: left;
     width: 36px;
