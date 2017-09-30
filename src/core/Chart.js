@@ -1054,7 +1054,7 @@ anychart.core.Chart.prototype.getSelectedPoints = function() {
  * @type {Object.<string, anychart.ui.ContextMenu.Item>}
  */
 anychart.core.Chart.contextMenuItems = {
-  // Item 'Print Chart'.
+  // Item 'Start selection marquee'
   'select-marquee-start': {
     'index': 9.3,
     'text': 'Start selection marquee',
@@ -1064,7 +1064,7 @@ anychart.core.Chart.contextMenuItems = {
     }
   },
 
-  // Item 'Export as ...'.
+  // Item 'Save chart as ...'.
   'save-chart-as': {
     'index': 10,
     'text': 'Save chart as...',
@@ -1192,10 +1192,10 @@ anychart.core.Chart.contextMenuItems = {
     }
   },
 
-  // Item-link to our site.
+  // Items fullscreen mode.
   'full-screen-enter': {
     'index': 60,
-    'text': 'Enter full screen',
+    'text': 'Fullscreen',
     'action': function(context) {
       context['chart'].fullScreen(true);
     }
@@ -1209,7 +1209,7 @@ anychart.core.Chart.contextMenuItems = {
     }
   },
 
-  // Item-link to our site.
+  // Item link to our site.
   'about': {
     'index': 80,
     'iconClass': 'ac ac-cog',
