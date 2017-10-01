@@ -8,6 +8,9 @@
         goog.require('anychart.chartEditor2.controls.select.MenuItemWithIcon');
         goog.require('anychart.chartEditor2Module.Breadcrumbs');
         goog.require('anychart.chartEditor2Module.UserData');
+        goog.require('anychart.chartEditor2.controls.select.DataField');
+        goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+        goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption');
     </script>
     <link rel="stylesheet" href="../out/anychart-ui.css">
 
@@ -22,18 +25,32 @@
 
         #select {
             width: 500px;
-            margin: 20px 0;
+            margin: 40px 0;
         }
 
         #userdata {
-            margin-top: 20px;
+            margin-top: 40px;
             background: #ecf0f3;
             width: 400px;
+            float: left;
+        }
+
+        #fieldselect {
+            margin: 40px;
+            float: left;
+            width: 300px;
+            height: 100px;
+            border: 1px solid black;
+            padding: 10px;
         }
 
     </style>
 
     <style>
+
+
+
+
 
 
     </style>
@@ -45,6 +62,7 @@
 
 <div id="breadcrumbs"></div>
 <div id="userdata"></div>
+<div id="fieldselect"></div>
 
 
 <script>
@@ -101,6 +119,42 @@
     goog.events.listen(userData, anychart.chartEditor2Module.UserData.EventType.ACTION, function(e) {
         console.log(e.value);
     })
+</script>
+
+<script>
+    var fieldSelect = new anychart.chartEditor2.controls.select.DataField({
+        caption: 'Select Data Set field',
+        label: 'X Values'
+    });
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption({
+        caption: 'USA National Parks'
+    }));
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: 'Field 1'
+    }));
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: 'Field 2'
+    }));
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: 'Field 3'
+    }));
+
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption({
+        caption: 'USA National Parks USA National Parks USA National Parks'
+    }));
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: 'Field 1'
+    }));
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: 'Field 2'
+    }));
+    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: 'Field 3'
+    }));
+
+    fieldSelect.getSelect().setSelectedIndex(1);
+
+    fieldSelect.render(document.getElementById('fieldselect'))
 </script>
 </body>
 

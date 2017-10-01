@@ -24,9 +24,6 @@ anychart.chartEditor2.controls.select.MenuItemWithIcon = function(opt_model, opt
 goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIcon, goog.ui.MenuItem);
 
 
-anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS = goog.getCssName('anychart-ui-menu-item-with-icon');
-
-
 /**
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
@@ -53,4 +50,10 @@ anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.prototype.createD
   var icon = goog.dom.createDom('img', {'src': iconUrl});
   goog.dom.insertChildAt(content, icon, 0);
   return element;
+};
+
+
+/** @inheritDoc */
+anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.prototype.getCssClass = function() {
+  return 'anychart-ui-menu-item-with-icon';
 };

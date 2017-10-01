@@ -5,9 +5,11 @@ goog.require('anychart.chartEditor2Module.GeoDataInputs');
 goog.require('anychart.chartEditor2Module.PlotPanel');
 goog.require('anychart.chartEditor2Module.select.ChartType');
 goog.require('anychart.chartEditor2Module.select.SelectWithLabel');
+goog.require('anychart.chartEditor2.controls.select.DataField');
+goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption');
+goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.MenuItem');
-
 
 
 /**
@@ -20,124 +22,138 @@ goog.require('goog.ui.MenuItem');
  * @constructor
  * @extends {anychart.chartEditor2Module.Component}
  */
-anychart.chartEditor2Module.ChartTypeSelector = function(model, opt_domHelper) {
-  anychart.chartEditor2Module.ChartTypeSelector.base(this, 'constructor', opt_domHelper);
+anychart.chartEditor2Module.ChartTypeSelector = function (model, opt_domHelper) {
+    anychart.chartEditor2Module.ChartTypeSelector.base(this, 'constructor', opt_domHelper);
 
-  this.setModel(model);
+    this.setModel(model);
 
-  /**
-   * @type {Array.<anychart.chartEditor2Module.PlotPanel>}
-   * @private
-   */
-  this.plots_ = [];
-  this.geoDataInputs_ = null;
+    /**
+     * @type {Array.<anychart.chartEditor2Module.PlotPanel>}
+     * @private
+     */
+    this.plots_ = [];
+    this.geoDataInputs_ = null;
 
-  this.addClassName('anychart-border-box');
-  this.addClassName('anychart-chart-data-settings');
+    this.addClassName('anychart-border-box');
+    this.addClassName('anychart-chart-data-settings');
 };
 goog.inherits(anychart.chartEditor2Module.ChartTypeSelector, anychart.chartEditor2Module.Component);
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.createDom = function() {
-  anychart.chartEditor2Module.ChartTypeSelector.base(this, 'createDom');
+anychart.chartEditor2Module.ChartTypeSelector.prototype.createDom = function () {
+    anychart.chartEditor2Module.ChartTypeSelector.base(this, 'createDom');
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+    var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-data-settings-caption', 'Chart Data Settings');
+    goog.dom.appendChild(this.getElement(), caption);
 
-  this.chartTypeSelect_ = new anychart.chartEditor2Module.select.ChartType();
-  this.chartTypeSelect_.init(model, [['chart'], 'type'], 'setChartType');
-  this.chartTypeSelect_.initOptions(goog.object.getValues(anychart.chartEditor2Module.EditorModel.chartTypes));
-  this.addChild(this.chartTypeSelect_, true);
+    var coreFieldsContainer = new anychart.ui.Component();
+    coreFieldsContainer.addClassName('anychart-chart-data-settings-core');
+    this.addChild(coreFieldsContainer, true);
 
-  this.geoDataInputs_ = new anychart.chartEditor2Module.GeoDataInputs(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()));
-  this.addChild(this.geoDataInputs_, true);
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+
+    this.chartTypeSelect_ = new anychart.chartEditor2Module.select.ChartType();
+    this.chartTypeSelect_.init(model, [['chart'], 'type'], 'setChartType');
+    this.chartTypeSelect_.initOptions(goog.object.getValues(anychart.chartEditor2Module.EditorModel.chartTypes));
+    coreFieldsContainer.addChild(this.chartTypeSelect_, true);
+
+    // this.geoDataInputs_ = new anychart.chartEditor2Module.GeoDataInputs(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()));
+    // this.addChild(this.geoDataInputs_, true);
+
+    this.coreFieldsContainer_ = coreFieldsContainer;
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
-  if (evt && !evt.rebuildMapping) return;
+anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function (evt) {
+    if (evt && !evt.rebuildMapping) return;
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  var chartType = model.getValue([['chart'], 'type']);
-  var stackMode = model.getValue([['chart'], ['settings'], 'yScale().stackMode()']);
-  this.chartTypeSelect_.setValueByModel({stackMode: stackMode});
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+    var chartType = model.getValue([['chart'], 'type']);
+    chartType = 'stock';
+    var stackMode = model.getValue([['chart'], ['settings'], 'yScale().stackMode()']);
+    this.chartTypeSelect_.setValueByModel({stackMode: stackMode});
 
-  if (this.activeAndFieldSelect_) {
-    this.removeChild(this.activeAndFieldSelect_, true);
-    this.activeAndFieldSelect_.dispose();
-    this.activeAndFieldSelect_ = null;
-  }
+    if (this.activeAndFieldSelect_) {
+        this.activeAndFieldSelect_.dispose();
+        this.activeAndFieldSelect_ = null;
+    }
 
-  if (chartType === 'map') {
-    this.geoDataInputs_.show();
-    this.geoDataInputs_.update();
-
-    // Dataset select
-    this.activeAndFieldSelect_ = new anychart.chartEditor2Module.select.SelectWithLabel('x', 'Data set');
-    this.activeAndFieldSelect_.init(model, [['dataSettings'], 'field'], 'setActiveAndField');
-    this.addChild(this.activeAndFieldSelect_, true);
-
-    this.createDataSetsOptions_();
-    this.activeAndFieldSelect_.setValueByModel({active: model.getActive()});
-
-  } else {
-    this.geoDataInputs_.hide();
+    // if (chartType === 'map') {
+    //     this.geoDataInputs_.show();
+    //     this.geoDataInputs_.update();
+    //
+    //     // Dataset select
+    //     this.activeAndFieldSelect_ = new anychart.chartEditor2Module.select.SelectWithLabel('x', 'Data set');
+    //     this.activeAndFieldSelect_.init(model, [['dataSettings'], 'field'], 'setActiveAndField');
+    //     this.addChild(this.activeAndFieldSelect_, true);
+    //
+    //     this.createDataSetsOptions_();
+    //     this.activeAndFieldSelect_.setValueByModel({active: model.getActive()});
+    //
+    // } else {
+    //     this.geoDataInputs_.hide();
+    //
+    this.activeAndFieldSelect_ = new anychart.chartEditor2.controls.select.DataField({
+        caption: 'Select field',
+        label: 'X Values'
+    });
+    this.coreFieldsContainer_.addChild(this.activeAndFieldSelect_, true);
 
     // X Values select
-    this.activeAndFieldSelect_ = new anychart.chartEditor2Module.select.SelectWithLabel('x', 'X Values');
-    this.activeAndFieldSelect_.init(model, [['dataSettings'], 'field'], 'setActiveAndField');
-    this.addChild(this.activeAndFieldSelect_, true);
-
+    // this.activeAndFieldSelect_ = new anychart.chartEditor2Module.select.SelectWithLabel('x', 'X Values');
+    // this.activeAndFieldSelect_.init(model, [['dataSettings'], 'field'], 'setActiveAndField');
+    // this.addChild(this.activeAndFieldSelect_, true);
+    //
     this.createActiveAndFieldOptions_();
-    this.activeAndFieldSelect_.setValueByModel({active: model.getActive()});
-  }
-  goog.dom.classlist.add(this.activeAndFieldSelect_.getElement(), 'x-value-select');
+    // this.activeAndFieldSelect_.setValueByModel({active: model.getActive()});
+    // }
 
-  // Plots
-  this.removeAllPlots_();
+    // Plots
+    this.removeAllPlots_();
 
-  var dsSettings = model.getValue(['dataSettings']);
-  for (var i = 0; i < dsSettings['mappings'].length; i++) {
-    var plot = new anychart.chartEditor2Module.PlotPanel(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()), i);
-    this.plots_.push(plot);
-    this.addChild(plot, true);
-  }
+    var dsSettings = model.getValue(['dataSettings']);
+    for (var i = 0; i < dsSettings['mappings'].length; i++) {
+        var plot = new anychart.chartEditor2Module.PlotPanel(model, i);
+        if (i === 0) plot.addClassName('anychart-plot-panel-first');
+        this.plots_.push(plot);
+        this.addChild(plot, true);
+    }
 
-  if (this.addPlotBtn_) {
-    // Убрать старую кнопку
-    this.getHandler().unlisten(this.addPlotBtn_, goog.ui.Component.EventType.ACTION, this.onAddPlot_);
-    this.removeChild(this.addPlotBtn_, true);
-    this.addPlotBtn_.dispose();
+    // TODO: зачем нужно удалять и потом создавать кнопку?
+    goog.dispose(this.addPlotBtn_);
     this.addPlotBtn_ = null;
-  }
 
-  if (chartType == 'stock') {
-    this.addPlotBtn_ = new goog.ui.Button('Add plot');
-    this.addChildAt(this.addPlotBtn_, this.getChildCount(), true);
-    this.getHandler().listen(this.addPlotBtn_, goog.ui.Component.EventType.ACTION, this.onAddPlot_);
-  }
+    if (chartType === 'stock') {
+        var plotButtonRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
+            goog.ui.ButtonRenderer,
+            'anychart-chart-data-settings-add-blot-btn'));
+        this.addPlotBtn_  = new goog.ui.Button('+ Add Plot', plotButtonRenderer);
+        this.addChildAt(this.addPlotBtn_, this.getChildCount(), true);
+        this.getHandler().listen(this.addPlotBtn_, goog.ui.Component.EventType.ACTION, this.onAddPlot_);
+    }
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.enterDocument = function() {
-  this.update();
+anychart.chartEditor2Module.ChartTypeSelector.prototype.enterDocument = function () {
+    this.update();
 
-  if (this.addPlotBtn_)
-    this.getHandler().listen(this.addPlotBtn_, goog.ui.Component.EventType.ACTION, this.onAddPlot_);
-
-  this.getHandler().listen(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()),
-      anychart.chartEditor2Module.events.EventType.EDITOR_MODEL_UPDATE, this.update);
-
-  anychart.chartEditor2Module.ChartTypeSelector.base(this, 'enterDocument');
+    // if (this.addPlotBtn_)
+    //     this.getHandler().listen(this.addPlotBtn_, goog.ui.Component.EventType.ACTION, this.onAddPlot_);
+    //
+    // this.getHandler().listen(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()),
+    //     anychart.chartEditor2Module.events.EventType.EDITOR_MODEL_UPDATE, this.update);
+    //
+    anychart.chartEditor2Module.ChartTypeSelector.base(this, 'enterDocument');
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.exitDocument = function() {
-  this.removeAllPlots_();
-  anychart.chartEditor2Module.ChartTypeSelector.base(this, 'exitDocument');
+anychart.chartEditor2Module.ChartTypeSelector.prototype.exitDocument = function () {
+    // this.removeAllPlots_();
+    anychart.chartEditor2Module.ChartTypeSelector.base(this, 'exitDocument');
 };
 
 
@@ -146,26 +162,26 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.exitDocument = function(
  * Is using in case of map chart type.
  * @private
  */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.createDataSetsOptions_ = function() {
-  for (var a = this.activeAndFieldSelect_.getItemCount(); a--;) {
-    this.activeAndFieldSelect_.removeItemAt(a);
-  }
+anychart.chartEditor2Module.ChartTypeSelector.prototype.createDataSetsOptions_ = function () {
+    for (var a = this.activeAndFieldSelect_.getItemCount(); a--;) {
+        this.activeAndFieldSelect_.removeItemAt(a);
+    }
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  var data = model.getPreparedData();
-  // dummy field value - will not be used
-  var field = model.getValue([['dataSettings'], 'field']);
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+    var data = model.getPreparedData();
+    // dummy field value - will not be used
+    var field = model.getValue([['dataSettings'], 'field']);
 
-  for (var i = 0; i < data.length; i++) {
-    if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
-      continue;
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
+            continue;
 
-    var caption = data[i].title;
-    var item = new goog.ui.MenuItem(caption, {value: field, active: data[i].setFullId});
-    this.activeAndFieldSelect_.addItem(item);
-  }
+        var caption = data[i].title;
+        var item = new goog.ui.MenuItem(caption, {value: field, active: data[i].setFullId});
+        this.activeAndFieldSelect_.addItem(item);
+    }
 
-  this.activeAndFieldSelect_.updateOptions();
+    this.activeAndFieldSelect_.updateOptions();
 };
 
 
@@ -173,26 +189,30 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createDataSetsOptions_ =
  * Creates options for select active data set and it's field.
  * @private
  */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOptions_ = function() {
-  for (var a = this.activeAndFieldSelect_.getItemCount(); a--;) {
-    this.activeAndFieldSelect_.removeItemAt(a);
-  }
+anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOptions_ = function () {
+    var data = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getPreparedData();
+    for (var i = 0; i < data.length; i++) {
+        var dataItem = data[i];
+        var title = dataItem.title;
+        var fields = dataItem.fields;
 
-  var data = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getPreparedData();
-  for (var i = 0; i < data.length; i++) {
-    if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
-      continue;
+        this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption({
+            caption: title
+        }));
 
-    var fields = data[i].fields;
-    for (var j = 0; j < fields.length; j++) {
-      var caption = data.length == 1 ? fields[j].name : data[i].title + ' - ' + fields[j].name;
-      var setFullId = data[i].setFullId;
-      var item = new goog.ui.MenuItem(caption, {value: fields[j].key, active: setFullId});
-      this.activeAndFieldSelect_.addItem(item);
+        if (dataItem.type === anychart.chartEditor2Module.EditorModel.dataType.GEO) {
+            continue;
+        }
+
+        for (var j = 0; j < fields.length; j++) {
+            var field = fields[j];
+            this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+                caption: field.name,
+                value: field.key,
+                active: data[i].setFullId
+            }));
+        }
     }
-  }
-
-  this.activeAndFieldSelect_.updateOptions();
 };
 
 
@@ -200,16 +220,13 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOpti
  * Asks model to add plot.
  * @private
  */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.onAddPlot_ = function() {
-  /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).addPlot();
+anychart.chartEditor2Module.ChartTypeSelector.prototype.onAddPlot_ = function () {
+    /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).addPlot();
 };
 
 
 /** @private */
-anychart.chartEditor2Module.ChartTypeSelector.prototype.removeAllPlots_ = function() {
-  for (var i = 0; i < this.plots_.length; i++) {
-    this.removeChild(this.plots_[i], true);
-    this.plots_[i].dispose();
-  }
-  this.plots_.length = 0;
+anychart.chartEditor2Module.ChartTypeSelector.prototype.removeAllPlots_ = function () {
+    goog.disposeAll(this.plots_);
+    this.plots_ = [];
 };

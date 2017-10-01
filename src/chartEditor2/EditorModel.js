@@ -288,10 +288,10 @@ anychart.chartEditor2Module.EditorModel.series = {
   },
   'ohlc': {
     'fields': [
-      {'field': 'open'},
-      {'field': 'high'},
-      {'field': 'low'},
-      {'field': 'close'}]
+      {'field': 'open', 'name': 'Open Value'},
+      {'field': 'high', 'name': 'High Value'},
+      {'field': 'low', 'name': 'Low Value'},
+      {'field': 'close', 'name': 'Close Value'}]
   },
   'candlestick': {
     'fields': [

@@ -68,8 +68,11 @@
 }
 
 .anychart-chart-editor-step .chart-container {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 54px;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
 }
 
 .anychart-chart-editor .anychart-connected-data-sets {
@@ -239,10 +242,10 @@
   padding: 6px 10px;
   display: inline-block;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .anychart-predefined-datasets-item-btn-use {
-  font-size: 14px;
   background: #549de1;
   color: white;
   margin-right: 10px;
@@ -267,7 +270,7 @@
   outline: none;
 }
 
-.anychart-ui-select-with-icon.goog-button-open {
+.anychart-ui-select-with-icon-open {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -320,7 +323,7 @@
 
 }
 
-.anychart-ui-menu-item-with-icon.goog-menuitem-highlight {
+.anychart-ui-menu-item-with-icon-highlight {
   background: #C1DEF1;
 }
 
@@ -413,6 +416,7 @@
   padding: 8px 12px;
   background: #ecf0f3;
   margin-bottom: 4px;
+  border-radius: 4px;
 }
 
 .anychart-connected-data-sets-item-field:last-child {
@@ -427,8 +431,238 @@
 }
 // endregion
 
+
 // region ---- chart data settings
 .anychart-chart-data-settings {
   padding: 18px;
+}
+// endregion
+
+
+// region ---- data field select
+.anychart-select-data-field {
+  position: relative;
+}
+.anychart-select-data-field-label {
+  float: left;
+  font-size: 16px;
+  color: #4d6675;
+  line-height: 34px;
+
+}
+.anychart-select-data-field-select {
+  outline: none;
+  background: #ecf0f3;
+  border-radius: 4px;
+  min-width: 210px;
+  float: right;
+}
+
+.anychart-select-data-field-select-open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid #c7d8e4;
+  border-bottom: none;
+}
+
+.anychart-select-data-field-select-open .anychart-select-data-field-select-content {
+  margin-top: 3px;
+  margin-left: 3px;
+}
+
+.anychart-select-data-field-select-content {
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #7093aa;
+  padding: 4px 20px;
+  margin: 4px;
+  background: white;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.anychart-select-data-field-select-indicator {
+  border-color: #7093aa transparent;
+  border-style: solid;
+  border-width: 6px 6px 0 6px;
+  height: 0;
+  width: 0;
+  position: absolute;
+  right: 8px;
+  top: 14px;
+}
+
+.anychart-select-data-field-menu {
+  position: absolute;
+  background: #ecf0f3;
+  width: 210px;
+  border: 1px solid #c7d8e4;
+  border-top: none;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 1;
+}
+
+.anychart-select-data-field-menu-item {
+  font-size: 14px;
+  color: #7093aa;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.anychart-select-data-field-menu-item-highlight {
+  background: #c9e1f0;
+}
+
+.anychart-select-data-field-menu-caption {
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #9eb8ca;
+  cursor: default;
+}
+// endregion
+
+
+// region unsorted styles - step 2
+.anychart-chart-data-settings-caption {
+  color: #7093aa;
+  font-size: 16px;
+  margin-bottom: 18px;
+}
+
+.anychart-chart-data-settings-core {
+  width: 100%;
+  background: white;
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+.anychart-select-chart-type {
+  margin-bottom: 14px;
+}
+
+.anychart-plot-panel {
+  position: relative;
+  background: white;
+  border-top: 1px solid #c7d8e4;
+}
+
+
+.anychart-plot-panel-stock {
+  margin-top: 14px;
+  border: none;
+}
+
+.anychart-plot-panel-plot-title {
+  color: #222222;
+  font-size: 14px;
+  padding: 14px 14px 0 14px;
+  display: none;
+}
+
+.anychart-plot-panel-remove-btn {
+  width: 16px;
+  height: 16px;
+  top: 14px;
+  position: absolute;
+  right: 7px;
+  display: none;
+}
+
+.anychart-plot-panel-stock .anychart-plot-panel-plot-title {
+  display: block;
+}
+
+.anychart-plot-panel-stock .anychart-plot-panel-remove-btn {
+  display: block;
+}
+
+.anychart-plot-panel-first .anychart-plot-panel-remove-btn {
+  display: none;
+}
+
+.anychart-plot-panel-remove-btn img {
+  width: 100%;
+  height: 100%;
+}
+
+.anychart-plot-panel-add-series-btn,
+.anychart-chart-data-settings-add-blot-btn {
+  font-size: 14px;
+  padding: 6px 10px;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #549de1;
+  color: white;
+  margin-right: 10px;
+  margin-top: 30px;
+}
+
+.anychart-plot-panel-add-series-btn {
+  margin: 0 14px 14px 14px
+}
+
+.anychart-chart-data-settings-add-blot-btn {
+  margin-top: 20px;
+}
+
+.anychart-plot-panel-series {
+  position: relative;
+  border-top: 1px solid #c7d8e4;
+  padding: 14px;
+}
+
+.anychart-plot-panel-series-first {
+  border:none;
+}
+
+.anychart-plot-panel-series-first .anychart-plot-panel-series-remove-btn{
+  display: none;
+}
+
+.anychart-plot-panel-series .anychart-select-data-field {
+  margin-top: 14px;
+}
+
+.anychart-plot-panel-series-remove-btn {
+  width: 16px;
+  height: 16px;
+  top: 7px;
+  position: absolute;
+  right: 7px;
+}
+
+.anychart-plot-panel-series-remove-btn img {
+  width: 100%;
+  height: 100%;
+}
+
+.anychart-plot-panel-series-name {
+  font-size: 16px;
+  padding: 7px 14px;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  height: 32px;
+  color: #7093aa;
+  background: #ecf0f3;
+  border: none;
+  border-radius: 4px;
+}
+
+.anychart-select-chart-type-menu {
+  position: absolute;
+  z-index: 1;
+  width: 366px;
+
+}
+
+.anychart-chart-preview-caption {
+  color: #7093aa;
+  font-size: 16px;
+  margin-bottom: 18px;
 }
 // endregion

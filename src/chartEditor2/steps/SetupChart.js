@@ -52,6 +52,9 @@ anychart.chartEditor2Module.steps.SetupChart.prototype.createDom = function () {
     wrapper.addChild(chartPreview, true);
 
     this.chartWrapperEl_ = chartPreview.getElement();
+
+    var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-preview-caption', 'Chart Preview');
+    goog.dom.appendChild(this.chartWrapperEl_, caption);
 };
 
 

@@ -23,7 +23,6 @@ anychart.chartEditor2.controls.select.SelectWithIcon = function(opt_caption, opt
       opt_domHelper,
       opt_menuRenderer
   );
-  this.addClassName(anychart.chartEditor2.controls.select.SelectWithIcon.CSS_CLASS);
 };
 goog.inherits(anychart.chartEditor2.controls.select.SelectWithIcon, anychart.chartEditor2Module.select.Base);
 
@@ -94,5 +93,11 @@ anychart.chartEditor2.controls.select.SelectWithIconRenderer.prototype.updateIco
       if (iconElement) goog.style.setElementShown(iconElement, false);
     }
   }
+};
+
+
+/** @inheritDoc */
+anychart.chartEditor2.controls.select.SelectWithIconRenderer.prototype.getCssClass = function() {
+  return 'anychart-ui-select-with-icon';
 };
 // endregion
