@@ -53,11 +53,11 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.createDom = function () 
 
     // user data section
     var userData = new anychart.chartEditor2Module.UserData([
-        {id: 'google-spreadsheets', type: 'connect', caption: 'Google Spreadsheet', icon: '../dist/img/google-spreadsheet.png'},
-        {id: 'string-csv', type: 'upload', caption: 'CSV String', icon: '../dist/img/csv-string.png'},
-        {id: 'file-csv', type: 'upload', caption: 'CSV File', icon: '../dist/img/csv-file.png'},
-        {id: 'string-json', type: 'upload', caption: 'JSON String', icon: '../dist/img/json-string.png'},
-        {id: 'file-json', type: 'upload', caption: 'JSON File', icon: '../dist/img/json-file.png'}
+        {id: 'google-spreadsheets', type: 'connect', caption: 'Google Spreadsheet', icon: 'https://cdn.anychart.com/images/chart_editor/google-spreadsheet.png'},
+        {id: 'string-csv', type: 'upload', caption: 'CSV String', icon: 'https://cdn.anychart.com/images/chart_editor/csv-string.png'},
+        {id: 'file-csv', type: 'upload', caption: 'CSV File', icon: 'https://cdn.anychart.com/images/chart_editor/csv-file.png'},
+        {id: 'string-json', type: 'upload', caption: 'JSON String', icon: 'https://cdn.anychart.com/images/chart_editor/json-string.png'},
+        {id: 'file-json', type: 'upload', caption: 'JSON File', icon: 'https://cdn.anychart.com/images/chart_editor/json-file.png'}
     ]);
     wrapper.addChild(userData, true);
     this.getHandler().listen(userData, anychart.chartEditor2Module.UserData.EventType.ACTION, function(e) {

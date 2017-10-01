@@ -522,7 +522,6 @@ anychart.ui.editor = function () {
 (function () {
     goog.exportSymbol('anychart.ui.editor', anychart.ui.editor);
     var proto = anychart.chartEditor2Module.Editor.prototype;
-    // proto['data'] = proto.data;
     proto['render'] = proto.render;
     proto['decorate'] = proto.decorate;
     proto['renderAsDialog'] = proto.renderAsDialog;
@@ -530,14 +529,12 @@ anychart.ui.editor = function () {
     proto['getChartAsJsCode'] = proto.getChartAsJsCode;
     proto['getChartAsJson'] = proto.getChartAsJson;
     proto['getChartAsXml'] = proto.getChartAsXml;
+    proto['listen'] = proto.listen;
+    proto['listenOnce'] = proto.listenOnce;
+    proto['unlisten'] = proto.unlisten;
+    proto['unlistenByKey'] = proto.unlistenByKey;
+    proto['removeAllListeners'] = proto.removeAllListeners;
+    proto['dispose'] = proto.dispose;
 
-    // proto['listen'] = proto.listen;
-    // proto['listenOnce'] = proto.listenOnce;
-    // proto['unlisten'] = proto.unlisten;
-    // proto['unlistenByKey'] = proto.unlistenByKey;
-    // proto['removeAllListeners'] = proto.removeAllListeners;
-    // proto['dispose'] = proto.dispose;
-    // proto['getResultJson'] = proto.getResultJson;
-    // proto['getResultXml'] = proto.getResultXml;
-    // proto['getResultCode'] = proto.getResultCode;
+    // proto['data'] = proto.data;
 })();

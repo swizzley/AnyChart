@@ -48,7 +48,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createDom = function () {
     this.removeBtn_ = dom.createDom(
         goog.dom.TagName.DIV,
         'anychart-plot-panel-series-remove-btn',
-        goog.dom.createDom(goog.dom.TagName.IMG, {'src': '../dist/img/remove-btn.png'})
+        goog.dom.createDom(goog.dom.TagName.IMG, {'src': 'https://cdn.anychart.com/images/chart_editor/remove-btn.png'})
     );
     goog.dom.appendChild(this.getElement(), this.removeBtn_);
 

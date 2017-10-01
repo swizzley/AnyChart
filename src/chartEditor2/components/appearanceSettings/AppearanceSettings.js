@@ -21,11 +21,13 @@ goog.require('anychart.chartEditor2Module.YAxesPanel');
  * Appearance settings widget.
  *
  * @param {anychart.chartEditor2Module.EditorModel} model
+ * @param {anychart.ui.Component} tabs
+ * @param {anychart.ui.Component} tabContent
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
  * @extends {anychart.chartEditor2Module.Component}
  */
-anychart.chartEditor2Module.AppearanceSettings = function(model, opt_domHelper) {
+anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabContent, opt_domHelper) {
   anychart.chartEditor2Module.AppearanceSettings.base(this, 'constructor', opt_domHelper);
 
   this.setModel(model);
@@ -47,24 +49,22 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, opt_domHelper) 
   this.currentPanel_ = 0;
 
   this.buttons_ = [];
+
+    /**
+     * @type {anychart.ui.Component}
+     * @private
+     */
+  this.tabs_ = tabs;
+
+    /**
+     * @type {anychart.ui.Component}
+     * @private
+     */
+  this.tabContent_ = tabContent;
+
+  this.addClassName('anychart-appearance-settings')
 };
 goog.inherits(anychart.chartEditor2Module.AppearanceSettings, anychart.chartEditor2Module.Component);
-
-
-/** @inheritDoc */
-anychart.chartEditor2Module.AppearanceSettings.prototype.createDom = function() {
-  anychart.chartEditor2Module.AppearanceSettings.base(this, 'createDom');
-
-  var element = /** @type {Element} */(this.getElement());
-  goog.dom.classlist.add(element, 'appearance-settings');
-
-  var dom = this.getDomHelper();
-  this.buttonsEl_ = dom.createDom(goog.dom.TagName.DIV, 'buttons');
-  element.appendChild(this.buttonsEl_);
-
-  this.panelsEl_ = dom.createDom(goog.dom.TagName.DIV, 'panels');
-  element.appendChild(this.panelsEl_);
-};
 
 
 /** @inheritDoc */
@@ -90,18 +90,17 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
     if (!panel) {
       var classFunc = this.panels_[i].classFunc;
       panel = this.panels_[i].instance = new classFunc(model);
-      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) != -1;
+      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       panel.exclude(excluded);
-      this.addChild(panel, true);
-      this.panelsEl_.appendChild(panel.getElement());
+      this.tabContent_.addChild(panel, true);
 
       button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
       button.setAttribute('data-index', i);
       this.buttons_.push(button);
-      this.buttonsEl_.appendChild(button);
+      this.tabs_.getElement().appendChild(button);
     } else {
-      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) != -1;
-      if (excluded && this.currentPanel_ == i)
+      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+      if (excluded && this.currentPanel_ === i)
         this.currentPanel_ = 0;
       panel.exclude(excluded);
     }
@@ -112,7 +111,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
     button = this.buttons_[j];
     goog.dom.classlist.enable(button, 'active', this.currentPanel_ == j);
     goog.dom.classlist.enable(button, 'hidden', panel.isExcluded());
-    goog.dom.classlist.enable(panel.getElement(), 'hidden', this.currentPanel_ != j || panel.isExcluded());
+    goog.dom.classlist.enable(panel.getElement(), 'hidden', this.currentPanel_ !== j || panel.isExcluded());
 
     if (!goog.events.hasListener(button, goog.events.EventType.CLICK))
       handler.listen(button, goog.events.EventType.CLICK, this.onClickCategoryButton_);

@@ -124,58 +124,6 @@
   }
 }
 
-.data-selector {
-  .data-set {
-    width: 240px;
-    height: 230px;
-    margin: 0 10px 15px 0;
-    font-size: 12px;
-    float: left;
-    position: relative;
-    z-index: 0;
-    border: 1px solid @color-gray;
-
-    &:hover {
-      background-color: @color-light-gray;
-      border-color: @color-dark-gray;
-    }
-    .content {
-      padding: 10px;
-    }
-    .title {
-      font-weight: bolder;
-      //font-size: 1.2em;
-      margin: 1em 0 0;
-    }
-    img {
-      width: 200px;
-      height: 130px;
-    }
-    .buttons {
-      padding-top: 1em;
-      position: absolute;
-      bottom: 10px;
-      .anychart-button {
-        display: inline-block;
-        color: #fff;
-        margin-right: 10px;
-      }
-      .remove {
-        display: none;
-      }
-    }
-  }
-  .loaded {
-    border-color: red !important;
-    .download {
-      display: none !important;
-    }
-    .remove {
-      display: inline-block !important;
-    }
-  }
-}
-
 .geo-data-selector {
   .data-set {
     height: 260px;
@@ -201,43 +149,7 @@
   margin: 10px 0;
 }
 
-.step-visual-appearance {
-  .appearance-settings {
-    float: left;
-    width: 35%;
-  }
-}
-
-.appearance-settings {
-  .buttons {
-    width: 27%;
-    float: left;
-    margin-top: 15px;
-    .button {
-      padding: 5px 10px;
-      border: 1px solid @color-dark-gray;
-      cursor: pointer;
-      background-color: @color-dark-gray;
-      margin: 0 10px 10px 15px;
-      &:hover {
-        border-color: @color-light-gray;
-      }
-    }
-    .active {
-      background-color: @color-white;
-      border-color: @color-dark-blue;
-      cursor: default;
-      &:hover {
-        border-color: @color-dark-blue;
-      }
-    }
-  }
-  .panels {
-    height: 100%;
-    overflow-y: auto;
-    width: 72%;
-    float: left;
-  }
+.anychart-appearance-settings {
   .settings-panel {
     margin-top: 15px;
     border: 1px solid @color-dark-gray;
