@@ -1,3 +1,4 @@
+@color-background: #ecf0f3;
 
 // region ---- common
 .anychart-clear {
@@ -97,7 +98,7 @@
 .anychart-breadcrumbs-item {
   float: left;
   margin: 13px 30px 13px 0;
-  cursor: default;
+  cursor: pointer;
 }
 
 .anychart-breadcrumbs-item:last-child {
@@ -143,7 +144,7 @@
 }
 
 .anychart-breadcrumbs-item-active {
-  cursor: pointer;
+  cursor: default;
 }
 
 .anychart-breadcrumbs-item-active .anychart-breadcrumbs-item-caption {
@@ -203,6 +204,11 @@
   margin-bottom: 18px;
 }
 
+.anychart-predefined-datasets-container {
+  .loaded {
+    display: none;
+  }
+}
 .anychart-predefined-datasets-item {
   width: 177px;
   height: 212px;
@@ -263,7 +269,7 @@
 // region ---- select with icon
 .anychart-ui-select-with-icon {
   padding: 4px 0;
-  background: #ecf0f3;
+  background: @color-background;
   border-radius: 4px;
   position: relative;
   text-align: right;
@@ -314,7 +320,7 @@
 .anychart-ui-menu-item-with-icon {
   position: relative;
   padding: 4px 34px 0 4px;
-  background: #ecf0f3;
+  background: @color-background;
   height: 34px;
   line-height: 34px;
   text-align: right;
@@ -365,7 +371,19 @@
   background: white;
   padding: 14px;
   margin-bottom: 14px;
+  box-shadow: 2px 2px 7px #c4d5df;
+  -moz-box-shadow: 2px 2px 7px #c4d5df;
 }
+
+.anychart-setup-chart-step {
+  .anychart-connected-data-sets-item-disabled {
+    background: @color-background;
+    .anychart-connected-data-sets-item-field {
+      background: white;
+    }
+  }
+}
+
 
 .anychart-connected-data-sets-item:last-child {
   margin-bottom: 0;
@@ -414,7 +432,7 @@
   text-transform: uppercase;
   color: #7093aa;
   padding: 8px 12px;
-  background: #ecf0f3;
+  background: @color-background;
   margin-bottom: 4px;
   border-radius: 4px;
 }
@@ -452,7 +470,7 @@
 }
 .anychart-select-data-field-select {
   outline: none;
-  background: #ecf0f3;
+  background: @color-background;
   border-radius: 4px;
   min-width: 210px;
   float: right;
@@ -495,7 +513,7 @@
 
 .anychart-select-data-field-menu {
   position: absolute;
-  background: #ecf0f3;
+  background: @color-background;
   width: 210px;
   border: 1px solid #c7d8e4;
   border-top: none;
@@ -648,7 +666,7 @@
   box-sizing: border-box;
   height: 32px;
   color: #7093aa;
-  background: #ecf0f3;
+  background: @color-background;
   border: none;
   border-radius: 4px;
 }

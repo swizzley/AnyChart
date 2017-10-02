@@ -4,6 +4,7 @@ goog.require('anychart.chartEditor2Module.AppearanceSettings');
 goog.require('anychart.chartEditor2Module.Chart');
 goog.require('anychart.chartEditor2Module.events');
 goog.require('anychart.chartEditor2Module.steps.Base');
+goog.require('anychart.ui.Component');
 goog.require('goog.dom.classlist');
 
 

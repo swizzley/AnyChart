@@ -25,6 +25,13 @@ goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIcon, goog.ui.Me
 
 
 /**
+ * CSS class name.
+ * @type {string}
+ */
+anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS = goog.getCssName('anychart-menu-item-with-icon');
+
+
+/**
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
  */

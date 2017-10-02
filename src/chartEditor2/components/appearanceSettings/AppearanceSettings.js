@@ -62,7 +62,7 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabConten
      */
   this.tabContent_ = tabContent;
 
-  this.addClassName('anychart-appearance-settings')
+  this.addClassName('anychart-appearance-settings');
 };
 goog.inherits(anychart.chartEditor2Module.AppearanceSettings, anychart.chartEditor2Module.Component);
 

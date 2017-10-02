@@ -3,6 +3,7 @@ goog.require('anychart.ui.Component');
 
 
 /**
+ * @param {string} caption
  * @constructor
  * @extends {anychart.ui.Component}
  */
@@ -30,5 +31,5 @@ anychart.chartEditor2Module.Item.prototype.createDom = function() {
         e.preventDefault();
         e.stopPropagation();
         this.dispatchEvent(goog.ui.Component.EventType.ACTION);
-    })
+    });
 };

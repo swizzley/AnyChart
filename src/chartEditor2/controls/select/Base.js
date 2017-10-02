@@ -220,8 +220,11 @@ anychart.chartEditor2Module.select.Base.prototype.handleSelectionChange = functi
   if (!this.noDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
     if (this.callback)
       this.editorModel.callbackByString(this.callback, this);
-    else
-      this.editorModel.setValue(this.key, this.getValue(), false, this.noRebuild);
+    else {
+      var value = this.getValue();
+      value = goog.isObject(value) && value.value ? value.value : value;
+      this.editorModel.setValue(this.key, value, false, this.noRebuild);
+    }
   }
 };
 
@@ -334,33 +337,33 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(ta
 };
 
 
-/**
- * @override
- * @suppress {visibility}
- */
-anychart.chartEditor2Module.select.Base.prototype.updateCaption = function() {
-  var selectedIndex = this.getSelectedIndex();
-  var item = this.getSelectedItem();
-  var option = this.options_[selectedIndex];
-  var caption = this.captions_[selectedIndex];
-  var icon = this.icons_[selectedIndex];
-  var content = this.createContentElements(option, caption, icon);
-  this.setContent(content);
-
-  var contentElement = this.getRenderer().getContentElement(this.getElement());
-  // Despite the ControlRenderer interface indicating the return value is
-  // {Element}, many renderers cast element.firstChild to {Element} when it is
-  // really {Node}. Checking tagName verifies this is an {!Element}.
-  if (contentElement && this.getDomHelper().isElement(contentElement)) {
-    if (this.initialAriaLabel_ == null) {
-      this.initialAriaLabel_ = goog.a11y.aria.getLabel(contentElement);
-    }
-    var itemElement = item ? item.getElement() : null;
-    goog.a11y.aria.setLabel(contentElement, itemElement ?
-        goog.a11y.aria.getLabel(itemElement) : this.initialAriaLabel_);
-    this.updateAriaActiveDescendant_();
-  }
-};
+// /**
+//  * @override
+//  * @suppress {visibility}
+//  */
+// anychart.chartEditor2Module.select.Base.prototype.updateCaption = function() {
+//   var selectedIndex = this.getSelectedIndex();
+//   var item = this.getSelectedItem();
+//   var option = this.options_[selectedIndex];
+//   var caption = this.captions_[selectedIndex];
+//   var icon = this.icons_[selectedIndex];
+//   var content = this.createContentElements(option, caption, icon);
+//   this.setContent(content);
+//
+//   var contentElement = this.getRenderer().getContentElement(this.getElement());
+//   // Despite the ControlRenderer interface indicating the return value is
+//   // {Element}, many renderers cast element.firstChild to {Element} when it is
+//   // really {Node}. Checking tagName verifies this is an {!Element}.
+//   if (contentElement && this.getDomHelper().isElement(contentElement)) {
+//     if (this.initialAriaLabel_ == null) {
+//       this.initialAriaLabel_ = goog.a11y.aria.getLabel(contentElement);
+//     }
+//     var itemElement = item ? item.getElement() : null;
+//     goog.a11y.aria.setLabel(contentElement, itemElement ?
+//         goog.a11y.aria.getLabel(itemElement) : this.initialAriaLabel_);
+//     this.updateAriaActiveDescendant_();
+//   }
+// };
 
 
 /**

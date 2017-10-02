@@ -5,6 +5,7 @@ goog.require('anychart.chartEditor2Module.ChartTypeSelector');
 goog.require('anychart.chartEditor2Module.DataSetPanelList');
 goog.require('anychart.chartEditor2Module.events');
 goog.require('anychart.chartEditor2Module.steps.Base');
+goog.require('anychart.ui.Component');
 goog.require('goog.dom.classlist');
 goog.require('goog.format.JsonPrettyPrinter');
 

@@ -42,8 +42,6 @@ anychart.chartEditor2Module.PlotPanel.prototype.createDom = function () {
 
     var dom = this.getDomHelper();
     var element = this.getElement();
-    var chartType = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getValue([['chart'], 'type']);
-    chartType = 'stock';
 
     this.title_ = dom.createDom(goog.dom.TagName.DIV, 'anychart-plot-panel-plot-title', 'Plot ' + (this.index_ + 1));
     goog.dom.appendChild(element, this.title_);
@@ -64,8 +62,8 @@ anychart.chartEditor2Module.PlotPanel.prototype.createDom = function () {
 anychart.chartEditor2Module.PlotPanel.prototype.update = function (evt) {
     if (evt && !evt.rebuildMapping) return;
 
-    var chartType = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getValue([['chart'], 'type']);
-    chartType = 'stock';
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+    var chartType = model.getValue([['chart'], 'type']);
 
     // toggle stock specific settings
     chartType === 'stock' ?
@@ -74,7 +72,7 @@ anychart.chartEditor2Module.PlotPanel.prototype.update = function (evt) {
 
     // Series
     this.removeAllSeries_();
-    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+
     var plotModel = model.getValue([['dataSettings'], ['mappings', this.index_]]);
 
     for (var i = 0; i < plotModel.length; i++) {

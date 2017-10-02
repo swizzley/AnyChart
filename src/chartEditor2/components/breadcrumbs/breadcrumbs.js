@@ -1,6 +1,8 @@
 goog.provide('anychart.chartEditor2Module.Breadcrumbs');
-goog.require('anychart.ui.Component');
+
 goog.require('anychart.chartEditor2Module.Item');
+goog.require('anychart.ui.Component');
+goog.require('goog.ui.Button');
 
 
 /**

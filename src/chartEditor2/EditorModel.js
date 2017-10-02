@@ -881,7 +881,8 @@ anychart.chartEditor2Module.EditorModel.prototype.setStackMode = function(opt_st
  */
 anychart.chartEditor2Module.EditorModel.prototype.setSeriesType = function(input) {
   var key = input.getKey();
-  var type = /** @type {string} */(input.getValue());
+  var inputValue = /** @type {Object} */(input.getValue());
+  var type = inputValue.value;
   var plotIndex = key[1][1]; // see SeriesPanel.getKey()
   var seriesIndex = key[2][0];
 
