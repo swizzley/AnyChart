@@ -1,30 +1,26 @@
 goog.provide('anychart.chartEditor2Module.select.Palettes');
 
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2.controls.select.DataField');
 
 
 
 /**
  * Select input for palettes property.
  *
- * @param {goog.ui.ControlContent=} opt_caption Default caption or existing DOM
- *     structure to display as the button's caption when nothing is selected.
- *     Defaults to no caption.
- * @param {goog.ui.Menu=} opt_menu Menu containing selection options.
- * @param {goog.ui.ButtonRenderer=} opt_renderer Renderer used to render or
- *     decorate the control; defaults to {@link goog.ui.MenuButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
- *     document interaction.
- * @param {!goog.ui.MenuRenderer=} opt_menuRenderer Renderer used to render or
- *     decorate the menu; defaults to {@link goog.ui.MenuRenderer}.
+ * @param {anychart.chartEditor2.controls.select.DataFieldModel=} opt_model
+ * @param {goog.ui.Menu=} opt_menu
+ * @param {goog.ui.ButtonRenderer=} opt_renderer
+ * @param {goog.dom.DomHelper=} opt_domHelper
+ * @param {!goog.ui.MenuRenderer=} opt_menuRenderer
+ * @param {string=} opt_menuAdditionalClass
  *
  * @constructor
- * @extends {anychart.chartEditor2Module.select.Base}
+ * @extends {anychart.chartEditor2.controls.select.DataField}
  */
-anychart.chartEditor2Module.select.Palettes = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
-  anychart.chartEditor2Module.select.Palettes.base(this, 'constructor', opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer);
+anychart.chartEditor2Module.select.Palettes = function(opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
+  anychart.chartEditor2Module.select.Palettes.base(this, 'constructor',opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass);
 };
-goog.inherits(anychart.chartEditor2Module.select.Palettes, anychart.chartEditor2Module.select.Base);
+goog.inherits(anychart.chartEditor2Module.select.Palettes, anychart.chartEditor2.controls.select.DataField);
 
 
 /** @inheritDoc */
@@ -42,8 +38,9 @@ anychart.chartEditor2Module.select.Palettes.prototype.handleSelectionChange = fu
 anychart.chartEditor2Module.select.Palettes.prototype.setValueByTarget = function(target) {
   if (this.excluded) return;
 
+  var select = this.getSelect();
   this.target = target;
-  var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
+  var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(select.getKey());
   var value = anychart.bindingModule.exec(this.target, stringKey);
 
   if (value) {
@@ -58,8 +55,8 @@ anychart.chartEditor2Module.select.Palettes.prototype.setValueByTarget = functio
       }
     }
 
-    this.noDispatch = true;
-    this.setValue(stringValue);
-    this.noDispatch = false;
+    select.suspendDispatch(true);
+    select.setValue(stringValue);
+    select.suspendDispatch(false);
   }
 };

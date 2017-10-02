@@ -33,6 +33,7 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabConten
   this.setModel(model);
 
   this.panels_ = [
+    {classFunc: anychart.chartEditor2Module.GeneralTheming, instance: null},
     {classFunc: anychart.chartEditor2Module.ChartTitlePanel, instance: null},
     {classFunc: anychart.chartEditor2Module.LegendPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.DataLabelsPanel, instance: null},
@@ -93,6 +94,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
       excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       panel.exclude(excluded);
       this.tabContent_.addChild(panel, true);
+      goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-preview-caption');
 
       button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
       button.setAttribute('data-index', i);

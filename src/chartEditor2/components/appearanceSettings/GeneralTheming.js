@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.GeneralTheming');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2.controls.select.DataField');
 goog.require('anychart.chartEditor2Module.select.Palettes');
 goog.require('anychart.chartEditor2Module.settings.Title');
 
@@ -29,30 +29,36 @@ anychart.chartEditor2Module.GeneralTheming.prototype.createDom = function() {
   var themes = goog.object.filter(goog.dom.getWindow()['anychart']['themes'], function(item) {
     return item['palette'];
   });
-  this.themeSelect = new anychart.chartEditor2Module.select.Base("-- Choose theme --");
-  this.themeSelect.setOptions(goog.object.getKeys(themes));
-  this.themeSelect.updateOptions();
-  this.themeSelect.init(model, [['anychart'], 'theme()'], 'setTheme');
+  this.themeSelect = new anychart.chartEditor2.controls.select.DataField({caption: 'Select theme', label: 'Theme'});
+  var themeNames = goog.object.getKeys(themes);
+
+  for (var i = 0; i < themeNames.length; i++) {
+    this.themeSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+      caption: themeNames[i],
+      value: themeNames[i]
+    }));
+  }
+  this.themeSelect.getSelect().init(model, [['anychart'], 'theme()'], 'setTheme');
   this.addChild(this.themeSelect, true);
 
   var realPalettes = goog.dom.getWindow()['anychart']['palettes'];
-  var paletteNames = [];
+  this.paletteSelect = new anychart.chartEditor2Module.select.Palettes({caption: 'Select palette', label: 'Palette'});
   for (var paletteName in realPalettes) {
     if (realPalettes.hasOwnProperty(paletteName) && goog.isArray(realPalettes[paletteName])) {
-      paletteNames.push(paletteName);
+      this.paletteSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: paletteName,
+        value: paletteName
+      }));
     }
   }
-  this.paletteSelect = new anychart.chartEditor2Module.select.Palettes("-- Choose palette --");
-  this.paletteSelect.setOptions(paletteNames);
-  this.paletteSelect.updateOptions('defaultPalette');
-  this.paletteSelect.init(model, [['chart'], ['settings'], 'palette()']);
+  this.paletteSelect.getSelect().init(model, [['chart'], ['settings'], 'palette()']);
   this.addChild(this.paletteSelect, true);
 };
 
 
 /** @inheritDoc */
 anychart.chartEditor2Module.GeneralTheming.prototype.update = function() {
-  if (this.paletteSelect) this.paletteSelect.updateExclusion();
+  if (this.paletteSelect) this.paletteSelect.getSelect().updateExclusion();
   anychart.chartEditor2Module.GeneralTheming.base(this, 'update');
 };
 
@@ -61,7 +67,7 @@ anychart.chartEditor2Module.GeneralTheming.prototype.update = function() {
 anychart.chartEditor2Module.GeneralTheming.prototype.onChartDraw = function(evt) {
   anychart.chartEditor2Module.GeneralTheming.base(this, 'onChartDraw', evt);
   if (evt.rebuild) {
-    if (this.themeSelect) this.themeSelect.setValueByTarget(goog.dom.getWindow()['anychart']);
+    if (this.themeSelect) this.themeSelect.getSelect().setValueByTarget(goog.dom.getWindow()['anychart']);
     if (this.paletteSelect) this.paletteSelect.setValueByTarget(evt.chart);
   }
 };
@@ -69,7 +75,10 @@ anychart.chartEditor2Module.GeneralTheming.prototype.onChartDraw = function(evt)
 
 /** @override */
 anychart.chartEditor2Module.GeneralTheming.prototype.disposeInternal = function() {
+  this.themeSelect.dispose();
   this.themeSelect = null;
+
+  this.paletteSelect.dispose();
   this.paletteSelect = null;
 
   anychart.chartEditor2Module.GeneralTheming.base(this, 'disposeInternal');

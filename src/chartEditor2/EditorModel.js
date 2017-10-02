@@ -900,7 +900,8 @@ anychart.chartEditor2Module.EditorModel.prototype.setSeriesType = function(input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setTheme = function(input) {
   delete this.model_['chart']['settings']['palette()'];
-  this.setValue([['anychart'], 'theme()'], input.getValue());
+  var inputValue = input.getValue();
+  this.setValue([['anychart'], 'theme()'], inputValue.value);
   this.dispatchUpdate();
 };
 
