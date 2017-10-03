@@ -1,8 +1,9 @@
 goog.provide('anychart.chartEditor2Module.GeneralTheming');
 
-goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2.controls.select.DataField');
-goog.require('anychart.chartEditor2Module.select.Palettes');
+goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.SettingsPanel');
+goog.require('anychart.chartEditor2Module.controls.select.Palettes');
 goog.require('anychart.chartEditor2Module.settings.Title');
 
 
@@ -42,7 +43,7 @@ anychart.chartEditor2Module.GeneralTheming.prototype.createDom = function() {
   this.addChild(this.themeSelect, true);
 
   var realPalettes = goog.dom.getWindow()['anychart']['palettes'];
-  this.paletteSelect = new anychart.chartEditor2Module.select.Palettes({caption: 'Select palette', label: 'Palette'});
+  this.paletteSelect = new anychart.chartEditor2Module.controls.select.Palettes({caption: 'Select palette', label: 'Palette'});
   for (var paletteName in realPalettes) {
     if (realPalettes.hasOwnProperty(paletteName) && goog.isArray(realPalettes[paletteName])) {
       this.paletteSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
@@ -68,7 +69,7 @@ anychart.chartEditor2Module.GeneralTheming.prototype.onChartDraw = function(evt)
   anychart.chartEditor2Module.GeneralTheming.base(this, 'onChartDraw', evt);
   if (evt.rebuild) {
     if (this.themeSelect) this.themeSelect.getSelect().setValueByTarget(goog.dom.getWindow()['anychart']);
-    if (this.paletteSelect) this.paletteSelect.setValueByTarget(evt.chart);
+    if (this.paletteSelect) this.paletteSelect.getSelect().setValueByTarget(evt.chart);
   }
 };
 

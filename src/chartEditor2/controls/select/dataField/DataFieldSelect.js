@@ -55,12 +55,6 @@ anychart.chartEditor2.controls.select.DataFieldSelect = function (opt_model, opt
 goog.inherits(anychart.chartEditor2.controls.select.DataFieldSelect, anychart.chartEditor2Module.select.Base);
 
 
-// /** @inheritDoc */
-// anychart.chartEditor2.controls.select.DataFieldSelect.prototype.handleSelectionChange = function (e) {
-//     anychart.chartEditor2.controls.select.DataFieldSelect.base(this, 'handleSelectionChange', e);
-// };
-
-
 /** @inheritDoc */
 anychart.chartEditor2.controls.select.DataFieldSelect.prototype.handleMenuAction = function (e) {
     var item = /** @type {goog.ui.MenuItem} */ (e.target);

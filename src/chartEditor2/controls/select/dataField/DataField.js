@@ -65,3 +65,9 @@ anychart.chartEditor2.controls.select.DataField.prototype.createDom = function()
 anychart.chartEditor2.controls.select.DataField.prototype.getSelect = function() {
   return /** @type {!anychart.chartEditor2.controls.select.DataFieldSelect} */(this.select_);
 };
+
+
+/** @param {anychart.chartEditor2.controls.select.DataFieldSelect} select */
+anychart.chartEditor2.controls.select.DataField.prototype.setSelect = function(select) {
+  this.select_ = select;
+};
