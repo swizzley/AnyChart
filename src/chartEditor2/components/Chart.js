@@ -87,7 +87,7 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
     }
 
     // Create data set
-    var dsCtor = anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['dataSetCtor'];
+    var dsCtor = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['dataSetCtor'];
     var opt_keyColumnIndex = dsCtor == 'table' ? settings['dataSettings']['field'] : void 0;
     var dataSet = this.anychart['data'][dsCtor](opt_keyColumnIndex);
 
@@ -109,7 +109,7 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
 
         var mappingInstance = dataSet['mapAs'](mappingObj);
 
-        var singleSeriesChart = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+        var singleSeriesChart = !!anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['singleSeries'];
         if (singleSeriesChart) {
           this.chart_['data'](mappingInstance);
 

@@ -121,7 +121,7 @@ anychart.chartEditor2Module.EditorModel.Key;
 /**
  * @enum {string}
  */
-anychart.chartEditor2Module.EditorModel.dataType = {
+anychart.chartEditor2Module.EditorModel.DataType = {
   UPLOADED: 'u',
   PREDEFINED: 'p',
   GEO: 'g'
@@ -132,7 +132,7 @@ anychart.chartEditor2Module.EditorModel.dataType = {
 /**
  * @type {Object}
  */
-anychart.chartEditor2Module.EditorModel.chartTypes = {
+anychart.chartEditor2Module.EditorModel.ChartTypes = {
   'line': {
     'value': 'line',
     'name': 'Line',
@@ -236,6 +236,15 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'singleSeries': true,
     'panelsExcludes' : ['series', 'grids', 'axes', 'colorScale']
   },
+  'funnel': {
+    'value': 'funnel',
+    'name': 'Funnel',
+    'icon': 'funnel-chart.svg',
+    'series': ['funnel'],
+    'dataSetCtor': 'set',
+    'singleSeries': true,
+    'panelsExcludes' : ['series', 'grids', 'axes', 'colorScale']
+  },
   'map': {
     'value': 'map',
     'name': 'Map',
@@ -264,13 +273,21 @@ anychart.chartEditor2Module.EditorModel.chartTypes = {
     'panelsExcludes' : ['series'],
     'settingsExcludes': ['palette()', 'animation().enabled()']
   }
+  // 'box': {
+  //   'value': 'box',
+  //   'name': 'Box',
+  //   'icon': 'box-chart.svg',
+  //   'series': ['box'/*, 'line', 'spline', 'column', 'area', 'marker', 'bubble', 'ohlc'*/],
+  //   'dataSetCtor': 'set',
+  //   'panelsExcludes' : ['colorScale']
+  // }
 };
 
 
 /**
  * @type {Object}}
  */
-anychart.chartEditor2Module.EditorModel.series = {
+anychart.chartEditor2Module.EditorModel.Series = {
   'line': {
     'fields': [{'field': 'value', 'name': 'Y Value'}]
   },
@@ -300,7 +317,20 @@ anychart.chartEditor2Module.EditorModel.series = {
       {'field': 'low'},
       {'field': 'close'}]
   },
+  // 'box': {
+  //   'fields': [
+  //     {'field': 'low'},
+  //     {'field': 'q1'},
+  //     {'field': 'median'},
+  //     {'field': 'q3'},
+  //     {'field': 'high'},
+  //     {'field': 'value'}/*,
+  //     {'field': 'outliers'}*/]
+  // },
   'pie': {
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'funnel': {
     'fields': [{'field': 'value', 'name': 'Value'}]
   },
   'marker': {
@@ -443,38 +473,46 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseActiveAndField = functio
  * Chooses chart type.
  */
 anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = function() {
-  var chartType = 'line';
-  var rawData = this.getRawData();
+  var chartType = null;
+  var recomendedChartType = this.data_[this.getActive()]['chartType'];
+  if (recomendedChartType) {
+    var availableTypes = goog.object.getKeys(anychart.chartEditor2Module.EditorModel.ChartTypes);
+    if (goog.array.indexOf(availableTypes, recomendedChartType) !== -1)
+      chartType = recomendedChartType;
+  }
 
-  if (this.model_['dataSettings']['activeGeo']) {
-    chartType = 'map';
-  } else {
-    if (this.model_['dataSettings']['field'] == this.fieldsState_.date) {
-      chartType = 'stock';
+  if (!chartType) {
+    chartType = 'line';
+    var rawData = this.getRawData();
 
-    } else if (this.model_['dataSettings']['field'] == this.fieldsState_.date_short) {
-      chartType = 'column';
+    if (this.model_['dataSettings']['activeGeo']) {
+      chartType = 'map';
+    } else {
+      if (this.model_['dataSettings']['field'] == this.fieldsState_.date) {
+        chartType = 'stock';
 
-      if (this.fieldsState_.numbersCount > 3)
-        this.setStackMode('value');
+      } else if (this.model_['dataSettings']['field'] == this.fieldsState_.date_short) {
+        chartType = 'column';
 
-    } else if (this.model_['dataSettings']['field'] == this.fieldsState_.firstString) {
-      if (rawData.length <= 5 && this.fieldsState_.numbersCount == 1)
-        chartType = 'pie';
-      else if (this.fieldsState_.numbersCount <= 3)
-        chartType = 'bar';
-      else if (this.fieldsState_.numbersCount <= 5) {
-        chartType = 'bar';
-        this.setStackMode('value');
-      }
+        if (this.fieldsState_.numbersCount > 3)
+          this.setStackMode('value');
 
-    } else
-      chartType = 'scatter';
+      } else if (this.model_['dataSettings']['field'] == this.fieldsState_.firstString) {
+        if (rawData.length <= 5 && this.fieldsState_.numbersCount == 1)
+          chartType = 'pie';
+        else if (this.fieldsState_.numbersCount <= 3)
+          chartType = 'bar';
+        else if (this.fieldsState_.numbersCount <= 5) {
+          chartType = 'bar';
+          this.setStackMode('value');
+        }
+
+      } else
+        chartType = 'scatter';
+    }
   }
 
   this.model_['chart']['type'] = chartType;
-  // debug
-  //this.model_['chart']['type'] = 'heatMap';
 };
 
 
@@ -482,7 +520,7 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
  * Chooses default series type.
  */
 anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultSeriesType = function() {
-  var seriesType = anychart.chartEditor2Module.EditorModel.chartTypes[this.model_['chart']['type']]['series'][0];
+  var seriesType = anychart.chartEditor2Module.EditorModel.ChartTypes[this.model_['chart']['type']]['series'][0];
   switch (this.model_['chart']['type']) {
     case 'map':
       if (this.fieldsState_.coordinates.length == 2) {
@@ -544,7 +582,7 @@ anychart.chartEditor2Module.EditorModel.prototype.createPlotMapping = function()
   var result = [];
   var chartType = this.model_['chart']['type'];
   var seriesType = this.model_['chart']['seriesType'];
-  var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+  var singleSeries = !!anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['singleSeries'];
 
   var numValues = 1;
   if (seriesType == 'bubble')
@@ -595,7 +633,7 @@ anychart.chartEditor2Module.EditorModel.prototype.createSeriesConfig = function(
   }
 
   //
-  var fields = anychart.chartEditor2Module.EditorModel.series[type]['fields'];
+  var fields = anychart.chartEditor2Module.EditorModel.Series[type]['fields'];
 
   for (var i = 0; i < fields.length; i++) {
     if (fields[i]['field'] == 'id' && this.fieldsState_.geoId) {
@@ -624,7 +662,7 @@ anychart.chartEditor2Module.EditorModel.prototype.createSeriesConfig = function(
  * @return {boolean} true if mappings are not compatible.
  */
 anychart.chartEditor2Module.EditorModel.prototype.needResetMappings = function(prevChartType, prevSeriesType) {
-  if (goog.array.indexOf(anychart.chartEditor2Module.EditorModel.chartTypes[this.model_['chart']['type']]['series'], prevSeriesType) == -1)
+  if (goog.array.indexOf(anychart.chartEditor2Module.EditorModel.ChartTypes[this.model_['chart']['type']]['series'], prevSeriesType) == -1)
     return true;
 
   var chartType = this.model_['chart']['type'];
@@ -644,8 +682,8 @@ anychart.chartEditor2Module.EditorModel.prototype.needResetMappings = function(p
  * @return {boolean} true if compatible
  */
 anychart.chartEditor2Module.EditorModel.prototype.checkSeriesFieldsCompatible = function(seriesType1, seriesType2) {
-  var fields1 = anychart.chartEditor2Module.EditorModel.series[seriesType1]['fields'];
-  var fields2 = anychart.chartEditor2Module.EditorModel.series[seriesType2]['fields'];
+  var fields1 = anychart.chartEditor2Module.EditorModel.Series[seriesType1]['fields'];
+  var fields2 = anychart.chartEditor2Module.EditorModel.Series[seriesType2]['fields'];
   var compatible = true;
   if (fields1.length == fields2.length) {
     for (var i = fields1.length; i--;) {
@@ -1225,12 +1263,13 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(evt) {
       type: evt.dataType,
       setId: evt.setId,
       title: evt.title,
+      chartType: evt.chartType,
       data: evt.data
     };
   }
   this.preparedData_.length = 0;
 
-  if (evt.dataType == anychart.chartEditor2Module.EditorModel.dataType.GEO) {
+  if (evt.dataType == anychart.chartEditor2Module.EditorModel.DataType.GEO) {
     delete this.data_[this.model_['dataSettings']['activeGeo']];
     this.model_['dataSettings']['activeGeo'] = id;
     this.model_['dataSettings']['geoIdField'] = null;
@@ -1451,7 +1490,7 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
 
   // Create data set
   var rawData = this.getRawData();
-  var dsCtor = anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['dataSetCtor'];
+  var dsCtor = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['dataSetCtor'];
   var isTableData = dsCtor == 'table';
   var dataSet = anychartGlobal['data'][dsCtor]();
   result.push(
@@ -1494,7 +1533,7 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
   }
   result.push('');
 
-  var singleSeriesChart = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+  var singleSeriesChart = !!anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['singleSeries'];
   if (singleSeriesChart) {
     chart['data'](mappingInstancesList[0][0]);
     result.push(
@@ -1641,7 +1680,7 @@ anychart.chartEditor2Module.EditorModel.prototype.prepareData_ = function() {
       if (joined) {
         dataSet.title = 'Joined set ' + (joinedSets.length + 1);
         joinedSets.push(dataSet);
-      } else if (dataSet.type == anychart.chartEditor2Module.EditorModel.dataType.GEO) {
+      } else if (dataSet.type == anychart.chartEditor2Module.EditorModel.DataType.GEO) {
         geoSets.push(dataSet);
       } else {
         dataSet.title = dataSet.title ? dataSet.title : 'Data set ' + (singleSets.length + 1);
@@ -1669,7 +1708,7 @@ anychart.chartEditor2Module.EditorModel.prototype.prepareDataSet_ = function(dat
     title: dataSet.title
   };
 
-  var row = dataSet.type == anychart.chartEditor2Module.EditorModel.dataType.GEO ?
+  var row = dataSet.type == anychart.chartEditor2Module.EditorModel.DataType.GEO ?
       dataSet.data['features'][0]['properties'] :
       dataSet.data[0];
 
@@ -1723,7 +1762,7 @@ anychart.chartEditor2Module.EditorModel.prototype.isGeoId_ = function(value) {
  */
 anychart.chartEditor2Module.EditorModel.prototype.checkSettingForExclusion = function(stringKey) {
   var chartType = this.model_['chart']['type'];
-  var excludes = anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['settingsExcludes'];
+  var excludes = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['settingsExcludes'];
   if (excludes && goog.array.indexOf(excludes, stringKey) != -1)
     return true;
 

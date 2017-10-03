@@ -131,7 +131,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.onSelectGeoData_ = function(
 
   var setId = /** @type {number} */(/** @type {anychart.chartEditor2Module.select.SelectWithLabel} */(evt.target).getValue()).value;
   var activeGeo = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getValue([['dataSettings'], 'activeGeo']);
-  if (activeGeo && (anychart.chartEditor2Module.EditorModel.dataType.GEO + setId) == activeGeo) return;
+  if (activeGeo && (anychart.chartEditor2Module.EditorModel.DataType.GEO + setId) == activeGeo) return;
 
   this.dispatchEvent({
     type: anychart.chartEditor2Module.events.EventType.WAIT,
@@ -144,7 +144,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.onSelectGeoData_ = function(
       function(e) {
         if (e.target.getStatus() == 200) {
           var json = e.target.getResponseJson();
-          var dataType = anychart.chartEditor2Module.EditorModel.dataType.GEO;
+          var dataType = anychart.chartEditor2Module.EditorModel.DataType.GEO;
           self.dispatchEvent({
             type: anychart.chartEditor2Module.events.EventType.DATA_ADD,
             data: json,

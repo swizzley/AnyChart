@@ -17,7 +17,7 @@ anychart.chartEditor2Module.PredefinedDataSet = function(model, opt_domHelper) {
   anychart.chartEditor2Module.PredefinedDataSet.base(this, 'constructor', opt_domHelper);
   this.setModel(model);
 
-  this.dataType = anychart.chartEditor2Module.EditorModel.dataType.PREDEFINED;
+  this.dataType = anychart.chartEditor2Module.EditorModel.DataType.PREDEFINED;
 
   this.jsonUrl = 'https://cdn.anychart.com/anydata/common/';
   this.addClassName('anychart-predefined-datasets-item');
@@ -162,7 +162,8 @@ anychart.chartEditor2Module.PredefinedDataSet.prototype.dispatchLoadData = funct
       dataType: this.dataType,
       setId: setId,
       setFullId: this.dataType + setId,
-      title: opt_name
+      title: opt_name,
+      chartType: json['chartType']
     });
   }
 };

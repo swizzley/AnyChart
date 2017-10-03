@@ -264,7 +264,7 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.addLoadedData = function
   }
 
   if (result) {
-    var type = anychart.chartEditor2Module.EditorModel.dataType.UPLOADED;
+    var type = anychart.chartEditor2Module.EditorModel.DataType.UPLOADED;
     this.uploadedSetId_ = this.uploadedSetId_ ? ++this.uploadedSetId_ : 1;
     var title = "Custom data " + this.uploadedSetId_ + " (" + dataType + ")";
     if (data.title) {

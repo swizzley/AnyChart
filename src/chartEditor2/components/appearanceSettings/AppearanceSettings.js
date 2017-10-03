@@ -83,7 +83,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
   var panel;
   var button;
   var settings = model.getModel();
-  var panelsExcludes = anychart.chartEditor2Module.EditorModel.chartTypes[settings['chart']['type']]['panelsExcludes'];
+  var panelsExcludes = anychart.chartEditor2Module.EditorModel.ChartTypes[settings['chart']['type']]['panelsExcludes'];
   var excluded;
 
   for (var i = 0; i < this.panels_.length; i++) {

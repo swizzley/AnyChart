@@ -57,7 +57,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createDom = function() {
 
   this.chartTypeSelect_ = new anychart.chartEditor2Module.select.ChartType();
   this.chartTypeSelect_.init(model, [['chart'], 'type'], 'setChartType');
-  this.chartTypeSelect_.initOptions(goog.object.getValues(anychart.chartEditor2Module.EditorModel.chartTypes));
+  this.chartTypeSelect_.initOptions(goog.object.getValues(anychart.chartEditor2Module.EditorModel.ChartTypes));
   coreFieldsContainer.addChild(this.chartTypeSelect_, true);
 
   this.geoDataInputs_ = new anychart.chartEditor2Module.GeoDataInputs(model);
@@ -168,7 +168,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createDataSetsOptions_ =
   var field = model.getValue([['dataSettings'], 'field']);
 
   for (var i = 0; i < data.length; i++) {
-    if (data[i].type == anychart.chartEditor2Module.EditorModel.dataType.GEO)
+    if (data[i].type == anychart.chartEditor2Module.EditorModel.DataType.GEO)
       continue;
 
     this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
@@ -195,7 +195,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOpti
       caption: title
     }));
 
-    if (dataItem.type === anychart.chartEditor2Module.EditorModel.dataType.GEO) {
+    if (dataItem.type === anychart.chartEditor2Module.EditorModel.DataType.GEO) {
       continue;
     }
 

@@ -55,7 +55,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createDom = function() {
   this.getKey();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
-  var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+  var singleSeries = !!anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['singleSeries'];
   if (!singleSeries) {
     var mappings = model.getValue([['dataSettings'], ['mappings', this.plotIndex_]]);
     var keyStr = chartType === 'stock' ? 'plot(' + this.plotIndex_ + ').' : '';
@@ -89,11 +89,11 @@ anychart.chartEditor2Module.SeriesPanel.prototype.update = function() {
   anychart.chartEditor2Module.SeriesPanel.base(this, 'update');
 
   var chartType = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getValue([['chart'], 'type']);
-  var seriesTypes = anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['series'];
+  var seriesTypes = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['series'];
   for (var i = 0; i < seriesTypes.length; i++) {
     var type = seriesTypes[i];
-    var caption = anychart.chartEditor2Module.EditorModel.series[type]['name'] ?
-        anychart.chartEditor2Module.EditorModel.series[type]['name'] :
+    var caption = anychart.chartEditor2Module.EditorModel.Series[type]['name'] ?
+        anychart.chartEditor2Module.EditorModel.Series[type]['name'] :
         goog.string.capitalize(type);
 
     var item = new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
@@ -147,7 +147,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createFields = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var seriesType = model.getValue(this.getKey('ctor'));
 
-  var fieldsMap = anychart.chartEditor2Module.EditorModel.series[seriesType]['fields'];
+  var fieldsMap = anychart.chartEditor2Module.EditorModel.Series[seriesType]['fields'];
   goog.object.forEach(fieldsMap, function(item) {
     var fieldLabel = item['name'] ? item['name'] : item['field'];
     var fieldSelect = new anychart.chartEditor2.controls.select.DataField({

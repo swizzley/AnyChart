@@ -86,7 +86,7 @@ anychart.chartEditor2Module.PlotPanel.prototype.update = function (evt) {
     goog.dispose(this.addSeriesBtn_);
     this.addSeriesBtn_ = null;
 
-    var singleSeries = !!anychart.chartEditor2Module.EditorModel.chartTypes[chartType]['singleSeries'];
+    var singleSeries = !!anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['singleSeries'];
     if (!singleSeries) {
         var addSeriesBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ButtonRenderer,

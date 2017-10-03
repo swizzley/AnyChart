@@ -59,14 +59,14 @@ anychart.chartEditor2Module.DataSetPanelList.prototype.update = function(opt_evt
   var step = /** @type {anychart.chartEditor2Module.steps.Base} */(this.getParent());
   if (data.length) {
     for (var i = 0; i < data.length; i++) {
-      if (step.getIndex() === 1 || data[i].type !== anychart.chartEditor2Module.EditorModel.dataType.GEO) {
+      if (step.getIndex() === 1 || data[i].type !== anychart.chartEditor2Module.EditorModel.DataType.GEO) {
         var panel = new anychart.chartEditor2Module.DataSetPanel(data[i]);
         this.panels_.push(panel);
         this.addChild(panel, true);
 
         panel.setDisabled(step.getIndex() === 0 || this.panels_[i].getSetFullId() !== active);
 
-        if (data[i].type === anychart.chartEditor2Module.EditorModel.dataType.GEO)
+        if (data[i].type === anychart.chartEditor2Module.EditorModel.DataType.GEO)
           this.panels_[i].setActiveGeo(this.panels_[i].getSetFullId() === activeGeo);
       }
     }
