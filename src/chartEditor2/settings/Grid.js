@@ -107,8 +107,7 @@ anychart.chartEditor2Module.settings.Grid.prototype.onChartDraw = function(evt) 
 
   if (!this.gridExists) {
     var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
-    var gridsCountGetter = stringKey == 'xGrid()' ? 'getXGridsCount' : 'getYGridsCount';
-    this.gridExists = !!chart[gridsCountGetter]();
+    this.gridExists = stringKey == 'xGrid()' ? !!chart.getXGridsCount() : !!chart.getYGridsCount();
     this.stroke_.exclude(!this.gridExists);
   }
 
