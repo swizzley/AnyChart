@@ -46,13 +46,10 @@
 
 .anychart-label-input {
   .border-radius(1px);
+  .box-sizing(content-box);
 
   border: 1px solid #d9d9d9;
   border-top: 1px solid silver;
-
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
 
   font-size: 13px;
   height: 16px;
@@ -74,9 +71,8 @@
   line-height: 1.42857143;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 2px;
-  -webkit-transition: border .2s ease-in-out;
-  transition: border .2s ease-in-out;
+  .border-radius(2px);
+  .transition(border .2s ease-in-out);
 
   > img {
     margin-right: auto;
@@ -89,7 +85,7 @@
   &:hover,
   &:focus {
     border-color: #ccc;
-    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    .box-shadow(0 1px 3px rgba(0,0,0,.2));
   }
 
   &:active {
@@ -118,15 +114,15 @@
   }
 
   .anychart-loader-rotating-plane {
+    .border-radius(20%);
+    .animation(anychart-loader-rotate-plane, 3s, infinite);
+
     display: block;
     width: 100%;
     height: 100%;
-    border-radius: 20%;
     border: 5px solid #1c75ba;
     margin: 0 auto;
     position: relative;
-    -webkit-animation: anychart-loader-rotate-plane 3s infinite;
-    animation: anychart-loader-rotate-plane 3s infinite;
   }
 
   .anychart-loader-chart-row {
@@ -151,22 +147,25 @@
       &.anychart-loader-green {
         background: #26a957;
         height: 50%;
-        -webkit-animation: anychart-loader-blink-plane 1.5s infinite;
-        animation: anychart-loader-blink-plane 1.5s infinite;
+        .animation(anychart-loader-blink-plane, 1.5s, infinite);
+        //-webkit-animation: anychart-loader-blink-plane 1.5s infinite;
+        //animation: anychart-loader-blink-plane 1.5s infinite;
       }
 
       &.anychart-loader-orange {
         background: #ff8207;
         height: 70%;
-        -webkit-animation: anychart-loader-blink-plane 1.5s infinite .15s;
-        animation: anychart-loader-blink-plane 1.5s infinite .25s
+        .animation(anychart-loader-blink-plane, 1.5s, infinite, .25s);
+        //-webkit-animation: anychart-loader-blink-plane 1.5s infinite .15s;
+        //animation: anychart-loader-blink-plane 1.5s infinite .25s
       }
 
       &.anychart-loader-red {
         background: #f0402e;
         height: 90%;
-        -webkit-animation: anychart-loader-blink-plane 1.5s infinite .3s;
-        animation: anychart-loader-blink-plane 1.5s infinite .5s
+        .animation(anychart-loader-blink-plane, 1.5s, infinite, .5s);
+        //-webkit-animation: anychart-loader-blink-plane 1.5s infinite .3s;
+        //animation: anychart-loader-blink-plane 1.5s infinite .5s
       }
     }
   }
@@ -174,40 +173,35 @@
 
 @keyframes anychart-loader-rotate-plane {
   0% {
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    opacity: 1
+    .transform(perspective(120px) rotateX(0deg) rotateY(0deg));
+    .opacity(1);
   }
   25% {
-    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    opacity: .3
+    .transform(perspective(120px) rotateX(-180.1deg) rotateY(0deg));
+    .opacity(0.3);
   }
   50% {
-    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-    opacity: 1
+    .transform(perspective(120px) rotateX(-180deg) rotateY(-179.9deg));
+    .opacity(1);
   }
   75% {
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(-180.1deg);
-    transform: perspective(120px) rotateX(0deg) rotateY(-180.1deg);
-    opacity: .3
+    .transform(perspective(120px) rotateX(0deg) rotateY(-180.1deg));
+    .opacity(0.3);
   }
   100% {
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    opacity: 1
+    .transform(perspective(120px) rotateX(0deg) rotateY(0deg));
+    .opacity(1);
   }
 }
 
 @keyframes anychart-loader-blink-plane {
   0% {
-    opacity: 1
+    .opacity(1);
   }
   50% {
-    opacity: .01
+    .opacity(0.01);
   }
   100% {
-    opacity: 1
+    .opacity(1);
   }
 }

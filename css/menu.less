@@ -1,18 +1,9 @@
 /* ------- MENU ------- */
 
 .anychart-menu {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-
-  -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-
-  -webkit-transition: opacity 0.218s;
-  -moz-transition: opacity 0.218s;
-  -o-transition: opacity 0.218s;
-  transition: opacity 0.218s;
+  .border-radius(0);
+  .box-shadow(0 2px 4px rgba(0,0,0,0.2));
+  .transition(opacity 0.218s);
 
   background: #fff;
   border: 1px solid #ccc;
@@ -87,8 +78,7 @@
 }
 
 .anychart-menuitem-disabled .anychart-menuitem-icon {
-  opacity: 0.3;
-  -moz-opacity: 0.3;
+  .opacity(0.3);
   filter: alpha(opacity=30);
 }
 
@@ -127,12 +117,12 @@
   padding: 0;
 
   a {
+    .box-sizing(border-box);
     text-decoration: none;
     color: inherit;
     display: inline-block;
     padding: 6px 3em 6px 28px;
     width: 100%;
-    box-sizing: border-box;
     transition: none; /* fix for anychart gallery (there used transition all for any A element) */
   }
 
@@ -209,11 +199,7 @@
 /* @noflip */
 .anychart-submenu-arrow {
   color: #000;
-
-  -webkit-transition: all 0.218s;
-  -moz-transition: all 0.218s;
-  -o-transition: all 0.218s;
-  transition: all 0.218s;
+  .transition(all 0.218s);
 
   //font-size: 70%;
   left: auto;
@@ -222,7 +208,7 @@
 
   //position: absolute;
   text-align: right;
-  opacity: .5;
+  .opacity(0.5);
   filter: alpha(opacity=50);
 
   //width: 0;
@@ -245,13 +231,10 @@
 
 .anychart-menuitem-highlight .anychart-submenu-arrow,
 .anychart-menuitem-hover .anychart-submenu-arrow {
-  -webkit-transition: none;
-  -moz-transition: none;
-  -o-transition: none;
-  transition: none;
+  .transition(none);
+  .opacity(1);
 
   border-left-color: #333;
-  opacity: 1.0;
 }
 
 /* BiDi override. */
@@ -266,7 +249,7 @@
 /* State: disabled. */
 .anychart-menuitem-disabled .anychart-submenu-arrow {
   border-left-color: #ccc;
-  opacity: 1.0;
+  .opacity(1);
 }
 
 /* ------- MENU SCROLLABLE ------- */

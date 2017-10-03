@@ -17,9 +17,7 @@
 }
 
 .anychart-border-box {
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
+  .box-sizing(border-box);
 }
 // endregion
 
@@ -116,19 +114,19 @@
 }
 
 .anychart-breadcrumbs-item-indicator {
+  .border-radius(4px);
   margin-top: 6px;
   height: 7px;
   width: 260px;
   background: #7093aa;
-  border-radius: 4px;
 }
 
 .anychart-breadcrumbs-button {
+  .border-radius(40px);
   float: right;
   font-size: 18px;
   background: @color-blue;
   color: white;
-  border-radius: 40px;
   border: none;
   padding: 10px 18px;
   margin-top: 10px;
@@ -245,11 +243,11 @@
 }
 
 .anychart-predefined-datasets-item-btn {
+  .border-radius(4px);
   font-size: 14px;
   padding: 6px 10px;
   display: inline-block;
   cursor: pointer;
-  border-radius: 4px;
 }
 
 .anychart-predefined-datasets-item-btn-use {
@@ -269,15 +267,16 @@
 
 // region ---- select with icon
 .anychart-ui-select-with-icon {
+  .border-radius(4px);
   padding: 4px 0;
   background: @color-background;
-  border-radius: 4px;
   position: relative;
   text-align: right;
   outline: none;
 }
 
 .anychart-ui-select-with-icon-open {
+  //.border-radiuses() // try to use
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -335,6 +334,7 @@
 }
 
 .anychart-ui-menu-item-with-icon:last-child {
+  //.border-radiuses() // try to use
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
@@ -366,14 +366,13 @@
 }
 
 .anychart-connected-data-sets-item {
+  .box-shadow(2px 2px 7px #c4d5df);
   position: relative;
   width: 100%;
   overflow-x: hidden;
   background: white;
   padding: 14px;
   margin-bottom: 14px;
-  box-shadow: 2px 2px 7px #c4d5df;
-  -moz-box-shadow: 2px 2px 7px #c4d5df;
 }
 
 .anychart-setup-chart-step {
@@ -429,13 +428,13 @@
 }
 
 .anychart-connected-data-sets-item-field {
+  .border-radius(4px);
   font-size: 14px;
   text-transform: uppercase;
   color: #7093aa;
   padding: 8px 12px;
   background: @color-background;
   margin-bottom: 4px;
-  border-radius: 4px;
 }
 
 .anychart-connected-data-sets-item-field:last-child {
@@ -470,14 +469,15 @@
 
 }
 .anychart-select-data-field-select {
+  .border-radius(4px);
   outline: none;
   background: @color-background;
-  border-radius: 4px;
   min-width: 210px;
   float: right;
 }
 
 .anychart-select-data-field-select-open {
+  //.border-radiuses() // try to use
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border: 1px solid #c7d8e4;
@@ -490,6 +490,7 @@
 }
 
 .anychart-select-data-field-select-content {
+  .border-radius(4px);
   font-size: 16px;
   text-transform: uppercase;
   color: #7093aa;
@@ -497,7 +498,6 @@
   margin: 4px;
   background: white;
   display: inline-block;
-  border-radius: 4px;
   cursor: default;
 }
 
@@ -518,6 +518,7 @@
   width: 210px;
   border: 1px solid #c7d8e4;
   border-top: none;
+  //.border-radiuses() // try to use
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   z-index: 1;
@@ -552,10 +553,10 @@
 }
 
 .anychart-chart-data-settings-core {
+  .box-sizing(border-box);
   width: 100%;
   background: white;
   padding: 14px;
-  box-sizing: border-box;
 }
 
 .anychart-select-chart-type {
@@ -609,11 +610,11 @@
 
 .anychart-plot-panel-add-series-btn,
 .anychart-chart-data-settings-add-blot-btn {
+  .border-radius(4px);
   font-size: 14px;
   padding: 6px 10px;
   display: inline-block;
   cursor: pointer;
-  border-radius: 4px;
   background: @color-blue;
   color: white;
   margin-right: 10px;
@@ -660,16 +661,16 @@
 }
 
 .anychart-plot-panel-series-name {
+  .border-radius(4px);
+  .box-sizing(border-box);
   font-size: 16px;
   padding: 7px 14px;
   width: 100%;
   display: block;
-  box-sizing: border-box;
   height: 32px;
   color: #7093aa;
   background: @color-background;
   border: none;
-  border-radius: 4px;
 }
 
 .anychart-select-chart-type-menu {
@@ -733,9 +734,8 @@
   > .settings-panel {
     margin: 5px; // to make box-shadow visible
     > .content {
+      .box-shadow(1px 0px 9px #c4d5df);
       padding: 15px;
-      box-shadow: 1px 0px 9px #c4d5df;
-      -moz-box-shadow: 1px 0px 9px #c4d5df;
     }
 
   }
