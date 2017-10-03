@@ -1216,7 +1216,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
 
   'chart': {
     'enabled': true,
-    'padding': {'top': 10, 'right': 20, 'bottom': 15, 'left': 10},
+    'padding': {'top': 10, 'right': 30, 'bottom': 15, 'left': 10},
     'margin': 0,
     'background': {'enabled': true, 'zIndex': 1},
     'contextMenu': {
