@@ -16,6 +16,8 @@ goog.require('anychart.chartEditor2Module.settings.Stroke');
 anychart.chartEditor2Module.settings.Grid = function(model, name, opt_domHelper) {
   anychart.chartEditor2Module.settings.Grid.base(this, 'constructor', model, opt_domHelper);
   this.name = name;
+
+  this.gridExists = false;
 };
 goog.inherits(anychart.chartEditor2Module.settings.Grid, anychart.chartEditor2Module.SettingsPanel);
 
@@ -57,6 +59,7 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
       ],
       'Palette');
   goog.dom.appendChild(content, paletteLabel);
+  this.labels.push(paletteLabel);
 
   var paletteInput = new anychart.chartEditor2Module.input.Palette('Comma separated colors');
   this.addChild(paletteInput, true);
@@ -70,6 +73,7 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var stroke = new anychart.chartEditor2Module.settings.Stroke(model, 'Stroke');
+  stroke.exclude(true);
   this.addChild(stroke, true);
   this.stroke_ = stroke;
 };
@@ -87,18 +91,37 @@ anychart.chartEditor2Module.settings.Grid.prototype.updateKeys = function() {
   if (this.firstLine_) this.firstLine_.init(model, this.genKey('drawFirstLine()'));
   if (this.lastLine_) this.lastLine_.init(model, this.genKey('drawLastLine()'));
   if (this.palette_) this.palette_.init(model, this.genKey('palette()'));
+
   if (this.stroke_) this.stroke_.setKey(this.genKey('stroke()'));
 };
 
 
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.Grid.prototype.onChartDraw = function(evt) {
-  anychart.chartEditor2Module.settings.Grid.base(this, 'onChartDraw', evt);
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  this.getHandler().listenOnce(model, anychart.chartEditor2Module.events.EventType.CHART_DRAW, this.onChartDraw);
 
-  var target = evt.chart;
-  this.firstLine_.setValueByTarget(target);
-  this.lastLine_.setValueByTarget(target);
-  this.palette_.setValueByTarget(target, true);
+  if (this.isExcluded()) return;
+
+  var chart = evt.chart;
+
+  if (!this.gridExists) {
+    var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
+    var gridsCountGetter = stringKey == 'xGrid()' ? 'getXGridsCount' : 'getYGridsCount';
+    this.gridExists = !!chart[gridsCountGetter]();
+    this.stroke_.exclude(!this.gridExists);
+  }
+
+  if (evt.rebuild && this.gridExists) {
+    this.enableContentCheckbox.setValueByTarget(chart);
+    this.setContentEnabled(this.enableContentCheckbox.isChecked());
+
+    this.firstLine_.setValueByTarget(chart);
+    this.lastLine_.setValueByTarget(chart);
+    this.palette_.setValueByTarget(chart, true);
+  } else {
+    this.setContentEnabled(false);
+  }
 };
 
 

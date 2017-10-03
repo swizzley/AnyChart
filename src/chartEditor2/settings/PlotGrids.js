@@ -59,8 +59,6 @@ anychart.chartEditor2Module.settings.PlotGrids.prototype.updateKeys = function()
     if (goog.isDef(this.plotIndex_))
       this.key.push('plot(' + this.plotIndex_ + ')');
 
-    // var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-
     // Update keys of children
     if (this.xGrid_) this.xGrid_.setKey(this.genKey('xGrid()'));
     if (this.yGrid_) this.yGrid_.setKey(this.genKey('yGrid()'));

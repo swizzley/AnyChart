@@ -532,6 +532,18 @@ anychart.core.ChartWithAxes.prototype.calculateGridsThickness = function() {
 };
 
 
+/** @return {number} */
+anychart.core.ChartWithAxes.prototype.getXGridsCount = function() {
+  return this.xGrids_.length;
+};
+
+
+/** @return {number} */
+anychart.core.ChartWithAxes.prototype.getYGridsCount = function() {
+  return this.yGrids_.length;
+};
+
+
 //endregion
 //region --- Axes
 //----------------------------------------------------------------------------------------------------------------------
