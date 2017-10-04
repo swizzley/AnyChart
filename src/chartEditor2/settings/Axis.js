@@ -22,6 +22,8 @@ anychart.chartEditor2Module.settings.Axis = function(model, xOrY, index, opt_dom
   this.index_ = index;
   this.name = this.xOrY + 'Axis(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], this.xOrY + 'Axis(' + this.index_ + ')'];
+
+  this.axisExists = false;
 };
 goog.inherits(anychart.chartEditor2Module.settings.Axis, anychart.chartEditor2Module.SettingsPanel);
 
@@ -95,12 +97,11 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
   title.allowEditPosition(false, this.xOrY == 'x' ? 'bottom' : 'left');
   title.setKey(this.genKey('title()')); // This is for enabled working sake!
   this.addChild(title, true);
+  this.title_ = title;
 
   goog.dom.appendChild(element, goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName('anychart-chart-editor-settings-item-gap')));
-
-  this.title_ = title;
 
   //region Labels
   var labels = new anychart.chartEditor2Module.settings.Title(model, 'Labels');
@@ -118,26 +119,39 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
 
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.Axis.prototype.updateKeys = function() {
-  if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-    if (this.orientation_) this.orientation_.init(model, this.genKey('orientation()'));
-    if (this.inverted_) this.inverted_.init(model, [['chart'], ['settings'], this.xOrY + 'Scale().inverted()']);
-    if (this.title_) this.title_.setKey(this.genKey('title()'));
-    if (this.labels_) this.labels_.setKey(this.genKey('labels()'));
-  }
-
   anychart.chartEditor2Module.settings.Axis.base(this, 'updateKeys');
+  if (this.isExcluded()) return;
+
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  if (this.orientation_) this.orientation_.init(model, this.genKey('orientation()'));
+  if (this.inverted_) this.inverted_.init(model, [['chart'], ['settings'], this.xOrY + 'Scale().inverted()']);
+  if (this.title_) this.title_.setKey(this.genKey('title()'));
+  if (this.labels_) this.labels_.setKey(this.genKey('labels()'));
 };
 
 
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.Axis.prototype.onChartDraw = function(evt) {
-  anychart.chartEditor2Module.settings.Axis.base(this, 'onChartDraw', evt);
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  this.getHandler().listenOnce(model, anychart.chartEditor2Module.events.EventType.CHART_DRAW, this.onChartDraw);
   if (this.isExcluded()) return;
 
-  var target = evt.chart;
-  this.orientation_.setValueByTarget(target);
-  this.inverted_.setValueByTarget(target);
+  var chart = evt.chart;
+  if (!this.axisExists) {
+    this.axisExists = (this.xOrY == 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
+    this.title_.exclude(!this.axisExists);
+    this.labels_.exclude(!this.axisExists);
+  }
+
+  if (evt.rebuild && this.axisExists) {
+    this.enableContentCheckbox.setValueByTarget(chart);
+    this.setContentEnabled(this.enableContentCheckbox.isChecked());
+
+    this.orientation_.setValueByTarget(chart);
+    this.inverted_.setValueByTarget(chart);
+  } else {
+    this.setContentEnabled(false);
+  }
 };
 
 
@@ -145,7 +159,10 @@ anychart.chartEditor2Module.settings.Axis.prototype.onChartDraw = function(evt) 
 anychart.chartEditor2Module.settings.Axis.prototype.disposeInternal = function() {
   this.orientation_ = null;
   this.inverted_ = null;
+
+  goog.dispose(this.title_);
   this.title_ = null;
+  goog.dispose(this.labels_);
   this.labels_ = null;
 
   anychart.chartEditor2Module.settings.Axis.base(this, 'disposeInternal');

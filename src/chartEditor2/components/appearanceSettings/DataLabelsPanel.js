@@ -56,10 +56,12 @@ anychart.chartEditor2Module.DataLabelsPanel.prototype.update = function(opt_evt)
       if (goog.isFunction(child.getKey)) {
         var key = child.getKey();
         var stringKey = key[key.length - 1];
-        if (lastKey == stringKey) {
 
+        if (lastKey == stringKey) {
+          var value = model.getValue(key);
           var chartType = model.getValue([['chart'], 'type']);
           var singleSeries = !!anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['singleSeries'];
+
           if (!singleSeries) {
             var mappings = model.getValue([['dataSettings'], 'mappings']);
             for (var i = 0; i < mappings.length; i++) {
@@ -67,7 +69,6 @@ anychart.chartEditor2Module.DataLabelsPanel.prototype.update = function(opt_evt)
                 var seriesId = mappings[i][j]['id'];
                 var stringKey2 = (chartType == 'stock' ? 'plot(' + i + ').' : '') + 'getSeries(\'' + seriesId + '\').' + stringKey;
                 var key2 = [['chart'], ['settings'], stringKey2];
-                var value = model.getValue(key);
                 model.setValue(key2, value);
               }
             }

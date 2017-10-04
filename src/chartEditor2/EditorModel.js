@@ -133,6 +133,14 @@ anychart.chartEditor2Module.EditorModel.DataType = {
  * @type {Object}
  */
 anychart.chartEditor2Module.EditorModel.ChartTypes = {
+  // 'cartesian': {
+  //   'value': 'cartesian',
+  //   'name': 'cartesian',
+  //   'icon': 'line-chart-1.svg', // 'http://www.anychart.com/_design/img/upload/charts/types/'
+  //   'series': ['line', 'spline', 'column', 'area', 'ohlc'], // first value is default
+  //   'dataSetCtor': 'set',
+  //   'panelsExcludes' : ['colorScale']
+  // },
   'line': {
     'value': 'line',
     'name': 'Line',

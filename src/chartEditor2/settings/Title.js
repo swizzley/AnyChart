@@ -277,6 +277,7 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
 
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.Title.prototype.onChartDraw = function(evt) {
+  if (this.isExcluded()) return;
   anychart.chartEditor2Module.settings.Title.base(this, 'onChartDraw', evt);
 
   var target = evt.chart;

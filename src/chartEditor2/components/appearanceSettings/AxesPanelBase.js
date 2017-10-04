@@ -94,10 +94,12 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.createAxes = function() {
   var options = model.getModel();
   var settings = options['chart']['settings'];
 
-  var firstAxisEnabled = settings[this.xOrY + 'Axis(0).enabled()'];
-  if (!goog.isDef(firstAxisEnabled)) {
-    model.setValue([['chart'], ['settings'], this.xOrY + 'Axis(0).enabled()'], true, true);
-  }
+  // var firstAxisEnabled = settings[this.xOrY + 'Axis(0).enabled()'];
+  // if (!goog.isDef(firstAxisEnabled)) {
+  //   model.setValue([['chart'], ['settings'], this.xOrY + 'Axis(0).enabled()'], true, true);
+  // }
+  // Always create 0 axis panel
+  this.addAxis(0);
 
   var pattern = '^' + this.xOrY + 'Axis\\((\\d+)\\)\\.enabled\\(\\)$';
   var regExp = new RegExp(pattern);
@@ -105,7 +107,8 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.createAxes = function() {
     var match = key.match(regExp);
     if (match) {
       var axisIndex = Number(match[1]);
-      this.addAxis(axisIndex);
+      if (axisIndex > 0)
+        this.addAxis(axisIndex);
     }
   }
 };

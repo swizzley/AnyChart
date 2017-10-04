@@ -87,7 +87,6 @@ anychart.chartEditor2Module.settings.Grid.prototype.updateKeys = function() {
   if (this.isExcluded()) return;
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-
   if (this.firstLine_) this.firstLine_.init(model, this.genKey('drawFirstLine()'));
   if (this.lastLine_) this.lastLine_.init(model, this.genKey('drawLastLine()'));
   if (this.palette_) this.palette_.init(model, this.genKey('palette()'));
@@ -100,7 +99,6 @@ anychart.chartEditor2Module.settings.Grid.prototype.updateKeys = function() {
 anychart.chartEditor2Module.settings.Grid.prototype.onChartDraw = function(evt) {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   this.getHandler().listenOnce(model, anychart.chartEditor2Module.events.EventType.CHART_DRAW, this.onChartDraw);
-
   if (this.isExcluded()) return;
 
   var chart = evt.chart;
