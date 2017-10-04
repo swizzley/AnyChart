@@ -827,7 +827,7 @@ anychart.chartEditor2Module.EditorModel.prototype.dropSeries = function(plotInde
 
 /**
  * Callback function for change of active and field select.
- * @param {anychart.chartEditor2Module.select.Base} input
+ * @param {anychart.chartEditor2Module.controls.select.Base} input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setActiveAndField = function(input) {
   var selectValue = /** @type {Object} */(input.getValue());
@@ -857,7 +857,7 @@ anychart.chartEditor2Module.EditorModel.prototype.setActiveAndField = function(i
 
 /**
  * Callback function for change event of chart type select.
- * @param {anychart.chartEditor2Module.select.Base} input
+ * @param {anychart.chartEditor2Module.controls.select.Base} input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setChartType = function(input) {
   var prevChartType = /** @type {string} */(this.model_['chart']['type']);
@@ -915,7 +915,7 @@ anychart.chartEditor2Module.EditorModel.prototype.setStackMode = function(opt_st
 
 /**
  * Callback function for change of series type select.
- * @param {anychart.chartEditor2Module.select.Base} input
+ * @param {anychart.chartEditor2Module.controls.select.Base} input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setSeriesType = function(input) {
   var key = input.getKey();
@@ -934,7 +934,7 @@ anychart.chartEditor2Module.EditorModel.prototype.setSeriesType = function(input
 
 /**
  * Callback function for change of theme select.
- * @param {anychart.chartEditor2Module.select.Base} input
+ * @param {anychart.chartEditor2Module.controls.select.Base} input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setTheme = function(input) {
   delete this.model_['chart']['settings']['palette()'];

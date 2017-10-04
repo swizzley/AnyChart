@@ -1,38 +1,36 @@
-goog.provide('anychart.chartEditor2Module.select.FontFamily');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.provide('anychart.chartEditor2Module.controls.select.FontFamily');
+
+goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
 
 
 
 /**
  * @constructor
- * @extends {anychart.chartEditor2Module.select.Base}
+ * @extends {anychart.chartEditor2.controls.select.DataFieldSelect}
  */
-anychart.chartEditor2Module.select.FontFamily = function() {
-  anychart.chartEditor2Module.select.FontFamily.base(this, 'constructor');
+anychart.chartEditor2Module.controls.select.FontFamily = function() {
+  anychart.chartEditor2Module.controls.select.FontFamily.base(this, 'constructor');
 
-  this.setOptions([
-    'Arial, Helvetica, sans-serif',
-    'Arial Black, Gadget, sans-serif',
-    'Comic Sans MS, cursive, sans-serif',
-    'Impact, Charcoal, sans-serif',
-    'Lucida Sans Unicode, Lucida Grande, sans-serif',
-    'Tahoma, Geneva, sans-serif',
-    'Trebuchet MS, Helvetica, sans-serif',
-    'Verdana, Helvetica, Arial, sans-serif',
-    '"Lucida Console", Monaco, monospace',
-    '"Source Sans Pro", sans-serif'
-  ]);
-  this.setCaptions([
-    'Arial',
-    'Arial Black',
-    'Comic Sans MS',
-    'Impact',
-    'Lucida Sans Unicode',
-    'Tahoma',
-    'Trebuchet MS',
-    'Verdana',
-    'Lucida Console',
-    'Source Sans Pro'
-  ]);
+  var fonts = {
+    'Arial': 'Arial, Helvetica, sans-serif',
+    'Arial Black': 'Arial Black, Gadget, sans-serif',
+    'Comic Sans MS': 'Comic Sans MS, cursive, sans-serif',
+    'Impact': 'Impact, Charcoal, sans-serif',
+    'Lucida Sans Unicode': 'Lucida Sans Unicode, Lucida Grande, sans-serif',
+    'Tahoma': 'Tahoma, Geneva, sans-serif',
+    'Trebuchet MS': 'Trebuchet MS, Helvetica, sans-serif',
+    'Verdana': 'Verdana, Helvetica, Arial, sans-serif',
+    'Lucida Console': '"Lucida Console", Monaco, monospace',
+    'Source Sans Pro': '"Source Sans Pro", sans-serif'
+  };
+
+  for (var key in fonts) {
+    this.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+      caption: key,
+      value: fonts[key]
+    }));
+  }
+
 };
-goog.inherits(anychart.chartEditor2Module.select.FontFamily, anychart.chartEditor2Module.select.Base);
+goog.inherits(anychart.chartEditor2Module.controls.select.FontFamily, anychart.chartEditor2.controls.select.DataFieldSelect);

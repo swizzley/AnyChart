@@ -129,7 +129,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.createGeoDataOptions_ = func
 anychart.chartEditor2Module.GeoDataInputs.prototype.onSelectGeoData_ = function(evt) {
   if (!this.geoDataIndex.length) return;
 
-  var setId = /** @type {number} */(/** @type {anychart.chartEditor2Module.select.SelectWithLabel} */(evt.target).getValue()).value;
+  var setId = /** @type {number} */(/** @type {anychart.chartEditor2Module.controls.select.Base} */(evt.target).getValue()).value;
   var activeGeo = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()).getValue([['dataSettings'], 'activeGeo']);
   if (activeGeo && (anychart.chartEditor2Module.EditorModel.DataType.GEO + setId) == activeGeo) return;
 

@@ -1,7 +1,6 @@
-goog.provide('anychart.chartEditor2Module.select.Base');
+goog.provide('anychart.chartEditor2Module.controls.select.Base');
 
 goog.require('anychart.chartEditor2Module.events');
-goog.require('anychart.chartEditor2Module.select.Renderer');
 
 goog.require('goog.ui.Option');
 goog.require('goog.ui.Select');
@@ -23,9 +22,9 @@ goog.require('goog.ui.Select');
  * @constructor
  * @extends {goog.ui.Select}
  */
-anychart.chartEditor2Module.select.Base = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
-  anychart.chartEditor2Module.select.Base.base(this, 'constructor', opt_caption, opt_menu,
-      opt_renderer || anychart.chartEditor2Module.select.Renderer.getInstance(),
+anychart.chartEditor2Module.controls.select.Base = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
+  anychart.chartEditor2Module.controls.select.Base.base(this, 'constructor', opt_caption, opt_menu,
+      opt_renderer,
       opt_domHelper, opt_menuRenderer);
 
   this.options_ = [];
@@ -59,35 +58,35 @@ anychart.chartEditor2Module.select.Base = function(opt_caption, opt_menu, opt_re
    */
   this.target = null;
 };
-goog.inherits(anychart.chartEditor2Module.select.Base, goog.ui.Select);
+goog.inherits(anychart.chartEditor2Module.controls.select.Base, goog.ui.Select);
 
 
 /**
  * @type {Array.<string>}
  * @private
  */
-anychart.chartEditor2Module.select.Base.prototype.options_;
+anychart.chartEditor2Module.controls.select.Base.prototype.options_;
 
 
 /**
  * @type {Array.<string>}
  * @private
  */
-anychart.chartEditor2Module.select.Base.prototype.captions_;
+anychart.chartEditor2Module.controls.select.Base.prototype.captions_;
 
 
 /**
  * @type {Array.<string>}
  * @private
  */
-anychart.chartEditor2Module.select.Base.prototype.icons_;
+anychart.chartEditor2Module.controls.select.Base.prototype.icons_;
 
 
 /**
  * Set model for options.
  * @param {Array.<Array|string>} options
  */
-anychart.chartEditor2Module.select.Base.prototype.setOptions = function(options) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setOptions = function(options) {
   this.options_ = [];
   var updateCaption = false;
   for (var i = 0; i < options.length; i++) {
@@ -112,7 +111,7 @@ anychart.chartEditor2Module.select.Base.prototype.setOptions = function(options)
  * Set caption for options.
  * @param {Array.<?string>} captions
  */
-anychart.chartEditor2Module.select.Base.prototype.setCaptions = function(captions) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setCaptions = function(captions) {
   this.captions_ = captions;
 };
 
@@ -121,13 +120,13 @@ anychart.chartEditor2Module.select.Base.prototype.setCaptions = function(caption
  * Set caption for options.
  * @param {Array.<string>} icons
  */
-anychart.chartEditor2Module.select.Base.prototype.setIcons = function(icons) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setIcons = function(icons) {
   this.icons_ = icons;
 };
 
 
 /** @param {anychart.chartEditor2Module.EditorModel.Key} value */
-anychart.chartEditor2Module.select.Base.prototype.setKey = function(value) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setKey = function(value) {
   this.key = value;
 };
 
@@ -136,14 +135,14 @@ anychart.chartEditor2Module.select.Base.prototype.setKey = function(value) {
  * Gets key.
  * @return {anychart.chartEditor2Module.EditorModel.Key}
  */
-anychart.chartEditor2Module.select.Base.prototype.getKey = function() {
+anychart.chartEditor2Module.controls.select.Base.prototype.getKey = function() {
   return this.key;
 };
 
 
 /** @override */
-anychart.chartEditor2Module.select.Base.prototype.createDom = function() {
-  anychart.chartEditor2Module.select.Base.base(this, 'createDom');
+anychart.chartEditor2Module.controls.select.Base.prototype.createDom = function() {
+  anychart.chartEditor2Module.controls.select.Base.base(this, 'createDom');
 
   this.updateOptions();
 };
@@ -153,7 +152,7 @@ anychart.chartEditor2Module.select.Base.prototype.createDom = function() {
  *
  * @param {string=} opt_default
  */
-anychart.chartEditor2Module.select.Base.prototype.updateOptions = function(opt_default) {
+anychart.chartEditor2Module.controls.select.Base.prototype.updateOptions = function(opt_default) {
   var optionItem;
 
   if (this.options_.length) {
@@ -194,7 +193,7 @@ anychart.chartEditor2Module.select.Base.prototype.updateOptions = function(opt_d
  * @param {string} icon
  * @return {Array|string}
  */
-anychart.chartEditor2Module.select.Base.prototype.createContentElements = function(option, caption, icon) {
+anychart.chartEditor2Module.controls.select.Base.prototype.createContentElements = function(option, caption, icon) {
   if (!goog.isDefAndNotNull(option)) return this.getCaption();
   caption = goog.isDef(caption) ? caption : option.toString();
   var content = [];
@@ -205,14 +204,14 @@ anychart.chartEditor2Module.select.Base.prototype.createContentElements = functi
 
 
 /** @override */
-anychart.chartEditor2Module.select.Base.prototype.enterDocument = function() {
-  anychart.chartEditor2Module.select.Base.base(this, 'enterDocument');
+anychart.chartEditor2Module.controls.select.Base.prototype.enterDocument = function() {
+  anychart.chartEditor2Module.controls.select.Base.base(this, 'enterDocument');
   goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.select.Base.prototype.handleSelectionChange = function (evt) {
+anychart.chartEditor2Module.controls.select.Base.prototype.handleSelectionChange = function (evt) {
   evt.preventDefault();
   evt.stopPropagation();
   if (this.excluded) return;
@@ -239,7 +238,7 @@ anychart.chartEditor2Module.select.Base.prototype.handleSelectionChange = functi
  * @param {boolean=} opt_noRebuild Should or not rebuild target (chart) on change value of this control.
  * @public
  */
-anychart.chartEditor2Module.select.Base.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
+anychart.chartEditor2Module.controls.select.Base.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
   /**
    * @type {anychart.chartEditor2Module.EditorModel}
    * @protected
@@ -260,7 +259,7 @@ anychart.chartEditor2Module.select.Base.prototype.init = function(model, key, op
  * @param {*} value
  * @param {Object=} opt_additionalValues
  */
-anychart.chartEditor2Module.select.Base.prototype.setValue = function(value, opt_additionalValues) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setValue = function(value, opt_additionalValues) {
   var selectionModel = this.getSelectionModel();
   if (goog.isDefAndNotNull(value) && selectionModel) {
     for (var i = 0, item; item = selectionModel.getItemAt(i); i++) {
@@ -296,7 +295,7 @@ anychart.chartEditor2Module.select.Base.prototype.setValue = function(value, opt
  *
  * @param {Object=} opt_additionalValues Object of additional values.
  */
-anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt_additionalValues) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setValueByModel = function(opt_additionalValues) {
   var modelValue;
   this.noDispatch = true;
 
@@ -319,7 +318,7 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByModel = function(opt
  * Updates model state.
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  */
-anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(target) {
+anychart.chartEditor2Module.controls.select.Base.prototype.setValueByTarget = function(target) {
   if (this.excluded) return;
 
   if (!this.key || !this.key.length) {
@@ -341,7 +340,7 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(ta
 //  * @override
 //  * @suppress {visibility}
 //  */
-// anychart.chartEditor2Module.select.Base.prototype.updateCaption = function() {
+// anychart.chartEditor2Module.controls.select.Base.prototype.updateCaption = function() {
 //   var selectedIndex = this.getSelectedIndex();
 //   var item = this.getSelectedItem();
 //   var option = this.options_[selectedIndex];
@@ -369,7 +368,7 @@ anychart.chartEditor2Module.select.Base.prototype.setValueByTarget = function(ta
 /**
  * @param {boolean} value
  */
-anychart.chartEditor2Module.select.Base.prototype.suspendDispatch = function(value) {
+anychart.chartEditor2Module.controls.select.Base.prototype.suspendDispatch = function(value) {
   this.noDispatch = value;
 };
 
@@ -378,7 +377,7 @@ anychart.chartEditor2Module.select.Base.prototype.suspendDispatch = function(val
  * Hide or show control by assigning 'hidden' class
  * @param {boolean} value True if excluded.
  */
-anychart.chartEditor2Module.select.Base.prototype.exclude = function(value) {
+anychart.chartEditor2Module.controls.select.Base.prototype.exclude = function(value) {
   this.excluded = value;
   if (this.isInDocument())
     goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
@@ -391,7 +390,7 @@ anychart.chartEditor2Module.select.Base.prototype.exclude = function(value) {
 /**
  * @return {boolean}
  */
-anychart.chartEditor2Module.select.Base.prototype.isExcluded = function() {
+anychart.chartEditor2Module.controls.select.Base.prototype.isExcluded = function() {
   return this.excluded;
 };
 
@@ -399,7 +398,7 @@ anychart.chartEditor2Module.select.Base.prototype.isExcluded = function() {
 /**
  * @public
  */
-anychart.chartEditor2Module.select.Base.prototype.updateExclusion = function() {
+anychart.chartEditor2Module.controls.select.Base.prototype.updateExclusion = function() {
   if (!this.key || !this.key.length) return;
 
   var stringKey = this.editorModel.getStringKey(this.key);

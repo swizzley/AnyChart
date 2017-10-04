@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditor2Module.settings.Stroke');
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 
 
 
@@ -40,7 +40,7 @@ anychart.chartEditor2Module.settings.Stroke.prototype.createDom = function() {
 
   goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.Stroke.CSS_CLASS);
 
-  var dash = new anychart.chartEditor2Module.select.Base();
+  var dash = new anychart.chartEditor2Module.controls.select.Base();
   //dash.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   dash.setOptions(['0', '5 5', '5 10', '10 5', '15 10 5 10', '5 5 1 5']);
   dash.setCaptions([null, null, null, null, null, null]);

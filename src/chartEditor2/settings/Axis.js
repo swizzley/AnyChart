@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditor2Module.settings.Axis');
 goog.require('anychart.chartEditor2Module.IconButtonRenderer');
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.checkbox.Base');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 goog.require('anychart.chartEditor2Module.settings.Title');
 
 
@@ -69,7 +69,7 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
 
-  var orientationSelect = new anychart.chartEditor2Module.select.Base();
+  var orientationSelect = new anychart.chartEditor2Module.controls.select.Base();
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   var orientationSelectMenu = orientationSelect.getMenu();

@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.TooltipPanel');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('anychart.chartEditor2Module.settings.TooltipTitle');
 
@@ -43,7 +43,7 @@ anychart.chartEditor2Module.TooltipPanel.prototype.createDom = function() {
   goog.dom.appendChild(content, displayModeLabels);
   this.displayModeLabel_ = displayModeLabels;
 
-  var displayMode = new anychart.chartEditor2Module.select.Base();
+  var displayMode = new anychart.chartEditor2Module.controls.select.Base();
   displayMode.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   displayMode.setOptions(['separated', 'single', 'union']);
   this.addChild(displayMode, true);
@@ -64,7 +64,7 @@ anychart.chartEditor2Module.TooltipPanel.prototype.createDom = function() {
   goog.dom.appendChild(content, positionModeLabels);
   this.positionModeLabel_ = positionModeLabels;
 
-  var positionMode = new anychart.chartEditor2Module.select.Base();
+  var positionMode = new anychart.chartEditor2Module.controls.select.Base();
   positionMode.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   positionMode.setOptions(['chart', 'float', 'point']);
   this.addChild(positionMode, true);

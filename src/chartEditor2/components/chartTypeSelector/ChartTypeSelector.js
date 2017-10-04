@@ -7,7 +7,6 @@ goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.GeoDataInputs');
 goog.require('anychart.chartEditor2Module.PlotPanel');
 goog.require('anychart.chartEditor2Module.select.ChartType');
-goog.require('anychart.chartEditor2Module.select.SelectWithLabel');
 goog.require('anychart.ui.Component');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.MenuItem');

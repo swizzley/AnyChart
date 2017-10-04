@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditor2Module.settings.ColorScale');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.input.Palette');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 
 
 /**
@@ -55,7 +55,7 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
   goog.dom.appendChild(content, typeLabel);
   this.labels.push(typeLabel);
 
-  var typeSelect = new anychart.chartEditor2Module.select.Base();
+  var typeSelect = new anychart.chartEditor2Module.controls.select.Base();
   typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   typeSelect.setOptions(['linear-color', 'ordinal-color']);

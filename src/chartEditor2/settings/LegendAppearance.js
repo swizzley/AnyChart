@@ -8,9 +8,9 @@ goog.require('anychart.chartEditor2Module.checkbox.Base');
 goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
-goog.require('anychart.chartEditor2Module.select.Align');
-goog.require('anychart.chartEditor2Module.select.Base');
-goog.require('anychart.chartEditor2Module.select.FontFamily');
+goog.require('anychart.chartEditor2Module.controls.select.Align');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.FontFamily');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('goog.ui.ButtonSide');
 
@@ -58,7 +58,7 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Layout');
   goog.dom.appendChild(content, layoutLabel);
 
-  var layoutSelect = new anychart.chartEditor2Module.select.Base();
+  var layoutSelect = new anychart.chartEditor2Module.controls.select.Base();
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   layoutSelect.setOptions(['horizontal', 'vertical']);
@@ -81,7 +81,7 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
 
-  var orientationSelect = new anychart.chartEditor2Module.select.Base();
+  var orientationSelect = new anychart.chartEditor2Module.controls.select.Base();
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   orientationSelect.setOptions(['left', 'right', 'top', 'bottom']);
@@ -109,12 +109,10 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Align');
   goog.dom.appendChild(content, alignLabel);
 
-  var alignSelect = new anychart.chartEditor2Module.select.Align(true);
+  var alignSelect = new anychart.chartEditor2Module.controls.select.Align(true);
   alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
 
-  var alignSelectMenu = alignSelect.getMenu();
-  alignSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
   alignSelect.init(model, this.genKey('align()'));
 
   this.addChild(alignSelect, true);

@@ -4,7 +4,7 @@ goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 goog.require('anychart.chartEditor2Module.settings.Stroke');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('anychart.enums');
@@ -62,7 +62,7 @@ anychart.chartEditor2Module.settings.DataMarkers.prototype.createDom = function(
   // goog.dom.appendChild(content, typeLabel);
   // this.typeLabel_ = typeLabel;
 
-  var typeSelect = new anychart.chartEditor2Module.select.Base('Type');
+  var typeSelect = new anychart.chartEditor2Module.controls.select.Base('Type');
   typeSelect.setOptions(goog.object.getValues(anychart.enums.MarkerType));
   typeSelect.updateOptions();
   this.addChild(typeSelect, true);

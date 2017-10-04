@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditor2.controls.select.DataFieldMenuRenderer');
 goog.provide('anychart.chartEditor2.controls.select.DataFieldSelect');
 goog.provide('anychart.chartEditor2.controls.select.DataFieldSelectRenderer');
 
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 goog.require('goog.ui.ButtonRenderer');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
@@ -18,7 +18,7 @@ goog.require('goog.ui.MenuRenderer');
  * @param {!goog.ui.MenuRenderer=} opt_menuRenderer
  * @param {string=} opt_menuAdditionalClass
  * @constructor
- * @extends {anychart.chartEditor2Module.select.Base}
+ * @extends {anychart.chartEditor2Module.controls.select.Base}
  */
 anychart.chartEditor2.controls.select.DataFieldSelect = function (opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
 
@@ -42,7 +42,7 @@ anychart.chartEditor2.controls.select.DataFieldSelect = function (opt_model, opt
     anychart.chartEditor2.controls.select.DataFieldSelect.base(
         this,
         'constructor',
-        opt_model.caption,
+        opt_model && opt_model.caption ? opt_model.caption : '',
         opt_menu,
         opt_renderer || anychart.chartEditor2.controls.select.DataFieldSelectRenderer.getInstance(),
         opt_domHelper,
@@ -52,7 +52,7 @@ anychart.chartEditor2.controls.select.DataFieldSelect = function (opt_model, opt
     this.setModel(opt_model);
     this.addClassName('anychart-border-box');
 };
-goog.inherits(anychart.chartEditor2.controls.select.DataFieldSelect, anychart.chartEditor2Module.select.Base);
+goog.inherits(anychart.chartEditor2.controls.select.DataFieldSelect, anychart.chartEditor2Module.controls.select.Base);
 
 
 /** @inheritDoc */

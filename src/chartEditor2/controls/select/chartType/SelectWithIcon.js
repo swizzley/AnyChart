@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2.controls.select.SelectWithIcon');
 goog.provide('anychart.chartEditor2.controls.select.SelectWithIconRenderer');
 
-goog.require('anychart.chartEditor2Module.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
 goog.require('goog.ui.ButtonRenderer');
 
 
@@ -12,10 +12,10 @@ goog.require('goog.ui.ButtonRenderer');
  * @param {goog.dom.DomHelper=} opt_domHelper
  * @param {!goog.ui.MenuRenderer=} opt_menuRenderer
  * @constructor
- * @extends {anychart.chartEditor2Module.select.Base}
+ * @extends {anychart.chartEditor2Module.controls.select.Base}
  */
 anychart.chartEditor2.controls.select.SelectWithIcon = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
-  anychart.chartEditor2Module.select.Base.call(
+  anychart.chartEditor2Module.controls.select.Base.call(
       this,
       opt_caption,
       opt_menu,
@@ -24,7 +24,7 @@ anychart.chartEditor2.controls.select.SelectWithIcon = function(opt_caption, opt
       opt_menuRenderer
   );
 };
-goog.inherits(anychart.chartEditor2.controls.select.SelectWithIcon, anychart.chartEditor2Module.select.Base);
+goog.inherits(anychart.chartEditor2.controls.select.SelectWithIcon, anychart.chartEditor2Module.controls.select.Base);
 
 /** @type {string} */
 anychart.chartEditor2.controls.select.SelectWithIcon.CSS_CLASS = goog.getCssName('anychart-ui-select-with-icon');

@@ -8,9 +8,9 @@ goog.require('anychart.chartEditor2Module.checkbox.Base');
 goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
-goog.require('anychart.chartEditor2Module.select.Align');
-goog.require('anychart.chartEditor2Module.select.Base');
-goog.require('anychart.chartEditor2Module.select.FontFamily');
+goog.require('anychart.chartEditor2Module.controls.select.Align');
+goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.FontFamily');
 goog.require('goog.ui.ButtonSide');
 
 
@@ -132,21 +132,6 @@ anychart.chartEditor2Module.settings.Title.prototype.setOrientationKey = functio
   this.updateKeys();
 };
 
-/** @override */
-anychart.chartEditor2Module.settings.Title.prototype.disposeInternal = function() {
-  this.textInput_ = null;
-  this.positionSelect_ = null;
-  this.alignSelect_ = null;
-  this.fontFamilySelect_ = null;
-  this.fontSizeSelect_ = null;
-  this.boldBtn_ = null;
-  this.italicBtn_ = null;
-  this.underlineBtn_ = null;
-  this.colorPicker_ = null;
-
-  anychart.chartEditor2Module.settings.Title.base(this, 'disposeInternal');
-};
-
 
 /** @override */
 anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
@@ -163,10 +148,11 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
     goog.dom.classlist.add(textInput.getElement(), 'title-text');
   }
 
+  var colorLabel = null;
   var colorPicker = null;
   if (this.allowEditColor_) {
     if (!this.allowEditTitle_) {
-      var colorLabel = goog.dom.createDom(
+      colorLabel = goog.dom.createDom(
           goog.dom.TagName.LABEL,
           [
             goog.ui.INLINE_BLOCK_CLASSNAME,
@@ -185,7 +171,7 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
         goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
   }
 
-  var fontFamily = new anychart.chartEditor2Module.select.FontFamily();
+  var fontFamily = new anychart.chartEditor2Module.controls.select.FontFamily();
   fontFamily.addClassName(goog.getCssName('title-font-family'));
   this.addChild(fontFamily, true);
 
@@ -215,17 +201,17 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
   // The setCollapsed method needs to be called after the toolbar is rendered
   // for it to pick up the directionality of the toolbar.
   boldBtn.setCollapsed(goog.ui.ButtonSide.END);
-  italicBtn.setCollapsed(
-      goog.ui.ButtonSide.END | goog.ui.ButtonSide.START);
+  italicBtn.setCollapsed(goog.ui.ButtonSide.END | goog.ui.ButtonSide.START);
   underlineBtn.setCollapsed(goog.ui.ButtonSide.START);
 
+  var positionLabel = null;
   var positionSelect = null;
   if (this.allowEditPosition_) {
     goog.dom.appendChild(content, goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
-    var positionLabel = goog.dom.createDom(
+    positionLabel = goog.dom.createDom(
         goog.dom.TagName.LABEL,
         [
           goog.ui.INLINE_BLOCK_CLASSNAME,
@@ -234,26 +220,38 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
         'Orientation');
     goog.dom.appendChild(content, positionLabel);
 
-    positionSelect = new anychart.chartEditor2Module.select.Base();
+    positionSelect = new anychart.chartEditor2.controls.select.DataFieldSelect();
     positionSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
     positionSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
 
     var positionSelectMenu = positionSelect.getMenu();
     positionSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
 
-    positionSelect.setOptions(['left', 'right', 'top', 'bottom']);
-    positionSelect.setCaptions([null, null, null, null]);
-    positionSelect.setIcons(['ac ac-position-left', 'ac ac-position-right', 'ac ac-position-top', 'ac ac-position-bottom']);
+    var options = [
+      {value: 'left', icon: 'ac ac-position-left'},
+      {value: 'right', icon: 'ac ac-position-right'},
+      {value: 'top', icon: 'ac ac-position-top'},
+      {value: 'bottom', icon: 'ac ac-position-bottom'}
+    ];
+
+    for (var i = 0; i < options.length; i++) {
+      positionSelect.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        caption: options[i].value,
+        value: options[i].value,
+        icon: options[i].icon
+      }));
+    }
     this.addChild(positionSelect, true);
   }
 
+  var alignLabel = null;
   var alignSelect = null;
   if (this.allowEditAlign_) {
     goog.dom.appendChild(content, goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
-    var alignLabel = goog.dom.createDom(
+    alignLabel = goog.dom.createDom(
         goog.dom.TagName.LABEL,
         [
           goog.ui.INLINE_BLOCK_CLASSNAME,
@@ -262,13 +260,9 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
         'Align');
     goog.dom.appendChild(content, alignLabel);
 
-    alignSelect = new anychart.chartEditor2Module.select.Align();
+    alignSelect = new anychart.chartEditor2Module.controls.select.Align();
     alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
     alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-
-    var alignSelectMenu = alignSelect.getMenu();
-    alignSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
-
     this.addChild(alignSelect, true);
   }
 
@@ -286,6 +280,13 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
   this.colorLabel_ = colorLabel;
   this.positionLabel_ = positionLabel;
   this.alignLabel_ = alignLabel;
+
+  if (this.colorLabel_)
+    this.labels.push(this.colorLabel_);
+  if (this.positionLabel_)
+    this.labels.push(this.positionLabel_);
+  if (this.alignLabel_)
+    this.labels.push(this.alignLabel_);
 };
 
 
@@ -334,31 +335,17 @@ anychart.chartEditor2Module.settings.Title.prototype.updateKeys = function() {
 };
 
 
-/** @inheritDoc */
-anychart.chartEditor2Module.settings.Title.prototype.setContentEnabled = function(enabled) {
-  if (this.titleHeader_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.titleHeader_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
+/** @override */
+anychart.chartEditor2Module.settings.Title.prototype.disposeInternal = function() {
+  this.textInput_ = null;
+  this.positionSelect_ = null;
+  this.alignSelect_ = null;
+  this.fontFamilySelect_ = null;
+  this.fontSizeSelect_ = null;
+  this.boldBtn_ = null;
+  this.italicBtn_ = null;
+  this.underlineBtn_ = null;
+  this.colorPicker_ = null;
 
-  if (this.colorLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.colorLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  if (this.positionLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.positionLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  if (this.alignLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.alignLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  anychart.chartEditor2Module.settings.Title.base(this, 'setContentEnabled', enabled);
+  anychart.chartEditor2Module.settings.Title.base(this, 'disposeInternal');
 };

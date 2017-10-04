@@ -4,7 +4,6 @@ goog.require('anychart.chartEditor2.controls.select.DataField');
 goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.ComponentWithKey');
 goog.require('anychart.chartEditor2Module.input.Base');
-goog.require('anychart.chartEditor2Module.select.SelectWithLabel');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.Select');

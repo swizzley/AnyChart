@@ -1,6 +1,6 @@
 goog.provide('anychart.chartEditor2Module.colorPicker.Renderer');
 
-goog.require('anychart.chartEditor2Module.select.Renderer');
+goog.require('goog.ui.FlatMenuButtonRenderer');
 
 goog.require('goog.asserts');
 goog.require('goog.color');
@@ -13,12 +13,12 @@ goog.require('goog.userAgent');
 /**
  * Renderer for {@link anychart.chartEditor2Module.colorPicker.Base}s.
  * @constructor
- * @extends {anychart.chartEditor2Module.select.Renderer}
+ * @extends {goog.ui.FlatMenuButtonRenderer}
  */
 anychart.chartEditor2Module.colorPicker.Renderer = function() {
   anychart.chartEditor2Module.colorPicker.Renderer.base(this, 'constructor');
 };
-goog.inherits(anychart.chartEditor2Module.colorPicker.Renderer, anychart.chartEditor2Module.select.Renderer);
+goog.inherits(anychart.chartEditor2Module.colorPicker.Renderer, goog.ui.FlatMenuButtonRenderer);
 goog.addSingletonGetter(anychart.chartEditor2Module.colorPicker.Renderer);
 
 
