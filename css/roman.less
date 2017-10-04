@@ -1,5 +1,6 @@
 @color-background: #ecf0f3;
 @color-blue: #549de1;
+@shadow-1: 0 0 8px #c4d5df;
 
 // region ---- common
 .anychart-clear {
@@ -209,13 +210,20 @@
   }
 }
 .anychart-predefined-datasets-item {
-  width: 177px;
-  height: 212px;
+  .box-shadow(@shadow-1);
+  .border-radius(4px);
+  width: 175px;
+  height: 210px;
   float: left;
   background: white;
   margin: 0 15px 15px 0;
   padding: 14px;
   overflow: hidden;
+
+  border: 1px solid white;
+  &:hover {
+    border-color: #a6d1fa;
+  }
 }
 
 .anychart-predefined-datasets-item-image {
@@ -366,7 +374,7 @@
 }
 
 .anychart-connected-data-sets-item {
-  .box-shadow(2px 2px 7px #c4d5df);
+  .box-shadow(@shadow-1);
   position: relative;
   width: 100%;
   overflow-x: hidden;
@@ -554,6 +562,7 @@
 
 .anychart-chart-data-settings-core {
   .box-sizing(border-box);
+  .box-shadow(@shadow-1);
   width: 100%;
   background: white;
   padding: 14px;
@@ -564,6 +573,7 @@
 }
 
 .anychart-plot-panel {
+  .box-shadow(@shadow-1);
   position: relative;
   background: white;
   border-top: 1px solid #c7d8e4;
@@ -697,8 +707,11 @@
   width: 231px;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 50px 18px 18px;
+  padding: 57px 18px 18px;
 
+  .buttons-wrapper {
+    .box-shadow(@shadow-1);
+  }
   .button {
     background: white;
     padding: 23px 0 24px 15px;
@@ -734,7 +747,7 @@
   > .settings-panel {
     margin: 5px; // to make box-shadow visible
     > .content {
-      .box-shadow(1px 0px 9px #c4d5df);
+      .box-shadow(@shadow-1);
       padding: 15px;
     }
 

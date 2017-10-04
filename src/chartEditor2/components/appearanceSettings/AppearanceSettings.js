@@ -86,8 +86,13 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
   var panelsExcludes = anychart.chartEditor2Module.EditorModel.ChartTypes[settings['chart']['type']]['panelsExcludes'];
   var excluded;
 
+  if (!this.buttonsWrapper_) {
+    this.buttonsWrapper_ = goog.dom.createDom(goog.dom.TagName.DIV, 'buttons-wrapper');
+    goog.dom.appendChild(this.tabs_.getElement(), this.buttonsWrapper_);
+  }
+
   for (var i = 0; i < this.panels_.length; i++) {
-    panel = this.panels_[i].instance;
+    panel = /** @type {?anychart.chartEditor2Module.SettingsPanel} */(this.panels_[i].instance);
     if (!panel) {
       var classFunc = this.panels_[i].classFunc;
       panel = this.panels_[i].instance = new classFunc(model);
@@ -99,7 +104,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
       button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
       button.setAttribute('data-index', i);
       this.buttons_.push(button);
-      this.tabs_.getElement().appendChild(button);
+      this.buttonsWrapper_.appendChild(button);
     } else {
       excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       if (excluded && this.currentPanel_ === i)
@@ -137,4 +142,16 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.onClickCategoryButton_ 
       goog.dom.classlist.enable(this.buttons_[i], 'active', this.currentPanel_ == i);
     }
   }
+};
+
+
+/** @inheritDoc */
+anychart.chartEditor2Module.AppearanceSettings.prototype.disposeInternal = function() {
+  this.panels_.length = 0;
+  this.buttons_.length = 0;
+  this.tabs_ = null;
+  this.tabContent_ = null;
+  this.buttonsWrapper_ = null;
+
+  anychart.chartEditor2Module.AppearanceSettings.base(this, 'disposeInternal');
 };

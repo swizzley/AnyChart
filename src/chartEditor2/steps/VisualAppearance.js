@@ -8,6 +8,7 @@ goog.require('anychart.ui.Component');
 goog.require('goog.dom.classlist');
 
 
+
 /**
  * Chart Editor Step Class.
  * @constructor
@@ -78,4 +79,15 @@ anychart.chartEditor2Module.steps.VisualAppearance.prototype.exitDocument = func
   anychart.chartEditor2Module.steps.VisualAppearance.base(this, 'exitDocument');
   goog.dispose(this.chart_);
   this.chart_ = null;
+};
+
+
+/** @inheritDoc */
+anychart.chartEditor2Module.steps.VisualAppearance.prototype.disposeInternal = function() {
+  goog.dispose(this.chart_);
+  this.chart_ = null;
+  goog.dispose(this.appearanceSettings_);
+  this.appearanceSettings_ = null;
+
+  anychart.chartEditor2Module.steps.VisualAppearance.base(this, 'disposeInternal');
 };

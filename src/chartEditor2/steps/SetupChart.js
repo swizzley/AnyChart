@@ -52,9 +52,9 @@ anychart.chartEditor2Module.steps.SetupChart.prototype.createDom = function () {
     chartPreview.addClassName('anychart-chart-preview');
     wrapper.addChild(chartPreview, true);
 
-    this.chartWrapperEl_ = chartPreview.getElement();
+    this.chartWrapper_ = chartPreview.getElement();
     var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-preview-caption', 'Chart Preview');
-    goog.dom.appendChild(this.chartWrapperEl_, caption);
+    goog.dom.appendChild(this.chartWrapper_, caption);
 };
 
 
@@ -65,7 +65,7 @@ anychart.chartEditor2Module.steps.SetupChart.prototype.enterDocument = function 
     var model = /** @type {anychart.chartEditor2Module.EditorModel} */(/** @type {anychart.chartEditor2Module.Editor} */(this.getParent()).getModel());
     this.chart_ = new anychart.chartEditor2Module.Chart(model);
     this.addChild(this.chart_, true);
-    this.getDomHelper().appendChild(this.chartWrapperEl_, this.chart_.getElement());
+    this.getDomHelper().appendChild(this.chartWrapper_, this.chart_.getElement());
 };
 
 
