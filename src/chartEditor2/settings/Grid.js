@@ -107,7 +107,17 @@ anychart.chartEditor2Module.settings.Grid.prototype.onChartDraw = function(evt) 
 
   if (!this.gridExists) {
     var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
-    this.gridExists = stringKey == 'xGrid()' ? !!chart.getXGridsCount() : !!chart.getYGridsCount();
+    var splittedKey = stringKey.split('.');
+
+    if (splittedKey.length == 1)
+      this.gridExists = stringKey == 'xGrid()' ? !!chart.getXGridsCount() : !!chart.getYGridsCount();
+    else {
+      // stock
+      var plotKey = splittedKey[0];
+      stringKey = splittedKey[1];
+      var plot = anychart.bindingModule.exec(chart, plotKey);
+      this.gridExists = stringKey == 'xGrid()' ? !!plot.getXGridsCount() : !!plot.getYGridsCount();
+    }
     this.stroke_.exclude(!this.gridExists);
   }
 

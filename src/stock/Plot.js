@@ -1267,6 +1267,18 @@ anychart.stockModule.Plot.prototype.getPlotBounds = function() {
 };
 
 
+/** @return {number} */
+anychart.stockModule.Plot.prototype.getXGridsCount = function() {
+  return this.xGrids_.length;
+};
+
+
+/** @return {number} */
+anychart.stockModule.Plot.prototype.getYGridsCount = function() {
+  return this.yGrids_.length;
+};
+
+
 //endregion
 //region Public getters, setters and methods
 //----------------------------------------------------------------------------------------------------------------------
