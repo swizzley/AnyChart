@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.settings.ColorScaleRange');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
-goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 
 
 /**
@@ -32,34 +32,9 @@ anychart.chartEditor2Module.settings.ColorScaleRange.prototype.createDom = funct
   var element = this.getElement();
   goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.ColorScaleRange.CSS_CLASS);
 
-  var content = this.getContentElement();
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  //
-  // var typeLabel = goog.dom.createDom(
-  //     goog.dom.TagName.LABEL,
-  //     [
-  //       goog.ui.INLINE_BLOCK_CLASSNAME,
-  //       goog.getCssName('settings-label')
-  //     ],
-  //     'Scale type');
-  // goog.dom.appendChild(content, typeLabel);
-  // this.labels.push(typeLabel);
-  //
-  // var typeSelect = new anychart.chartEditor2Module.controls.select.Base();
-  // typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
-  // typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  // typeSelect.setOptions(['linear-color', 'ordinal-color']);
-  // typeSelect.setCaptions(['Linear', 'Ordinal']);
-  // typeSelect.init(model, this.genKey('type', true));
-  // this.addChild(typeSelect, true);
-  // this.typeSelect_ = typeSelect;
-  //
-  // goog.dom.appendChild(content, goog.dom.createDom(
-  //     goog.dom.TagName.DIV,
-  //     goog.getCssName('anychart-chart-editor-settings-item-gap')));
-  //
-  // this.specificEl_ = goog.dom.createDom(goog.dom.TagName.DIV);
-  // goog.dom.appendChild(content, this.specificEl_);
+  // var content = this.getContentElement();
+  // var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+
 };
 
 

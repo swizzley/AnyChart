@@ -1,14 +1,14 @@
 goog.provide('anychart.chartEditor2Module.controls.select.Align');
 
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 
 
 
 /**
  * @param {boolean=} opt_inverse
  * @constructor
- * @extends {anychart.chartEditor2.controls.select.DataFieldSelect}
+ * @extends {anychart.chartEditor2Module.controls.select.DataFieldSelect}
  */
 anychart.chartEditor2Module.controls.select.Align = function(opt_inverse) {
   anychart.chartEditor2Module.controls.select.Align.base(this, 'constructor');
@@ -23,7 +23,7 @@ anychart.chartEditor2Module.controls.select.Align = function(opt_inverse) {
   ];
 
   for (var i = 0; i < options.length; i++) {
-    this.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    this.addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption: options[i].value,
       value: options[i].value,
       icon: options[i].icon
@@ -32,7 +32,7 @@ anychart.chartEditor2Module.controls.select.Align = function(opt_inverse) {
 
   this.inverse_ = opt_inverse;
 };
-goog.inherits(anychart.chartEditor2Module.controls.select.Align, anychart.chartEditor2.controls.select.DataFieldSelect);
+goog.inherits(anychart.chartEditor2Module.controls.select.Align, anychart.chartEditor2Module.controls.select.DataFieldSelect);
 
 
 /**

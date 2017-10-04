@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.SeriesPanel');
 
-goog.require('anychart.chartEditor2.controls.select.DataField');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.ComponentWithKey');
 goog.require('anychart.chartEditor2Module.input.Base');
 goog.require('goog.ui.Component');
@@ -28,7 +28,7 @@ anychart.chartEditor2Module.SeriesPanel = function(model, index, opt_domHelper) 
   this.index_ = index;
 
   /**
-   * @type {Array.<anychart.chartEditor2.controls.select.DataField>}
+   * @type {Array.<anychart.chartEditor2Module.controls.select.DataField>}
    * @private
    */
   this.fields_ = [];
@@ -71,7 +71,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createDom = function() {
     goog.dom.classlist.add(input.getElement(), 'anychart-plot-panel-series-name');
   }
 
-  this.typeSelect_ = new anychart.chartEditor2.controls.select.DataField({
+  this.typeSelect_ = new anychart.chartEditor2Module.controls.select.DataField({
     label: 'Series Type',
     caption: 'Select Series Type',
     value: 'ctor'
@@ -95,7 +95,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.update = function() {
         anychart.chartEditor2Module.EditorModel.Series[type]['name'] :
         goog.string.capitalize(type);
 
-    var item = new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    var item = new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption: caption,
       value: type
     });
@@ -149,7 +149,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createFields = function() {
   var fieldsMap = anychart.chartEditor2Module.EditorModel.Series[seriesType]['fields'];
   goog.object.forEach(fieldsMap, function(item) {
     var fieldLabel = item['name'] ? item['name'] : item['field'];
-    var fieldSelect = new anychart.chartEditor2.controls.select.DataField({
+    var fieldSelect = new anychart.chartEditor2Module.controls.select.DataField({
       label: fieldLabel,
       caption: 'Select ' + fieldLabel,
       value: item['field']
@@ -191,7 +191,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createFieldsOptions = function
       var dataFields = data.fields;
       for (var j = 0; j < dataFields.length; j++) {
         var caption = dataFields[j].name;
-        var option = new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+        var option = new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
           caption: caption,
           value: dataFields[j].key
         });

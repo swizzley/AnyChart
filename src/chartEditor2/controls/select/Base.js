@@ -27,10 +27,6 @@ anychart.chartEditor2Module.controls.select.Base = function(opt_caption, opt_men
       opt_renderer,
       opt_domHelper, opt_menuRenderer);
 
-  this.options_ = [];
-  this.captions_ = [];
-  this.icons_ = [];
-
   /**
    * Editor Model key.
    *
@@ -84,44 +80,23 @@ anychart.chartEditor2Module.controls.select.Base.prototype.icons_;
 
 /**
  * Set model for options.
- * @param {Array.<Array|string>} options
+ * @param {Array.<Object|string>} options
  */
 anychart.chartEditor2Module.controls.select.Base.prototype.setOptions = function(options) {
-  this.options_ = [];
-  var updateCaption = false;
+  for (var a = this.getItemCount(); a--;) {
+    this.removeItemAt(a);
+  }
+
   for (var i = 0; i < options.length; i++) {
     var option = options[i];
-    if (option) {
-      if (goog.isArray(option)) {
-        if (!updateCaption) {
-          updateCaption = true;
-          this.captions_ = [];
-        }
+    if (goog.isString(option))
+      option = {value: option, caption: option};
 
-        this.captions_.push(option[0]);
-        this.options_.push(option[1]);
-      } else
-        this.options_.push(option);
-    }
+    if (!goog.isDef(option.caption))
+      option.caption = option.value;
+
+    this.addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem(option));
   }
-};
-
-
-/**
- * Set caption for options.
- * @param {Array.<?string>} captions
- */
-anychart.chartEditor2Module.controls.select.Base.prototype.setCaptions = function(captions) {
-  this.captions_ = captions;
-};
-
-
-/**
- * Set caption for options.
- * @param {Array.<string>} icons
- */
-anychart.chartEditor2Module.controls.select.Base.prototype.setIcons = function(icons) {
-  this.icons_ = icons;
 };
 
 
@@ -137,53 +112,6 @@ anychart.chartEditor2Module.controls.select.Base.prototype.setKey = function(val
  */
 anychart.chartEditor2Module.controls.select.Base.prototype.getKey = function() {
   return this.key;
-};
-
-
-/** @override */
-anychart.chartEditor2Module.controls.select.Base.prototype.createDom = function() {
-  anychart.chartEditor2Module.controls.select.Base.base(this, 'createDom');
-
-  this.updateOptions();
-};
-
-
-/**
- *
- * @param {string=} opt_default
- */
-anychart.chartEditor2Module.controls.select.Base.prototype.updateOptions = function(opt_default) {
-  var optionItem;
-
-  if (this.options_.length) {
-    for (var a = this.getItemCount(); a--;) {
-      this.removeItemAt(a);
-    }
-
-    for (var i = 0; i < this.options_.length; i++) {
-
-      var option = this.options_[i];
-      var caption = this.captions_[i];
-      var icon = this.icons_[i];
-      var content = this.createContentElements(option, caption, icon);
-
-      optionItem = new goog.ui.Option(content, option);
-      optionItem.setContent(content);
-      optionItem.setModel(option);
-      this.addItemAt(optionItem, i);
-    }
-  } else {
-    this.captions_.length = 0;
-    // Items are created, but options_ are not filled
-    for (var k = 0; k < this.getItemCount(); k++) {
-      optionItem = this.getItemAt(k);
-      this.options_.push(/** @type {string} */(optionItem.getModel()));
-      this.captions_.push(/** @type {string} */(optionItem.getContent()));
-    }
-  }
-
-  if (opt_default && !this.getValue())
-    this.setValue(opt_default);
 };
 
 
@@ -334,35 +262,6 @@ anychart.chartEditor2Module.controls.select.Base.prototype.setValueByTarget = fu
   this.setValue(value);
   this.noDispatch = false;
 };
-
-
-// /**
-//  * @override
-//  * @suppress {visibility}
-//  */
-// anychart.chartEditor2Module.controls.select.Base.prototype.updateCaption = function() {
-//   var selectedIndex = this.getSelectedIndex();
-//   var item = this.getSelectedItem();
-//   var option = this.options_[selectedIndex];
-//   var caption = this.captions_[selectedIndex];
-//   var icon = this.icons_[selectedIndex];
-//   var content = this.createContentElements(option, caption, icon);
-//   this.setContent(content);
-//
-//   var contentElement = this.getRenderer().getContentElement(this.getElement());
-//   // Despite the ControlRenderer interface indicating the return value is
-//   // {Element}, many renderers cast element.firstChild to {Element} when it is
-//   // really {Node}. Checking tagName verifies this is an {!Element}.
-//   if (contentElement && this.getDomHelper().isElement(contentElement)) {
-//     if (this.initialAriaLabel_ == null) {
-//       this.initialAriaLabel_ = goog.a11y.aria.getLabel(contentElement);
-//     }
-//     var itemElement = item ? item.getElement() : null;
-//     goog.a11y.aria.setLabel(contentElement, itemElement ?
-//         goog.a11y.aria.getLabel(itemElement) : this.initialAriaLabel_);
-//     this.updateAriaActiveDescendant_();
-//   }
-// };
 
 
 /**

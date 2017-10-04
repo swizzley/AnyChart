@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.GeoDataInputs');
 
-goog.require('anychart.chartEditor2.controls.select.DataField');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.EditorModel');
 
@@ -56,7 +56,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.update = function() {
 
   if (chartType === 'map') {
     // Geo data select
-    this.geoDataSelect_ = new anychart.chartEditor2.controls.select.DataField({value: 'activeGeo', caption: 'geo data', label: 'Geo data'});
+    this.geoDataSelect_ = new anychart.chartEditor2Module.controls.select.DataField({value: 'activeGeo', caption: 'geo data', label: 'Geo data'});
     this.addChild(this.geoDataSelect_, true);
     this.getHandler().listen(this.geoDataSelect_.getSelect(), goog.ui.Component.EventType.CHANGE, this.onSelectGeoData_);
 
@@ -65,7 +65,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.update = function() {
     else
       this.loadGeoDataIndex_();
 
-    this.geoIdFieldSelect_ = new anychart.chartEditor2.controls.select.DataField({value: 'id', caption: 'geo id field', label: 'Geo Id Field'});
+    this.geoIdFieldSelect_ = new anychart.chartEditor2Module.controls.select.DataField({value: 'id', caption: 'geo id field', label: 'Geo Id Field'});
     this.geoIdFieldSelect_.getSelect().init(/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel()), [['dataSettings'], 'geoIdField']);
     this.addChild(this.geoIdFieldSelect_, true);
 
@@ -105,7 +105,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.createGeoDataOptions_ = func
   if (!this.geoDataSelect_ || !this.geoDataIndex.length) return;
 
   for (var key = 0; key < this.geoDataIndex.length; key++) {
-    this.geoDataSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    this.geoDataSelect_.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption: this.geoDataIndex[key]['name'],
       value: this.geoDataIndex[key]['id']
     }));
@@ -178,7 +178,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.createGeoIdFieldOptions_ = f
   if (!preparedData.length) return false;
 
   for (var key in preparedData[0].fields) {
-    this.geoIdFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    this.geoIdFieldSelect_.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption: preparedData[0].fields[key].name,
       value: preparedData[0].fields[key].name
     }));

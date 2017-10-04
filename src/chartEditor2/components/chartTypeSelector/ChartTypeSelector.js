@@ -1,8 +1,8 @@
 goog.provide('anychart.chartEditor2Module.ChartTypeSelector');
 
-goog.require('anychart.chartEditor2.controls.select.DataField');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.GeoDataInputs');
 goog.require('anychart.chartEditor2Module.PlotPanel');
@@ -86,7 +86,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.geoDataInputs_.update();
 
     // Data Set select
-    this.activeAndFieldSelect_ = new anychart.chartEditor2.controls.select.DataField({
+    this.activeAndFieldSelect_ = new anychart.chartEditor2Module.controls.select.DataField({
       caption: 'Select data set',
       label: 'Data set'
     });
@@ -97,7 +97,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.geoDataInputs_.hide();
 
     // X Values select
-    this.activeAndFieldSelect_ = new anychart.chartEditor2.controls.select.DataField({
+    this.activeAndFieldSelect_ = new anychart.chartEditor2Module.controls.select.DataField({
       caption: 'Select field',
       label: 'X Values'
     });
@@ -170,7 +170,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createDataSetsOptions_ =
     if (data[i].type == anychart.chartEditor2Module.EditorModel.DataType.GEO)
       continue;
 
-    this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption:  data[i].title,
       value: field,
       active: data[i].setFullId
@@ -190,7 +190,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOpti
     var title = dataItem.title;
     var fields = dataItem.fields;
 
-    this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption({
+    this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption({
       caption: title
     }));
 
@@ -200,7 +200,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.createActiveAndFieldOpti
 
     for (var j = 0; j < fields.length; j++) {
       var field = fields[j];
-      this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+      this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
         caption: field.name,
         value: field.key,
         active: data[i].setFullId

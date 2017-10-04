@@ -8,7 +8,7 @@ goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
 goog.require('anychart.chartEditor2Module.controls.select.Align');
-goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditor2Module.controls.select.FontFamily');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('goog.ui.ButtonSide');

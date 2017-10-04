@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditor2Module.settings.Axis');
 goog.require('anychart.chartEditor2Module.IconButtonRenderer');
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.checkbox.Base');
-goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditor2Module.settings.Title');
 
 
@@ -69,14 +69,18 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
 
-  var orientationSelect = new anychart.chartEditor2Module.controls.select.Base();
+  var orientationSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   var orientationSelectMenu = orientationSelect.getMenu();
   orientationSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
-  orientationSelect.setOptions(['left', 'right', 'top', 'bottom']);
-  orientationSelect.setCaptions([null, null, null, null]);
-  orientationSelect.setIcons(['ac ac-position-left', 'ac ac-position-right', 'ac ac-position-top', 'ac ac-position-bottom']);
+
+  orientationSelect.setOptions([
+    {value: 'left', icon: 'ac ac-position-left'},
+    {value: 'right', icon: 'ac ac-position-right'},
+    {value: 'top', icon: 'ac ac-position-top'},
+    {value: 'bottom', icon: 'ac ac-position-bottom'}
+  ]);
   this.addChild(orientationSelect, true);
 
   goog.dom.appendChild(content, goog.dom.createDom(

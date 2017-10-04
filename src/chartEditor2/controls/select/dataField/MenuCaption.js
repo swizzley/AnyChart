@@ -1,5 +1,5 @@
-goog.provide('anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption');
-goog.provide('anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer');
+goog.provide('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption');
+goog.provide('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.MenuItemRenderer');
 
@@ -11,29 +11,29 @@ goog.require('goog.ui.MenuItemRenderer');
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
-anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption = function(opt_model, opt_domHelper, opt_renderer) {
+anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption = function(opt_model, opt_domHelper, opt_renderer) {
     goog.ui.MenuItem.call(
         this,
         opt_model ? opt_model.caption : '',
         opt_model,
         opt_domHelper,
-        opt_renderer || anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer.getInstance()
+        opt_renderer || anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer.getInstance()
     );
     this.setSelectable(false);
     this.setCheckable(false);
 };
-goog.inherits(anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption, goog.ui.MenuItem);
+goog.inherits(anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption, goog.ui.MenuItem);
 
 
 /**
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
  */
-anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer = function() {
+anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer = function() {
     goog.ui.MenuItemRenderer.call(this);
 };
-goog.inherits(anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer, goog.ui.MenuItemRenderer);
-goog.addSingletonGetter(anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer);
+goog.inherits(anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer, goog.ui.MenuItemRenderer);
+goog.addSingletonGetter(anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer);
 
 
 /**
@@ -43,14 +43,14 @@ goog.addSingletonGetter(anychart.chartEditor2.controls.select.DataFieldSelectMen
  * @return {Element} Root element for the item.
  * @override
  */
-anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer.prototype.createDom = function(item) {
-    var element = anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer.base(this, 'createDom', item);
+anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer.prototype.createDom = function(item) {
+    var element = anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer.base(this, 'createDom', item);
 
     return element;
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2.controls.select.DataFieldSelectMenuCaptionRenderer.prototype.getCssClass = function() {
+anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer.prototype.getCssClass = function() {
     return 'anychart-select-data-field-menu-caption';
 };

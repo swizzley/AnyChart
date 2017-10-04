@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditor2Module.settings.ColorScale');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.input.Palette');
-goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 
 
 /**
@@ -55,11 +55,14 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
   goog.dom.appendChild(content, typeLabel);
   this.labels.push(typeLabel);
 
-  var typeSelect = new anychart.chartEditor2Module.controls.select.Base();
+  var typeSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  typeSelect.setOptions(['linear-color', 'ordinal-color']);
-  typeSelect.setCaptions(['Linear', 'Ordinal']);
+  typeSelect.setOptions([
+    {value: 'linear-color', caption: 'Linear'},
+    {value: 'ordinal-color', caption: 'Ordinal'}
+  ]);
+
   typeSelect.init(model, this.genKey('type', true));
   this.addChild(typeSelect, true);
   this.typeSelect_ = typeSelect;
@@ -102,7 +105,7 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.onChartDraw = function
  * Creates dom for specific section.
  */
 anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = function() {
-  var newScaleType = this.typeSelect_.getValue();
+  var newScaleType = this.typeSelect_.getValue().value;
   if (newScaleType && newScaleType != this.scaleType_) {
     this.scaleType_ = newScaleType;
     var dom = this.getDomHelper();

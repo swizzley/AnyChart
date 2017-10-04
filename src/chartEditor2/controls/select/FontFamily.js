@@ -1,13 +1,13 @@
 goog.provide('anychart.chartEditor2Module.controls.select.FontFamily');
 
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 
 
 
 /**
  * @constructor
- * @extends {anychart.chartEditor2.controls.select.DataFieldSelect}
+ * @extends {anychart.chartEditor2Module.controls.select.DataFieldSelect}
  */
 anychart.chartEditor2Module.controls.select.FontFamily = function() {
   anychart.chartEditor2Module.controls.select.FontFamily.base(this, 'constructor');
@@ -26,11 +26,11 @@ anychart.chartEditor2Module.controls.select.FontFamily = function() {
   };
 
   for (var key in fonts) {
-    this.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    this.addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption: key,
       value: fonts[key]
     }));
   }
 
 };
-goog.inherits(anychart.chartEditor2Module.controls.select.FontFamily, anychart.chartEditor2.controls.select.DataFieldSelect);
+goog.inherits(anychart.chartEditor2Module.controls.select.FontFamily, anychart.chartEditor2Module.controls.select.DataFieldSelect);

@@ -1,9 +1,9 @@
-goog.provide('anychart.chartEditor2.controls.select.ChartTypeMenu');
-goog.provide('anychart.chartEditor2.controls.select.ChartTypeMenuRenderer');
+goog.provide('anychart.chartEditor2Module.controls.select.ChartTypeMenu');
+goog.provide('anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer');
 goog.provide('anychart.chartEditor2Module.select.ChartType');
 
-goog.require('anychart.chartEditor2.controls.select.MenuItemWithIcon');
-goog.require('anychart.chartEditor2.controls.select.SelectWithIcon');
+goog.require('anychart.chartEditor2Module.controls.select.MenuItemWithIcon');
+goog.require('anychart.chartEditor2Module.controls.select.SelectWithIcon');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
 
@@ -24,7 +24,7 @@ goog.require('goog.ui.MenuRenderer');
  *     decorate the menu; defaults to {@link goog.ui.MenuRenderer}.
  * @param {string=} opt_menuAdditionalClass
  * @constructor
- * @extends {anychart.chartEditor2.controls.select.SelectWithIcon}
+ * @extends {anychart.chartEditor2Module.controls.select.SelectWithIcon}
  */
 anychart.chartEditor2Module.select.ChartType = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
   anychart.chartEditor2Module.select.ChartType.base(this, 'constructor', opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer);
@@ -39,7 +39,7 @@ anychart.chartEditor2Module.select.ChartType = function(opt_caption, opt_menu, o
    * @type {goog.ui.MenuRenderer}
    * @private
    */
-  this.cMenuRenderer_ = opt_menuRenderer || anychart.chartEditor2.controls.select.ChartTypeMenuRenderer.getInstance();
+  this.cMenuRenderer_ = opt_menuRenderer || anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.getInstance();
 
   /**
    * @type {(goog.ui.Menu|undefined)}
@@ -52,17 +52,15 @@ anychart.chartEditor2Module.select.ChartType = function(opt_caption, opt_menu, o
    */
   this.menuAdditionalClass = opt_menuAdditionalClass || '';
 };
-goog.inherits(anychart.chartEditor2Module.select.ChartType, anychart.chartEditor2.controls.select.SelectWithIcon);
+goog.inherits(anychart.chartEditor2Module.select.ChartType, anychart.chartEditor2Module.controls.select.SelectWithIcon);
 
 
 /** @inheritDoc */
 anychart.chartEditor2Module.select.ChartType.prototype.createDom = function() {
   anychart.chartEditor2Module.select.ChartType.base(this, 'createDom');
 
-  var options = [];
   for (var i = 0; i < this.extendedOptions_.length; i++) {
-    options.push([this.extendedOptions_[i]['name'], this.extendedOptions_[i]['value']]);
-    var item = new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+    var item = new anychart.chartEditor2Module.controls.select.MenuItemWithIcon({
       caption: this.extendedOptions_[i]['name'],
       value: this.extendedOptions_[i]['value'],
       stackMode: this.extendedOptions_[i]['stackMode'],
@@ -70,7 +68,6 @@ anychart.chartEditor2Module.select.ChartType.prototype.createDom = function() {
     });
     this.addItem(item);
   }
-  this.setOptions(options);
 
   this.addClassName('anychart-select-chart-type');
 };
@@ -88,7 +85,7 @@ anychart.chartEditor2Module.select.ChartType.prototype.initOptions = function(op
 /** @inheritDoc */
 anychart.chartEditor2Module.select.ChartType.prototype.getMenu = function() {
   if (!this.cMenu_) {
-    this.cMenu_ = new anychart.chartEditor2.controls.select.ChartTypeMenu(
+    this.cMenu_ = new anychart.chartEditor2Module.controls.select.ChartTypeMenu(
         this.menuAdditionalClass,
         this.getDomHelper(),
         this.cMenuRenderer_
@@ -107,8 +104,8 @@ anychart.chartEditor2Module.select.ChartType.prototype.getMenu = function() {
  * @constructor
  * @extends {goog.ui.Menu}
  */
-anychart.chartEditor2.controls.select.ChartTypeMenu = function(opt_additionalClassName, opt_domHelper, opt_renderer) {
-  anychart.chartEditor2.controls.select.ChartTypeMenu.base(this, 'constructor', opt_domHelper, opt_renderer);
+anychart.chartEditor2Module.controls.select.ChartTypeMenu = function(opt_additionalClassName, opt_domHelper, opt_renderer) {
+  anychart.chartEditor2Module.controls.select.ChartTypeMenu.base(this, 'constructor', opt_domHelper, opt_renderer);
   //goog.ui.MenuRenderer.call(this, opt_domHelper, opt_renderer);
 
   /**
@@ -116,7 +113,7 @@ anychart.chartEditor2.controls.select.ChartTypeMenu = function(opt_additionalCla
    */
   this.additionalClassName = opt_additionalClassName || '';
 };
-goog.inherits(anychart.chartEditor2.controls.select.ChartTypeMenu, goog.ui.Menu);
+goog.inherits(anychart.chartEditor2Module.controls.select.ChartTypeMenu, goog.ui.Menu);
 // endregion
 
 
@@ -125,17 +122,17 @@ goog.inherits(anychart.chartEditor2.controls.select.ChartTypeMenu, goog.ui.Menu)
  * @constructor
  * @extends {goog.ui.MenuRenderer}
  */
-anychart.chartEditor2.controls.select.ChartTypeMenuRenderer = function() {
-  anychart.chartEditor2.controls.select.ChartTypeMenuRenderer.base(this, 'constructor');
+anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer = function() {
+  anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.base(this, 'constructor');
 };
-goog.inherits(anychart.chartEditor2.controls.select.ChartTypeMenuRenderer, goog.ui.MenuRenderer);
-goog.addSingletonGetter(anychart.chartEditor2.controls.select.ChartTypeMenuRenderer);
+goog.inherits(anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer, goog.ui.MenuRenderer);
+goog.addSingletonGetter(anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer);
 
 
 /** @inheritDoc */
-anychart.chartEditor2.controls.select.ChartTypeMenuRenderer.prototype.createDom = function(container) {
-  container = /** @type {anychart.chartEditor2.controls.select.ChartTypeMenu} */(container);
-  var element = anychart.chartEditor2.controls.select.ChartTypeMenuRenderer.base(this, 'createDom', container);
+anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.prototype.createDom = function(container) {
+  container = /** @type {anychart.chartEditor2Module.controls.select.ChartTypeMenu} */(container);
+  var element = anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.base(this, 'createDom', container);
   if (container.additionalClassName) goog.dom.classlist.add(element, container.additionalClassName);
   goog.dom.classlist.add(element, 'anychart-border-box');
   return element;
@@ -143,7 +140,7 @@ anychart.chartEditor2.controls.select.ChartTypeMenuRenderer.prototype.createDom 
 
 
 /** @inheritDoc */
-anychart.chartEditor2.controls.select.ChartTypeMenuRenderer.prototype.getCssClass = function() {
+anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.prototype.getCssClass = function() {
   return 'anychart-select-chart-type-menu';
 };
 // endregion

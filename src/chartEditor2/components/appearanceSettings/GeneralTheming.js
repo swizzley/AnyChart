@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.GeneralTheming');
 
-goog.require('anychart.chartEditor2.controls.select.DataField');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.controls.select.Palettes');
 goog.require('anychart.chartEditor2Module.settings.Title');
@@ -30,11 +30,11 @@ anychart.chartEditor2Module.GeneralTheming.prototype.createDom = function() {
   var themes = goog.object.filter(goog.dom.getWindow()['anychart']['themes'], function(item) {
     return item['palette'];
   });
-  this.themeSelect = new anychart.chartEditor2.controls.select.DataField({caption: 'Select theme', label: 'Theme'});
+  this.themeSelect = new anychart.chartEditor2Module.controls.select.DataField({caption: 'Select theme', label: 'Theme'});
   var themeNames = goog.object.getKeys(themes);
 
   for (var i = 0; i < themeNames.length; i++) {
-    this.themeSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    this.themeSelect.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
       caption: themeNames[i],
       value: themeNames[i]
     }));
@@ -46,7 +46,7 @@ anychart.chartEditor2Module.GeneralTheming.prototype.createDom = function() {
   this.paletteSelect = new anychart.chartEditor2Module.controls.select.Palettes({caption: 'Select palette', label: 'Palette'});
   for (var paletteName in realPalettes) {
     if (realPalettes.hasOwnProperty(paletteName) && goog.isArray(realPalettes[paletteName])) {
-      this.paletteSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+      this.paletteSelect.getSelect().addItem(new anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem({
         caption: paletteName,
         value: paletteName
       }));

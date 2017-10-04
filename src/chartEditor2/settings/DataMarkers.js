@@ -4,7 +4,7 @@ goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
-goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditor2Module.settings.Stroke');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('anychart.enums');
@@ -52,19 +52,8 @@ anychart.chartEditor2Module.settings.DataMarkers.prototype.createDom = function(
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
-  // var typeLabel = goog.dom.createDom(
-  //     goog.dom.TagName.LABEL,
-  //     [
-  //       goog.ui.INLINE_BLOCK_CLASSNAME,
-  //       goog.getCssName('settings-label')
-  //     ],
-  //     'Type');
-  // goog.dom.appendChild(content, typeLabel);
-  // this.typeLabel_ = typeLabel;
-
-  var typeSelect = new anychart.chartEditor2Module.controls.select.Base('Type');
+  var typeSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect('Type');
   typeSelect.setOptions(goog.object.getValues(anychart.enums.MarkerType));
-  typeSelect.updateOptions();
   this.addChild(typeSelect, true);
   goog.dom.classlist.add(typeSelect.getElement(), goog.getCssName('markers-type'));
   this.typeSelect_ = typeSelect;

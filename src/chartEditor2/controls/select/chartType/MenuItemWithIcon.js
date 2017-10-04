@@ -1,5 +1,5 @@
-goog.provide('anychart.chartEditor2.controls.select.MenuItemWithIcon');
-goog.provide('anychart.chartEditor2.controls.select.MenuItemWithIconRenderer');
+goog.provide('anychart.chartEditor2Module.controls.select.MenuItemWithIcon');
+goog.provide('anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.MenuItemRenderer');
 
@@ -11,35 +11,35 @@ goog.require('goog.ui.MenuItemRenderer');
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
-anychart.chartEditor2.controls.select.MenuItemWithIcon = function(opt_model, opt_domHelper, opt_renderer) {
+anychart.chartEditor2Module.controls.select.MenuItemWithIcon = function(opt_model, opt_domHelper, opt_renderer) {
   goog.ui.MenuItem.call(
       this,
       opt_model ? opt_model.caption : '',
       opt_model,
       opt_domHelper,
-      opt_renderer || anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.getInstance()
+      opt_renderer || anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer.getInstance()
   );
-  this.addClassName(anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS);
+  this.addClassName(anychart.chartEditor2Module.controls.select.MenuItemWithIcon.CSS_CLASS);
 };
-goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIcon, goog.ui.MenuItem);
+goog.inherits(anychart.chartEditor2Module.controls.select.MenuItemWithIcon, goog.ui.MenuItem);
 
 
 /**
  * CSS class name.
  * @type {string}
  */
-anychart.chartEditor2.controls.select.MenuItemWithIcon.CSS_CLASS = goog.getCssName('anychart-menu-item-with-icon');
+anychart.chartEditor2Module.controls.select.MenuItemWithIcon.CSS_CLASS = goog.getCssName('anychart-menu-item-with-icon');
 
 
 /**
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
  */
-anychart.chartEditor2.controls.select.MenuItemWithIconRenderer = function() {
+anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer = function() {
   goog.ui.MenuItemRenderer.call(this);
 };
-goog.inherits(anychart.chartEditor2.controls.select.MenuItemWithIconRenderer, goog.ui.MenuItemRenderer);
-goog.addSingletonGetter(anychart.chartEditor2.controls.select.MenuItemWithIconRenderer);
+goog.inherits(anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer, goog.ui.MenuItemRenderer);
+goog.addSingletonGetter(anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer);
 
 
 /**
@@ -49,8 +49,8 @@ goog.addSingletonGetter(anychart.chartEditor2.controls.select.MenuItemWithIconRe
  * @return {Element} Root element for the item.
  * @override
  */
-anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.prototype.createDom = function(item) {
-  var element = anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.base(this, 'createDom', item);
+anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer.prototype.createDom = function(item) {
+  var element = anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer.base(this, 'createDom', item);
   var iconUrl = item.getModel().icon;
 
   var content = this.getContentElement(element);
@@ -61,6 +61,6 @@ anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.prototype.createD
 
 
 /** @inheritDoc */
-anychart.chartEditor2.controls.select.MenuItemWithIconRenderer.prototype.getCssClass = function() {
+anychart.chartEditor2Module.controls.select.MenuItemWithIconRenderer.prototype.getCssClass = function() {
   return 'anychart-ui-menu-item-with-icon';
 };

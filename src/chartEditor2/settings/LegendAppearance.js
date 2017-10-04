@@ -9,7 +9,7 @@ goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
 goog.require('anychart.chartEditor2Module.controls.select.Align');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditor2Module.controls.select.FontFamily');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('goog.ui.ButtonSide');
@@ -58,20 +58,13 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Layout');
   goog.dom.appendChild(content, layoutLabel);
 
-  var layoutSelect = new anychart.chartEditor2.controls.select.DataFieldSelect();
+  var layoutSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-
-  var options = [
+  layoutSelect.setOptions([
     {value: 'horizontal', caption: 'Horizontal'},
     {value: 'vertical', caption: 'Vertical'}
-  ];
-  for (var i = 0; i < options.length; i++) {
-    layoutSelect.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
-      caption: options[i].caption,
-      value: options[i].value
-    }));
-  }
+  ]);
   this.addChild(layoutSelect, true);
   //endregion
 
@@ -89,25 +82,18 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
 
-  var orientationSelect = new anychart.chartEditor2.controls.select.DataFieldSelect();
+  var orientationSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   var orientationSelectMenu = orientationSelect.getMenu();
   orientationSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
 
-  options = [
+  orientationSelect.setOptions([
     {value: 'left', icon: 'ac ac-position-left'},
     {value: 'right', icon: 'ac ac-position-right'},
     {value: 'top', icon: 'ac ac-position-top'},
     {value: 'bottom', icon: 'ac ac-position-bottom'}
-  ];
-  for (i = 0; i < options.length; i++) {
-    orientationSelect.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
-      caption: options[i].value,
-      value: options[i].value,
-      icon: options[i].icon
-    }));
-  }
+  ]);
 
   this.addChild(orientationSelect, true);
   //endregion

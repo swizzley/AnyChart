@@ -1,15 +1,15 @@
-goog.provide('anychart.chartEditor2.controls.select.PalettesDataFieldSelect');
+goog.provide('anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect');
 goog.provide('anychart.chartEditor2Module.controls.select.Palettes');
 
-goog.require('anychart.chartEditor2.controls.select.DataField');
-goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 
 
 
 /**
  * DataField component for palettes property.
  *
- * @param {anychart.chartEditor2.controls.select.DataFieldModel=} opt_model
+ * @param {anychart.chartEditor2Module.controls.select.DataFieldModel=} opt_model
  * @param {goog.ui.Menu=} opt_menu
  * @param {goog.ui.ButtonRenderer=} opt_renderer
  * @param {goog.dom.DomHelper=} opt_domHelper
@@ -17,12 +17,12 @@ goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
  * @param {string=} opt_menuAdditionalClass
  *
  * @constructor
- * @extends {anychart.chartEditor2.controls.select.DataField}
+ * @extends {anychart.chartEditor2Module.controls.select.DataField}
  */
 anychart.chartEditor2Module.controls.select.Palettes = function(opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
   anychart.chartEditor2Module.controls.select.Palettes.base(this, 'constructor',opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass);
 
-  this.setSelect(new anychart.chartEditor2.controls.select.PalettesDataFieldSelect(
+  this.setSelect(new anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect(
       opt_model,
       opt_menu,
       opt_renderer,
@@ -31,21 +31,21 @@ anychart.chartEditor2Module.controls.select.Palettes = function(opt_model, opt_m
       opt_menuAdditionalClass
   ));
 };
-goog.inherits(anychart.chartEditor2Module.controls.select.Palettes, anychart.chartEditor2.controls.select.DataField);
+goog.inherits(anychart.chartEditor2Module.controls.select.Palettes, anychart.chartEditor2Module.controls.select.DataField);
 
 
 /**
- * @param {anychart.chartEditor2.controls.select.DataFieldModel=} opt_model
+ * @param {anychart.chartEditor2Module.controls.select.DataFieldModel=} opt_model
  * @param {goog.ui.Menu=} opt_menu
  * @param {goog.ui.ButtonRenderer=} opt_renderer
  * @param {goog.dom.DomHelper=} opt_domHelper
  * @param {!goog.ui.MenuRenderer=} opt_menuRenderer
  * @param {string=} opt_menuAdditionalClass
  * @constructor
- * @extends {anychart.chartEditor2.controls.select.DataFieldSelect}
+ * @extends {anychart.chartEditor2Module.controls.select.DataFieldSelect}
  */
-anychart.chartEditor2.controls.select.PalettesDataFieldSelect = function (opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
-  anychart.chartEditor2.controls.select.PalettesDataFieldSelect.base(this, 'constructor',
+anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect = function (opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
+  anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect.base(this, 'constructor',
       opt_model,
       opt_menu,
       opt_renderer,
@@ -53,22 +53,22 @@ anychart.chartEditor2.controls.select.PalettesDataFieldSelect = function (opt_mo
       opt_menuRenderer,
       opt_menuAdditionalClass);
 };
-goog.inherits(anychart.chartEditor2.controls.select.PalettesDataFieldSelect, anychart.chartEditor2.controls.select.DataFieldSelect);
+goog.inherits(anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect, anychart.chartEditor2Module.controls.select.DataFieldSelect);
 
 
 /** @inheritDoc */
-anychart.chartEditor2.controls.select.PalettesDataFieldSelect.prototype.handleSelectionChange = function(evt) {
+anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect.prototype.handleSelectionChange = function(evt) {
   if (this.excluded) return;
 
   if (!this.noDispatch && this.editorModel)
     this.editorModel.dropChartSettings(/getSeries\('\w+'\)\.color\(\)/);
 
-  anychart.chartEditor2.controls.select.PalettesDataFieldSelect.base(this, 'handleSelectionChange', evt);
+  anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect.base(this, 'handleSelectionChange', evt);
 };
 
 
 /** @inheritDoc */
-anychart.chartEditor2.controls.select.PalettesDataFieldSelect.prototype.setValueByTarget = function(target) {
+anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect.prototype.setValueByTarget = function(target) {
   if (this.excluded) return;
 
   this.target = target;
