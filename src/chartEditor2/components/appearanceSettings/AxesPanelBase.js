@@ -94,10 +94,6 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.createAxes = function() {
   var options = model.getModel();
   var settings = options['chart']['settings'];
 
-  // var firstAxisEnabled = settings[this.xOrY + 'Axis(0).enabled()'];
-  // if (!goog.isDef(firstAxisEnabled)) {
-  //   model.setValue([['chart'], ['settings'], this.xOrY + 'Axis(0).enabled()'], true, true);
-  // }
   // Always create 0 axis panel
   this.addAxis(0);
 
@@ -137,8 +133,10 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.addAxis = function(axisIndex
  */
 anychart.chartEditor2Module.AxesPanelBase.prototype.removeAllAxes = function() {
   for (var i = 0; i < this.axes_.length; i++) {
-    this.removeChild(this.axes_[i], true);
-    this.axes_[i].dispose();
+    if (this.axes_[i]) {
+      this.removeChild(this.axes_[i], true);
+      goog.dispose(this.axes_[i]);
+    }
   }
   this.axes_.length = 0;
 };
