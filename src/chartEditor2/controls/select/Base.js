@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditor2Module.controls.select.Base');
 
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.events');
-
 goog.require('goog.ui.Option');
 goog.require('goog.ui.Select');
 
@@ -23,9 +23,7 @@ goog.require('goog.ui.Select');
  * @extends {goog.ui.Select}
  */
 anychart.chartEditor2Module.controls.select.Base = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
-  anychart.chartEditor2Module.controls.select.Base.base(this, 'constructor', opt_caption, opt_menu,
-      opt_renderer,
-      opt_domHelper, opt_menuRenderer);
+  anychart.chartEditor2Module.controls.select.Base.base(this, 'constructor', opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer);
 
   /**
    * Editor Model key.

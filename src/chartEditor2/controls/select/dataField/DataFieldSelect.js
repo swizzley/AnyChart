@@ -11,7 +11,7 @@ goog.require('goog.ui.MenuRenderer');
 
 
 /**
- * @param {anychart.chartEditor2Module.controls.select.DataFieldModel=} opt_model
+ * @param {(string|Object)=} opt_model
  * @param {goog.ui.Menu=} opt_menu
  * @param {goog.ui.ButtonRenderer=} opt_renderer
  * @param {goog.dom.DomHelper=} opt_domHelper
@@ -42,7 +42,12 @@ anychart.chartEditor2Module.controls.select.DataFieldSelect = function (opt_mode
     anychart.chartEditor2Module.controls.select.DataFieldSelect.base(
         this,
         'constructor',
-        opt_model && opt_model.caption ? opt_model.caption : '',
+        goog.isDef(opt_model) ?
+            goog.isString(opt_model) ?
+                opt_model :
+                (opt_model.caption ? opt_model.caption : '') :
+            ''
+        ,
         opt_menu,
         opt_renderer || anychart.chartEditor2Module.controls.select.DataFieldSelectRenderer.getInstance(),
         opt_domHelper,

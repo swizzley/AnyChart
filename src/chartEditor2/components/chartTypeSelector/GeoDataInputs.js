@@ -1,9 +1,9 @@
 goog.provide('anychart.chartEditor2Module.GeoDataInputs');
 
-goog.require('anychart.chartEditor2Module.controls.select.DataField');
-goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.EditorModel');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 
 
 

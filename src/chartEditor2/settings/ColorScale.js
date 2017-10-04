@@ -1,8 +1,8 @@
 goog.provide('anychart.chartEditor2Module.settings.ColorScale');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
-goog.require('anychart.chartEditor2Module.input.Palette');
 goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2Module.input.Palette');
 
 
 /**

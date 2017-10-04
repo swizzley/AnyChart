@@ -1,8 +1,8 @@
 goog.provide('anychart.chartEditor2Module.GeneralTheming');
 
+goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.controls.select.DataField');
 goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
-goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.controls.select.Palettes');
 goog.require('anychart.chartEditor2Module.settings.Title');
 

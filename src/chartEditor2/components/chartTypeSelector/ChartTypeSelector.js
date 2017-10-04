@@ -1,11 +1,11 @@
 goog.provide('anychart.chartEditor2Module.ChartTypeSelector');
 
-goog.require('anychart.chartEditor2Module.controls.select.DataField');
-goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption');
-goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.GeoDataInputs');
 goog.require('anychart.chartEditor2Module.PlotPanel');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaption');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditor2Module.select.ChartType');
 goog.require('anychart.ui.Component');
 goog.require('goog.ui.Button');

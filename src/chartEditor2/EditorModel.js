@@ -474,7 +474,7 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseActiveAndField = functio
  */
 anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = function() {
   var chartType = null;
-  var recomendedChartType = this.data_[this.getActive()]['chartType'];
+  var recomendedChartType = this.data_[this.getActive()].chartType;
   if (recomendedChartType) {
     var availableTypes = goog.object.getKeys(anychart.chartEditor2Module.EditorModel.ChartTypes);
     if (goog.array.indexOf(availableTypes, recomendedChartType) !== -1)
@@ -1445,7 +1445,7 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
   // SETTINGS OF THE PRINTER
   var minify = !!settings['minifyOutput'];
   var containerId = String(opt_container || settings['outputContainerId'] || 'container');
-  var wrapWithReady = !!settings['wrapOutputWithDocumentReady'];
+  //var wrapWithReady = !!settings['wrapOutputWithDocumentReady'];
   var wrapper =  String(opt_wrapper || settings['outputWrapper'] || 'function');
 
   var eq = minify ? '=' : ' = ';

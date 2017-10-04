@@ -40,7 +40,7 @@ anychart.chartEditor2Module.settings.Stroke.prototype.createDom = function() {
 
   goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.Stroke.CSS_CLASS);
 
-  var dash = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
+  var dash = new anychart.chartEditor2Module.controls.select.DataFieldSelect('solid');
   dash.setOptions([
     {value: '0', icon: 'ac ac-position-bottom'},
     {value: '5 5', icon: 'ac ac-position-top'},

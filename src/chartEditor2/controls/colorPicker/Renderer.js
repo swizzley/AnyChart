@@ -1,11 +1,10 @@
 goog.provide('anychart.chartEditor2Module.colorPicker.Renderer');
 
-goog.require('goog.ui.FlatMenuButtonRenderer');
-
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
+goog.require('goog.ui.FlatMenuButtonRenderer');
 goog.require('goog.userAgent');
 
 

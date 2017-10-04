@@ -4,7 +4,7 @@ goog.require('anychart.ui.Component');
 
 
 /**
- * @param {anychart.chartEditor2Module.controls.select.DataFieldModel=} opt_model
+ * @param {Object=} opt_model
  * @param {goog.ui.Menu=} opt_menu
  * @param {goog.ui.ButtonRenderer=} opt_renderer
  * @param {goog.dom.DomHelper=} opt_domHelper
@@ -34,20 +34,11 @@ anychart.chartEditor2Module.controls.select.DataField = function(opt_model, opt_
 goog.inherits(anychart.chartEditor2Module.controls.select.DataField, anychart.ui.Component);
 
 
-/**
- * @typedef {{
- *  caption: string,
- *  label: string
- * }}
- */
-anychart.chartEditor2Module.controls.select.DataFieldModel;
-
-
 /** @inheritDoc */
 anychart.chartEditor2Module.controls.select.DataField.prototype.createDom = function() {
   anychart.chartEditor2Module.controls.select.DataField.base(this, 'createDom');
 
-  var model = /** @type {anychart.chartEditor2Module.controls.select.DataFieldModel} */(this.getModel());
+  var model = /** @type {Object} */(this.getModel());
   var element = this.getElement();
 
   var label = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-select-data-field-label', model.label);

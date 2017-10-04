@@ -60,7 +60,7 @@ anychart.chartEditor2Module.controls.select.Align.prototype.setOrientationKey = 
  * @param {string} orientationValue
  */
 anychart.chartEditor2Module.controls.select.Align.prototype.updateIcons = function(orientationValue) {
-  console.log("Align updateIcons()");
+  // console.log("Align updateIcons()");
   // this.noDispatch = true;
   // if (this.orientation_ != orientationValue) {
   //   this.orientation_ = orientationValue;

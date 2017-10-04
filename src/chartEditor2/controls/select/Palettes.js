@@ -1,5 +1,5 @@
-goog.provide('anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect');
 goog.provide('anychart.chartEditor2Module.controls.select.Palettes');
+goog.provide('anychart.chartEditor2Module.controls.select.PalettesDataFieldSelect');
 
 goog.require('anychart.chartEditor2Module.controls.select.DataField');
 goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
@@ -9,7 +9,7 @@ goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 /**
  * DataField component for palettes property.
  *
- * @param {anychart.chartEditor2Module.controls.select.DataFieldModel=} opt_model
+ * @param {Object=} opt_model
  * @param {goog.ui.Menu=} opt_menu
  * @param {goog.ui.ButtonRenderer=} opt_renderer
  * @param {goog.dom.DomHelper=} opt_domHelper
@@ -35,7 +35,7 @@ goog.inherits(anychart.chartEditor2Module.controls.select.Palettes, anychart.cha
 
 
 /**
- * @param {anychart.chartEditor2Module.controls.select.DataFieldModel=} opt_model
+ * @param {Object=} opt_model
  * @param {goog.ui.Menu=} opt_menu
  * @param {goog.ui.ButtonRenderer=} opt_renderer
  * @param {goog.dom.DomHelper=} opt_domHelper
