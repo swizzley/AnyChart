@@ -9,7 +9,7 @@ goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.comboBox.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
 goog.require('anychart.chartEditor2Module.controls.select.Align');
-goog.require('anychart.chartEditor2Module.controls.select.Base');
+goog.require('anychart.chartEditor2.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditor2Module.controls.select.FontFamily');
 goog.require('anychart.chartEditor2Module.settings.Title');
 goog.require('goog.ui.ButtonSide');
@@ -58,12 +58,20 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Layout');
   goog.dom.appendChild(content, layoutLabel);
 
-  var layoutSelect = new anychart.chartEditor2Module.controls.select.Base();
+  var layoutSelect = new anychart.chartEditor2.controls.select.DataFieldSelect();
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  layoutSelect.setOptions(['horizontal', 'vertical']);
-  layoutSelect.setCaptions(['Horizontal', 'Vertical']);
-  layoutSelect.init(model, this.genKey('itemsLayout()'));
+
+  var options = [
+    {value: 'horizontal', caption: 'Horizontal'},
+    {value: 'vertical', caption: 'Vertical'}
+  ];
+  for (var i = 0; i < options.length; i++) {
+    layoutSelect.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+      caption: options[i].caption,
+      value: options[i].value
+    }));
+  }
   this.addChild(layoutSelect, true);
   //endregion
 
@@ -81,16 +89,25 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
 
-  var orientationSelect = new anychart.chartEditor2Module.controls.select.Base();
+  var orientationSelect = new anychart.chartEditor2.controls.select.DataFieldSelect();
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  orientationSelect.setOptions(['left', 'right', 'top', 'bottom']);
-  orientationSelect.setCaptions([null, null, null, null]);
-  orientationSelect.setIcons(['ac ac-position-left', 'ac ac-position-right', 'ac ac-position-top', 'ac ac-position-bottom']);
-  orientationSelect.init(model, this.genKey('position()'));
-
   var orientationSelectMenu = orientationSelect.getMenu();
   orientationSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
+
+  options = [
+    {value: 'left', icon: 'ac ac-position-left'},
+    {value: 'right', icon: 'ac ac-position-right'},
+    {value: 'top', icon: 'ac ac-position-top'},
+    {value: 'bottom', icon: 'ac ac-position-bottom'}
+  ];
+  for (i = 0; i < options.length; i++) {
+    orientationSelect.addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+      caption: options[i].value,
+      value: options[i].value,
+      icon: options[i].icon
+    }));
+  }
 
   this.addChild(orientationSelect, true);
   //endregion
@@ -112,8 +129,6 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
   var alignSelect = new anychart.chartEditor2Module.controls.select.Align(true);
   alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-
-  alignSelect.init(model, this.genKey('align()'));
 
   this.addChild(alignSelect, true);
   //endregion
@@ -138,6 +153,9 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
   this.layoutLabel_ = layoutLabel;
   this.orientationLabel_ = orientationLabel;
   this.alignLabel_ = alignLabel;
+  this.labels.push(this.layoutLabel_);
+  this.labels.push(this.orientationLabel_);
+  this.labels.push(this.alignLabel_);
 
   this.items_ = items;
 };
@@ -146,9 +164,10 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.LegendAppearance.prototype.updateKeys = function() {
   if (!this.isExcluded()) {
-    if (this.layoutSelect_) this.layoutSelect_.setKey(this.genKey('itemsLayout()'));
-    if (this.orientationSelect_) this.orientationSelect_.setKey(this.genKey('position()'));
-    if (this.alignSelect_) this.alignSelect_.setKey(this.genKey('align()'));
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+    if (this.layoutSelect_) this.layoutSelect_.init(model, this.genKey('itemsLayout()'));
+    if (this.orientationSelect_) this.orientationSelect_.init(model, this.genKey('position()'));
+    if (this.alignSelect_) this.alignSelect_.init(model, this.genKey('align()'));
     if (this.items_) this.items_.setKey(this.key);
   }
 
@@ -161,36 +180,13 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.onChartDraw = fu
   anychart.chartEditor2Module.settings.LegendAppearance.base(this, 'onChartDraw', evt);
 
   var target = evt.chart;
-  this.layoutSelect_.setValueByTarget(target);
-  this.orientationSelect_.setValueByTarget(target);
+  if (this.layoutSelect_) this.layoutSelect_.setValueByTarget(target);
+  if (this.orientationSelect_) this.orientationSelect_.setValueByTarget(target);
 
   this.alignSelect_.updateIcons(this.orientationSelect_.getValue());
   this.alignSelect_.setValueByTarget(target);
 };
 
-
-/** @inheritDoc */
-anychart.chartEditor2Module.settings.LegendAppearance.prototype.setContentEnabled = function(enabled) {
-  anychart.chartEditor2Module.settings.LegendAppearance.base(this, 'setContentEnabled', enabled);
-
-  if (this.layoutLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.layoutLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  if (this.orientationLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.orientationLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  if (this.alignLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.alignLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-};
 
 /** @override */
 anychart.chartEditor2Module.settings.LegendAppearance.prototype.disposeInternal = function() {
