@@ -41,7 +41,7 @@ anychart.chartEditor2Module.TooltipPanel.prototype.createDom = function() {
       ],
       'Display mode');
   goog.dom.appendChild(content, displayModeLabels);
-  this.displayModeLabel_ = displayModeLabels;
+  this.registerLabel(displayModeLabels);
 
   var displayMode = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   displayMode.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
@@ -62,7 +62,7 @@ anychart.chartEditor2Module.TooltipPanel.prototype.createDom = function() {
       ],
       'Position mode');
   goog.dom.appendChild(content, positionModeLabels);
-  this.positionModeLabel_ = positionModeLabels;
+  this.registerLabel(positionModeLabels);
 
   var positionMode = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   positionMode.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
@@ -121,25 +121,6 @@ anychart.chartEditor2Module.TooltipPanel.prototype.onChartDraw = function(evt) {
   var target = evt.chart;
   if (this.displayMode_) this.displayMode_.setValueByTarget(target);
   if (this.positionMode_) this.positionMode_.setValueByTarget(target);
-};
-
-
-/** @inheritDoc */
-anychart.chartEditor2Module.TooltipPanel.prototype.setContentEnabled = function(enabled) {
-  if (this.displayModeLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.displayModeLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  if (this.positionModeLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.positionModeLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-
-  anychart.chartEditor2Module.TooltipPanel.base(this, 'setContentEnabled', enabled);
 };
 
 

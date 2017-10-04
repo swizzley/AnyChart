@@ -136,12 +136,9 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
   this.orientationSelect_ = orientationSelect;
   this.alignSelect_ = alignSelect;
 
-  this.layoutLabel_ = layoutLabel;
-  this.orientationLabel_ = orientationLabel;
-  this.alignLabel_ = alignLabel;
-  this.labels.push(this.layoutLabel_);
-  this.labels.push(this.orientationLabel_);
-  this.labels.push(this.alignLabel_);
+  this.registerLabel(layoutLabel);
+  this.registerLabel(orientationLabel);
+  this.registerLabel(alignLabel);
 
   this.items_ = items;
 };

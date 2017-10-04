@@ -269,16 +269,9 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
   this.underlineBtn_ = underlineBtn;
   this.colorPicker_ = colorPicker;
 
-  this.colorLabel_ = colorLabel;
-  this.positionLabel_ = positionLabel;
-  this.alignLabel_ = alignLabel;
-
-  if (this.colorLabel_)
-    this.labels.push(this.colorLabel_);
-  if (this.positionLabel_)
-    this.labels.push(this.positionLabel_);
-  if (this.alignLabel_)
-    this.labels.push(this.alignLabel_);
+  this.registerLabel(colorLabel);
+  this.registerLabel(positionLabel);
+  this.registerLabel(alignLabel);
 };
 
 

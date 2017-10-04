@@ -59,7 +59,7 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
       ],
       'Palette');
   goog.dom.appendChild(content, paletteLabel);
-  this.labels.push(paletteLabel);
+  this.registerLabel(paletteLabel);
 
   var paletteInput = new anychart.chartEditor2Module.input.Palette('Comma separated colors');
   this.addChild(paletteInput, true);

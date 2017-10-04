@@ -68,6 +68,7 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
       ],
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
+  this.registerLabel(orientationLabel);
 
   var orientationSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
@@ -88,7 +89,6 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
       goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
   //endregion
 
-  this.orientationLabel_ = orientationLabel;
   this.orientation_ = orientationSelect;
 
   var title = new anychart.chartEditor2Module.settings.Title(model, 'Title');
@@ -149,22 +149,4 @@ anychart.chartEditor2Module.settings.Axis.prototype.disposeInternal = function()
   this.labels_ = null;
 
   anychart.chartEditor2Module.settings.Axis.base(this, 'disposeInternal');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditor2Module.settings.Axis.prototype.setContentEnabled = function(enabled) {
-  if (this.orientationLabel_) {
-    goog.dom.classlist.enable(
-        goog.asserts.assert(this.orientationLabel_),
-        goog.getCssName('anychart-control-disabled'), !enabled);
-  }
-
-  // if (this.invertedLabel_) {
-  //   goog.dom.classlist.enable(
-  //       goog.asserts.assert(this.invertedLabel_),
-  //       goog.getCssName('anychart-control-disabled'), !enabled);
-  // }
-
-  anychart.chartEditor2Module.settings.Axis.base(this, 'setContentEnabled', enabled);
 };

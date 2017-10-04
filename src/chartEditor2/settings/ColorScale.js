@@ -53,7 +53,7 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
       ],
       'Scale type');
   goog.dom.appendChild(content, typeLabel);
-  this.labels.push(typeLabel);
+  this.registerLabel(typeLabel);
 
   var typeSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
   typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));

@@ -366,6 +366,16 @@ anychart.chartEditor2Module.SettingsPanel.prototype.updateKeys = function() {
 };
 
 
+/**
+ * Registers label to disable and dispose
+ * @param {?Element} labelElement
+ */
+anychart.chartEditor2Module.SettingsPanel.prototype.registerLabel = function(labelElement) {
+  if (!labelElement) return;
+  this.labels.push(labelElement);
+};
+
+
 /** @override */
 anychart.chartEditor2Module.SettingsPanel.prototype.disposeInternal = function() {
   this.labels.length = 0;

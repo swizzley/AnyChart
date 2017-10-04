@@ -51,7 +51,7 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       ],
       'Text');
   goog.dom.appendChild(content, textLabel);
-  this.labels.push(textLabel);
+  this.registerLabel(textLabel);
 
   var text = new anychart.chartEditor2Module.input.Base('Text');
   this.addChild(text, true);
@@ -66,7 +66,7 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       ],
       'URL');
   goog.dom.appendChild(content, urlLabel);
-  this.labels.push(urlLabel);
+  this.registerLabel(urlLabel);
 
   var url = new anychart.chartEditor2Module.input.Base('Url');
   this.addChild(url, true);
@@ -81,7 +81,7 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       ],
       'Logo URL');
   goog.dom.appendChild(content, logoLabel);
-  this.labels.push(logoLabel);
+  this.registerLabel(logoLabel);
 
   var logoSrc = new anychart.chartEditor2Module.input.Base('Logo');
   this.addChild(logoSrc, true);
