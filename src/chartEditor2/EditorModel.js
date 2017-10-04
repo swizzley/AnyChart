@@ -1382,10 +1382,12 @@ anychart.chartEditor2Module.EditorModel.prototype.getGeoIdField = function() {
 
 /**
  * Returns JS code string that creates a configured chart.
+ * @param {string=} opt_container
+ * @param {string=} opt_wrapper
  * @return {string}
  */
-anychart.chartEditor2Module.EditorModel.prototype.getChartAsJsCode = function() {
-  return this.getChartWithJsCode_()[0];
+anychart.chartEditor2Module.EditorModel.prototype.getChartAsJsCode = function(opt_container, opt_wrapper) {
+  return this.getChartWithJsCode_(opt_container, opt_wrapper)[0];
 };
 
 
@@ -1428,10 +1430,12 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartAsXml = function() {
 
 /**
  * Creates a chart instance from the model and the JS code string that creates the chart.
+ * @param {string=} opt_container
+ * @param {string=} opt_wrapper function, document-ready, none.
  * @return {!Array} Returns [JsString, ChartInstance]
  * @private
  */
-anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function() {
+anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function(opt_container, opt_wrapper) {
   var settings = this.getModel();
   var chartType = settings['chart']['type'];
 
@@ -1440,8 +1444,9 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
 
   // SETTINGS OF THE PRINTER
   var minify = !!settings['minifyOutput'];
-  var containerId = String(settings['outputContainerId'] || 'container');
+  var containerId = String(opt_container || settings['outputContainerId'] || 'container');
   var wrapWithReady = !!settings['wrapOutputWithDocumentReady'];
+  var wrapper =  String(opt_wrapper || settings['outputWrapper'] || 'function');
 
   var eq = minify ? '=' : ' = ';
 
@@ -1597,17 +1602,26 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
       return goog.string.startsWith(item, '//') ? '' : item;
     });
   }
-  if (wrapWithReady) {
+  if (wrapper === 'function' || wrapper === 'document-ready') {
+    // add indentation
     if (!minify) {
       goog.array.forEach(result, function(item) {
         return '  ' + item;
       });
     }
-    result.unshift('anychart.onDocumentReady(function()' + (minify ? '' : ' ') + '{');
-    result.push('});');
+
+    // wrap with function
+    if (wrapper === 'function') {
+        result.unshift('(function()' + (minify ? '' : ' ') + '{');
+        result.push((minify ? '' : '  ') + 'return chart;');
+        result.push('})();');
+
+    // wrap with anychart.onDocumentReady
+    } else if (wrapper === 'document-ready') {
+        result.unshift('anychart.onDocumentReady(function()' + (minify ? '' : ' ') + '{');
+        result.push('});');
+    }
   }
-  // chart['container'](this.containerId_);
-  // chart['draw']();
   return [result.join(minify ? '' : '\n'), chart];
 };
 
