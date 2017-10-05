@@ -1496,7 +1496,7 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
       var geoIdField = this.getGeoIdField();
       if (geoIdField) {
         chart['geoIdField'](geoIdField);
-        result.push(this.printKey_(printer, 'chart', 'geoIdField', geoIdField));
+        result.push(this.printKey_(printer, 'chart', 'geoIdField()', geoIdField));
       }
     }
   }
