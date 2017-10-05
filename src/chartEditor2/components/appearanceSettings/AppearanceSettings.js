@@ -68,15 +68,10 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabConten
 goog.inherits(anychart.chartEditor2Module.AppearanceSettings, anychart.chartEditor2Module.Component);
 
 
-/** @inheritDoc */
-anychart.chartEditor2Module.AppearanceSettings.prototype.enterDocument = function() {
-  this.update();
-  anychart.chartEditor2Module.AppearanceSettings.base(this, 'enterDocument');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
+/**
+ * Creates panels and buttons and updates panel's exclusion state.
+ */
+anychart.chartEditor2Module.AppearanceSettings.prototype.updatePanels = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var dom = this.getDomHelper();
   var handler = this.getHandler();
@@ -87,7 +82,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
   var excluded;
 
   if (!this.buttonsWrapper_) {
-    this.buttonsWrapper_ = goog.dom.createDom(goog.dom.TagName.DIV, 'buttons-wrapper');
+    this.buttonsWrapper_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-buttons-wrapper');
     goog.dom.appendChild(this.tabs_.getElement(), this.buttonsWrapper_);
   }
 
@@ -105,6 +100,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.update = function() {
       button.setAttribute('data-index', i);
       this.buttons_.push(button);
       this.buttonsWrapper_.appendChild(button);
+
     } else {
       excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       if (excluded && this.currentPanel_ === i)

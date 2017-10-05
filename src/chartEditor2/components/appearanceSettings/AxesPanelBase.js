@@ -55,14 +55,6 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
-// anychart.chartEditor2Module.AxesPanelBase.prototype.update = function(evt) {
-//   anychart.chartEditor2Module.AxesPanelBase.base(this, 'update');
-//   // this.removeAllAxes();
-//   this.createAxes();
-// };
-
-
 /** @private */
 anychart.chartEditor2Module.AxesPanelBase.prototype.onAddAxis_ = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
@@ -78,7 +70,7 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.onAddAxis_ = function() {
 anychart.chartEditor2Module.AxesPanelBase.prototype.onRemoveAxis_ = function(evt) {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var axisIndex = (/** @type {anychart.chartEditor2Module.settings.Axis} */(evt.currentTarget)).getIndex();
-  this.axes_[axisIndex].dispose();
+  goog.dispose(this.axes_[axisIndex]);
   this.axes_[axisIndex] = null;
   model.dropAxis(this.xOrY, axisIndex);
 };
@@ -90,15 +82,15 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.onRemoveAxis_ = function(evt
 anychart.chartEditor2Module.AxesPanelBase.prototype.createAxes = function() {
   if (this.isExcluded()) return;
 
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  var options = model.getModel();
-  var settings = options['chart']['settings'];
-
   // Always create 0 axis panel
   this.addAxis(0);
 
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  var settings = model.getModel()['chart']['settings'];
+
   var pattern = '^' + this.xOrY + 'Axis\\((\\d+)\\)\\.enabled\\(\\)$';
   var regExp = new RegExp(pattern);
+
   for (var key in settings) {
     var match = key.match(regExp);
     if (match) {

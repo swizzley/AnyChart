@@ -64,6 +64,9 @@ anychart.chartEditor2Module.steps.VisualAppearance.prototype.createDom = functio
 
 /** @inheritDoc */
 anychart.chartEditor2Module.steps.VisualAppearance.prototype.enterDocument = function() {
+  // Shound be called before enterDocument()!
+  this.appearanceSettings_.updatePanels();
+
   anychart.chartEditor2Module.steps.VisualAppearance.base(this, 'enterDocument');
 
   var editor = /** @type {anychart.chartEditor2Module.Editor} */(this.getParent());
