@@ -163,7 +163,8 @@ anychart.chartEditor2Module.PredefinedDataSet.prototype.dispatchLoadData = funct
       setId: setId,
       setFullId: this.dataType + setId,
       title: opt_name,
-      chartType: json['chartType']
+      chartType: json['chartType'],
+      seriesType: json['seriesType']
     });
   }
 };

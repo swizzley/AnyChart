@@ -528,34 +528,44 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
  * Chooses default series type.
  */
 anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultSeriesType = function() {
-  var seriesType = anychart.chartEditor2Module.EditorModel.ChartTypes[this.model_['chart']['type']]['series'][0];
-  switch (this.model_['chart']['type']) {
-    case 'map':
-      if (this.fieldsState_.coordinates.length == 2) {
-        if (this.fieldsState_.numbersCount)
-          seriesType = 'bubble-by-coordinates';
+  var seriesType = null;
+  var recomendedSeriesType = this.data_[this.getActive()].seriesType;
+  if (recomendedSeriesType) {
+    var availableTypes = anychart.chartEditor2Module.EditorModel.ChartTypes[this.model_['chart']['type']]['series'];
+    if (goog.array.indexOf(availableTypes, recomendedSeriesType) !== -1)
+      seriesType = recomendedSeriesType;
+  }
+
+  if (!seriesType) {
+    seriesType = anychart.chartEditor2Module.EditorModel.ChartTypes[this.model_['chart']['type']]['series'][0];
+    switch (this.model_['chart']['type']) {
+      case 'map':
+        if (this.fieldsState_.coordinates.length == 2) {
+          if (this.fieldsState_.numbersCount)
+            seriesType = 'bubble-by-coordinates';
+          else
+            seriesType = 'marker-by-coordinates';
+
+        } else if (this.fieldsState_.geoId) {
+          if (this.fieldsState_.numbersCount)
+            seriesType = 'bubble-by-id';
+          else
+            seriesType = 'marker-by-id';
+        }
+        break;
+
+      case 'stock':
+        if (this.fieldsState_.numbersCount < 4 || this.fieldsState_.numbersCount > 5)
+          seriesType = 'line';
+        break;
+
+      case 'scatter':
+        if (!(this.fieldsState_.numbersCount % 2))
+          seriesType = 'bubble';
         else
-          seriesType = 'marker-by-coordinates';
-
-      } else if (this.fieldsState_.geoId) {
-        if (this.fieldsState_.numbersCount)
-          seriesType = 'bubble-by-id';
-        else
-          seriesType = 'marker-by-id';
-      }
-      break;
-
-    case 'stock':
-      if (this.fieldsState_.numbersCount < 4 || this.fieldsState_.numbersCount > 5)
-        seriesType = 'line';
-      break;
-
-    case 'scatter':
-      if (!(this.fieldsState_.numbersCount % 2))
-        seriesType = 'bubble';
-      else
-        seriesType = 'marker';
-      break;
+          seriesType = 'marker';
+        break;
+    }
   }
 
   this.model_['chart']['seriesType'] = seriesType;
@@ -1272,6 +1282,7 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(evt) {
       setId: evt.setId,
       title: evt.title,
       chartType: evt.chartType,
+      seriesType: evt.seriesType,
       data: evt.data
     };
   }
