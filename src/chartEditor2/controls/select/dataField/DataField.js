@@ -62,3 +62,27 @@ anychart.chartEditor2Module.controls.select.DataField.prototype.getSelect = func
 anychart.chartEditor2Module.controls.select.DataField.prototype.setSelect = function(select) {
   this.select_ = select;
 };
+
+
+/**
+ * Connects control with EditorMode.
+ *
+ * @param {anychart.chartEditor2Module.EditorModel} model Editor model instance to connect with.
+ * @param {anychart.chartEditor2Module.EditorModel.Key} key Key of control's field in model's structure.
+ * @param {string=} opt_callback Callback function that will be called on control's value change instead of simple change value in model.
+ *  This function should be model's public method.
+ * @param {boolean=} opt_noRebuild Should or not rebuild target (chart) on change value of this control.
+ * @public
+ */
+anychart.chartEditor2Module.controls.select.DataField.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
+  this.select_.init(model, key, opt_callback, opt_noRebuild);
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ */
+anychart.chartEditor2Module.controls.select.DataField.prototype.exclude = function(value) {
+  this.select_.exclude(value);
+};

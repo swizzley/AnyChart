@@ -115,7 +115,7 @@ anychart.chartEditor2Module.DataSetPanel.prototype.setDisabled = function(value)
   for(var i = 0; i < this.menu_.getChildCount(); i++) {
     var menuItem = this.menu_.getChildAt(i);
     if (menuItem.getCaption() === 'Remove') {
-      menuItem.setEnabled(this.disabled);
+      menuItem.setEnabled(this.disabled && this.dataSet_.type != anychart.chartEditor2Module.EditorModel.DataType.GEO);
     }
   }
   // this.menuBtn_.setEnabled(this.disabled);

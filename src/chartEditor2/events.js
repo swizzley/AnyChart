@@ -9,6 +9,7 @@ anychart.chartEditor2Module.events.EventType = {
   // working with data model
   DATA_ADD: goog.events.getUniqueId('data-add'),
   DATA_REMOVE: goog.events.getUniqueId('data-remove'),
+  GEO_DATA_INDEX_LOADED: goog.events.getUniqueId('geo-data-index-loaded'),
 
   // editor model
   EDITOR_MODEL_UPDATE: goog.events.getUniqueId('editor-model-update'),

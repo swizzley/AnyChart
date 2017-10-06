@@ -88,6 +88,7 @@ anychart.chartEditor2Module.EditorModel = function() {
    */
   this.callbacks_ = {
     'setActiveAndField': this.setActiveAndField,
+    'setActiveGeo': this.setActiveGeo,
     'setChartType': this.setChartType,
     'setSeriesType': this.setSeriesType,
     'setTheme': this.setTheme,
@@ -108,6 +109,12 @@ anychart.chartEditor2Module.EditorModel = function() {
     'printChart': {'items': 'print-chart', 'enabled': true},
     'about': {'items': ['about', 'exporting-separator'], 'enabled': true}
   };
+
+  /**
+   * @type {Array}
+   * @private
+   */
+  this.geoDataIndex_ = [];
 };
 goog.inherits(anychart.chartEditor2Module.EditorModel, goog.events.EventTarget);
 
@@ -493,32 +500,31 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
     chartType = 'line';
     var rawData = this.getRawData();
 
-    if (this.model_['dataSettings']['activeGeo']) {
-      chartType = 'map';
-    } else {
-      if (this.model_['dataSettings']['field'] == this.fieldsState_.date) {
-        chartType = 'stock';
+    if (this.model_['dataSettings']['field'] == this.fieldsState_.date) {
+      chartType = 'stock';
 
-      } else if (this.model_['dataSettings']['field'] == this.fieldsState_.date_short) {
-        chartType = 'column';
+    } else if (this.model_['dataSettings']['field'] == this.fieldsState_.date_short) {
+      chartType = 'column';
 
-        if (this.fieldsState_.numbersCount > 3)
-          this.setStackMode('value');
+      if (this.fieldsState_.numbersCount > 3)
+        this.setStackMode('value');
 
-      } else if (this.model_['dataSettings']['field'] == this.fieldsState_.firstString) {
-        if (rawData.length <= 5 && this.fieldsState_.numbersCount == 1)
-          chartType = 'pie';
-        else if (this.fieldsState_.numbersCount <= 3)
-          chartType = 'bar';
-        else if (this.fieldsState_.numbersCount <= 5) {
-          chartType = 'bar';
-          this.setStackMode('value');
-        }
+    } else if (this.model_['dataSettings']['field'] == this.fieldsState_.firstString) {
+      if (rawData.length <= 5 && this.fieldsState_.numbersCount == 1)
+        chartType = 'pie';
+      else if (this.fieldsState_.numbersCount <= 3)
+        chartType = 'bar';
+      else if (this.fieldsState_.numbersCount <= 5) {
+        chartType = 'bar';
+        this.setStackMode('value');
+      }
 
-      } else
-        chartType = 'scatter';
-    }
+    } else
+      chartType = 'scatter';
   }
+
+  if (chartType === 'map')
+    this.initGeoData_();
 
   this.model_['chart']['type'] = chartType;
 };
@@ -715,6 +721,85 @@ anychart.chartEditor2Module.EditorModel.prototype.checkSeriesFieldsCompatible = 
 
   return compatible;
 };
+
+
+/** @return {?Array.<Object>} */
+anychart.chartEditor2Module.EditorModel.prototype.getGeoDataIndex = function() {
+  return this.geoDataIndex_.length ? this.geoDataIndex_ : null;
+};
+
+
+/** @private */
+anychart.chartEditor2Module.EditorModel.prototype.initGeoData_ = function() {
+  if (this.geoDataIndex_.length)
+    this.loadGeoData_();
+  else {
+    this.dispatchEvent({
+      type: anychart.chartEditor2Module.events.EventType.WAIT,
+      wait: true
+    });
+
+    var self = this;
+    goog.net.XhrIo.send('https://cdn.anychart.com/anydata/geo/index.json',
+        function(e) {
+          var xhr = e.target;
+          var indexJson = xhr.getResponseJson();
+          if (indexJson['sets']) {
+            for (var i in indexJson['sets']) {
+              self.geoDataIndex_[indexJson['sets'][i]['id']] = indexJson['sets'][i];
+            }
+          }
+
+          self.dispatchEvent({
+            type: anychart.chartEditor2Module.events.EventType.GEO_DATA_INDEX_LOADED,
+            data: self.geoDataIndex_
+          });
+
+          self.loadGeoData_();
+        });
+  }
+};
+
+
+/**
+ * @param {number=} opt_setId
+ * @private
+ */
+anychart.chartEditor2Module.EditorModel.prototype.loadGeoData_ = function(opt_setId) {
+  var setId = goog.isDef(opt_setId) ? opt_setId : 0;
+  var setFullId = anychart.chartEditor2Module.EditorModel.DataType.GEO + setId;
+
+  if (setFullId != this.model_['dataSettings']['activeGeo'] || !this.data_[setFullId]) {
+    this.dispatchEvent({
+      type: anychart.chartEditor2Module.events.EventType.WAIT,
+      wait: true
+    });
+
+    var setUrl = 'https://cdn.anychart.com/geodata/1.2.0' + this.geoDataIndex_[setId]['data'];
+    var self = this;
+    goog.net.XhrIo.send(setUrl,
+        function(e) {
+          if (e.target.getStatus() == 200) {
+            var json = e.target.getResponseJson();
+            var dataType = anychart.chartEditor2Module.EditorModel.DataType.GEO;
+            self.addData({
+              type: anychart.chartEditor2Module.events.EventType.DATA_ADD,
+              data: json,
+              dataType: dataType,
+              setId: setId,
+              setFullId: dataType + setId,
+              title: self.geoDataIndex_[setId]['name']
+            });
+          }
+
+          self.dispatchEvent({
+            type: anychart.chartEditor2Module.events.EventType.WAIT,
+            wait: false
+          });
+        });
+  }
+};
+
 // endregion
 
 
@@ -874,19 +959,35 @@ anychart.chartEditor2Module.EditorModel.prototype.setActiveAndField = function(i
 
 
 /**
+ * Callback function for change event of geo data select.
+ * @param {anychart.chartEditor2Module.controls.select.Base} input
+ */
+anychart.chartEditor2Module.EditorModel.prototype.setActiveGeo = function(input) {
+  var selectValue = /** @type {Object} */(input.getValue());
+  var setId = Number(selectValue.value.substr(1));
+  this.loadGeoData_(setId);
+};
+
+
+/**
  * Callback function for change event of chart type select.
  * @param {anychart.chartEditor2Module.controls.select.Base} input
  */
 anychart.chartEditor2Module.EditorModel.prototype.setChartType = function(input) {
   var prevChartType = /** @type {string} */(this.model_['chart']['type']);
-  var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
   var selectValue = /** @type {Object} */(input.getValue());
   this.model_['chart']['type'] = selectValue.value;
 
-  if (prevChartType == 'map') {
+  if (prevChartType == this.model_['chart']['type']) return;
+
+  var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
+
+  if (prevChartType === 'map') {
     delete this.data_[this.model_['dataSettings']['activeGeo']];
-    this.model_['dataSettings']['activeGeo'] = null;
     this.preparedData_.length = 0;
+
+  } else if (this.model_['chart']['type'] === 'map') {
+    this.initGeoData_();
   }
 
   if (this.needResetMappings(prevChartType, prevDefaultSeriesType)) {
@@ -1289,16 +1390,21 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(evt) {
   this.preparedData_.length = 0;
 
   if (evt.dataType == anychart.chartEditor2Module.EditorModel.DataType.GEO) {
-    delete this.data_[this.model_['dataSettings']['activeGeo']];
-    this.model_['dataSettings']['activeGeo'] = id;
-    this.model_['dataSettings']['geoIdField'] = null;
+    if (this.model_['dataSettings']['activeGeo'] != id) {
+      delete this.data_[this.model_['dataSettings']['activeGeo']];
+      this.model_['dataSettings']['activeGeo'] = id;
+      this.model_['dataSettings']['geoIdField'] = null;
+    }
 
-    // Find geoIdField
-    var rawData = this.getRawData(true);
-    var dataRow = rawData['features'][0]['properties'];
-    for (var i in dataRow) {
-      if ((!this.model_['dataSettings']['geoIdField'] || i == 'id') && this.isGeoId_(dataRow[i])) {
-        this.model_['dataSettings']['geoIdField'] = i;
+    if (!this.model_['dataSettings']['geoIdField']) {
+      // Find geoIdField
+      var rawData = this.getRawData(true);
+
+      var dataRow = rawData['features'][0]['properties'];
+      for (var i in dataRow) {
+        if ((!this.model_['dataSettings']['geoIdField'] || i == 'id') && this.isGeoId_(dataRow[i])) {
+          this.model_['dataSettings']['geoIdField'] = i;
+        }
       }
     }
   } else
@@ -1318,7 +1424,6 @@ anychart.chartEditor2Module.EditorModel.prototype.removeData = function(setFullI
   if (this.model_['dataSettings']['activeGeo'] && this.preparedData_.length == 2) {
     // Geo data should not be alone
     delete this.data_[this.model_['dataSettings']['activeGeo']];
-    this.model_['dataSettings']['activeGeo'] = null;
   }
 
   this.preparedData_.length = 0;

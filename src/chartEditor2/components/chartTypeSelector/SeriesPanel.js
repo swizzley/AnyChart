@@ -102,7 +102,6 @@ anychart.chartEditor2Module.SeriesPanel.prototype.update = function() {
     this.typeSelect_.getSelect().addItem(item);
   }
 
-  //this.typeSelect_.getSelect().updateOptions();
   this.typeSelect_.getSelect().setValueByModel();
 
   this.createFields();
@@ -199,7 +198,6 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createFieldsOptions = function
         fieldSelect.addItem(option);
       }
 
-      // fieldSelect.updateOptions();
       fieldSelect.setValueByModel();
     }
   }

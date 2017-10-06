@@ -76,6 +76,9 @@ anychart.chartEditor2Module.Editor = function(opt_domHelper) {
   this.listen(anychart.chartEditor2Module.events.EventType.DATA_ADD, this.onDataAdd_);
   this.listen(anychart.chartEditor2Module.events.EventType.DATA_REMOVE, this.onDataRemove_);
   this.listen(anychart.chartEditor2Module.events.EventType.WAIT, this.onWait_);
+
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  this.getHandler().listen(model, anychart.chartEditor2Module.events.EventType.WAIT, this.onWait_);
 };
 goog.inherits(anychart.chartEditor2Module.Editor, anychart.chartEditor2Module.Component);
 

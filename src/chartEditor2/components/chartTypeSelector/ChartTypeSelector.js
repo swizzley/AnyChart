@@ -82,8 +82,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
   }
 
   if (chartType === 'map') {
-    this.geoDataInputs_.show();
-    this.geoDataInputs_.update();
+    this.geoDataInputs_.exclude(false);
 
     // Data Set select
     this.activeAndFieldSelect_ = new anychart.chartEditor2Module.controls.select.DataField({
@@ -94,7 +93,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.createDataSetsOptions_();
 
   } else {
-    this.geoDataInputs_.hide();
+    this.geoDataInputs_.exclude(true);
 
     // X Values select
     this.activeAndFieldSelect_ = new anychart.chartEditor2Module.controls.select.DataField({
