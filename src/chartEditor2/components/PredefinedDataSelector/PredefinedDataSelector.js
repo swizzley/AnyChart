@@ -22,7 +22,6 @@ anychart.chartEditor2Module.PredefinedDataSelector = function(model, opt_domHelp
 
   this.jsonUrl = 'https://cdn.anychart.com/anydata/common/';
 
-
   this.dataType = anychart.chartEditor2Module.EditorModel.DataType.PREDEFINED;
 
   /**

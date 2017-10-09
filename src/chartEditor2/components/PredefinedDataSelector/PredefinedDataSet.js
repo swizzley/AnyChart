@@ -133,7 +133,6 @@ anychart.chartEditor2Module.PredefinedDataSet.prototype.onUseAction_ = function(
             self.state_ = anychart.chartEditor2Module.PredefinedDataSelector.DatasetState.NOT_LOADED;
           }
 
-
           self.dispatchEvent({
             type: anychart.chartEditor2Module.events.EventType.WAIT,
             wait: false
@@ -162,9 +161,11 @@ anychart.chartEditor2Module.PredefinedDataSet.prototype.dispatchLoadData = funct
       dataType: this.dataType,
       setId: setId,
       setFullId: this.dataType + setId,
+
       title: opt_name,
       chartType: json['chartType'],
-      seriesType: json['seriesType']
+      seriesType: json['seriesType'],
+      activeGeo: json['activeGeo']
     });
   }
 };

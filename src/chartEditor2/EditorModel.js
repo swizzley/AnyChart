@@ -731,8 +731,9 @@ anychart.chartEditor2Module.EditorModel.prototype.getGeoDataIndex = function() {
 
 /** @private */
 anychart.chartEditor2Module.EditorModel.prototype.initGeoData_ = function() {
+  var activeGeo = this.data_[this.getActive()]['activeGeo'];
   if (this.geoDataIndex_.length)
-    this.loadGeoData_();
+    this.loadGeoData_(activeGeo);
   else {
     this.dispatchEvent({
       type: anychart.chartEditor2Module.events.EventType.WAIT,
@@ -755,7 +756,7 @@ anychart.chartEditor2Module.EditorModel.prototype.initGeoData_ = function() {
             data: self.geoDataIndex_
           });
 
-          self.loadGeoData_();
+          self.loadGeoData_(activeGeo);
         });
   }
 };
@@ -1378,13 +1379,15 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(evt) {
   var id = this.getFullId(evt.dataType, evt.setId);
   if (!this.data_[id]) {
     this.data_[id] = {
-      setFullId: id,
+      data: evt.data,
       type: evt.dataType,
       setId: evt.setId,
+      setFullId: id,
+
       title: evt.title,
       chartType: evt.chartType,
       seriesType: evt.seriesType,
-      data: evt.data
+      activeGeo: evt.activeGeo
     };
   }
   this.preparedData_.length = 0;
@@ -1407,8 +1410,9 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(evt) {
         }
       }
     }
-  } else
+  } else {
     this.generateInitialMappingsOnChangeView_ = true;
+  }
 
   this.dispatchUpdate();
 };
