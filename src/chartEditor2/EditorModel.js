@@ -1344,6 +1344,9 @@ anychart.chartEditor2Module.EditorModel.getStringKey = function(key) {
   if (goog.isArray(key)) {
     key = /** @type {Array} */(key);
     result = /** @type {string} */(key[key.length - 1]);
+
+    if (result.indexOf('()') == -1)
+      result =  /** @type {string} */(key[key.length - 2]) + '.' + result + '()';
   }
   else
     result = String(key);

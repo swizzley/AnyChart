@@ -70,7 +70,7 @@ anychart.chartEditor2Module.settings.ColorScaleRanges.prototype.onChartDraw = fu
 
   if (!this.ranges_.length) {
     var target = evt.chart;
-    var stringKey = 'colorScale().ranges()';//anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
+    var stringKey = anychart.chartEditor2Module.EditorModel.getStringKey(this.key);
     var rangesValue = /** @type {?Array} */(anychart.bindingModule.exec(target, stringKey));
     if (rangesValue && rangesValue.length) {
       for (var i = 0; i < rangesValue.length; i++) {

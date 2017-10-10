@@ -30,6 +30,9 @@ anychart.chartEditor2Module.settings.Series = function(model, seriesId, seriesIn
     stringKey = 'plot(' + this.plotIndex_ + ').' + stringKey;
   }
 
+  var plotIndex = goog.isDef(opt_plotIndex) ? opt_plotIndex : 0;
+
+  this.seriesType_ = model.getValue([['dataSettings'], ['mappings', plotIndex], [0, 'ctor']]);
   this.key = [['chart'], ['settings'], stringKey];
 };
 goog.inherits(anychart.chartEditor2Module.settings.Series, anychart.chartEditor2Module.SettingsPanel);
@@ -106,6 +109,18 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
   dataMarkers.allowEnabled(true);
   this.addChild(dataMarkers, true);
 
+  // if (this.seriesType_ == 'choropleth') {
+  //   var colorScale = new anychart.chartEditor2Module.settings.ColorScale(model, null);
+  //   colorScale.allowEnabled(false);
+  //   colorScale.setKey(this.genKey('colorScale()'));
+  //   this.addChild(colorScale, true);
+  //   this.colorScale_ = colorScale;
+  // } else if (this.colorScale_) {
+  //   goog.dispose(this.colorScale_);
+  //   this.colorScale_ = null;
+  // }
+
+
   this.nameInput_ = nameInput;
   this.colorPicker_ = colorPicker;
   this.stroke_ = stroke;
@@ -165,6 +180,9 @@ anychart.chartEditor2Module.settings.Series.prototype.disposeInternal = function
 
   this.dataMarkers_.dispose();
   this.dataMarkers_ = null;
+
+  // goog.dispose(this.colorScale_);
+  // this.colorScale_ = null;
 
   anychart.chartEditor2Module.settings.Series.base(this, 'disposeInternal');
 };
