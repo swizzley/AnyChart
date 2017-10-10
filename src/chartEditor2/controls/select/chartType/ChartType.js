@@ -134,7 +134,6 @@ anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.prototype.crea
   container = /** @type {anychart.chartEditor2Module.controls.select.ChartTypeMenu} */(container);
   var element = anychart.chartEditor2Module.controls.select.ChartTypeMenuRenderer.base(this, 'createDom', container);
   if (container.additionalClassName) goog.dom.classlist.add(element, container.additionalClassName);
-  goog.dom.classlist.add(element, 'anychart-border-box');
   return element;
 };
 

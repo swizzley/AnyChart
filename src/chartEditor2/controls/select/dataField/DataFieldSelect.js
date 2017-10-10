@@ -162,7 +162,6 @@ anychart.chartEditor2Module.controls.select.DataFieldMenuRenderer.prototype.crea
     container = /** @type {anychart.chartEditor2Module.controls.select.DataFieldMenu} */(container);
     var element = anychart.chartEditor2Module.controls.select.DataFieldMenuRenderer.base(this, 'createDom', container);
     if (container.additionalClassName) goog.dom.classlist.add(element, container.additionalClassName);
-    goog.dom.classlist.add(element, 'anychart-border-box');
     return element;
 };
 

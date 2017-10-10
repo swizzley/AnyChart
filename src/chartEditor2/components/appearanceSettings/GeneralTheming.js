@@ -52,14 +52,14 @@ anychart.chartEditor2Module.GeneralTheming.prototype.createDom = function() {
       }));
     }
   }
-  this.paletteSelect.getSelect().init(model, [['chart'], ['settings'], 'palette()']);
+  this.paletteSelect.init(model, [['chart'], ['settings'], 'palette()']);
   this.addChild(this.paletteSelect, true);
 };
 
 
 /** @inheritDoc */
 anychart.chartEditor2Module.GeneralTheming.prototype.update = function() {
-  if (this.paletteSelect) this.paletteSelect.getSelect().updateExclusion();
+  if (this.paletteSelect) this.paletteSelect.updateExclusion();
   anychart.chartEditor2Module.GeneralTheming.base(this, 'update');
 };
 

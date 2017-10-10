@@ -33,6 +33,7 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabConten
   this.setModel(model);
 
   this.panels_ = [
+    {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
     {classFunc: anychart.chartEditor2Module.GeneralTheming, instance: null},
     {classFunc: anychart.chartEditor2Module.ChartTitlePanel, instance: null},
     {classFunc: anychart.chartEditor2Module.LegendPanel, instance: null},
@@ -42,7 +43,7 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabConten
     {classFunc: anychart.chartEditor2Module.YAxesPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.TooltipPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.GridsPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
+    // {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
     {classFunc: anychart.chartEditor2Module.ContextMenuPanel, instance: null},
     {classFunc: anychart.chartEditor2Module.CreditsPanel, instance: null}
   ];

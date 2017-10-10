@@ -1,5 +1,6 @@
 @color-background: #ecf0f3;
 @color-blue: #549de1;
+@color-border: #c7d8e4;
 @shadow-1: 0 0 8px #c4d5df;
 
 // region ---- common
@@ -489,7 +490,7 @@
   //.border-radiuses() // try to use
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border: 1px solid #c7d8e4;
+  border: 1px solid @color-border;
   border-bottom: none;
 }
 
@@ -529,10 +530,11 @@
 }
 
 .anychart-select-data-field-menu {
+  .box-sizing(border-box);
   position: absolute;
   background: @color-background;
-  width: 210px;
-  border: 1px solid #c7d8e4;
+  width: 210px; // todo: should be dynamic
+  border: 1px solid @color-border;
   border-top: none;
   //.border-radiuses() // try to use
   border-bottom-left-radius: 4px;
@@ -584,7 +586,7 @@
   .box-shadow(@shadow-1);
   position: relative;
   background: white;
-  border-top: 1px solid #c7d8e4;
+  border-top: 1px solid @color-border;
 }
 
 
@@ -649,7 +651,7 @@
 
 .anychart-plot-panel-series {
   position: relative;
-  border-top: 1px solid #c7d8e4;
+  border-top: 1px solid @color-border;
   padding: 14px;
 }
 
@@ -692,6 +694,7 @@
 }
 
 .anychart-select-chart-type-menu {
+  .box-sizing(border-box);
   position: absolute;
   z-index: 1;
   width: 366px;
@@ -759,6 +762,15 @@
       padding: 15px;
     }
 
+  }
+
+  .settings-panel {
+    .top {
+      margin-bottom: 10px;
+    }
+    .title {
+      display: inline-block;
+    }
   }
 }
 

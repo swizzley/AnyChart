@@ -117,6 +117,7 @@ anychart.chartEditor2Module.input.Base.prototype.disposeInternal = function() {
 /** @inheritDoc */
 anychart.chartEditor2Module.input.Base.prototype.enterDocument = function() {
   anychart.chartEditor2Module.input.Base.base(this, 'enterDocument');
+  goog.style.setElementShown(this.getElement(), !this.excluded);
 
   this.inputHandler_ = new goog.events.InputHandler(this.getElement());
   goog.events.listen(
@@ -127,6 +128,8 @@ anychart.chartEditor2Module.input.Base.prototype.enterDocument = function() {
 
 /** @protected */
 anychart.chartEditor2Module.input.Base.prototype.onChange = function() {
+  if (this.excluded) return;
+
   var value = this.getValue();
   if (!this.noDispatch && value != this.lastValue && this.editorModel) {
     var caretPosition = goog.dom.selection.getStart(this.getElement());
@@ -178,6 +181,8 @@ anychart.chartEditor2Module.input.Base.prototype.init = function(model, key, opt
  * @param {boolean=} opt_force
  */
 anychart.chartEditor2Module.input.Base.prototype.setValueByTarget = function(target, opt_force) {
+  if (this.excluded) return;
+
   if (!opt_force && this.revisionCount1 - this.revisionCount2 > 1) return;
   this.revisionCount2 = this.revisionCount1;
 
@@ -195,4 +200,38 @@ anychart.chartEditor2Module.input.Base.prototype.setValueByTarget = function(tar
   this.noDispatch = true;
   this.setValue(value);
   this.noDispatch = false;
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ * @param {boolean=} opt_needRedraw
+ */
+anychart.chartEditor2Module.input.Base.prototype.exclude = function(value, opt_needRedraw) {
+  this.excluded = value;
+  if (this.isInDocument())
+    goog.style.setElementShown(this.getElement(), !this.excluded);
+
+  if (this.excluded && this.editorModel)
+    this.editorModel.removeByKey(this.key, !opt_needRedraw);
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.chartEditor2Module.input.Base.prototype.isExcluded = function() {
+  return this.excluded;
+};
+
+
+/**
+ * @public
+ */
+anychart.chartEditor2Module.input.Base.prototype.updateExclusion = function() {
+  if (!this.key || !this.key.length) return;
+
+  var stringKey = this.editorModel.getStringKey(this.key);
+  this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
 };

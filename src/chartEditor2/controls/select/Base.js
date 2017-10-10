@@ -132,7 +132,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.createContentElements
 /** @override */
 anychart.chartEditor2Module.controls.select.Base.prototype.enterDocument = function() {
   anychart.chartEditor2Module.controls.select.Base.base(this, 'enterDocument');
-  goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+  goog.style.setElementShown(this.getElement(), !this.excluded);
 };
 
 
@@ -277,10 +277,12 @@ anychart.chartEditor2Module.controls.select.Base.prototype.suspendDispatch = fun
 anychart.chartEditor2Module.controls.select.Base.prototype.exclude = function(value) {
   this.excluded = value;
   if (this.isInDocument())
-    goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+    goog.style.setElementShown(this.getElement(), !this.excluded);
 
   if (this.excluded && this.editorModel)
     this.editorModel.removeByKey(this.key, true);
+
+  return this.excluded;
 };
 
 
@@ -299,5 +301,5 @@ anychart.chartEditor2Module.controls.select.Base.prototype.updateExclusion = fun
   if (!this.key || !this.key.length) return;
 
   var stringKey = this.editorModel.getStringKey(this.key);
-  this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
+  return this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
 };

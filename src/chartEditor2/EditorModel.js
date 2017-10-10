@@ -287,15 +287,15 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'singleSeries': true,
     'panelsExcludes' : ['series'],
     'settingsExcludes': ['palette()', 'animation().enabled()']
+  },
+  'box': {
+    'value': 'box',
+    'name': 'Box',
+    'icon': 'box-chart.svg',
+    'series': ['box', 'line', 'spline', 'column', 'area', 'marker', 'bubble', 'ohlc'],
+    'dataSetCtor': 'set',
+    'panelsExcludes' : ['colorScale']
   }
-  // 'box': {
-  //   'value': 'box',
-  //   'name': 'Box',
-  //   'icon': 'box-chart.svg',
-  //   'series': ['box'/*, 'line', 'spline', 'column', 'area', 'marker', 'bubble', 'ohlc'*/],
-  //   'dataSetCtor': 'set',
-  //   'panelsExcludes' : ['colorScale']
-  // }
 };
 
 
@@ -332,16 +332,16 @@ anychart.chartEditor2Module.EditorModel.Series = {
       {'field': 'low'},
       {'field': 'close'}]
   },
-  // 'box': {
-  //   'fields': [
-  //     {'field': 'low'},
-  //     {'field': 'q1'},
-  //     {'field': 'median'},
-  //     {'field': 'q3'},
-  //     {'field': 'high'},
-  //     {'field': 'value'}/*,
-  //     {'field': 'outliers'}*/]
-  // },
+  'box': {
+    'fields': [
+      {'field': 'lowest'},
+      {'field': 'q1'},
+      {'field': 'median'},
+      {'field': 'q3'},
+      {'field': 'highest'},
+      {'field': 'value'},
+      {'field': 'outliers'}]
+  },
   'pie': {
     'fields': [{'field': 'value', 'name': 'Value'}]
   },
@@ -527,6 +527,9 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
     this.initGeoData_();
 
   this.model_['chart']['type'] = chartType;
+
+  // DEBUG
+  //this.model_['chart']['type'] = 'heatMap';
 };
 
 
@@ -617,7 +620,7 @@ anychart.chartEditor2Module.EditorModel.prototype.createPlotMapping = function()
   var plotIndex = this.model_['dataSettings']['mappings'].length;
   var numSeries;
   var fieldIndex;
-  if (singleSeries || chartType== 'map' ||
+  if (singleSeries || chartType== 'map' || chartType== 'box' ||
       (chartType == 'stock' && seriesType == 'column' && plotIndex == 1))
     numSeries = 1;
   else

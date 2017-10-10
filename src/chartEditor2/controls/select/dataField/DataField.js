@@ -52,6 +52,13 @@ anychart.chartEditor2Module.controls.select.DataField.prototype.createDom = func
 };
 
 
+/** @inheritDoc */
+anychart.chartEditor2Module.controls.select.DataField.prototype.enterDocument = function() {
+  anychart.chartEditor2Module.controls.select.DataField.base(this, 'enterDocument');
+  this.updateExclusion();
+};
+
+
 /** @return {!anychart.chartEditor2Module.controls.select.DataFieldSelect} */
 anychart.chartEditor2Module.controls.select.DataField.prototype.getSelect = function() {
   return /** @type {!anychart.chartEditor2Module.controls.select.DataFieldSelect} */(this.select_);
@@ -76,13 +83,44 @@ anychart.chartEditor2Module.controls.select.DataField.prototype.setSelect = func
  */
 anychart.chartEditor2Module.controls.select.DataField.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
   this.select_.init(model, key, opt_callback, opt_noRebuild);
+  this.updateExclusion();
 };
 
 
 /**
  * Hide or show control by assigning 'hidden' class
  * @param {boolean} value True if excluded.
+ * @param {boolean=} opt_skipSelect
  */
-anychart.chartEditor2Module.controls.select.DataField.prototype.exclude = function(value) {
-  this.select_.exclude(value);
+anychart.chartEditor2Module.controls.select.DataField.prototype.exclude = function(value, opt_skipSelect) {
+  if (this.isInDocument()) goog.style.setElementShown(this.getElement(), !value);
+  if (!opt_skipSelect)
+    this.select_.exclude(value);
+};
+
+
+/**
+ * @param {string} value
+ * @param {boolean=} opt_noDispatch
+ */
+anychart.chartEditor2Module.controls.select.DataField.prototype.setValue = function(value, opt_noDispatch) {
+  this.select_.suspendDispatch(!!opt_noDispatch);
+  this.select_.setValue(value);
+  this.select_.suspendDispatch(false);
+};
+
+
+/**
+ * @return {*}
+ */
+anychart.chartEditor2Module.controls.select.DataField.prototype.getValue = function() {
+  return this.select_.getValue();
+};
+
+
+/**
+ * @public
+ */
+anychart.chartEditor2Module.controls.select.DataField.prototype.updateExclusion = function() {
+  this.exclude(this.select_.updateExclusion(), true);
 };

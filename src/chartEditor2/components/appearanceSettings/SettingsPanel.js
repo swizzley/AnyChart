@@ -71,10 +71,10 @@ anychart.chartEditor2Module.SettingsPanel.prototype.isEnabled = function() {
 };
 
 
-/** @param {number} value */
-anychart.chartEditor2Module.SettingsPanel.prototype.setPlotIndex = function(value) {
-  this.plotIndex_ = value;
-};
+// /** @param {number} value */
+// anychart.chartEditor2Module.SettingsPanel.prototype.setPlotIndex = function(value) {
+//   this.plotIndex_ = value;
+// };
 
 
 /** @return {string} */
@@ -93,6 +93,10 @@ anychart.chartEditor2Module.SettingsPanel.prototype.exclude = function(value) {
     }
 
     this.excluded = value;
+
+    if (this.isInDocument())
+      goog.style.setElementShown(this.getElement(), !this.excluded);
+
     this.updateKeys();
   }
 };
@@ -104,10 +108,11 @@ anychart.chartEditor2Module.SettingsPanel.prototype.isExcluded = function() {
 };
 
 
-/** @param {string} value */
+/** @param {?string} value */
 anychart.chartEditor2Module.SettingsPanel.prototype.setName = function(value) {
   this.name = value;
 };
+
 
 /**
  * @type {boolean}
@@ -178,7 +183,7 @@ anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
     removeBtn.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
     removeBtn.setIcon(goog.getCssName('ac ac-remove'));
     removeBtn.addClassName(goog.getCssName('anychart-chart-editor-remove-btn'));
-    removeBtn.setTooltip('Remove axis');
+    removeBtn.setTooltip('Remove');
     this.addChild(removeBtn, true);
     this.topEl.appendChild(removeBtn.getElement());
     this.removeButton = removeBtn;
@@ -268,7 +273,6 @@ anychart.chartEditor2Module.SettingsPanel.prototype.update = function() {
 /** @inheritDoc */
 anychart.chartEditor2Module.SettingsPanel.prototype.onChartDraw = function(evt) {
   if (this.isExcluded()) return;
-
   anychart.chartEditor2Module.SettingsPanel.base(this, 'onChartDraw', evt);
 
   if (evt.rebuild && this.enableContentCheckbox && this.canBeEnabled()) {
@@ -379,6 +383,5 @@ anychart.chartEditor2Module.SettingsPanel.prototype.registerLabel = function(lab
 /** @override */
 anychart.chartEditor2Module.SettingsPanel.prototype.disposeInternal = function() {
   this.labels.length = 0;
-
   anychart.chartEditor2Module.SettingsPanel.base(this, 'disposeInternal');
 };
