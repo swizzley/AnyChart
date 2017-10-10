@@ -478,15 +478,19 @@
 
 }
 .anychart-select-data-field-select {
-  .border-radius(4px);
-  outline: none;
-  background: @color-background;
   min-width: 210px;
   float: right;
   position: relative;
 }
+.anychart-select-data-field-select,
+.anychart-ui-select-with-icon {
+  .border-radius(4px);
+  outline: none;
+  background: @color-background;
+}
 
-.anychart-select-data-field-select-open {
+.anychart-select-data-field-select-open,
+.anychart-ui-select-with-icon-open {
   //.border-radiuses() // try to use
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -576,10 +580,6 @@
   width: 100%;
   background: white;
   padding: 14px;
-}
-
-.anychart-select-chart-type {
-  margin-bottom: 14px;
 }
 
 .anychart-plot-panel {
@@ -693,12 +693,22 @@
   border: none;
 }
 
+
+.anychart-select-chart-type {
+  margin-bottom: 14px;
+}
+
 .anychart-select-chart-type-menu {
   .box-sizing(border-box);
   position: absolute;
   z-index: 1;
   width: 366px;
-
+  font-family: Arial, sans-serif;
+  border: 1px solid @color-border;
+  border-top: none;
+  //.border-radiuses() // try to use
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 .anychart-chart-preview-caption {

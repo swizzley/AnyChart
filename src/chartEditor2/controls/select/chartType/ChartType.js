@@ -114,6 +114,17 @@ anychart.chartEditor2Module.controls.select.ChartTypeMenu = function(opt_additio
   this.additionalClassName = opt_additionalClassName || '';
 };
 goog.inherits(anychart.chartEditor2Module.controls.select.ChartTypeMenu, goog.ui.Menu);
+
+
+anychart.chartEditor2Module.controls.select.ChartTypeMenu.prototype.setVisible = function(show, opt_force, opt_e) {
+  if (show) {
+    var chartSelect = this.getParent();
+    var size = goog.style.getSize(chartSelect.getElement());
+    goog.style.setWidth(this.getElement(), size.width);
+  }
+  anychart.chartEditor2Module.controls.select.ChartTypeMenu.base(this, 'setVisible', show, opt_force, opt_e);
+};
+
 // endregion
 
 
