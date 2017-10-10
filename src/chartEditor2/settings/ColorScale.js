@@ -1,10 +1,10 @@
 goog.provide('anychart.chartEditor2Module.settings.ColorScale');
 
 goog.require('anychart.chartEditor2Module.SettingsPanel');
+goog.require('anychart.chartEditor2Module.controls.select.ColorScaleType');
 goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditor2Module.input.Palette');
 goog.require('anychart.chartEditor2Module.settings.ColorScaleRanges');
-goog.require('anychart.chartEditor2Module.controls.select.ColorScaleType');
 
 
 
@@ -49,8 +49,6 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
   var scaleTypeField = new anychart.chartEditor2Module.controls.select.ColorScaleType({caption: 'Choose type', label: 'Color scale type'});
-  // typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
-  // typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   scaleTypeField.getSelect().setOptions([
     {value: 'linear-color', caption: 'Linear'},
     {value: 'ordinal-color', caption: 'Ordinal'}
@@ -70,8 +68,6 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
   // Linear color scale components
   this.colors_ = new anychart.chartEditor2Module.input.Palette('Comma separated colors');
   this.specificContent_.addChild(this.colors_, true);
-  goog.dom.classlist.add(this.colors_.getElement(), 'input-palette');
-  goog.dom.classlist.add(this.colors_.getElement(), 'anychart-chart-editor-settings-control-right');
   this.colors_.init(model, this.genKey('colors', true));
 
   // Ordinal color scale components
@@ -114,9 +110,7 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = funct
 
   if (newScaleType && newScaleType != this.scaleType_) {
     this.scaleType_ = newScaleType;
-    var dom = this.getDomHelper();
-    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-
+    // var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
     if (this.scaleType_ == 'linear-color') {
       this.ranges_.exclude(true);
       this.colors_.exclude(false);
@@ -124,7 +118,6 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = funct
     } else {
       // ordinal-color
       this.colors_.exclude(true/*, true*/ /* This redraws chart*/);
-
       this.ranges_.exclude(false);
     }
   }

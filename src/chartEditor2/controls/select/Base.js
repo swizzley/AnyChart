@@ -273,6 +273,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.suspendDispatch = fun
 /**
  * Hide or show control by assigning 'hidden' class
  * @param {boolean} value True if excluded.
+ * @return {boolean}
  */
 anychart.chartEditor2Module.controls.select.Base.prototype.exclude = function(value) {
   this.excluded = value;
@@ -294,9 +295,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.isExcluded = function
 };
 
 
-/**
- * @public
- */
+/** @return {boolean|undefined} */
 anychart.chartEditor2Module.controls.select.Base.prototype.updateExclusion = function() {
   if (!this.key || !this.key.length) return;
 

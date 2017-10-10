@@ -122,5 +122,5 @@ anychart.chartEditor2Module.controls.select.DataField.prototype.getValue = funct
  * @public
  */
 anychart.chartEditor2Module.controls.select.DataField.prototype.updateExclusion = function() {
-  this.exclude(this.select_.updateExclusion(), true);
+  this.exclude(!!this.select_.updateExclusion(), true);
 };

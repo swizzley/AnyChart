@@ -529,7 +529,7 @@ anychart.chartEditor2Module.EditorModel.prototype.chooseDefaultChartType = funct
   this.model_['chart']['type'] = chartType;
 
   // DEBUG
-  //this.model_['chart']['type'] = 'heatMap';
+  // this.model_['chart']['type'] = 'heatMap';
 };
 
 
@@ -1908,8 +1908,5 @@ anychart.chartEditor2Module.EditorModel.prototype.isGeoId_ = function(value) {
 anychart.chartEditor2Module.EditorModel.prototype.checkSettingForExclusion = function(stringKey) {
   var chartType = this.model_['chart']['type'];
   var excludes = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['settingsExcludes'];
-  if (excludes && goog.array.indexOf(excludes, stringKey) != -1)
-    return true;
-
-  return false;
+  return (excludes && goog.array.indexOf(excludes, stringKey) != -1);
 };
