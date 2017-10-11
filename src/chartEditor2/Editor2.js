@@ -4,18 +4,12 @@ goog.provide('anychart.chartEditor2Module.Editor.Dialog');
 goog.require('anychart.chartEditor2Module.Breadcrumbs');
 goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.EditorModel');
+goog.require('anychart.chartEditor2Module.Steps');
 goog.require('anychart.chartEditor2Module.events');
-goog.require('anychart.chartEditor2Module.steps.PrepareData');
-goog.require('anychart.chartEditor2Module.steps.SetupChart');
-goog.require('anychart.chartEditor2Module.steps.VisualAppearance');
 goog.require('anychart.ui.Preloader');
-goog.require('anychart.ui.button.Primary');
-goog.require('anychart.ui.button.Secondary');
-goog.require('goog.fx.AnimationSerialQueue');
-goog.require('goog.fx.Transition.EventType');
-goog.require('goog.fx.dom');
 goog.require('goog.net.ImageLoader');
 goog.require('goog.ui.Dialog');
+
 
 
 /**
@@ -33,24 +27,16 @@ anychart.chartEditor2Module.Editor = function(opt_domHelper) {
    */
   this.dialog_ = null;
 
-  /**
-   * Current step.
-   * @type {anychart.chartEditor2Module.steps.Base}
-   * @private
-   */
-  this.currentStep_ = null;
-
-  /**
-   * @type {Array<anychart.chartEditor2Module.steps.Base>}
-   * @private
-   */
-  this.steps_ = [];
-
   this.setModel(new anychart.chartEditor2Module.EditorModel());
 
   this.imagesLoaded_ = true;
   this.preloader_ = new anychart.ui.Preloader();
 
+  /**
+   * @type {anychart.chartEditor2Module.Steps}
+   * @private
+   */
+  this.steps_ = new anychart.chartEditor2Module.Steps();
 
   /**
    * @type {anychart.chartEditor2Module.Breadcrumbs}
@@ -213,136 +199,53 @@ anychart.chartEditor2Module.Editor.prototype.createDom = function() {
   this.addChild(this.breadcrumbs_, true);
 
   this.getHandler().listen(this.breadcrumbs_, BreadcrumbsEventType.NEXT, function() {
-    var nextIndex = this.currentStep_.getIndex() + 1;
-    this.setCurrentStepByIndex_(nextIndex, true);
+    var nextIndex = this.steps_.getCurrentStepIndex() + 1;
+    this.setCurrentStep(nextIndex, true);
   });
   this.getHandler().listen(this.breadcrumbs_, BreadcrumbsEventType.PREV, function() {
-    var nextIndex = this.currentStep_.getIndex() - 1;
-    this.setCurrentStepByIndex_(nextIndex, true);
+    var nextIndex = this.steps_.getCurrentStepIndex() - 1;
+    this.setCurrentStep(nextIndex, true);
   });
 
   this.getHandler().listen(this.breadcrumbs_, BreadcrumbsEventType.COMPLETE, function() {
 
   });
   this.getHandler().listen(this.breadcrumbs_, BreadcrumbsEventType.CHANGE_STEP, function(e) {
-    this.setCurrentStepByIndex_(e.step, true);
+    this.setCurrentStep(e.step, true);
   });
 
   // Add steps
-  this.steps_.push(new anychart.chartEditor2Module.steps.PrepareData(0));
-  this.steps_.push(new anychart.chartEditor2Module.steps.SetupChart(1));
-  this.steps_.push(new anychart.chartEditor2Module.steps.VisualAppearance(2));
-  for (var i = 0; i < this.steps_.length; i++) {
-    this.addChildAt(this.steps_[i], i); // don't render until this.setCurrentStepByIndex_() call
+  var stepNames = ['PrepareData', 'SetupChart', 'VisualAppearance'];
+  for (var i = 0; i < stepNames.length; i++) {
+    var step = this.steps_.createStep(stepNames[i]);
+    this.addChildAt(step, i); // don't render until this.setCurrentStep() call
   }
+
+  this.getHandler().listen(this.steps_, anychart.chartEditor2Module.Steps.EventType.BEFORE_CHANGE_STEP, this.onBeforeChangeStep_);
+};
+
+
+/**
+ * @param {Object} evt
+ * @private
+ */
+anychart.chartEditor2Module.Editor.prototype.onBeforeChangeStep_ = function(evt) {
+  this.breadcrumbs_.setStep(evt.index, this.steps_.getDescriptors());
+  if (evt.index !== 0) this.getModel().onChangeView();
 };
 
 
 /** @override */
 anychart.chartEditor2Module.Editor.prototype.enterDocument = function() {
   anychart.chartEditor2Module.Editor.base(this, 'enterDocument');
-  this.setCurrentStepByIndex_(0, false);
+  this.setFirstStep_();
 };
 
 
-/**
- * Render progress list.
- * @private
- */
-anychart.chartEditor2Module.Editor.prototype.updateProgress_ = function() {
-  var dom = this.getDomHelper();
-
-  // this.enableNextStep(this.currentStep_.getIndex() > 0 || this.getModel().getDataSetsCount() > 0);
-
-  // Building breadcrumbs elements
-  var step;
-  for (var i = 0; i < this.steps_.length; i++) {
-    step = this.steps_[i];
-
-    var progressContentEl = dom.createDom(goog.dom.TagName.DIV, 'item-content', step.name());
-    goog.dom.setFocusableTabIndex(progressContentEl, true);
-    goog.a11y.aria.setRole(progressContentEl, goog.a11y.aria.Role.LINK);
-    goog.a11y.aria.setLabel(progressContentEl, /** @type {string} */(step.name()));
-    progressContentEl.setAttribute('data-step-index', String(step.getIndex()));
-
-    var progressArrowEl = null;
-    if (i < this.steps_.length - 1) {
-      progressArrowEl = dom.createDom(goog.dom.TagName.DIV, 'item-arrow');
-      progressArrowEl.innerHTML = '&rarr;';
-    }
-  }
-};
-
-
-/**
- * @return {boolean}
- * @private
- */
-anychart.chartEditor2Module.Editor.prototype.isLastStep_ = function() {
-  return this.currentStep_.getIndex() === this.steps_.length - 1;
-};
-
-
-/**
- * @param {number} stepIndex
- * @private
- */
-anychart.chartEditor2Module.Editor.prototype.changeStep_ = function(stepIndex) {
-  if (stepIndex !== this.currentStep_.getIndex())
-    this.setCurrentStepByIndex_(stepIndex, true);
-};
-
-
-/**
- * Remove step from DOM.
- * @param {anychart.chartEditor2Module.steps.Base} step
- * @private
- */
-anychart.chartEditor2Module.Editor.prototype.removeStep_ = function(step) {
-  // Remove the child component's DOM from the document.  We have to call
-  // exitDocument first (see documentation).
-  step.exitDocument();
-  goog.dom.removeNode(step.getElement());
-};
-
-
-/**
- * Render the given step.
- * @param {anychart.chartEditor2Module.steps.Base} step
- * @param {boolean} doAnimation
- * @private
- */
-anychart.chartEditor2Module.Editor.prototype.setCurrentStep_ = function(step, doAnimation) {
-  if (!this.isInDocument() || !step || step.isInDocument()) return;
-
-  var animationSpeed = 150;
-  if (this.currentStep_) {
-    if (doAnimation) {
-      var removeAnimation = new goog.fx.AnimationSerialQueue();
-      removeAnimation.add(new goog.fx.dom.FadeOut(this.currentStep_.getElement(), animationSpeed));
-      goog.events.listenOnce(
-          removeAnimation,
-          goog.fx.Transition.EventType.END,
-          goog.bind(this.removeStep_, this, this.currentStep_));
-      removeAnimation.play();
-    } else {
-      this.removeStep_(this.currentStep_);
-    }
-  }
-
-  if (step.getIndex() !== 0) {
-    this.getModel().onChangeView();
-  }
-
-  step.render(this.getElement());
-
-  var appearAnimation = new goog.fx.AnimationSerialQueue();
-  appearAnimation.add(new goog.fx.dom.FadeIn(step.getElement(), animationSpeed));
-  appearAnimation.play();
-
-  this.currentStep_ = step;
-
-  this.updateProgress_();
+/** @private */
+anychart.chartEditor2Module.Editor.prototype.setFirstStep_ = function() {
+  var index = this.steps_.getFirstStepIndex();
+  this.setCurrentStep(index, false);
 };
 
 
@@ -352,49 +255,21 @@ anychart.chartEditor2Module.Editor.prototype.setCurrentStep_ = function(step, do
  * @param {boolean} doAnimation
  * @private
  */
-anychart.chartEditor2Module.Editor.prototype.setCurrentStepByIndex_ = function(index, doAnimation) {
+anychart.chartEditor2Module.Editor.prototype.setCurrentStep = function(index, doAnimation) {
   if (index > 0 && this.getModel().getDataSetsCount() <= 0) {
-    alert('You need at least one data set for the next step.');
+    alert('You need at least one data set for the next step!');
+
   } else {
-    this.breadcrumbs_.setStep(index);
-    this.setCurrentStep_(this.steps_[index], doAnimation);
+    this.steps_.setStep(index, doAnimation);
   }
 };
 
 
 /**
- * Change step.
- * @param {!goog.events.Event} e
- * @private
+ * @return {anychart.chartEditor2Module.Steps}
  */
-anychart.chartEditor2Module.Editor.prototype.breadcrumbsClickHandler_ = function(e) {
-  var element = /** @type {Element} */(e.target);
-
-  if (goog.dom.classlist.contains(element, 'item-content')) {
-    var itemEl = goog.dom.getParentElement(element);
-    if (goog.dom.classlist.contains(itemEl, goog.getCssName('disabled'))) return;
-
-    var newStepIndex = Number(element.getAttribute('data-step-index'));
-    this.changeStep_(newStepIndex);
-  }
-};
-
-
-/** @private */
-anychart.chartEditor2Module.Editor.prototype.prevBtnClickHandler_ = function() {
-  this.changeStep_(this.currentStep_.getIndex() - 1);
-};
-
-
-/** @private */
-anychart.chartEditor2Module.Editor.prototype.nextBtnClickHandler_ = function() {
-  if (this.isLastStep_()) {
-    this.dispatchEvent({
-      type: anychart.enums.EventType.COMPLETE
-      //code: this.getChartAsJsCode()
-    });
-  } else
-    this.changeStep_(this.currentStep_.getIndex() + 1);
+anychart.chartEditor2Module.Editor.prototype.steps = function() {
+  return this.steps_;
 };
 
 
@@ -404,7 +279,6 @@ anychart.chartEditor2Module.Editor.prototype.nextBtnClickHandler_ = function() {
  */
 anychart.chartEditor2Module.Editor.prototype.onDataAdd_ = function(evt) {
   this.getModel().addData(evt);
-  this.updateProgress_();
 };
 
 
@@ -414,7 +288,6 @@ anychart.chartEditor2Module.Editor.prototype.onDataAdd_ = function(evt) {
  */
 anychart.chartEditor2Module.Editor.prototype.onDataRemove_ = function(evt) {
   this.getModel().removeData(evt.setFullId);
-  this.updateProgress_();
 };
 
 

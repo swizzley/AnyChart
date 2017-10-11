@@ -106,7 +106,10 @@ anychart.chartEditor2Module.Breadcrumbs.prototype.createDom = function() {
   this.prev_ = prev;
   this.complete_ = complete;
   this.steps_ = [prepareData, setupChart, visualAppearance];
-  this.update();
+
+  this.next_.setVisible(false);
+  this.prev_.setVisible(false);
+  this.complete_.setVisible(false);
 
   this.getHandler().listen(next, goog.ui.Component.EventType.ACTION, this.onButtonAction_);
   this.getHandler().listen(prev, goog.ui.Component.EventType.ACTION, this.onButtonAction_);
@@ -118,38 +121,42 @@ anychart.chartEditor2Module.Breadcrumbs.prototype.createDom = function() {
 };
 
 
-/** @param {number} value */
-anychart.chartEditor2Module.Breadcrumbs.prototype.setStep = function(value) {
-  this.step_ = value;
+/**
+ * @param {number} index
+ * @param {Object} stepDescriptors
+ */
+anychart.chartEditor2Module.Breadcrumbs.prototype.setStep = function(index, stepDescriptors) {
+  this.step_ = index;
+  var firstStep = -1;
 
   if (this.isInDocument()) {
-    this.update();
-  }
-};
+    if (this.steps_) {
+      // update items
+      for (var i = 0; i < this.steps_.length; i++) {
+        var step = this.steps_[i];
+        step.removeClassName('anychart-breadcrumbs-item-active');
+        step.setVisible(stepDescriptors[i].enabled);
 
+        if (firstStep < 0 && stepDescriptors[i].enabled) firstStep = i;
+      }
+      this.steps_[this.step_].addClassName('anychart-breadcrumbs-item-active');
 
-/** @private */
-anychart.chartEditor2Module.Breadcrumbs.prototype.update = function() {
-  if (this.steps_) {
-    // update items
-    goog.array.forEach(this.steps_, function(item) {
-      item.removeClassName('anychart-breadcrumbs-item-active');
-    }, this);
-    this.steps_[this.step_].addClassName('anychart-breadcrumbs-item-active');
+      // update buttons
+      if (this.step_ === firstStep) {
+        this.prev_.setVisible(false);
+        this.complete_.setVisible(false);
+        this.next_.setVisible(true);
 
-    // update buttons
-    if (this.step_ === 0) {
-      this.prev_.setVisible(false);
-      this.complete_.setVisible(false);
-      this.next_.setVisible(true);
-    } else if (this.step_ === this.steps_.length - 1) {
-      this.prev_.setVisible(true);
-      this.complete_.setVisible(true);
-      this.next_.setVisible(false);
-    } else {
-      this.prev_.setVisible(true);
-      this.complete_.setVisible(false);
-      this.next_.setVisible(true);
+      } else if (this.step_ === this.steps_.length - 1) {
+        this.prev_.setVisible(true);
+        this.complete_.setVisible(true);
+        this.next_.setVisible(false);
+
+      } else {
+        this.prev_.setVisible(true);
+        this.complete_.setVisible(false);
+        this.next_.setVisible(true);
+      }
     }
   }
 };

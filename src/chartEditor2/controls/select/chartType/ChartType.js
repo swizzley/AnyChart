@@ -116,13 +116,14 @@ anychart.chartEditor2Module.controls.select.ChartTypeMenu = function(opt_additio
 goog.inherits(anychart.chartEditor2Module.controls.select.ChartTypeMenu, goog.ui.Menu);
 
 
+/** @inheritDoc */
 anychart.chartEditor2Module.controls.select.ChartTypeMenu.prototype.setVisible = function(show, opt_force, opt_e) {
   if (show) {
     var chartSelect = this.getParent();
     var size = goog.style.getSize(chartSelect.getElement());
     goog.style.setWidth(this.getElement(), size.width);
   }
-  anychart.chartEditor2Module.controls.select.ChartTypeMenu.base(this, 'setVisible', show, opt_force, opt_e);
+  return anychart.chartEditor2Module.controls.select.ChartTypeMenu.base(this, 'setVisible', show, opt_force, opt_e);
 };
 
 // endregion
