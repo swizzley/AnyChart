@@ -214,3 +214,9 @@ anychart.chartEditor2Module.Steps.prototype.disposeInternal = function() {
   }
   anychart.chartEditor2Module.Steps.base(this, 'disposeInternal');
 };
+
+
+(function() {
+  var proto = anychart.chartEditor2Module.Steps.prototype;
+  proto['prepareData'] = proto.prepareData;
+})();

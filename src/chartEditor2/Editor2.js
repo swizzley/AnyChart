@@ -422,12 +422,12 @@ anychart.ui.editor = function() {
   proto['getChartAsJsCode'] = proto.getChartAsJsCode;
   proto['getChartAsJson'] = proto.getChartAsJson;
   proto['getChartAsXml'] = proto.getChartAsXml;
+  proto['steps'] = proto.steps;
+  proto['data'] = proto.data;
   proto['listen'] = proto.listen;
   proto['listenOnce'] = proto.listenOnce;
   proto['unlisten'] = proto.unlisten;
   proto['unlistenByKey'] = proto.unlistenByKey;
   proto['removeAllListeners'] = proto.removeAllListeners;
   proto['dispose'] = proto.dispose;
-
-  // proto['data'] = proto.data;
 })();

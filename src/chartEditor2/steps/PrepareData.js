@@ -369,7 +369,7 @@ anychart.chartEditor2Module.steps.PrepareData.xmlStringToJson_ = function(xmlStr
 
 /** @inheritDoc */
 anychart.chartEditor2Module.steps.PrepareData.prototype.disposeInternal = function () {
-  this.userData_.dispose();
+  goog.dispose(this.userData_);
   this.userData_ = null;
 
   anychart.chartEditor2Module.steps.PrepareData.base(this, 'disposeInternal');
