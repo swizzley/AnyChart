@@ -274,6 +274,23 @@ anychart.chartEditor2Module.Editor.prototype.steps = function() {
 
 
 /**
+ * Add data to editor while initialization.
+ * @param {Object} data
+ */
+anychart.chartEditor2Module.Editor.prototype.data = function(data) {
+  if (goog.isObject(data)) {
+    var preparedData;
+    if (goog.isObject(data['data']))
+      preparedData = data;
+    else
+      preparedData = {data: data};
+
+    this.getModel().addData(preparedData);
+  }
+};
+
+
+/**
  * @param {Object} evt
  * @private
  */

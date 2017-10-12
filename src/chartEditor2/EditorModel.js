@@ -125,17 +125,17 @@ goog.inherits(anychart.chartEditor2Module.EditorModel, goog.events.EventTarget);
 anychart.chartEditor2Module.EditorModel.Key;
 
 
+// region Structures
 /**
  * @enum {string}
  */
 anychart.chartEditor2Module.EditorModel.DataType = {
-  UPLOADED: 'u',
+  CUSTOM: 'c',
   PREDEFINED: 'p',
   GEO: 'g'
 };
 
 
-// region Structures
 /**
  * @type {Object}
  */
@@ -982,7 +982,7 @@ anychart.chartEditor2Module.EditorModel.prototype.setChartType = function(input)
   var selectValue = /** @type {Object} */(input.getValue());
   this.model_['chart']['type'] = selectValue.value;
 
-  if (prevChartType == this.model_['chart']['type']) return;
+  console.log("setChartType", selectValue);
 
   var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
 
@@ -1379,29 +1379,34 @@ anychart.chartEditor2Module.EditorModel.prototype.getFullId = function(dataType,
 
 /**
  * Add data set to data container.
- * @param {Object} evt
+ * @param {Object} data
  */
-anychart.chartEditor2Module.EditorModel.prototype.addData = function(evt) {
-  var id = this.getFullId(evt.dataType, evt.setId);
-  if (!this.data_[id]) {
-    this.data_[id] = {
-      data: evt.data,
-      type: evt.dataType,
-      setId: evt.setId,
-      setFullId: id,
+anychart.chartEditor2Module.EditorModel.prototype.addData = function(data) {
+  var dataType = data.dataType ? data.dataType : anychart.chartEditor2Module.EditorModel.DataType.CUSTOM;
+  var setId = goog.isDef(data.setId) ? data.setId : goog.string.createUniqueString();
+  var setFullId = this.getFullId(dataType, setId);
+  var title = data['title'] || data['caption'] || data['name'];
 
-      title: evt.title,
-      chartType: evt.chartType,
-      seriesType: evt.seriesType,
-      activeGeo: evt.activeGeo
+  if (!this.data_[setFullId]) {
+    this.data_[setFullId] = {
+      data: data.data,
+
+      type: dataType,
+      setId: setId,
+      setFullId: setFullId,
+
+      title: title,
+      chartType: data.chartType,
+      seriesType: data.seriesType,
+      activeGeo: data.activeGeo
     };
   }
   this.preparedData_.length = 0;
 
-  if (evt.dataType == anychart.chartEditor2Module.EditorModel.DataType.GEO) {
-    if (this.model_['dataSettings']['activeGeo'] != id) {
+  if (dataType == anychart.chartEditor2Module.EditorModel.DataType.GEO) {
+    if (this.model_['dataSettings']['activeGeo'] != setFullId) {
       delete this.data_[this.model_['dataSettings']['activeGeo']];
-      this.model_['dataSettings']['activeGeo'] = id;
+      this.model_['dataSettings']['activeGeo'] = setFullId;
       this.model_['dataSettings']['geoIdField'] = null;
     }
 

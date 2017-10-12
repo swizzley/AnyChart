@@ -143,6 +143,10 @@ anychart.chartEditor2Module.controls.select.Base.prototype.handleSelectionChange
   if (this.excluded) return;
 
   if (!this.noDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
+    var selectedIndex = this.getSelectedIndex();
+    if (this.prevSelectedIndex_ == selectedIndex) return;
+    this.prevSelectedIndex_ = selectedIndex;
+
     if (this.callback)
       this.editorModel.callbackByString(this.callback, this);
     else {
@@ -203,6 +207,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.setValue = function(v
           }
           if (additionalMatch) {
             this.setSelectedItem(/** @type {!goog.ui.MenuItem} */ (item));
+            this.prevSelectedIndex_ = this.getSelectedIndex();
             this.updateCaption();
             return;
           }
@@ -212,6 +217,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.setValue = function(v
   }
 
   this.setSelectedItem(null);
+  this.prevSelectedIndex_ = -1;
   this.updateCaption();
 };
 
