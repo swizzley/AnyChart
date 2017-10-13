@@ -115,8 +115,15 @@ anychart.chartEditor2Module.Editor.prototype.visible = function(opt_value) {
   if (!this.dialog_) return true;
 
   if (goog.isDef(opt_value)) {
+    var prevVisible = this.dialog_.isVisible();
     this.dialog_.setVisible(opt_value);
     this.waitForImages_();
+
+    if (!prevVisible && opt_value) {
+      this.setFirstStep_();
+      this.breadcrumbs_.setStep(this.steps_.getCurrentStepIndex(), this.steps_.getDescriptors());
+    }
+
     return this;
   }
 
