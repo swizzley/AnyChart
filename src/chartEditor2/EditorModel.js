@@ -1600,8 +1600,8 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
 
   // SETTINGS OF THE PRINTER
   var minify = !!outputSettings['minify'];
-  var containerId = String(outputSettings['container'] || 'container');
-  var wrapper = goog.isDef(outputSettings['wrapper']) ? outputSettings['wrapper'] : 'function';
+  var containerId = goog.isDef(outputSettings['container']) ? String(outputSettings['container']) : 'container';
+  var wrapper = goog.isDef(outputSettings['wrapper']) ? String(outputSettings['wrapper']) : 'function';
   var addData = !goog.isDef(outputSettings['addData']) || outputSettings['addData'];
   var addGeoData = !goog.isDef(outputSettings['addGeoData']) || outputSettings['addGeoData'];
   var eq = minify ? '=' : ' = ';
