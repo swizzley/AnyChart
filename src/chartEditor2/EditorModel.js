@@ -46,7 +46,8 @@ anychart.chartEditor2Module.EditorModel = function() {
    *      type: ?string,
    *      seriesType: ?string,
    *      settings: Object
-   *  }
+   *  },
+   *  outputSettings: ?anychart.chartEditor2Module.EditorModel.OutputOptions
    * }}
    * @private
    */
@@ -69,7 +70,8 @@ anychart.chartEditor2Module.EditorModel = function() {
       'settings': {
         //'getSeriesAt(0).name()': 'my series'
       }
-    }
+    },
+    'outputSettings': null
   };
 
   /**
@@ -123,6 +125,18 @@ goog.inherits(anychart.chartEditor2Module.EditorModel, goog.events.EventTarget);
  * @typedef {Array.<(Array|string)>}
  */
 anychart.chartEditor2Module.EditorModel.Key;
+
+
+/**
+ * @typedef {{
+ *  minify: boolean,
+ *  container: string,
+ *  wrapper: (string),
+ *  addData: boolean,
+ *  addGeoData: boolean
+ * }}
+ */
+anychart.chartEditor2Module.EditorModel.OutputOptions;
 
 
 // region Structures
@@ -1519,12 +1533,11 @@ anychart.chartEditor2Module.EditorModel.prototype.getGeoIdField = function() {
 
 /**
  * Returns JS code string that creates a configured chart.
- * @param {string=} opt_container
- * @param {string=} opt_wrapper
+ * @param {anychart.chartEditor2Module.EditorModel.OutputOptions=} opt_options
  * @return {string}
  */
-anychart.chartEditor2Module.EditorModel.prototype.getChartAsJsCode = function(opt_container, opt_wrapper) {
-  return this.getChartWithJsCode_(opt_container, opt_wrapper)[0];
+anychart.chartEditor2Module.EditorModel.prototype.getChartAsJsCode = function(opt_options) {
+  return this.getChartWithJsCode_(opt_options)[0];
 };
 
 
@@ -1537,8 +1550,9 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartAsJson = function() {
   if (!chart) return '';
   var json = chart ? chart.toJson() : '';
   var settings = this.getModel();
-  var minify = !!settings['minifyOutput'];
-  var containerId = settings['outputContainerId'];
+  var outputSettings = settings['outputSettings'] ? settings['outputSettings'] : {};
+  var minify = !!outputSettings['minify'];
+  var containerId = outputSettings['container'];
   if (containerId) {
     var obj = json['chart'] || json['gauge'] || json['gantt'] || json['map'] || {};
     obj['container'] = containerId;
@@ -1567,24 +1581,29 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartAsXml = function() {
 
 /**
  * Creates a chart instance from the model and the JS code string that creates the chart.
- * @param {string=} opt_container
- * @param {string=} opt_wrapper function, document-ready, none.
+ * @param {anychart.chartEditor2Module.EditorModel.OutputOptions=} opt_options Output options object.
  * @return {!Array} Returns [JsString, ChartInstance]
  * @private
  */
-anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function(opt_container, opt_wrapper) {
+anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function(opt_options) {
   var settings = this.getModel();
+  var outputSettings = settings['outputSettings'] ? settings['outputSettings'] : {};
+  if (goog.isObject(opt_options))
+    for (var k in opt_options) {
+      outputSettings[k] = opt_options[k];
+    }
+
   var chartType = settings['chart']['type'];
 
   if (!chartType)
     return ['', null];
 
   // SETTINGS OF THE PRINTER
-  var minify = !!settings['minifyOutput'];
-  var containerId = String(opt_container || settings['outputContainerId'] || 'container');
-  //var wrapWithReady = !!settings['wrapOutputWithDocumentReady'];
-  var wrapper =  String(opt_wrapper || settings['outputWrapper'] || 'function');
-
+  var minify = !!outputSettings['minify'];
+  var containerId = String(outputSettings['container'] || 'container');
+  var wrapper = goog.isDef(outputSettings['wrapper']) ? outputSettings['wrapper'] : 'function';
+  var addData = !goog.isDef(outputSettings['addData']) || outputSettings['addData'];
+  var addGeoData = !goog.isDef(outputSettings['addGeoData']) || outputSettings['addGeoData'];
   var eq = minify ? '=' : ' = ';
 
   var anychartGlobal = anychart.window['anychart'];
@@ -1617,11 +1636,16 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
     var geoData = this.getRawData(true);
     if (geoData) {
       chart['geoData'](geoData);
-      result.push(
-          '// Setting up geo data',
-          'var geoData' + eq + this.printValue_(printer, geoData) + ';',
-          'chart.geoData(geoData);'
-      );
+      if (addGeoData) {
+        result.push(
+            '// Setting up geo data',
+            'var geoData' + eq + this.printValue_(printer, geoData) + ';',
+            'chart.geoData(geoData);'
+        );
+      } else {
+        // todo: show link to geo data or something
+      }
+
       var geoIdField = this.getGeoIdField();
       if (geoIdField) {
         chart['geoIdField'](geoIdField);
@@ -1635,14 +1659,18 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
   var dsCtor = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['dataSetCtor'];
   var isTableData = dsCtor == 'table';
   var dataSet = anychartGlobal['data'][dsCtor]();
-  result.push(
-      '// Setting up data',
-      'var rawData' + eq + this.printValue_(printer, rawData) + ';',
-      'var data' + eq + 'anychart.data.' + dsCtor +
-          (isTableData ?
-              '(' + this.printValue_(printer, settings['dataSettings']['field']) + ');' :
-              '();')
+
+  result.push('// Setting up data');
+
+  var str = 'var rawData' + eq + (addData ? this.printValue_(printer, rawData) : '[/*Add your data here*/]') + ';';
+  result.push(str);
+
+  result.push('var data' + eq + 'anychart.data.' + dsCtor +
+      (isTableData ?
+          '(' + this.printValue_(printer, settings['dataSettings']['field']) + ');' :
+          '();')
   );
+
   if (isTableData) {
     dataSet['addData'](rawData);
     result.push('data.addData(rawData);');
@@ -1728,11 +1756,13 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
     result.push('');
   }
 
-  result.push(
-      '// Settings container and calling draw',
-      this.printKey_(printer, 'chart', 'container()', containerId),
-      'chart.draw();'
-  );
+  if (containerId) {
+    result.push(
+        '// Settings container and calling draw',
+        this.printKey_(printer, 'chart', 'container()', containerId),
+        'chart.draw();'
+    );
+  }
 
   if (minify) {
     result = goog.array.map(result, function(item) {

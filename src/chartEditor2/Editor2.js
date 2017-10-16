@@ -136,10 +136,11 @@ anychart.chartEditor2Module.Editor.prototype.visible = function(opt_value) {
 // region ---- chart export
 /**
  * Returns JS code string that creates a configured chart.
+ * @param {anychart.chartEditor2Module.EditorModel.OutputOptions=} opt_options Output options object.
  * @return {string}
  */
-anychart.chartEditor2Module.Editor.prototype.getChartAsJsCode = function() {
-  return (/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel())).getChartAsJsCode();
+anychart.chartEditor2Module.Editor.prototype.getChartAsJsCode = function(opt_options) {
+  return (/** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel())).getChartAsJsCode(opt_options);
 };
 
 
