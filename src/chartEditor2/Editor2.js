@@ -57,7 +57,7 @@ anychart.chartEditor2Module.Editor = function(opt_domHelper) {
   // });
   //imageLoader.start();
 
-  goog.events.listen(this, anychart.enums.EventType.COMPLETE, this.onComplete_, false, this);
+  goog.events.listen(this, anychart.chartEditor2Module.Breadcrumbs.EventType.COMPLETE, this.onComplete_, false, this);
 
   this.listen(anychart.chartEditor2Module.events.EventType.DATA_ADD, this.onDataAdd_);
   this.listen(anychart.chartEditor2Module.events.EventType.DATA_REMOVE, this.onDataRemove_);
@@ -102,6 +102,8 @@ anychart.chartEditor2Module.Editor.prototype.decorate = function(element) {
 anychart.chartEditor2Module.Editor.prototype.renderAsDialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
   this.dialog_ = new anychart.chartEditor2Module.Editor.Dialog(opt_class, opt_useIframeMask, opt_domHelper);
   this.dialog_.addChild(this, true);
+
+  this.getHandler().listen(this.dialog_, goog.ui.PopupBase.EventType.HIDE, this.onCloseDialog_);
 };
 
 
@@ -189,8 +191,20 @@ anychart.chartEditor2Module.Editor.prototype.waitForImages_ = function() {
  * @private
  */
 anychart.chartEditor2Module.Editor.prototype.onComplete_ = function(evt) {
+  this.dispatchEvent(anychart.enums.EventType.COMPLETE);
   if (this.dialog_)
     this.dialog_.setVisible(false);
+};
+
+
+/**
+ * @param {Object} evt
+ * @private
+ */
+anychart.chartEditor2Module.Editor.prototype.onCloseDialog_ = function(evt) {
+  if (evt.target == this.dialog_) {
+    this.dispatchEvent(anychart.enums.EventType.CLOSE);
+  }
 };
 
 

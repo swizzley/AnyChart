@@ -982,8 +982,6 @@ anychart.chartEditor2Module.EditorModel.prototype.setChartType = function(input)
   var selectValue = /** @type {Object} */(input.getValue());
   this.model_['chart']['type'] = selectValue.value;
 
-  console.log("setChartType", selectValue);
-
   var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
 
   if (prevChartType === 'map') {

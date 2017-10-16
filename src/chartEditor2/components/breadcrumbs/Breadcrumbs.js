@@ -18,7 +18,7 @@ goog.inherits(anychart.chartEditor2Module.Breadcrumbs, anychart.ui.Component);
 
 /** @enum {string} */
 anychart.chartEditor2Module.Breadcrumbs.EventType = {
-  COMPLETE: anychart.enums.EventType.COMPLETE, //goog.events.getUniqueId('complete'),
+  COMPLETE: goog.events.getUniqueId('complete'),
   NEXT: goog.events.getUniqueId('next'),
   PREV: goog.events.getUniqueId('prev'),
   CHANGE_STEP: goog.events.getUniqueId('changestep')

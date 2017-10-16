@@ -133,8 +133,8 @@ anychart.chartEditor2Module.Chart.prototype.update = function() {
   }
 
   // Chart settings
-  console.log("=== Chart draw ===");
-  console.log(settings['chart']['settings']);
+  // console.log("=== Chart draw ===");
+  // console.log(settings['chart']['settings']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
     if (key == 'palette()') {
