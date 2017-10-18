@@ -339,6 +339,25 @@ anychart.chartEditor2Module.Editor.prototype.onWait_ = function(evt) {
 };
 
 
+/**
+ *  @return {string}
+ */
+anychart.chartEditor2Module.Editor.prototype.serializeModel = function() {
+  var model = this.getModel().getModel();
+  return goog.json.hybrid.stringify(model);
+};
+
+
+/**
+ * @param {string} serializedModel
+ * @return {Object}
+ */
+anychart.chartEditor2Module.Editor.prototype.deserializeModel = function(serializedModel) {
+  var deserialized = goog.json.hybrid.parse(serializedModel);
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  model.setModel(deserialized);
+};
+
 // region Editor.Dialog
 /**
  * @constructor
@@ -451,5 +470,7 @@ anychart.ui.editor = function() {
   proto['unlisten'] = proto.unlisten;
   proto['unlistenByKey'] = proto.unlistenByKey;
   proto['removeAllListeners'] = proto.removeAllListeners;
+  proto['serializeModel'] = proto.serializeModel;
+  proto['deserializeModel'] = proto.deserializeModel;
   proto['dispose'] = proto.dispose;
 })();

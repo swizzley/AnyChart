@@ -1198,6 +1198,14 @@ anychart.chartEditor2Module.EditorModel.prototype.dropAxis = function(xOrY, inde
   this.dropChartSettings(regExp);
   this.dispatchUpdate(false, true);
 };
+
+
+/**
+ * @param {!Object} value
+ */
+anychart.chartEditor2Module.EditorModel.prototype.setModel = function(value) {
+  this.model_ = value;
+};
 // endregion
 
 
