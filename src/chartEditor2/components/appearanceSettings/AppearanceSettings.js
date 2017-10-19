@@ -33,34 +33,93 @@ anychart.chartEditor2Module.AppearanceSettings = function(model, tabs, tabConten
   this.setModel(model);
 
   this.panels_ = [
-    {classFunc: anychart.chartEditor2Module.GeneralTheming, instance: null},
-    {classFunc: anychart.chartEditor2Module.ChartTitlePanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.LegendPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.DataLabelsPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.SeriesSettingsPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.XAxesPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.YAxesPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.TooltipPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.GridsPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.ColorScalePanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.ContextMenuPanel, instance: null},
-    {classFunc: anychart.chartEditor2Module.CreditsPanel, instance: null}
-  ];
+    {
+      name: 'GeneralTheming',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.GeneralTheming,
+      instance: null
+    },
+    {
+      name: 'ChartTitle',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.ChartTitlePanel,
+      instance: null
+    },
+    {
+      name: 'Legend',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.LegendPanel,
+      instance: null
+    },
+    {
+      name: 'DataLabels',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.DataLabelsPanel,
+      instance: null
+    },
+    {
+      name: 'SeriesSettings',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.SeriesSettingsPanel,
+      instance: null
+    },
+    {
+      name: 'XAxes',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.XAxesPanel,
+      instance: null
+    },
+    {
+      name: 'YAxes',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.YAxesPanel,
+      instance: null
+    },
+    {
+      name: 'Tooltip',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.TooltipPanel,
+      instance: null
+    },
+    {
+      name: 'Grids',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.GridsPanel,
+      instance: null
+    },
+    {
+      name: 'ColorScale',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.ColorScalePanel,
+      instance: null
+    },
+    {
+      name: 'ContextMenu',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.ContextMenuPanel,
+      instance: null
+    },
+    {
+      name: 'Credits',
+      enabled: true,
+      classFunc: anychart.chartEditor2Module.CreditsPanel,
+      instance: null
+    }];
 
   this.currentPanel_ = 0;
 
   this.buttons_ = [];
 
-    /**
-     * @type {anychart.ui.Component}
-     * @private
-     */
+  /**
+   * @type {anychart.ui.Component}
+   * @private
+   */
   this.tabs_ = tabs;
 
-    /**
-     * @type {anychart.ui.Component}
-     * @private
-     */
+  /**
+   * @type {anychart.ui.Component}
+   * @private
+   */
   this.tabContent_ = tabContent;
 
   this.addClassName('anychart-appearance-settings');
@@ -91,7 +150,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.updatePanels = function
     if (!panel) {
       var classFunc = this.panels_[i].classFunc;
       panel = this.panels_[i].instance = new classFunc(model);
-      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+      excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       panel.exclude(excluded);
       this.tabContent_.addChild(panel, true);
       goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-preview-caption');
@@ -102,7 +161,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.updatePanels = function
       this.buttonsWrapper_.appendChild(button);
 
     } else {
-      excluded = panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+      excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       if (excluded && this.currentPanel_ === i)
         this.currentPanel_ = 0;
       panel.exclude(excluded);
@@ -137,6 +196,47 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.onClickCategoryButton_ 
       goog.dom.classlist.enable(panel.getElement(), 'hidden', this.currentPanel_ != i);
       goog.dom.classlist.enable(this.buttons_[i], 'active', this.currentPanel_ == i);
     }
+  }
+};
+
+
+/**
+ * @param {Object} values
+ */
+anychart.chartEditor2Module.AppearanceSettings.prototype.updateDescriptors = function(values) {
+  for (var i = 0; i < this.panels_.length; i++) {
+    if (values[this.panels_[i].name]) {
+      this.panels_[i].enabled = values[this.panels_[i].name].enabled;
+    }
+  }
+};
+
+
+/**
+ * @param {string} name
+ * @return {?Object}
+ */
+anychart.chartEditor2Module.AppearanceSettings.prototype.getDescriptorByName_ = function(name) {
+  var descriptor = null;
+  for (var i = 0; i < this.panels_.length; i++) {
+    if (this.panels_[i].name == name) {
+      descriptor = this.panels_[i];
+      break;
+    }
+  }
+  return descriptor;
+};
+
+
+/**
+ * @param {string} name
+ * @param {boolean} enabled
+ */
+anychart.chartEditor2Module.AppearanceSettings.prototype.enablePanelByName = function(name, enabled) {
+  var descriptor = this.getDescriptorByName_(name);
+  if (descriptor && descriptor.enabled != enabled) {
+    descriptor.enabled = enabled;
+    this.updatePanels();
   }
 };
 

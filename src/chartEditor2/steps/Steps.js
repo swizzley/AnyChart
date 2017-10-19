@@ -117,14 +117,30 @@ anychart.chartEditor2Module.Steps.prototype.getStepDescriptorByName_ = function(
 
 /**
  * TODO: Refactor for better API
- * @param {boolean} enabled
+ * @param {boolean=} opt_enabled
  * @return {anychart.chartEditor2Module.steps.Base}}
  */
-anychart.chartEditor2Module.Steps.prototype.prepareData = function(enabled) {
+anychart.chartEditor2Module.Steps.prototype.prepareData = function(opt_enabled) {
   var descriptor = this.getStepDescriptorByName_('PrepareData');
 
-  if (descriptor.enabled != enabled) {
-    descriptor.enabled = enabled;
+  if (goog.isDef(opt_enabled) && descriptor.enabled != opt_enabled) {
+    descriptor.enabled = opt_enabled;
+    this.setStep(this.getFirstStepIndex(), false);
+  }
+
+  return descriptor.instance;
+};
+
+
+/**
+ * @param {boolean=} opt_enabled
+ * @return {anychart.chartEditor2Module.steps.Base}}
+ */
+anychart.chartEditor2Module.Steps.prototype.visualAppearance = function(opt_enabled) {
+  var descriptor = this.getStepDescriptorByName_('VisualAppearance');
+
+  if (goog.isDef(opt_enabled) && descriptor.enabled != opt_enabled) {
+    descriptor.enabled = opt_enabled;
     this.setStep(this.getFirstStepIndex(), false);
   }
 
@@ -219,4 +235,5 @@ anychart.chartEditor2Module.Steps.prototype.disposeInternal = function() {
 (function() {
   var proto = anychart.chartEditor2Module.Steps.prototype;
   proto['prepareData'] = proto.prepareData;
+  proto['visualAppearance'] = proto.visualAppearance;
 })();

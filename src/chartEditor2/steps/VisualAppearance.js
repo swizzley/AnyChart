@@ -22,6 +22,8 @@ anychart.chartEditor2Module.steps.VisualAppearance = function(index, opt_domHelp
   this.name('Visual Appearance');
   this.title('Visual Appearance');
   this.addClassName('anychart-visual-appearance-step');
+
+  this.panelsSettings_ = {};
 };
 goog.inherits(anychart.chartEditor2Module.steps.VisualAppearance, anychart.chartEditor2Module.steps.Base);
 
@@ -58,6 +60,7 @@ anychart.chartEditor2Module.steps.VisualAppearance.prototype.createDom = functio
 
   //todo: rework as separate components with fixed structure
   this.appearanceSettings_ = new anychart.chartEditor2Module.AppearanceSettings(model, tabs, tabContent);
+  this.appearanceSettings_.updateDescriptors(this.panelsSettings_);
   this.addChild(this.appearanceSettings_, true);
 };
 
@@ -94,3 +97,23 @@ anychart.chartEditor2Module.steps.VisualAppearance.prototype.disposeInternal = f
 
   anychart.chartEditor2Module.steps.VisualAppearance.base(this, 'disposeInternal');
 };
+
+
+/**
+ * Enable/disable context menu panel.
+ * @param {boolean} enabled
+ */
+anychart.chartEditor2Module.steps.VisualAppearance.prototype.contextMenu = function(enabled) {
+  if (this.appearanceSettings_)
+    this.appearanceSettings_.enablePanelByName('ContextMenu', enabled);
+  else {
+    this.panelsSettings_['ContextMenu'] = this.panelsSettings_['ContextMenu'] ? this.panelsSettings_['ContextMenu'] : {};
+    this.panelsSettings_['ContextMenu'].enabled = enabled;
+  }
+};
+
+
+(function() {
+  var proto = anychart.chartEditor2Module.steps.VisualAppearance.prototype;
+  proto['contextMenu'] = proto.contextMenu;
+})();
