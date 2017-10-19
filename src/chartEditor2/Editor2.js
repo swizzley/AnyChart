@@ -349,13 +349,14 @@ anychart.chartEditor2Module.Editor.prototype.serializeModel = function() {
 
 
 /**
- * @param {string} serializedModel
- * @return {Object}
+ * @param {?string} serializedModel
  */
 anychart.chartEditor2Module.Editor.prototype.deserializeModel = function(serializedModel) {
-  var deserialized = goog.json.hybrid.parse(serializedModel);
-  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  model.setModel(deserialized);
+  if (serializedModel) {
+    var deserialized = /** @type {anychart.chartEditor2Module.EditorModel.Model} */(goog.json.hybrid.parse(serializedModel));
+    var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+    model.setModel(deserialized);
+  }
 };
 
 // region Editor.Dialog
