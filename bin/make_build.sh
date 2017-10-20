@@ -30,6 +30,7 @@ GITHUB_RELEASE_INFO=$(curl https://api.github.com/repos/AnyChart/AnyChart/releas
 # check does't contains "name": "v8.0.0"
 GITHUB_TAG_INFO=$(curl https://api.github.com/repos/AnyChart/AnyChart/tags?access_token=0d9fc595adee1cba5fe99ec298e5be3e9e188427)
 
+# check equal to "Ok"
 CORRECT_VERSION_IS_SET=$(python build.py version -v)
 
 
@@ -39,6 +40,7 @@ echo Branch: ${TRAVIS_BRANCH}
 echo Commit Hash: ${COMMIT_HASH}
 echo NPM User: ${NPM_USER}
 echo NPM Info: ${NPM_VERSION_INFO}
+echo Versons for all files are coorect: ${NPM_VERSION_INFO}
 
 
 
