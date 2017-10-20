@@ -20,7 +20,17 @@ elif [[ "${TRAVIS_BRANCH}" =~ ^RC-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
 else
     VERSION=${TRAVIS_BRANCH}
 fi
+
+# check is empty
 NPM_VERSION_INFO=$(npm view anychart@${VERSION})
+
+# check contains "message": "Not Found"
+GITHUB_RELEASE_INFO=$(curl https://api.github.com/repos/AnyChart/AnyChart/releases/tags/v7.14.8?access_token=0d9fc595adee1cba5fe99ec298e5be3e9e188427)
+
+# check does't contains "name": "v8.0.0"
+GITHUB_TAG_INFO=$(curl https://api.github.com/repos/AnyChart/AnyChart/tags?access_token=0d9fc595adee1cba5fe99ec298e5be3e9e188427)
+
+CORRECT_VERSION_IS_SET=$(python build.py version -v)
 
 
 echo Major: ${MAJOR_VERSION}
@@ -31,6 +41,8 @@ echo NPM User: ${NPM_USER}
 echo NPM Info: ${NPM_VERSION_INFO}
 
 
+
+https://api.github.com/repos/collaborativejs/collaborative-js/releases?access_token=0d9fc595adee1cba5fe99ec298e5be3e9e188427
 
 ## we can build release files only in case of dev release
 #if [ "${TRAVIS_BRANCH}" != "master" ]; then
@@ -88,6 +100,7 @@ echo NPM Info: ${NPM_VERSION_INFO}
 #
 ## copy unzip release files and copy to latest
 #ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "unzip -q -o /apps/static/cdn/releases/${VERSION}/anychart-installation-package-${VERSION}.zip -d /apps/static/cdn/releases/${VERSION}/"
+# TODO: сделать зипку для фонтов anychart-fonts-8.0.1.zip
 #
 ## copy legacy files by version
 #ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "

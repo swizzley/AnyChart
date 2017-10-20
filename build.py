@@ -229,7 +229,6 @@ def __get_themes_list():
     return themes_list
 
 
-@memoize
 def __get_version():
     # get global, major, minor versions from version.ini
     version_file = VERSION_INI_PATH
@@ -283,11 +282,114 @@ def __get_build_version():
     return '%s.%s' % (__get_version(), commits_count)
 
 
+def __version_by_pattern(pattern, path, value=None):
+    f = open(path, 'r')
+    text = f.read()
+    f.close()
+    if value:
+
+        text = re.sub(pattern % '([0-9]+\.[0-9]+\.[0-9]+)', pattern % value, text)
+        f = open(path, 'w')
+        f.write(text)
+        f.close()
+        return re.search(pattern % '([0-9]+\.[0-9]+\.[0-9]+)', text, re.IGNORECASE).group(1)
+    else:
+        return re.search(pattern % '([0-9]+\.[0-9]+\.[0-9]+)', text, re.IGNORECASE).group(1)
+
+
+def __package_json_version(value=None):
+    return __version_by_pattern(
+        '"version": "%s"',
+        os.path.join(PROJECT_PATH, 'package.json'),
+        value
+    )
+
+
+def __json_schema_version(value=None):
+    return __version_by_pattern(
+        '"description": "AnyChart JSON Schema, version %s"',
+        os.path.join(PROJECT_PATH, 'dist', 'json-schema.json'),
+        value
+    )
+
+
+def __xml_schema_target_namespace_version(value=None):
+    return __version_by_pattern(
+        'targetNamespace="http://anychart.com/schemas/%s/xml-schema.xsd"',
+        os.path.join(PROJECT_PATH, 'dist', 'xml-schema.xsd'),
+        value
+    )
+
+
+def __xml_schema_xmlns_version(value=None):
+    return __version_by_pattern(
+        'xmlns="http://anychart.com/schemas/%s/xml-schema.xsd"',
+        os.path.join(PROJECT_PATH, 'dist', 'xml-schema.xsd'),
+        value
+    )
+
+
+def __definition_file_version(value=None):
+    return __version_by_pattern(
+        'Type definitions for AnyChart charting library, Version %s',
+        os.path.join(PROJECT_PATH, 'dist', 'index.d.ts'),
+        value
+    )
+
+
+def __json_2_xml_version(value=None):
+    return __version_by_pattern(
+        "'xmlns', 'http://anychart.com/schemas/%s/xml-schema.xsd'",
+        os.path.join(PROJECT_PATH, 'src', 'utils.js'),
+        value
+    )
+
+
+def __all_files_versions(value=None):
+    return {
+        "json2xml": __json_2_xml_version(value),
+        "xml-schema-target": __xml_schema_target_namespace_version(value),
+        "xml-schema-xmlns": __xml_schema_xmlns_version(value),
+        "json-schema": __json_schema_version(value),
+        "definition-file": __definition_file_version(value),
+        "package-json": __package_json_version(value),
+        "project-(version-ini)": __project_version(value)
+    }
+
+
+def __project_version(value=None):
+    f = open(VERSION_INI_PATH, 'r')
+    text = f.read()
+    f.close()
+
+    if value:
+        split = value.split('.')
+        text = re.sub("version\.major=([0-9]+)", "version.major=" + split[0], text)
+        text = re.sub("version\.minor=([0-9]+)", "version.minor=" + split[1], text)
+        text = re.sub("version\.patch=([0-9]+)", "version.patch=" + split[2], text)
+        f = open(VERSION_INI_PATH, 'w')
+        f.write(text)
+        f.close()
+        return __get_version()
+    else:
+        return __get_version()
+
+
 def __print_version(*args, **kwargs):
     if kwargs['commits_count']:
         print __get_build_version()
     elif kwargs['major_only']:
         print __get_version().split('.')[0]
+    elif kwargs['verify']:
+        version = __get_version()
+        m = __all_files_versions()
+        res = all(x == version for x in m.values())
+        print "Ok" if res else "Fail\n " + json.dumps(m)
+    elif kwargs['set']:
+        print kwargs['set']
+        m = __all_files_versions(kwargs['set'])
+        res = all(x == kwargs['set'] for x in m.values())
+        print "Ok" if res else "Fail\n " + json.dumps(m)
     else:
         print __get_version()
 
@@ -1110,6 +1212,12 @@ def __exec_main_script():
     stat_parser.add_argument('-c', '--commits_count',
                              action='store_true',
                              help="Don't show commits count")
+    stat_parser.add_argument('-s', '--set',
+                             action='store',
+                             help="Set version to specified")
+    stat_parser.add_argument('-v', '--verify',
+                             action='store_true',
+                             help="Verify that version is set correctly for all files")
     # endregion
 
     params = parser.parse_args()
