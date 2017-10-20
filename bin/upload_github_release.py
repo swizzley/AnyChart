@@ -2,7 +2,6 @@
 # coding=utf-8
 
 import requests
-import subprocess
 import os
 import sys
 
@@ -11,37 +10,8 @@ VERSION_INI_PATH = os.path.join(PROJECT_PATH, 'version.ini')
 ACCESS_TOKEN = ''
 
 
-def __get_version():
-    # get global, major, minor versions from version.ini
-    version_file = VERSION_INI_PATH
-    with open(version_file, 'r') as f:
-        lines = f.readlines()
-
-    major = lines[0].split('=')[1].strip()
-    minor = lines[1].split('=')[1].strip()
-    patch = lines[2].split('=')[1].strip()
-
-    return '%s.%s.%s' % (major, minor, patch)
-
-
 def build_github_url(path, access_token=ACCESS_TOKEN, endpoint='api'):
     return 'https://%s.github.com%s?access_token=%s' % (endpoint, path, access_token)
-
-
-def is_github_release_exists(tag):
-    r_url = build_github_url('/repos/AnyChart/AnyChart/releases')
-    result = requests.get(r_url)
-    result_json = result.json()
-    for item in result_json:
-        if item['tag_name'] == tag:
-            return True
-    return False
-
-
-def is_npm_logged_in():
-    p = subprocess.Popen(['npm', 'whoami'], stdout=subprocess.PIPE)
-    p.wait()
-    return p.returncode == 0
 
 
 def print_message(msg):
@@ -84,24 +54,17 @@ def upload_release_binary(release_json, name, path):
 if __name__ == "__main__":
     global ACCESS_TOKEN
     ACCESS_TOKEN = sys.argv[1]
-    version = __get_version()
+    version = os.environ.get('VERSION')
     tag_name = 'v%s' % version
 
-    if is_github_release_exists(tag_name):
-        print_message("Can't release version %s, github release already exists" % tag_name)
-    elif not is_npm_logged_in():
-        print_message("Can't release version %s, npm is not logged in" % tag_name)
-    else:
-        print_message('Releasing version: %s' % version)
+    print 'Creating github release %s' % tag_name
+    release = create_github_release(version, tag_name)
 
-        print 'Creating github release %s' % tag_name
-        release = create_github_release(version, tag_name)
+    print 'Uploading release files %s' % tag_name
+    upload_release_binary(
+        release,
+        'anychart-installation-package-%s.zip' % version,
+        os.path.join(PROJECT_PATH, 'dist', 'installation-package.zip')
+    )
 
-        print 'Uploading release files %s' % tag_name
-        upload_release_binary(
-            release,
-            'installation-package.min.js',
-            os.path.join(PROJECT_PATH, 'dist', 'installation-package.zip')
-        )
-
-        print_message('Successfully release %s' % tag_name)
+    print_message('Successfully release %s' % tag_name)
