@@ -42,6 +42,13 @@ echo NPM User: ${NPM_USER}
 echo NPM Info: ${NPM_VERSION_INFO}
 echo Versons for all files are coorect: ${NPM_VERSION_INFO}
 
+if ["${NPM_USER}" != "anychart!"]; then
+    echo Wrong NPM user
+    exit 1
+fi
+
+
+
 ## we can build release files only in case of dev release
 #if [ "${TRAVIS_BRANCH}" != "master" ]; then
 #    # build release files
