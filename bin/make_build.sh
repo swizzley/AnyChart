@@ -28,7 +28,7 @@ echo Commit Hash: ${COMMIT_HASH}
 
 # ---- Variables (release builds only) ---------------------------------------------------------------------------------
 if [ "${TRAVIS_BRANCH}" = "master" ]; then
-
+    echo Fetching release build variables
     # check equal to ""
     NPM_VERSION_INFO=$(npm view anychart@${VERSION})
 
@@ -85,9 +85,13 @@ fi
 
 # ---- Build binary files (for all builds) -----------------------------------------------------------------------------
 # build binary files
-echo Building binary files: JS, CSS, Themes
+echo Building binary JS files
 python ./build.py compile --output ./dist/js
+
+echo Building binary CSS files
 python ./build.py css --output ./dist/css
+
+echo Building binary Themes files
 python ./build.py themes --output ./dist/themes
 
 # copy bin files
@@ -98,12 +102,13 @@ cp ./bin/binaries_wrapper_start.txt ./dist/binaries_wrapper_start.txt
 
 
 # ---- One more check, should be executed right after binaries build (release builds only) -----------------------------
-TODO:  !!
+# TODO:  !!
 # ---- One more check, should be executed right after binaries build (release builds only) -----------------------------
 
 
 # ---- Clear binary files to reduce result size (dev builds only) ------------------------------------------------------
 if [ "${TRAVIS_BRANCH}" != "master" ]; then
+    echo Removeing geodata
     rm -rf dist/geodata
 fi
 # ---- Clear binary files to reduce result size (dev builds only) ------------------------------------------------------
@@ -134,6 +139,7 @@ fi
 
 # ---- Upload binary files (for all builds) ----------------------------------------------------------------------------
 # zip files
+echo Zipping dist files
 zip -q -r ${INSTALL_PACKAGE_NAME} dist
 
 # ensure target directory exists and clean
@@ -143,15 +149,18 @@ mkdir -p /apps/static/cdn/releases/${VERSION} &&
 rm -rf /apps/static/cdn/releases/${VERSION}/*"
 
 # upload files
+echo Uploading files
 scp -i ~/.ssh/id_rsa ${INSTALL_PACKAGE_NAME} $STATIC_HOST_SSH_STRING:/apps/static/cdn/releases/${VERSION}/${INSTALL_PACKAGE_NAME}
 
 # unzip files
+echo Unzipping files
 ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "unzip -q -o /apps/static/cdn/releases/${VERSION}/anychart-installation-package-${VERSION}.zip -d /apps/static/cdn/releases/${VERSION}/"
 
 # ---- Upload binary files (for all builds) ----------------------------------------------------------------------------
 
 
 # ---- Copy dev legacy files (dev builds only) -------------------------------------------------------------------------
+echo Copy dev legacy files
 # 7.x version DEV structure
 if [ "${TRAVIS_BRANCH}" != "master" ]; then
     ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "
@@ -173,6 +182,7 @@ fi
 
 # ---- Copy release legacy files (release builds only) -----------------------------------------------------------------
 if [ "${TRAVIS_BRANCH}" = "master" ]; then
+    echo Copy prod legacy files
     ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "
     rm -rf /apps/static/cdn/js/${VERSION} &&
     cp -r /apps/static/cdn/releases/${VERSION}/js /apps/static/cdn/js/${VERSION} &&
@@ -189,6 +199,7 @@ fi
 
 # ---- Create latest version (release builds only) ---------------------------------------------------------------------
 if [ "${TRAVIS_BRANCH}" = "master" ]; then
+    echo Create latest version
     ssh -i ~/.ssh/id_rsa  $STATIC_HOST_SSH_STRING "
     rm -rf /apps/static/cdn/releases/${MAJOR_VERSION}.x.x &&
     cp -r /apps/static/cdn/releases/${VERSION} /apps/static/cdn/releases/${MAJOR_VERSION}.x.x"
@@ -197,6 +208,7 @@ fi
 
 
 # ---- Drop CDN cache for uploaded files (for all builds) --------------------------------------------------------------
+echo Dropping CDN cache
 python ./bin/drop_cdn_cache.py ${VERSION} ${CDN_ALIASE} ${CDN_CONSUMER_KEY} ${CDN_CONSUMER_SECRET} ${CDN_ZONE_ID}
 # ---- Drop CDN cache for uploaded files (for all builds) --------------------------------------------------------------
 
@@ -204,12 +216,15 @@ python ./bin/drop_cdn_cache.py ${VERSION} ${CDN_ALIASE} ${CDN_CONSUMER_KEY} ${CD
 # ---- Release tasks (release builds only) -----------------------------------------------------------------------------
 if [ "${TRAVIS_BRANCH}" = "master" ]; then
     # make NPM release
+    echo Publishing NPM release
     npm publish
 
     # make github release
+    echo Publishing Github release
     python ./bin/upload_github_release.py ${GITHUB_TOKEN}
 
     # build export server
+    echo Building and uploading export server
     git clone https://github.com/AnyChart/export-server.git out/export-server
     cp out/anychart-bundle.min.js out/export-server/resources/js/anychart-bundle.min.js
     cd out/export-server
