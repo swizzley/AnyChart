@@ -7,7 +7,6 @@ import sys
 
 PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 VERSION_INI_PATH = os.path.join(PROJECT_PATH, 'version.ini')
-ACCESS_TOKEN = ''
 
 
 def get_version():
@@ -23,7 +22,8 @@ def get_version():
     return '%s.%s.%s' % (major, minor, patch)
 
 
-def build_github_url(path, access_token=ACCESS_TOKEN, endpoint='api'):
+def build_github_url(path, endpoint='api'):
+    access_token = sys.argv[1]
     return 'https://%s.github.com%s?access_token=%s' % (endpoint, path, access_token)
 
 
@@ -54,7 +54,7 @@ def upload_release_binary(release_json, name, path):
     content = f.read()
     f.close()
 
-    path = '/repos/collaborativejs/collaborative-js/releases/%s/assets' % release_json['id']
+    path = '/repos/AnyChart/AnyChart/releases/%s/assets' % release_json['id']
     url = build_github_url(path, endpoint='uploads')
     url += '&name=%s' % name
     headers = {'Content-Type': 'application/javascript'}
@@ -63,9 +63,6 @@ def upload_release_binary(release_json, name, path):
 
 
 if __name__ == "__main__":
-    global ACCESS_TOKEN
-
-    ACCESS_TOKEN = sys.argv[1]
     version = get_version()
     tag_name = 'v%s' % version
 
