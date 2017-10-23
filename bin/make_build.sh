@@ -232,11 +232,11 @@ if [ "${TRAVIS_BRANCH}" = "master" ]; then
     cd ../../
     scp -i ~/.ssh/id_rsa out/export-server/target/export-server-standalone.jar $STATIC_HOST_SSH_STRING:/apps/static/cdn/releases/${VERSION}/anychart-export-server-${VERSION}.jar
     rm -rf out/export-server
-fi
 
-# make github release
-echo Publishing Github release
-python ./bin/upload_github_release.py ${GITHUB_TOKEN}
+    # make github release
+    echo Publishing Github release
+    python ./bin/upload_github_release.py ${GITHUB_TOKEN}
+fi
 
 
 # ---- Release tasks (release builds only) -----------------------------------------------------------------------------
