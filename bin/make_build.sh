@@ -140,7 +140,9 @@ fi
 # ---- Upload binary files (for all builds) ----------------------------------------------------------------------------
 # zip files
 echo Zipping dist files
-zip -q -r ${INSTALL_PACKAGE_NAME} dist
+cd dist
+zip -q -r ${INSTALL_PACKAGE_NAME} *
+cd ..
 
 # ensure target directory exists and clean
 # as far as CDN always serve removed content, we are free to clean entire folder
@@ -160,8 +162,8 @@ ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "unzip -q -o /apps/static/cdn/relea
 
 
 # ---- Copy dev legacy files (dev builds only) -------------------------------------------------------------------------
-echo Copy dev legacy files
 # 7.x version DEV structure
+echo Copy dev legacy files
 if [ "${TRAVIS_BRANCH}" != "master" ]; then
     ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "
     rm -rf /apps/static/js/${VERSION} &&
@@ -172,6 +174,7 @@ if [ "${TRAVIS_BRANCH}" != "master" ]; then
 fi
 
 # 7.x version CAT structure
+echo Copy CAT legacy files
 if [ "${VERSION}" != "${TRAVIS_BRANCH}" ]; then
     ssh -i ~/.ssh/id_rsa  $STATIC_HOST_SSH_STRING "
     rm -rf /apps/static/cdn/releases/${TRAVIS_BRANCH} &&
@@ -181,6 +184,7 @@ fi
 
 
 # ---- Copy release legacy files (release builds only) -----------------------------------------------------------------
+echo Copy release legacy files
 if [ "${TRAVIS_BRANCH}" = "master" ]; then
     echo Copy prod legacy files
     ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "
