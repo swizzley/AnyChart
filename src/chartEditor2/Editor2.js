@@ -359,6 +359,15 @@ anychart.chartEditor2Module.Editor.prototype.deserializeModel = function(seriali
   }
 };
 
+
+/**
+ * @param {Array.<{key: anychart.chartEditor2Module.EditorModel.Key, value: (string|boolean|Object) }>} values
+ */
+anychart.chartEditor2Module.Editor.prototype.setDefaults = function(values) {
+  var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
+  model.setDefaults(values);
+};
+
 // region Editor.Dialog
 /**
  * @constructor
@@ -466,6 +475,7 @@ anychart.ui.editor = function() {
   proto['getChartAsXml'] = proto.getChartAsXml;
   proto['steps'] = proto.steps;
   proto['data'] = proto.data;
+  proto['setDefaults'] = proto.setDefaults;
   proto['listen'] = proto.listen;
   proto['listenOnce'] = proto.listenOnce;
   proto['unlisten'] = proto.unlisten;

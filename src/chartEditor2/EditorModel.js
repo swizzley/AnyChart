@@ -59,6 +59,13 @@ anychart.chartEditor2Module.EditorModel = function() {
   };
 
   /**
+   * Default model values.
+   * @type {Array}
+   * @private
+   */
+  this.defaults_ = [];
+
+  /**
    * Data set analysis result
    * @type {Object}
    * @private
@@ -896,6 +903,8 @@ anychart.chartEditor2Module.EditorModel.prototype.dropChartSettings = function(o
     this.resetContextMenuItems();
     this.model_['chart']['settings'] = {};
   }
+
+  this.applyDefaults_();
 };
 
 
@@ -1258,12 +1267,14 @@ anychart.chartEditor2Module.EditorModel.prototype.setModel = function(value) {
  * @param {boolean=} opt_noDispatch
  * @param {boolean=} opt_noRebuildChart
  * @param {boolean=} opt_noRebuildMapping
+ * @param {boolean=} opt_noOverride Write value only if key not exists.
  */
-anychart.chartEditor2Module.EditorModel.prototype.setValue = function(key, value, opt_noDispatch, opt_noRebuildChart, opt_noRebuildMapping) {
+anychart.chartEditor2Module.EditorModel.prototype.setValue = function(key, value, opt_noDispatch, opt_noRebuildChart, opt_noRebuildMapping, opt_noOverride) {
   var target = this.model_;
   for (var i = 0; i < key.length; i++) {
     var level = key[i];
     if (goog.isArray(level)) {
+      // Drill down
       if (!goog.isDef(target[level[0]])) {
         if (level.length > 1)
           target[level[0]] = [];
@@ -1275,12 +1286,13 @@ anychart.chartEditor2Module.EditorModel.prototype.setValue = function(key, value
         target[level[0]].push({});
 
       target = goog.isArray(target[level[0]]) ? target[level[0]][level[1]] : target[level[0]];
-    } else if (goog.isString(level) && target[String(level)] != value) {
-      var stringKey = String(level);
-      target[stringKey] = value;
+
+    } else if (goog.isString(level) && target[level] != value && (!opt_noOverride || !goog.isDef(target[level]))) {
+      // Set value
+      target[level] = value;
 
       if (!opt_noDispatch)
-        this.dispatchUpdate(opt_noRebuildChart, opt_noRebuildMapping, stringKey);
+        this.dispatchUpdate(opt_noRebuildChart, opt_noRebuildMapping, level);
     }
   }
   // console.log(this.model_['chart']['settings']);
@@ -1423,6 +1435,25 @@ anychart.chartEditor2Module.EditorModel.prototype.getStringKey = anychart.chartE
  */
 anychart.chartEditor2Module.EditorModel.prototype.getModel = function() {
   return this.model_;
+};
+
+
+/**
+ * @param {Array.<{key: anychart.chartEditor2Module.EditorModel.Key, value: (string|boolean|Object) }>} values
+ */
+anychart.chartEditor2Module.EditorModel.prototype.setDefaults = function(values) {
+  this.defaults_ = values;
+};
+
+
+/**
+ * Applies default setting to model without override existing settings.
+ * @private
+ */
+anychart.chartEditor2Module.EditorModel.prototype.applyDefaults_ = function() {
+  for (var i = 0; i < this.defaults_.length; i++) {
+    this.setValue(this.defaults_[i]['key'], this.defaults_[i]['value'], true, void 0, void 0, true);
+  }
 };
 // endregion
 
@@ -1853,7 +1884,7 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
  */
 anychart.chartEditor2Module.EditorModel.prototype.printKey_ = function(printer, prefix, key, value, opt_forceRawValue) {
   if (goog.isDef(value)) {
-    var valueString = opt_forceRawValue ? String(value) : this.printValue_(printer, value);
+    var valueString = opt_forceRawValue ? '"' + String(value) + '"' : this.printValue_(printer, value);
     key = key.replace(/\)$/, valueString + ');');
   }
   return prefix + '.' + key;
