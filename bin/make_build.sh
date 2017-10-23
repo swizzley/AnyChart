@@ -102,7 +102,23 @@ cp ./bin/binaries_wrapper_start.txt ./dist/binaries_wrapper_start.txt
 
 
 # ---- One more check, should be executed right after binaries build (release builds only) -----------------------------
-# TODO:  !!
+if [ "${TRAVIS_BRANCH}" = "master" ]; then
+    GIT_STATUS=$(git status)
+    if [[ "${GIT_STATUS}" =~ dist/themes/.+ ]]; then
+        echo Theme files has changes, looks like you forgot update theme files in dist folder
+        exit 1
+    fi
+
+    if [[ "${GIT_STATUS}" =~ dist/js/.+ ]]; then
+        echo JavaScript files has changes, looks like you forgot update JavaScript files in dist folder
+        exit 1
+    fi
+
+    if [[ "${GIT_STATUS}" =~ dist/css/.+ ]]; then
+        echo CSS files has changes, looks like you forgot update CSS files in dist folder
+        exit 1
+    fi
+fi
 # ---- One more check, should be executed right after binaries build (release builds only) -----------------------------
 
 
