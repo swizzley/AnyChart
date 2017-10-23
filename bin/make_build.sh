@@ -152,7 +152,7 @@ rm -rf /apps/static/cdn/releases/${VERSION}/*"
 
 # upload files
 echo Uploading files
-scp -i ~/.ssh/id_rsa ${INSTALL_PACKAGE_NAME} $STATIC_HOST_SSH_STRING:/apps/static/cdn/releases/${VERSION}/${INSTALL_PACKAGE_NAME}
+scp -i ~/.ssh/id_rsa dist/${INSTALL_PACKAGE_NAME} $STATIC_HOST_SSH_STRING:/apps/static/cdn/releases/${VERSION}/${INSTALL_PACKAGE_NAME}
 
 # unzip files
 echo Unzipping files
