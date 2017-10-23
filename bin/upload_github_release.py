@@ -44,6 +44,7 @@ def create_github_release(version, tag):
     }
 
     r = requests.post(url, json=data)
+    print r.text
     return r.json()
 
 
@@ -57,11 +58,13 @@ def upload_release_binary(release_json, name, path):
     url = build_github_url(path, endpoint='uploads')
     url += '&name=%s' % name
     headers = {'Content-Type': 'application/javascript'}
-    requests.post(url, data=content, headers=headers)
+    r = requests.post(url, data=content, headers=headers)
+    print r.text
 
 
 if __name__ == "__main__":
     global ACCESS_TOKEN
+
     ACCESS_TOKEN = sys.argv[1]
     version = get_version()
     tag_name = 'v%s' % version
@@ -73,7 +76,7 @@ if __name__ == "__main__":
     upload_release_binary(
         release,
         'anychart-installation-package-%s.zip' % version,
-        os.path.join(PROJECT_PATH, 'dist', 'installation-package.zip')
+        os.path.join(PROJECT_PATH, 'dist', 'anychart-installation-package-%s.zip' % version)
     )
 
     print 'Successfully release %s' % tag_name
