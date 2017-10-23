@@ -223,20 +223,20 @@ if [ "${TRAVIS_BRANCH}" = "master" ]; then
     echo Publishing NPM release
     npm publish
 
-
+    # build export server
+    echo Building and uploading export server
+    git clone https://github.com/AnyChart/export-server.git out/export-server
+    cp out/anychart-bundle.min.js out/export-server/resources/js/anychart-bundle.min.js
+    cd out/export-server
+    lein uberjar
+    cd ../../
+    scp -i ~/.ssh/id_rsa out/export-server/target/export-server-standalone.jar $STATIC_HOST_SSH_STRING:/apps/static/cdn/releases/${VERSION}/anychart-export-server-${VERSION}.jar
+    rm -rf out/export-server
 fi
 
 # make github release
 echo Publishing Github release
 python ./bin/upload_github_release.py ${GITHUB_TOKEN}
 
-# build export server
-echo Building and uploading export server
-git clone https://github.com/AnyChart/export-server.git out/export-server
-cp out/anychart-bundle.min.js out/export-server/resources/js/anychart-bundle.min.js
-cd out/export-server
-lein uberjar
-cd ../../
-scp -i ~/.ssh/id_rsa out/export-server/target/export-server-standalone.jar $STATIC_HOST_SSH_STRING:/apps/static/cdn/releases/${VERSION}/anychart-export-server-${VERSION}.jar
-rm -rf out/export-server
+
 # ---- Release tasks (release builds only) -----------------------------------------------------------------------------

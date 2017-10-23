@@ -10,12 +10,21 @@ VERSION_INI_PATH = os.path.join(PROJECT_PATH, 'version.ini')
 ACCESS_TOKEN = ''
 
 
+def get_version():
+    # get global, major, minor versions from version.ini
+    version_file = VERSION_INI_PATH
+    with open(version_file, 'r') as f:
+        lines = f.readlines()
+
+    major = lines[0].split('=')[1].strip()
+    minor = lines[1].split('=')[1].strip()
+    patch = lines[2].split('=')[1].strip()
+
+    return '%s.%s.%s' % (major, minor, patch)
+
+
 def build_github_url(path, access_token=ACCESS_TOKEN, endpoint='api'):
     return 'https://%s.github.com%s?access_token=%s' % (endpoint, path, access_token)
-
-
-def print_message(msg):
-    print msg
 
 
 def create_github_release(version, tag):
@@ -54,7 +63,7 @@ def upload_release_binary(release_json, name, path):
 if __name__ == "__main__":
     global ACCESS_TOKEN
     ACCESS_TOKEN = sys.argv[1]
-    version = os.environ.get('VERSION')
+    version = get_version()
     tag_name = 'v%s' % version
 
     print 'Creating github release %s' % tag_name
@@ -67,4 +76,4 @@ if __name__ == "__main__":
         os.path.join(PROJECT_PATH, 'dist', 'installation-package.zip')
     )
 
-    print_message('Successfully release %s' % tag_name)
+    print 'Successfully release %s' % tag_name
