@@ -85,14 +85,7 @@ fi
 
 # ---- Build binary files (for all builds) -----------------------------------------------------------------------------
 # build binary files
-echo Building binary JS files
-python ./build.py compile --output ./dist/js
-
-echo Building binary CSS files
-python ./build.py css --output ./dist/css
-
-echo Building binary Themes files
-python ./build.py themes --output ./dist/themes
+sh ./bin/build_release.sh
 
 # copy bin files
 echo Copying wrappers from bin to dist
