@@ -857,6 +857,10 @@ def __compile_project(*args, **kwargs):
                 if 'desc' in bundles[bundle]: modules_json['modules'][bundle]['desc'] = bundles[bundle]['desc']
                 modules_json['modules'][bundle]['size'] = __get_gzip_file_size(
                     os.path.join(output, bundle + '.min.js'))
+            elif bundle == 'anychart-bundle':
+                modules_json['modules'][bundle]['name'] = 'AnyChart Bundle'
+                modules_json['modules'][bundle]['desc'] = 'AnyChart Bundle module'
+                modules_json['modules'][bundle]['docs'] = 'https://docs.anychart.com/Quick_Start/Modules#bundle'
         modules_json['themes'] = __get_modules_config()['themes']
 
         with open(os.path.join(output, 'modules.json'), 'w') as f:
