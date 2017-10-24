@@ -2026,3 +2026,10 @@ anychart.chartEditor2Module.EditorModel.prototype.checkSettingForExclusion = fun
   var excludes = anychart.chartEditor2Module.EditorModel.ChartTypes[chartType]['settingsExcludes'];
   return (excludes && goog.array.indexOf(excludes, stringKey) != -1);
 };
+
+
+//exports
+(function() {
+  var proto = anychart.chartEditor2Module.EditorModel.prototype;
+  proto['getValue'] = proto.getValue;
+})();

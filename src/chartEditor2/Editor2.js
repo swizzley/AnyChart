@@ -481,6 +481,7 @@ anychart.ui.editor = function() {
   proto['unlisten'] = proto.unlisten;
   proto['unlistenByKey'] = proto.unlistenByKey;
   proto['removeAllListeners'] = proto.removeAllListeners;
+  proto['getModel'] = proto.getModel;
   proto['serializeModel'] = proto.serializeModel;
   proto['deserializeModel'] = proto.deserializeModel;
   proto['dispose'] = proto.dispose;
