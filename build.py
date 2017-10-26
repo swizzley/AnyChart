@@ -782,6 +782,58 @@ def __get_bundle_wrapper(bundle_name, modules, file_name='', performance_monitor
 
 
 # endregion
+# region --- Locales index building
+# ======================================================================================================================
+# Locales index building
+# ======================================================================================================================
+def build_locales_indexes():
+    locales_path = os.path.join(PROJECT_PATH, 'dist', 'locales')
+    result = {}
+    for (path, dirs, files) in os.walk(locales_path):
+        for file_name in files:
+            locale_path = os.path.join(path, file_name)
+            f = open(locale_path, 'r')
+            text = f.read()
+            f.close()
+
+            code = re.search("code: '(.+)',", text, re.IGNORECASE).group(1)
+            eng_name = re.search("engName: '(.+)',", text, re.IGNORECASE).group(1)
+            native_name = re.search("nativeName: '(.+)',", text, re.IGNORECASE).group(1)
+
+            result[code] = {'eng-name': eng_name, 'native-name': native_name}
+
+    return result
+
+
+# endregion
+# region --- Locales index building
+# ======================================================================================================================
+# Geodata index building
+# ======================================================================================================================
+def build_geodata_indexes():
+    geo_data_path = os.path.join(PROJECT_PATH, 'dist', 'geodata')
+    result = {}
+    for (path, dirs, files) in os.walk(geo_data_path):
+        rel_path = os.path.relpath(path, geo_data_path)
+        split = rel_path.split('/')
+
+        if not split[-1] + '.js' in files:
+            continue
+
+        target = result
+        for item in split:
+            if not item in target:
+                target[item] = {}
+            target = target[item]
+            if item == split[-1]:
+                name_parts = item.split('_')
+                name_parts = map(lambda x: x.capitalize(), name_parts)
+                target['name'] = ' '.join(name_parts)
+
+    return result
+
+
+# endregion
 # region --- Themes building
 # ======================================================================================================================
 # Themes building
@@ -859,9 +911,12 @@ def __compile_project(*args, **kwargs):
                     os.path.join(output, bundle + '.min.js'))
             elif bundle == 'anychart-bundle':
                 modules_json['modules'][bundle]['name'] = 'AnyChart Bundle'
+                modules_json['modules'][bundle]['type'] = 'bundle'
                 modules_json['modules'][bundle]['desc'] = 'AnyChart Bundle module'
                 modules_json['modules'][bundle]['docs'] = 'https://docs.anychart.com/Quick_Start/Modules#bundle'
         modules_json['themes'] = __get_modules_config()['themes']
+        modules_json['locales'] = build_locales_indexes()
+        modules_json['geodata'] = build_geodata_indexes()
 
         with open(os.path.join(output, 'modules.json'), 'w') as f:
             f.write(json.dumps(modules_json))
