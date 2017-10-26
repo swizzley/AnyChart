@@ -107,16 +107,6 @@ anychart.chartEditor2Module.steps.PrepareData.prototype.enterDocument = function
 
 
 /**
- * @param {Object} evt
- */
-anychart.chartEditor2Module.steps.PrepareData.prototype.onUploadButtonClick = function(evt) {
-  var type = (/** @type {goog.ui.Button} */ (evt.target)).getValue();
-  var tmp = type.split('-');
-  this.openDataDialog(tmp[0], tmp[1]);
-};
-
-
-/**
  * Opend data dialog.
  * @param {string} dialogType
  * @param {string=} opt_dataType
