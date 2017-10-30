@@ -59,7 +59,6 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
   goog.dom.appendChild(content, layoutLabel);
 
   var layoutSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
-  layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   layoutSelect.setOptions([
     {value: 'horizontal', caption: 'Horizontal'},
@@ -83,7 +82,6 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
   goog.dom.appendChild(content, orientationLabel);
 
   var orientationSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
-  orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   var orientationSelectMenu = orientationSelect.getMenu();
   orientationSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
@@ -113,7 +111,6 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
   goog.dom.appendChild(content, alignLabel);
 
   var alignSelect = new anychart.chartEditor2Module.controls.select.Align(true);
-  alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
 
   this.addChild(alignSelect, true);

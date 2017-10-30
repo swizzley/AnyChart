@@ -1,12 +1,4 @@
-@color-background: #ecf0f3;
-@color-blue: #549de1;
-@color-border: #c7d8e4;
-@color-shadow: #c4d5df;
-@color-text: #4a6181;
-@color-text-disabled: #a9bad0;
-@color-text-disabled-label: #7e92ad;
-@color-control-back: #e9edf0;
-@shadow-1: 0 0 8px @color-shadow;
+@import "variables.less";
 
 
 // region ---- common
@@ -476,6 +468,7 @@
 // region ---- data field select
 .anychart-select-data-field {
   position: relative;
+  margin-bottom: 15px;
 
   .anychart-select-data-field-label {
     float: left;
@@ -545,7 +538,7 @@
 
     border-right: @unitSize solid transparent;
     border-left: @unitSize solid transparent;
-    border-top: (@unitSize * 1) solid #e9edf0;
+    border-top: (@unitSize * 1) solid @color-control-back;
     margin-bottom: @unitSize;
 
     left: -@unitSize;
@@ -574,6 +567,7 @@
 }
 
 .anychart-control-menu-item {
+  font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   color: #7093aa;
   padding: 5px 10px;
@@ -789,24 +783,39 @@
   overflow-y: auto;
   padding: 18px 0;
 
-  > .settings-panel {
-    margin: 5px; // to make box-shadow visible
+  > .anychart-settings-panel {
+    margin: 5px; // to make box-shadow visible because of overflow 'hidden'
+
+    > .top {
+      .anychart-checkbox .anychart-checkbox-element {
+        background: #fff;
+      }
+    }
+    
     > .content {
       .box-shadow(@shadow-1);
       padding: 15px;
       background: #ffffff;
     }
-
   }
+}
 
-  .settings-panel {
-    .top {
-      margin-bottom: 10px;
-    }
+.anychart-settings-panel {
+  .top {
+    font-size: 17px;
+    color: @color-text;
+    margin-bottom: 10px;
+
     .title {
       display: inline-block;
     }
+
+    .anychart-checkbox {
+      float: left;
+      margin-right: 12px;
+    }
   }
+
 }
 
 .anychart-visual-appearance-settings-chart-wrapper {
@@ -824,7 +833,7 @@
   .border-radius(10px);
   width: 20px;
   height: 20px;
-  background-color: #469ced;
+  background-color: @color-blue;
   cursor: pointer;
   position: relative;
 
@@ -840,6 +849,16 @@
     position: relative;
     top: -4px;
     content: "+";
+  }
+}
+
+.anychart-appearance-settings-panel-series {
+  > .content {
+    background: none !important;
+    padding: 0 !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
   }
 }
 
@@ -867,8 +886,12 @@
     }
   }
 
-  .series-content {
-    padding: 0 15px 15px 15px;
+  .anychart-settings-panel {
+    padding: 15px;
+  }
+
+  .anychart-settings-stroke {
+    padding-top: 0;
   }
 }
 

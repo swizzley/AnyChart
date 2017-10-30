@@ -88,7 +88,6 @@ anychart.chartEditorModule.group.Legend.prototype.createDom = function() {
   goog.dom.appendChild(content, layoutLabel);
 
   var layoutSelect = new anychart.chartEditorModule.select.Base();
-  layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   layoutSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   layoutSelect.setOptions(['horizontal', 'vertical']);
   layoutSelect.setCaptions(['Horizontal', 'Vertical']);
@@ -111,7 +110,6 @@ anychart.chartEditorModule.group.Legend.prototype.createDom = function() {
   goog.dom.appendChild(content, orientationLabel);
 
   var orientationSelect = new anychart.chartEditorModule.select.Base();
-  orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   orientationSelect.setOptions(['left', 'right', 'top', 'bottom']);
   orientationSelect.setCaptions(['Left', 'Right', 'Top', 'Bottom']);
@@ -134,7 +132,6 @@ anychart.chartEditorModule.group.Legend.prototype.createDom = function() {
   goog.dom.appendChild(content, alignLabel);
 
   var alignSelect = new anychart.chartEditorModule.select.Base();
-  alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-medium'));
   alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   alignSelect.setOptions(['left', 'center', 'right']);
   alignSelect.setCaptions(['Left', 'Center', 'Right']);

@@ -69,6 +69,7 @@ anychart.chartEditor2Module.settings.Stroke.prototype.createDom = function() {
   this.dash_ = dash;
 
   goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
+  goog.dom.appendChild(element, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 };
 
 

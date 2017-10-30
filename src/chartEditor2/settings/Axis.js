@@ -73,7 +73,6 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
   this.registerLabel(orientationLabel);
 
   var orientationSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
-  orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
   orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   var orientationSelectMenu = orientationSelect.getMenu();
   orientationSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);

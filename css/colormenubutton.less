@@ -1,14 +1,6 @@
+@import "variables.less";
+
 /* ------- COLOR MENU BUTTON ------- */
-
-@color-background: #ecf0f3;
-@color-blue: #549de1;
-@color-border: #c7d8e4;
-@shadow-1: 0 0 8px #c4d5df;
-@color-text: #4a6181;
-@color-text-disabled: #a9bad0;
-@color-text-disabled-label: #7e92ad;
-@color-control-back: #e9edf0;
-
 
 .anychart-chart-editor-color {
   .border-radius(4px);
@@ -20,7 +12,7 @@
   height: 22px !important;
 
   &:focus {
-    border-color: #c4d5df;
+    border-color: @color-shadow;
   }
 
   .anychart-color-menu-button-indicator {

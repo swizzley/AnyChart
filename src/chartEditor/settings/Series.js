@@ -94,7 +94,6 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   var typeSelect = new anychart.chartEditorModule.select.Base();
   typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  typeSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-small'));
   typeSelect.setOptions(['line', 'area', 'spline', 'column']);
   typeSelect.setCaptions(['Line', 'Area', 'Spline', 'Column']);
   this.addChild(typeSelect, true);

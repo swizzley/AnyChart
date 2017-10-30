@@ -1,4 +1,6 @@
-/** old colors */
+@import "variables.less";
+
+/** Deprecated colors */
 @color-white: #fff;
 @color-gray: #f0f0f0;
 @color-light-gray: #fafafa;
@@ -6,18 +8,8 @@
 @color-dark-blue: #65a0e3;
 @shadow1: 0 4px 16px rgba(0, 0, 0, .2);
 @shadow2: 0 1px 16px rgba(0, 0, 0, .2);
-/** old colors */
+/** END OF Deprecated colors */
 
-
-@color-background: #ecf0f3;
-@color-blue: #549de1;
-@color-border: #c7d8e4;
-@color-shadow: #c4d5df;
-@color-text: #4a6181;
-@color-text-disabled: #a9bad0;
-@color-text-disabled-label: #7e92ad;
-@color-control-back: #e9edf0;
-@shadow-1: 0 0 8px @color-shadow;
 
 .hidden {
   display: none !important;
@@ -160,29 +152,28 @@
   margin: 10px 0;
 }
 
-.settings-title {
+.anychart-settings-title {
   .title-text {
-    width: 60%;
+    width: 50%;
+    font-size: 15px;
+    padding: 6px 10px;
   }
   .title-color {
-    width: 80px;
     float: right;
   }
   .title-font-family {
+    float: left;
     margin-left: 0;
-    width: 30%;
+    margin-right: 10px;
+    width: 155px;
   }
   .title-font-size {
-    display: inline-block;
-    width: 30%;
+    float: left;
   }
   .title-font-style-buttons {
     display: inline-block;
     width: 85px;
     float: right;
-  }
-  .anychart-combobox input {
-    width: 70%;
   }
 }
 
@@ -199,10 +190,6 @@
       width: 80px;
     }
   }
-}
-
-.settings-series {
-  border-top: 2px solid @color-dark-gray !important;
 }
 
 .anychart-chart-editor-icon {
@@ -589,15 +576,6 @@
   width: 100%;
 }
 
-.anychart-chart-editor-settings-group-header {
-  cursor: pointer;
-  background: #f8f8f8;
-  border-bottom: 1px #e5e5e5 solid;
-  font-size: 13px;
-  font-weight: bold;
-  padding: 6px 10px;
-  text-align: left;
-}
 
 .anychart-chart-editor-settings-group-content {
   border-bottom: 1px #e5e5e5 solid;
@@ -608,6 +586,7 @@
   clear: both;
   height: 12px;
 }
+
 
 .anychart-chart-editor-settings-item-gap-mini {
   clear: both;
@@ -620,8 +599,8 @@
 }
 
 .anychart-chart-editor-settings-item-separator {
-  height: 10px;
-  border-top: 1px solid #ccc;
+  clear: both;
+  border-bottom: 1px solid @color-background;
 }
 
 .settings-label {
@@ -642,39 +621,10 @@
   float: right;
 }
 
-.anychart-chart-editor-settings-control-big {
-  width: 100px;
-}
-
-.anychart-chart-editor-settings-control-medium {
-  width: 84px;
-}
-
-.anychart-chart-editor-settings-control-small {
-  width: 72px;
-}
-
-.anychart-chart-editor-settings-control-select-image {
-  width: 42px;
-}
-
 /* ------- CHART SETTINGS ------- */
 .anychart-chart-editor-settings-enabled {
   padding: 4px 7px;
   margin-right: -5px;
-}
-
-.anychart-chart-editor-settings-group-header {
-  .anychart-chart-editor-settings-enabled {
-    background: #f8f8f8;
-    margin-top: -5px;
-    margin-right: -8px;
-    padding: 5px 7px;
-
-    .anychart-checkbox-element {
-      background-color: #fff;
-    }
-  }
 }
 
 .anychart-chart-editor-settings-header {
@@ -703,45 +653,6 @@
 .anychart-chart-editor-colorPicker-popup {
   position: absolute;
   width: 300px;
-}
-
-/* --------- Controls styles ---------- */
-.anychart-checkbox {
-  .anychart-checkbox-element {
-    border: 1px solid #1C5180;
-    display: -moz-inline-box;
-    display: inline-block;
-    font-size: 1px;  /* Fixes the height in IE6 */
-    height: 11px;
-    margin: 0 4px 0 1px;
-    vertical-align: text-bottom;
-    width: 11px;
-  }
-}
-
-.anychart-checkbox-checked {
-  .anychart-checkbox-element {
-    background: #fff url('http://ssl.gstatic.com/closure/check-sprite.gif') no-repeat 2px center;
-  }
-}
-
-.anychart-checkbox-undetermined {
-  .anychart-checkbox-element {
-    background: #bbb url('http://ssl.gstatic.com/closure/check-sprite.gif') no-repeat 2px center;
-  }
-}
-
-.anychart-checkbox-unchecked {
-  .anychart-checkbox-element {
-    background: #fff;
-  }
-}
-
-.anychart-checkbox-disabled {
-  .anychart-checkbox-element {
-    border: 1px solid lightgray;
-    background-position: -7px;
-  }
 }
 
 .data-dialog {

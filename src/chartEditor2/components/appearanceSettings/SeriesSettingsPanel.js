@@ -23,6 +23,14 @@ anychart.chartEditor2Module.SeriesSettingsPanel = function(model, opt_domHelper)
 goog.inherits(anychart.chartEditor2Module.SeriesSettingsPanel, anychart.chartEditor2Module.SettingsPanel);
 
 
+anychart.chartEditor2Module.SeriesSettingsPanel.prototype.createDom = function() {
+  anychart.chartEditor2Module.SeriesSettingsPanel.base(this, 'createDom');
+
+  var element = /** @type {Element} */(this.getElement());
+  goog.dom.classlist.add(element, 'anychart-appearance-settings-panel-series');
+};
+
+
 /** @inheritDoc */
 anychart.chartEditor2Module.SeriesSettingsPanel.prototype.enterDocument = function() {
   anychart.chartEditor2Module.SeriesSettingsPanel.base(this, 'enterDocument');

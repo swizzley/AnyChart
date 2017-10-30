@@ -167,7 +167,7 @@ anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
   }
 
   var element = /** @type {Element} */(this.getElement());
-  goog.dom.classlist.add(element, 'settings-panel');
+  goog.dom.classlist.add(element, 'anychart-settings-panel');
 
   var dom = this.getDomHelper();
   this.topEl = dom.createDom(goog.dom.TagName.DIV, 'top');
@@ -176,7 +176,7 @@ anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
   if (this.name) {
     this.topEl.appendChild(dom.createDom(goog.dom.TagName.DIV, 'title', this.name));
   } else
-    goog.dom.classlist.add(element, 'settings-panel-no-title');
+    goog.dom.classlist.add(element, 'anychart-settings-panel-no-title');
   
   if (this.allowRemove_) {
     var removeBtn = new anychart.ui.button.Base(null, anychart.chartEditor2Module.IconButtonRenderer.getInstance());
@@ -204,7 +204,7 @@ anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
 
   var noTop = !this.name && !this.allowRemove_ && !(this.enableContentCheckbox && !this.enabledButtonContainer_);
   if (noTop)
-    goog.dom.classlist.add(element, 'settings-panel-no-top');
+    goog.dom.classlist.add(element, 'anychart-settings-panel-no-top');
 
   this.contentEl = dom.createDom(goog.dom.TagName.DIV, 'content');
   element.appendChild(this.contentEl);

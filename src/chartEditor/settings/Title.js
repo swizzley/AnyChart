@@ -381,7 +381,6 @@ anychart.chartEditorModule.settings.Title.prototype.createDom = function() {
     goog.dom.appendChild(element, positionLabel);
 
     positionSelect = new anychart.chartEditorModule.select.Base();
-    positionSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
     positionSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
     var positionSelectMenu = positionSelect.getMenu();
     positionSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
@@ -407,7 +406,6 @@ anychart.chartEditorModule.settings.Title.prototype.createDom = function() {
     goog.dom.appendChild(element, alignLabel);
 
     alignSelect = new anychart.chartEditorModule.select.Align();
-    alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-select-image'));
     alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
 
     var alignSelectMenu = alignSelect.getMenu();

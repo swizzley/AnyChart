@@ -1,13 +1,6 @@
+@import "variables.less";
+
 /* ------- COMBOBOX ------- */
-@color-background: #ecf0f3;
-@color-blue: #549de1;
-@color-border: #c7d8e4;
-@color-shadow: #c4d5df;
-@color-text: #4a6181;
-@color-text-disabled: #a9bad0;
-@color-text-disabled-label: #7e92ad;
-@color-control-back: #e9edf0;
-@shadow-1: 0 0 8px @color-shadow;
 
 .anychart-combobox {
   .border-radius(4px);
@@ -37,7 +30,6 @@
   }
 
   &.anychart-combobox-disabled {
-    .box-shadow(none);
     .opacity(1);
 
     border: 1px solid #f2f2f2;
@@ -101,7 +93,7 @@
 
     border-right: @unitSize solid transparent;
     border-left: @unitSize solid transparent;
-    border-top: (@unitSize * 1) solid #e9edf0;
+    border-top: (@unitSize * 1) solid @color-control-back;
     margin-bottom: @unitSize;
 
     left: -@unitSize;
