@@ -32,7 +32,8 @@ anychart.chartEditor2Module.ComponentWithKey.prototype.enterDocument = function(
   this.update();
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  this.getHandler().listen(model, anychart.chartEditor2Module.events.EventType.EDITOR_MODEL_UPDATE, this.update);
+  if (model)
+    this.getHandler().listen(model, anychart.chartEditor2Module.events.EventType.EDITOR_MODEL_UPDATE, this.update);
 
   anychart.chartEditor2Module.ComponentWithKey.base(this, 'enterDocument');
 };
@@ -94,7 +95,8 @@ anychart.chartEditor2Module.ComponentWithKey.prototype.genKey = function(opt_com
  */
 anychart.chartEditor2Module.ComponentWithKey.prototype.update = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-  this.getHandler().listenOnce(model, anychart.chartEditor2Module.events.EventType.CHART_DRAW, this.onChartDraw);
+  if (model)
+    this.getHandler().listenOnce(model, anychart.chartEditor2Module.events.EventType.CHART_DRAW, this.onChartDraw);
 };
 
 

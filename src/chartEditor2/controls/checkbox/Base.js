@@ -183,7 +183,7 @@ anychart.chartEditor2Module.checkbox.Base.prototype.isExcluded = function() {
  * @public
  */
 anychart.chartEditor2Module.checkbox.Base.prototype.updateExclusion = function() {
-  if (!this.key || !this.key.length) return;
+  if (!this.key || !this.key.length || !this.editorModel) return;
 
   var stringKey = this.editorModel.getStringKey(this.key);
   this.exclude(this.editorModel.checkSettingForExclusion(stringKey));

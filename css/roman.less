@@ -1,7 +1,13 @@
 @color-background: #ecf0f3;
 @color-blue: #549de1;
 @color-border: #c7d8e4;
-@shadow-1: 0 0 8px #c4d5df;
+@color-shadow: #c4d5df;
+@color-text: #4a6181;
+@color-text-disabled: #a9bad0;
+@color-text-disabled-label: #7e92ad;
+@color-control-back: #e9edf0;
+@shadow-1: 0 0 8px @color-shadow;
+
 
 // region ---- common
 .anychart-clear {
@@ -14,15 +20,16 @@
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                   supported by Chrome and Opera */
 }
 
 .anychart-border-box {
   .box-sizing(border-box);
 }
-// endregion
 
+// endregion
 
 // region ---- global layout
 .anychart-chart-editor .anychart-breadcrumbs {
@@ -31,7 +38,6 @@
   left: 0;
   right: 0;
 }
-
 
 .anychart-chart-editor .anychart-chart-preview,
 .anychart-chart-editor .anychart-predefined-datasets {
@@ -86,8 +92,8 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-// endregion
 
+// endregion
 
 // region ---- breadcrumbs
 .anychart-breadcrumbs {
@@ -155,8 +161,8 @@
 .anychart-breadcrumbs-item-active .anychart-breadcrumbs-item-indicator {
   background: @color-blue;
 }
-// endregion
 
+// endregion
 
 // region ---- user data
 .anychart-user-data {
@@ -191,8 +197,8 @@
   color: @color-blue;
   font-size: 16px;
 }
-// endregion
 
+// endregion
 
 // region ---- predefined data sets
 .anychart-predefined-datasets {
@@ -210,6 +216,7 @@
     display: none;
   }
 }
+
 .anychart-predefined-datasets-item {
   .box-shadow(@shadow-1);
   .border-radius(4px);
@@ -271,8 +278,8 @@
   border: 1px solid #5fa4e3;
   color: #5fa4e3;
 }
-// endregion
 
+// endregion
 
 // region ---- select with icon
 .anychart-ui-select-with-icon {
@@ -347,8 +354,8 @@
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
-// endregion
 
+// endregion
 
 // region ---- connected data
 .anychart-connected-data-sets {
@@ -393,7 +400,6 @@
     }
   }
 }
-
 
 .anychart-connected-data-sets-item:last-child {
   margin-bottom: 0;
@@ -450,44 +456,51 @@
 .anychart-connected-data-sets-item-field:last-child {
   margin-bottom: 0;
 }
-// endregion
 
+// endregion
 
 // region ---- chart preview
 .anychart-chart-preview {
   padding: 18px;
 }
-// endregion
 
+// endregion
 
 // region ---- chart data settings
 .anychart-chart-data-settings {
   padding: 18px;
 }
-// endregion
 
+// endregion
 
 // region ---- data field select
 .anychart-select-data-field {
   position: relative;
-}
-.anychart-select-data-field-label {
-  float: left;
-  font-size: 16px;
-  color: #4d6675;
-  line-height: 34px;
 
+  .anychart-select-data-field-label {
+    float: left;
+    font-size: 16px;
+    color: #4d6675;
+    line-height: 34px;
+  }
+
+  .anychart-select-data-field-select {
+    min-width: 150px;
+    float: right;
+    position: relative;
+  }
 }
-.anychart-select-data-field-select {
-  min-width: 210px;
-  float: right;
-  position: relative;
-}
+
 .anychart-select-data-field-select,
 .anychart-ui-select-with-icon {
   .border-radius(4px);
   outline: none;
   background: @color-background;
+  border: 1px solid @color-control-back;
+
+  &:focus {
+    border-color: @color-shadow;
+  }
 }
 
 .anychart-select-data-field-select-open,
@@ -499,32 +512,45 @@
   border-bottom: none;
 }
 
-.anychart-select-data-field-select-open .anychart-select-data-field-select-content {
-  margin-top: 3px;
-  margin-left: 3px;
-}
-
 .anychart-select-data-field-select-content {
   .border-radius(4px);
-  font-size: 16px;
-  text-transform: uppercase;
-  color: #7093aa;
-  padding: 4px 20px;
-  margin: 4px;
+  font-size: 15px;
+  color: @color-text;
+  padding: 3px 20px;
+  margin: 3px;
   background: white;
   display: inline-block;
   cursor: default;
 }
 
 .anychart-select-data-field-select-indicator {
-  border-color: #7093aa transparent;
-  border-style: solid;
-  border-width: 6px 6px 0 6px;
-  height: 0;
+  @thickness: 3px;
+  @unitSize: 6px;
   width: 0;
-  position: absolute;
-  right: 8px;
-  top: 14px;
+  height: 0;
+  position: relative;
+  display: inline-block;
+
+  float: right;
+  margin: 12px 5px @unitSize 10px;
+
+  border-right: @unitSize solid transparent;
+  border-left: @unitSize solid transparent;
+  border-top: (@unitSize * 1) solid #738db0;
+  //margin-bottom: @unitSize;
+
+  &:before {
+    content: "";
+    position: absolute;
+
+    border-right: @unitSize solid transparent;
+    border-left: @unitSize solid transparent;
+    border-top: (@unitSize * 1) solid #e9edf0;
+    margin-bottom: @unitSize;
+
+    left: -@unitSize;
+    top: -(@unitSize + @thickness);
+  }
 }
 
 .anychart-select-data-field-select-disabled {
@@ -534,7 +560,7 @@
   }
 }
 
-.anychart-select-data-field-menu {
+.anychart-control-menu {
   .box-sizing(border-box);
   position: absolute;
   background: @color-background;
@@ -547,26 +573,25 @@
   z-index: 1002; // for dialog mode
 }
 
-.anychart-select-data-field-menu-item {
+.anychart-control-menu-item {
   font-size: 14px;
   color: #7093aa;
-  text-transform: uppercase;
   padding: 5px 10px;
   cursor: pointer;
 }
 
-.anychart-select-data-field-menu-item-highlight {
+.anychart-control-menu-item-highlight {
   background: #c9e1f0;
 }
 
-.anychart-select-data-field-menu-caption {
+.anychart-control-menu-caption {
   padding: 5px 10px;
   font-size: 12px;
   color: #9eb8ca;
   cursor: default;
 }
-// endregion
 
+// endregion
 
 // region unsorted styles - step 2
 .anychart-chart-data-settings-caption {
@@ -589,7 +614,6 @@
   background: white;
   border-top: 1px solid @color-border;
 }
-
 
 .anychart-plot-panel-stock {
   margin-top: 14px;
@@ -657,10 +681,10 @@
 }
 
 .anychart-plot-panel-series-first {
-  border:none;
+  border: none;
 }
 
-.anychart-plot-panel-series-first .anychart-plot-panel-series-remove-btn{
+.anychart-plot-panel-series-first .anychart-plot-panel-series-remove-btn {
   display: none;
 }
 
@@ -694,7 +718,6 @@
   border: none;
 }
 
-
 .anychart-select-chart-type {
   margin-bottom: 14px;
 }
@@ -717,8 +740,8 @@
   font-size: 16px;
   margin-bottom: 18px;
 }
-// endregion
 
+// endregion
 
 // region ---- unsorted step 3
 .anychart-visual-appearance-step-tabs {
@@ -771,6 +794,7 @@
     > .content {
       .box-shadow(@shadow-1);
       padding: 15px;
+      background: #ffffff;
     }
 
   }
@@ -795,4 +819,98 @@
   overflow-y: auto;
   padding: 18px;
 }
+
+.anychart-plus-minus {
+  .border-radius(10px);
+  width: 20px;
+  height: 20px;
+  background-color: #469ced;
+  cursor: pointer;
+  position: relative;
+
+  text-align: center;
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #02befc;
+  }
+  &:after {
+    position: relative;
+    top: -4px;
+    content: "+";
+  }
+}
+
+.anychart-series-settings-panel {
+  .box-shadow(@shadow-1);
+  border: 1px solid #c6d7e3;
+  margin-bottom: 15px;
+
+  background: #ffffff;
+
+  .anychart-plus-minus {
+    margin-top: 5px;
+    float: right;
+  }
+
+  .series-title {
+    padding: 15px;
+    font-size: 17px;
+    outline: none;
+  }
+  .anychart-zippy-expanded {
+    .anychart-plus-minus:after {
+      content: "-";
+      top: -6px;
+    }
+  }
+
+  .series-content {
+    padding: 0 15px 15px 15px;
+  }
+}
+
+.anychart-zippy-header {
+  .anychart-chart-editor-color {
+    margin-right: 15px;
+  }
+}
+
+
+.anychart-chart-editor-series-name-input {
+  width: 50%;
+  font-size: 17px;
+}
+
+.anychart-chart-editor-input {
+  .border-radius(4px);
+  .box-sizing(border-box);
+  background-color: @color-control-back;
+  border: 1px solid @color-control-back;
+  color: @color-text;
+
+  //font-size: 13px;
+  //height: 16px;
+  padding: 5px 10px;
+
+  &:focus {
+    border-color: @color-shadow;
+  }
+
+  &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: @color-text-disabled;
+  }
+  &::-moz-placeholder { /* Firefox 19+ */
+    color: @color-text-disabled;
+  }
+  &:-ms-input-placeholder { /* IE 10+ */
+    color: @color-text-disabled;
+  }
+  &:-moz-placeholder { /* Firefox 18- */
+    color: @color-text-disabled;
+  }
+}
+
 // endregion

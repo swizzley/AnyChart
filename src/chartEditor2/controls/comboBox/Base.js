@@ -1,5 +1,9 @@
 goog.provide('anychart.chartEditor2Module.comboBox.Base');
+goog.provide('anychart.chartEditor2Module.comboBox.ComboBoxItem');
 
+goog.require('anychart.chartEditor2Module.controls.Menu');
+goog.require('anychart.chartEditor2Module.controls.MenuRenderer');
+goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItemRenderer');
 goog.require('anychart.chartEditor2Module.events');
 goog.require('goog.string');
 goog.require('goog.ui.ComboBox');
@@ -22,7 +26,10 @@ goog.forwardDeclare('goog.events.BrowserEvent');
  * @suppress {visibility}
  */
 anychart.chartEditor2Module.comboBox.Base = function(opt_domHelper, opt_menu, opt_labelInput) {
-  anychart.chartEditor2Module.comboBox.Base.base(this, 'constructor', opt_domHelper, opt_menu, opt_labelInput);
+  anychart.chartEditor2Module.comboBox.Base.base(this, 'constructor',
+      opt_domHelper,
+      opt_menu || new anychart.chartEditor2Module.controls.Menu('', this.getDomHelper()),
+      opt_labelInput);
 
   // If no value is set.
   this.lastToken_ = '';
@@ -187,7 +194,7 @@ anychart.chartEditor2Module.comboBox.Base.prototype.updateOptions = function() {
       var caption = this.captions_[i] || option.toString();
 
       if (!optionItem) {
-        optionItem = new goog.ui.ComboBoxItem(caption, option);
+        optionItem = new anychart.chartEditor2Module.comboBox.ComboBoxItem(caption, option);
         this.addItemAt(optionItem, i);
       } else {
         optionItem.setContent(caption);
@@ -540,3 +547,27 @@ anychart.chartEditor2Module.comboBox.Base.prototype.setValueByTarget = function(
   this.setValue(value);
   this.noDispatch = false;
 };
+
+
+/**
+ * Class for combo box items.
+ * @param {goog.ui.ControlContent} content Text caption or DOM structure to
+ *     display as the content of the item (use to add icons or styling to
+ *     menus).
+ * @param {*=} opt_data Identifying data for the menu item.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional dom helper used for dom
+ *     interactions.
+ * @param {goog.ui.MenuItemRenderer=} opt_renderer Optional renderer.
+ * @constructor
+ * @extends {goog.ui.ComboBoxItem}
+ */
+anychart.chartEditor2Module.comboBox.ComboBoxItem = function(content, opt_data, opt_domHelper, opt_renderer) {
+  goog.ui.ComboBoxItem.call(
+      this,
+      content,
+      opt_data,
+      opt_domHelper,
+      opt_renderer || anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItemRenderer.getInstance()
+  );
+};
+goog.inherits(anychart.chartEditor2Module.comboBox.ComboBoxItem, goog.ui.ComboBoxItem);

@@ -34,21 +34,7 @@ goog.inherits(anychart.chartEditor2Module.controls.select.DataFieldSelectMenuIte
 goog.addSingletonGetter(anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItemRenderer);
 
 
-/**
- * Overrides {@link goog.ui.ControlRenderer#createDom} by adding extra markup
- * and stying to the menu item's element if it is selectable or checkable.
- * @param {goog.ui.Control} item Menu item to render.
- * @return {Element} Root element for the item.
- * @override
- */
-anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItemRenderer.prototype.createDom = function(item) {
-    var element = anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItemRenderer.base(this, 'createDom', item);
-
-    return element;
-};
-
-
 /** @inheritDoc */
 anychart.chartEditor2Module.controls.select.DataFieldSelectMenuItemRenderer.prototype.getCssClass = function() {
-    return 'anychart-select-data-field-menu-item';
+    return 'anychart-control-menu-item';
 };

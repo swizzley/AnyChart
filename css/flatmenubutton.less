@@ -37,24 +37,19 @@
 }
 
 .anychart-flat-menu-button-hover {
-  background-color: #f8f8f8;
-  .gradient(#f8f8f8; #f1f1f1);
-
-  .box-shadow(0 1px 1px rgba(0, 0, 0, .1));
-  border-color: #c6c6c6;
-  color: #111;
+  //background-color: #f8f8f8;
+  //.gradient(#f8f8f8; #f1f1f1);
+  //
+  //.box-shadow(0 1px 1px rgba(0, 0, 0, .1));
+  //border-color: #c6c6c6;
+  //color: #111;
 }
 
-.anychart-flat-menu-button.anychart-flat-menu-button-open,
-.anychart-flat-menu-button.anychart-flat-menu-button-active {
-  .box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1));
-
-  background-color: #eee;
-  .gradient(#eee; #e0e0e0);
-
-  border: 1px solid #ccc;
-  color: #333;
-  z-index: 2;
+.anychart-flat-menu-button {
+  .anychart-flat-menu-button-open,
+  .anychart-flat-menu-button-active {
+    z-index: 2;
+  }
 }
 
 .anychart-flat-menu-button-focused {
@@ -67,26 +62,39 @@
   white-space: nowrap;
   padding-right: 20px;
   text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
 }
 
 .anychart-flat-menu-button-dropdown {
-  border-color: #777 transparent;
-  border-style: solid;
-  border-width: 4px 4px 0 4px;
-  height: 0;
+  @thickness: 3px;
+  @unitSize: 6px;
   width: 0;
-  position: absolute;
-  right: 5px;
-  top: 12px;
+  height: 0;
+  top: 4px;
+
+  border-right: @unitSize solid transparent;
+  border-left: @unitSize solid transparent;
+  border-top: (@unitSize * 1) solid #738db0;
+  margin-bottom: @unitSize;
+
+  &:before {
+    content: "";
+    position: absolute;
+
+    border-right: @unitSize solid transparent;
+    border-left: @unitSize solid transparent;
+    border-top: (@unitSize * 1) solid #e9edf0;
+    margin-bottom: @unitSize;
+
+    left: -@unitSize;
+    top: -(@unitSize + @thickness);
+  }
 }
 
 .anychart-flat-menu-button-active .anychart-flat-menu-button-dropdown,
 .anychart-flat-menu-button-open .anychart-flat-menu-button-dropdown,
 .anychart-flat-menu-button-selected .anychart-flat-menu-button-dropdown,
 .anychart-flat-menu-button-hover .anychart-flat-menu-button-dropdown {
-  border-color: #595959 transparent;
+  //border-color: #595959 transparent;
 }
 
 .anychart-chart-editor-settings-font-size {

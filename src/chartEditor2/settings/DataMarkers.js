@@ -70,7 +70,7 @@ anychart.chartEditor2Module.settings.DataMarkers.prototype.createDom = function(
   goog.dom.classlist.add(fillSelect.getElement(), goog.getCssName('markers-fill'));
   this.fillSelect_ = fillSelect;
 
-  goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('cb')));
+  goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
   var stroke = new anychart.chartEditor2Module.settings.Stroke(model, 'Markers stroke');
   this.addChild(stroke, true);

@@ -1,16 +1,49 @@
 /* ------- COLOR MENU BUTTON ------- */
 
-/* Color indicator. */
-.anychart-color-menu-button-indicator {
-  height: 14px;
-  margin-left: 4px;
-  outline: 1px solid #bbb;
-  width: 14px;
+@color-background: #ecf0f3;
+@color-blue: #549de1;
+@color-border: #c7d8e4;
+@shadow-1: 0 0 8px #c4d5df;
+@color-text: #4a6181;
+@color-text-disabled: #a9bad0;
+@color-text-disabled-label: #7e92ad;
+@color-control-back: #e9edf0;
+
+
+.anychart-chart-editor-color {
+  .border-radius(4px);
+
+  background: @color-control-back;
+  border: 1px solid @color-control-back;
+  color: @color-text;
+  padding: 5px 6px !important;
+  height: 22px !important;
+
+  &:focus {
+    border-color: #c4d5df;
+  }
+
+  .anychart-color-menu-button-indicator {
+    width: 20px;
+    height: 20px;
+    outline: none;
+    border: 1px solid #c4d5df;
+    margin: 0;
+  }
+
+  &.anychart-flat-menu-button-disabled {
+    .anychart-color-menu-button-indicator {
+      .opacity(0.5);
+    }
+    .anychart-flat-menu-button-dropdown {
+      .opacity(0.4);
+    }
+  }
 }
 
 /* Thinner padding for color picker buttons, to leave room for the indicator. */
-.anychart-color-menu-button .anychart-menu-button-inner-box,
-.anychart-toolbar-color-menu-button .anychart-toolbar-menu-button-inner-box {
-  padding-top: 2px !important;
-  padding-bottom: 2px !important;
-}
+//.anychart-color-menu-button .anychart-menu-button-inner-box,
+//.anychart-toolbar-color-menu-button .anychart-toolbar-menu-button-inner-box {
+//  padding-top: 2px !important;
+//  padding-bottom: 2px !important;
+//}

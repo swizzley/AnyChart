@@ -1,3 +1,4 @@
+/** old colors */
 @color-white: #fff;
 @color-gray: #f0f0f0;
 @color-light-gray: #fafafa;
@@ -5,23 +6,32 @@
 @color-dark-blue: #65a0e3;
 @shadow1: 0 4px 16px rgba(0, 0, 0, .2);
 @shadow2: 0 1px 16px rgba(0, 0, 0, .2);
+/** old colors */
+
+
+@color-background: #ecf0f3;
+@color-blue: #549de1;
+@color-border: #c7d8e4;
+@color-shadow: #c4d5df;
+@color-text: #4a6181;
+@color-text-disabled: #a9bad0;
+@color-text-disabled-label: #7e92ad;
+@color-control-back: #e9edf0;
+@shadow-1: 0 0 8px @color-shadow;
 
 .hidden {
   display: none !important;
 }
 
-.b-radius-5 {
-  .border-radius(5px);
-}
-
-.cb {
+.anychart-clearboth {
   clear: both;
 }
+
 .anychart-chart-editor {
   position: relative;
   background: #ecf0f3;
-  color: #000;
-  font-family: Arial, sans-serif;
+  color: #4a6181;
+  font-family: 'Open Sans', sans-serif;
   font-size: 13px;
   width: 100%;
   height: 100%;
@@ -102,7 +112,7 @@
   min-width: 780px; // 260 is a min size of a settings sidebar, total min is 260 * 3
   min-height: 400px;
   color: #000;
-  font-family: Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: 13px;
   z-index: 1000;
 }
@@ -190,27 +200,10 @@
     }
   }
 }
-.settings-stroke {
-  .stroke-color,
-  .stroke-dash,
-  .stroke-thickness {
-    display: block;
-    float: left;
-  }
-
-  .stroke-thickness {
-    width: 60px;
-    input {
-      width: 80px;
-    }
-  }
-}
-
 
 .settings-series {
   border-top: 2px solid @color-dark-gray !important;
 }
-
 
 .anychart-chart-editor-icon {
   margin-top: 1px;
@@ -232,20 +225,6 @@
   min-width: 0;
   padding: 6px 0 6px 6px;
   text-align: left;
-}
-
-.anychart-chart-editor-color {
-  &.anychart-flat-menu-button-disabled {
-    background-image: none;
-
-    .anychart-color-menu-button-indicator {
-      .opacity(0.5);
-    }
-
-    .anychart-flat-menu-button-dropdown {
-      .opacity(0.4);
-    }
-  }
 }
 
 .anychart-colormenu {
@@ -714,10 +693,6 @@
   padding: 2px;
 }
 
-.anychart-chart-editor-series-name-input {
-  width: 120px;
-}
-
 .anychart-chart-editor-add-series-btn {
   margin: 0;
   width: 84px;
@@ -864,4 +839,32 @@
 
 .goog-buttonset-default {
   font-weight: bold;
+}
+
+.anychart-settings-stroke {
+  .top {
+    float: left;
+    width: 15%;
+    font-size: 15px;
+    color: @color-text;
+    padding-top: 3px;
+  }
+  .content {
+    float: left;
+    width: 85%;
+  }
+  .anychart-stroke-dash,
+  .anychart-stroke-thickness,
+  .anychart-stroke-color {
+    display: inline-block;
+    float: right;
+    min-width: unset;
+    margin: 0 10px 5px 0;
+  }
+  .anychart-stroke-dash {
+    width: 110px;
+  }
+  .anychart-chart-editor-color {
+    margin-right: 0;
+  }
 }

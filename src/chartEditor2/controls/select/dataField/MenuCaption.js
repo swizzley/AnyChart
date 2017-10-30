@@ -52,5 +52,5 @@ anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer.p
 
 /** @inheritDoc */
 anychart.chartEditor2Module.controls.select.DataFieldSelectMenuCaptionRenderer.prototype.getCssClass = function() {
-    return 'anychart-select-data-field-menu-caption';
+    return 'anychart-control-menu-caption';
 };

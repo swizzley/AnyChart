@@ -303,7 +303,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.isExcluded = function
 
 /** @return {boolean|undefined} */
 anychart.chartEditor2Module.controls.select.Base.prototype.updateExclusion = function() {
-  if (!this.key || !this.key.length) return;
+  if (!this.key || !this.key.length || !this.editorModel) return;
 
   var stringKey = this.editorModel.getStringKey(this.key);
   return this.exclude(this.editorModel.checkSettingForExclusion(stringKey));

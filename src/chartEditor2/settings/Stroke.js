@@ -28,7 +28,7 @@ goog.inherits(anychart.chartEditor2Module.settings.Stroke, anychart.chartEditor2
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.Stroke.CSS_CLASS = goog.getCssName('settings-stroke');
+anychart.chartEditor2Module.settings.Stroke.CSS_CLASS = goog.getCssName('anychart-settings-stroke');
 
 
 /** @override */
@@ -39,6 +39,20 @@ anychart.chartEditor2Module.settings.Stroke.prototype.createDom = function() {
   var content = this.getContentElement();
 
   goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.Stroke.CSS_CLASS);
+
+  var color = new anychart.chartEditor2Module.colorPicker.Base();
+  color.addClassName(goog.getCssName('anychart-stroke-color'));
+  this.addChild(color, true);
+  this.color_ = color;
+
+  var thickness = new anychart.chartEditor2Module.comboBox.Base();
+  thickness.setOptions([1, 2, 3, 4, 5]);
+  thickness.setFormatterFunction(function(value) {
+    return String(goog.math.clamp(Number(value), 0, 10));
+  });
+  this.addChild(thickness, true);
+  goog.dom.classlist.add(thickness.getElement(), goog.getCssName('anychart-stroke-thickness'));
+  this.thickness_ = thickness;
 
   var dash = new anychart.chartEditor2Module.controls.select.DataFieldSelect('solid');
   dash.setOptions([
@@ -51,24 +65,10 @@ anychart.chartEditor2Module.settings.Stroke.prototype.createDom = function() {
   ]);
 
   this.addChild(dash, true);
-  goog.dom.classlist.add(dash.getElement(), goog.getCssName('stroke-dash'));
+  goog.dom.classlist.add(dash.getElement(), goog.getCssName('anychart-stroke-dash'));
   this.dash_ = dash;
 
-  var thickness = new anychart.chartEditor2Module.comboBox.Base();
-  thickness.setOptions([1, 2, 3, 4, 5]);
-  thickness.setFormatterFunction(function(value) {
-    return String(goog.math.clamp(Number(value), 0, 10));
-  });
-  this.addChild(thickness, true);
-  goog.dom.classlist.add(thickness.getElement(), goog.getCssName('stroke-thickness'));
-  this.thickness_ = thickness;
-
-  var color = new anychart.chartEditor2Module.colorPicker.Base();
-  color.addClassName(goog.getCssName('stroke-color'));
-  this.addChild(color, true);
-  this.color_ = color;
-
-  goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('cb')));
+  goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 };
 
 
@@ -105,7 +105,8 @@ anychart.chartEditor2Module.settings.Stroke.prototype.onChange = function() {
 
   if (colorValue || thicknessValue || dashValue) {
     var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
-    model.setValue(this.key, value);
+    if (model)
+      model.setValue(this.key, value);
   }
 };
 

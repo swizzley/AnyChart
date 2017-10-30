@@ -155,7 +155,7 @@ anychart.chartEditor2Module.PredefinedDataSelector.prototype.showDataSets_ = fun
   }
 
   if (createItems) {
-    this.setsContainer_.appendChild(this.dom_.createDom(goog.dom.TagName.DIV, 'cb'));
+    this.setsContainer_.appendChild(this.dom_.createDom(goog.dom.TagName.DIV, 'anychart-clearboth'));
   }
 };
 
