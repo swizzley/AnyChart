@@ -20,7 +20,6 @@ anychart.chartEditor2Module.DataSetPanelList = function(dataModel, opt_domHelper
 
   this.panels_ = [];
   this.setModel(dataModel);
-  this.addClassName('anychart-border-box');
   this.addClassName('anychart-connected-data-sets');
 
 };

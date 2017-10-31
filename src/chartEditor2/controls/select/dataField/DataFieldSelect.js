@@ -52,7 +52,6 @@ anychart.chartEditor2Module.controls.select.DataFieldSelect = function (opt_mode
     );
 
     this.setModel(opt_model);
-    this.addClassName('anychart-border-box');
 };
 goog.inherits(anychart.chartEditor2Module.controls.select.DataFieldSelect, anychart.chartEditor2Module.controls.select.Base);
 

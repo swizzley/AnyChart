@@ -26,7 +26,7 @@ goog.inherits(anychart.chartEditor2Module.settings.Grid, anychart.chartEditor2Mo
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.Grid.CSS_CLASS = goog.getCssName('settings-data-markers');
+anychart.chartEditor2Module.settings.Grid.CSS_CLASS = goog.getCssName('anychart-settings-grids');
 
 
 /** @override */
@@ -55,7 +55,7 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label')
+        goog.getCssName('anychart-settings-label')
       ],
       'Palette');
   goog.dom.appendChild(content, paletteLabel);

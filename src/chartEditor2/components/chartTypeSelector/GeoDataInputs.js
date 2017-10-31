@@ -25,7 +25,7 @@ goog.inherits(anychart.chartEditor2Module.GeoDataInputs, anychart.chartEditor2Mo
 /** @inheritDoc */
 anychart.chartEditor2Module.GeoDataInputs.prototype.createDom = function() {
   anychart.chartEditor2Module.GeoDataInputs.base(this, 'createDom');
-  goog.dom.classlist.add(this.getElement(), 'geo-data-inputs');
+  goog.dom.classlist.add(this.getElement(), 'anychart-geo-data-inputs');
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 

@@ -10,7 +10,6 @@ goog.require('anychart.ui.Component');
  */
 anychart.chartEditor2Module.UserData = function(opt_model) {
   anychart.chartEditor2Module.UserData.base(this, 'constructor');
-  this.addClassName('anychart-border-box');
   this.addClassName('anychart-user-data');
   this.setModel(opt_model);
 

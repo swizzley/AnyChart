@@ -32,8 +32,8 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label'),
-        goog.getCssName('settings-label-block')
+        goog.getCssName('anychart-settings-label'),
+        goog.getCssName('anychart-settings-label-block')
       ],
       'License key');
   goog.dom.appendChild(content, licenseKeyLabel);
@@ -46,8 +46,8 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label'),
-        goog.getCssName('settings-label-block')
+        goog.getCssName('anychart-settings-label'),
+        goog.getCssName('anychart-settings-label-block')
       ],
       'Text');
   goog.dom.appendChild(content, textLabel);
@@ -61,8 +61,8 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label'),
-        goog.getCssName('settings-label-block')
+        goog.getCssName('anychart-settings-label'),
+        goog.getCssName('anychart-settings-label-block')
       ],
       'URL');
   goog.dom.appendChild(content, urlLabel);
@@ -76,8 +76,8 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label'),
-        goog.getCssName('settings-label-block')
+        goog.getCssName('anychart-settings-label'),
+        goog.getCssName('anychart-settings-label-block')
       ],
       'Logo URL');
   goog.dom.appendChild(content, logoLabel);

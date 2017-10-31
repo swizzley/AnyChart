@@ -22,14 +22,6 @@ goog.inherits(anychart.chartEditor2Module.LegendPanel, anychart.chartEditor2Modu
 
 
 /** @inheritDoc */
-anychart.chartEditor2Module.LegendPanel.prototype.createDom = function() {
-  anychart.chartEditor2Module.LegendPanel.base(this, 'createDom');
-  var element = /** @type {Element} */(this.getElement());
-  goog.dom.classlist.add(element, 'settings-panel-legend');
-};
-
-
-/** @inheritDoc */
 anychart.chartEditor2Module.LegendPanel.prototype.enterDocument = function() {
   anychart.chartEditor2Module.LegendPanel.base(this, 'enterDocument');
   this.createLegends();

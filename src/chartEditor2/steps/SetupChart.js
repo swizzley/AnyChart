@@ -48,7 +48,6 @@ anychart.chartEditor2Module.steps.SetupChart.prototype.createDom = function () {
     wrapper.addChild(chartDataSettings, true);
 
     var chartPreview = new anychart.ui.Component();
-    chartPreview.addClassName('anychart-border-box');
     chartPreview.addClassName('anychart-chart-preview');
     wrapper.addChild(chartPreview, true);
 

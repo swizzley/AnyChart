@@ -35,7 +35,7 @@ goog.inherits(anychart.chartEditor2Module.settings.LegendAppearance, anychart.ch
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.LegendAppearance.CSS_CLASS = goog.getCssName('settings-legend-appearance');
+anychart.chartEditor2Module.settings.LegendAppearance.CSS_CLASS = goog.getCssName('anychart-settings-legend-appearance');
 
 
 /** @override */
@@ -53,7 +53,7 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label')
+        goog.getCssName('anychart-settings-label')
       ],
       'Layout');
   goog.dom.appendChild(content, layoutLabel);
@@ -76,7 +76,7 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label')
+        goog.getCssName('anychart-settings-label')
       ],
       'Orientation');
   goog.dom.appendChild(content, orientationLabel);
@@ -105,7 +105,7 @@ anychart.chartEditor2Module.settings.LegendAppearance.prototype.createDom = func
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label')
+        goog.getCssName('anychart-settings-label')
       ],
       'Align');
   goog.dom.appendChild(content, alignLabel);

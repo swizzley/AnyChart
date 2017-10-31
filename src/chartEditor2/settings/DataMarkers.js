@@ -39,7 +39,7 @@ goog.inherits(anychart.chartEditor2Module.settings.DataMarkers, anychart.chartEd
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.DataMarkers.CSS_CLASS = goog.getCssName('settings-data-markers');
+anychart.chartEditor2Module.settings.DataMarkers.CSS_CLASS = goog.getCssName('anychart-settings-data-markers');
 
 
 /** @override */
@@ -72,7 +72,7 @@ anychart.chartEditor2Module.settings.DataMarkers.prototype.createDom = function(
 
   goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
-  var stroke = new anychart.chartEditor2Module.settings.Stroke(model, 'Markers stroke');
+  var stroke = new anychart.chartEditor2Module.settings.Stroke(model, 'Stroke');
   this.addChild(stroke, true);
   this.stroke_ = stroke;
 };

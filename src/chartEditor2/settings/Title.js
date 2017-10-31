@@ -156,7 +156,7 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
           goog.dom.TagName.LABEL,
           [
             goog.ui.INLINE_BLOCK_CLASSNAME,
-            goog.getCssName('settings-label')
+            goog.getCssName('anychart-settings-label')
           ],
           'Font color');
       goog.dom.appendChild(content, colorLabel);
@@ -168,7 +168,7 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
 
     goog.dom.appendChild(content, goog.dom.createDom(
         goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
+        goog.getCssName('anychart-chart-editor-settings-item-gap')));
   }
 
   var fontFamily = new anychart.chartEditor2Module.controls.select.FontFamily();
@@ -215,7 +215,7 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
         goog.dom.TagName.LABEL,
         [
           goog.ui.INLINE_BLOCK_CLASSNAME,
-          goog.getCssName('settings-label')
+          goog.getCssName('anychart-settings-label')
         ],
         'Orientation');
     goog.dom.appendChild(content, positionLabel);
@@ -246,7 +246,7 @@ anychart.chartEditor2Module.settings.Title.prototype.createDom = function() {
         goog.dom.TagName.LABEL,
         [
           goog.ui.INLINE_BLOCK_CLASSNAME,
-          goog.getCssName('settings-label')
+          goog.getCssName('anychart-settings-label')
         ],
         'Align');
     goog.dom.appendChild(content, alignLabel);

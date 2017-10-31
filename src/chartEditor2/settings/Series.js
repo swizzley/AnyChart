@@ -6,6 +6,7 @@ goog.require('anychart.chartEditor2Module.input.Base');
 goog.require('anychart.chartEditor2Module.settings.DataMarkers');
 goog.require('anychart.chartEditor2Module.settings.Stroke');
 goog.require('anychart.chartEditor2Module.settings.Title');
+goog.require('anychart.ui.Component');
 goog.require('goog.ui.AnimatedZippy');
 
 
@@ -43,7 +44,7 @@ goog.inherits(anychart.chartEditor2Module.settings.Series, anychart.chartEditor2
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.Series.CSS_CLASS = goog.getCssName('anychart-series-settings-panel');
+anychart.chartEditor2Module.settings.Series.CSS_CLASS = goog.getCssName('anychart-settings-panel-series-single');
 
 
 /** @override */
@@ -54,7 +55,7 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
   goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.Series.CSS_CLASS);
   goog.dom.classlist.add(element, this.index_ % 2 ? 'even' : 'odd');
 
-  var content = this.getContentElement();
+  // var content = this.getContentElement();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
   // region == Header element ==
@@ -101,6 +102,10 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
   tooltip.setKey(this.genKey('tooltip()')); // This is for enabled working sake!
   innerContent.addChild(tooltip, true);
 
+  goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+
   // Data labels
   var dataLabels = new anychart.chartEditor2Module.settings.Title(model, 'Data labels');
   dataLabels.allowEnabled(true);
@@ -110,9 +115,9 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
   dataLabels.setKey(this.genKey('labels()')); // This is for enabled working sake!
   innerContent.addChild(dataLabels, true);
 
-  goog.dom.appendChild(content, goog.dom.createDom(
+  goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   // Data markers
   var dataMarkers = new anychart.chartEditor2Module.settings.DataMarkers(model, 'Data markers');
@@ -150,9 +155,13 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
 };
 
 
+/**
+ * Expands panel.
+ */
 anychart.chartEditor2Module.settings.Series.prototype.expand = function() {
   if (this.zippy_) this.zippy_.expand();
 };
+
 
 /** @inheritDoc */
 anychart.chartEditor2Module.settings.Series.prototype.updateKeys = function() {

@@ -26,12 +26,15 @@ goog.inherits(anychart.chartEditor2Module.settings.Legend, anychart.chartEditor2
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.Legend.CSS_CLASS = goog.getCssName('settings-legend');
+anychart.chartEditor2Module.settings.Legend.CSS_CLASS = goog.getCssName('anychart-settings-panel-legend-single');
 
 
 /** @override */
 anychart.chartEditor2Module.settings.Legend.prototype.createDom = function() {
   anychart.chartEditor2Module.settings.Legend.base(this, 'createDom');
+
+  var element = this.getElement();
+  goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.Legend.CSS_CLASS);
 
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
@@ -43,7 +46,7 @@ anychart.chartEditor2Module.settings.Legend.prototype.createDom = function() {
 
   goog.dom.appendChild(content, goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   var title = new anychart.chartEditor2Module.settings.Title(model, 'Title');
   title.setPositionKey('orientation()');

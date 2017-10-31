@@ -33,7 +33,6 @@ anychart.chartEditor2Module.PredefinedDataSelector = function(model, opt_domHelp
   this.searchFields = ['name', 'tags'];
 
   this.setModel(model);
-  this.addClassName('anychart-border-box');
   this.addClassName('anychart-predefined-datasets');
 };
 goog.inherits(anychart.chartEditor2Module.PredefinedDataSelector, anychart.chartEditor2Module.Component);

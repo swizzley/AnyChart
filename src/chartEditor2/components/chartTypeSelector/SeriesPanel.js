@@ -155,6 +155,7 @@ anychart.chartEditor2Module.SeriesPanel.prototype.createFields = function() {
     });
 
     fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]));
+    fieldSelect.addClassName('anychart-select-with-content');
 
     this.fields_.push(fieldSelect);
     this.addChild(fieldSelect, true);

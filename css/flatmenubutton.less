@@ -25,16 +25,12 @@
 .anychart-flat-menu-button-disabled {
   .box-shadow(none);
 
-  background-color: #f5f5f5;
-  .gradient(#f5f5f5; #f1f1f1);
-
-  border: 1px solid #f3f3f3;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  color: #b8b8b8;
+  border-color: 1px solid @color-border-disabled;
+  color: @color-text-disabled;
   cursor: default;
 
   .anychart-flat-menu-button-dropdown {
-    border-color: #b8b8b8 transparent;
+    border-color: @color-border-disabled;
   }
 }
 

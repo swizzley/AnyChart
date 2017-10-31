@@ -1,3 +1,5 @@
+@import "variables.less";
+
 /* ------- COMMON ------- */
 
 /* Check for css file attached. */
@@ -36,12 +38,22 @@
   display: inline;
 }
 
+.anychart-clearboth {
+  clear: both;
+}
+
 .anychart-hidden {
   display: none;
 }
 
+// todo: should be replaced by .anychart-hidden
+.hidden {
+  display: none !important;
+}
+
+
 .anychart-control-disabled {
-  color: #ccc
+  color: @color-text-disabled !important;
 }
 
 .anychart-label-input {
@@ -61,36 +73,6 @@
 
   &.anychart-label-input-label-disabled {
     color: #ccc;
-  }
-}
-
-.anychart-thumbnail {
-  display: block;
-  padding: 4px;
-  margin-bottom: 20px;
-  line-height: 1.42857143;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  .border-radius(2px);
-  .transition(border .2s ease-in-out);
-
-  > img {
-    margin-right: auto;
-    margin-left: auto;
-    display: block;
-    max-width: 100%;
-    height: auto;
-  }
-
-  &:hover,
-  &:focus {
-    border-color: #ccc;
-    .box-shadow(0 1px 3px rgba(0,0,0,.2));
-  }
-
-  &:active {
-    .box-shadow(inset 0 1px 1px rgba(0, 0, 0, 0.3));
-    border-color: #489adc;
   }
 }
 

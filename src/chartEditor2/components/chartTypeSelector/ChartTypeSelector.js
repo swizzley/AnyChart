@@ -105,6 +105,7 @@ anychart.chartEditor2Module.ChartTypeSelector.prototype.update = function(evt) {
     this.createActiveAndFieldOptions_();
   }
   this.coreFieldsContainer_.addChild(this.activeAndFieldSelect_, true);
+  this.activeAndFieldSelect_.addClassName('anychart-select-with-content');
   this.activeAndFieldSelect_.getSelect().setValueByModel({active: model.getActive()});
 
   // Plots

@@ -37,7 +37,7 @@ anychart.chartEditor2Module.TooltipPanel.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label')
+        goog.getCssName('anychart-settings-label')
       ],
       'Display mode');
   goog.dom.appendChild(content, displayModeLabels);
@@ -58,7 +58,7 @@ anychart.chartEditor2Module.TooltipPanel.prototype.createDom = function() {
       goog.dom.TagName.LABEL,
       [
         goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('settings-label')
+        goog.getCssName('anychart-settings-label')
       ],
       'Position mode');
   goog.dom.appendChild(content, positionModeLabels);
