@@ -94,13 +94,14 @@ anychart.chartEditor2Module.EditorModel = function() {
    * @private
    */
   this.contextMenuItems_ = {
-    'exclude': {'items': ['exclude-point', 'excluded-points', 'keep-only', 'exclude-points-separator'], 'enabled': true},
-    'marquee': {'items': ['start-select-marquee', 'select-marquee-separator'], 'enabled': true},
-    'saveAs': {'items': 'export-as', 'enabled': true},
+    'exclude': {'items': ['exclude-points-point', 'exclude-points-list', 'exclude-points-keep-only', 'exclude-points-separator'], 'enabled': true},
+    'marquee': {'items': ['select-marquee-start', 'select-marquee-separator'], 'enabled': true},
+    'saveAs': {'items': 'save-chart-as', 'enabled': true},
     'saveDataAs': {'items': 'save-data-as', 'enabled': true},
     'shareWith': {'items': 'share-with', 'enabled': true},
     'printChart': {'items': 'print-chart', 'enabled': true},
-    'about': {'items': ['about', 'exporting-separator'], 'enabled': true}
+    'about': {'items': ['about', 'exporting-separator'], 'enabled': true},
+    'fullScreen': {'items': ['full-screen-enter', 'full-screen-exit', 'full-screen-separator'], 'enabled': true}
   };
 
   /**
@@ -1196,6 +1197,7 @@ anychart.chartEditor2Module.EditorModel.prototype.setContextMenuItemEnable = fun
     disabledItems = goog.array.concat(disabledItems, 'exporting-separator');
   var disabledItemsStr = disabledItems.toString();
 
+  console.log(disabledItems);
   if (disabledItems.length) {
     this.model_['chart']['settings']['contextMenu().itemsFormatter()'] = 'function(items){\n' +
       '\tvar res = {};\n'+

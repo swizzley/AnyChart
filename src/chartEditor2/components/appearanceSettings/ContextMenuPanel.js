@@ -24,6 +24,7 @@ anychart.chartEditor2Module.ContextMenuPanel = function(model, opt_domHelper) {
     'saveDataAs': {caption: 'Save data as...', checkbox: void 0},
     'shareWith': {caption: 'Share with...', checkbox: void 0},
     'printChart': {caption: 'Print', checkbox: void 0},
+    'fullScreen': {caption: 'Full screen', checkbox: void 0},
     'about': {caption: 'About', checkbox: void 0}
   };
 };
