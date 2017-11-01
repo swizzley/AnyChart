@@ -81,7 +81,7 @@ anychart.chartEditor2Module.checkbox.Base.prototype.setKey = function(value) {
 /** @override */
 anychart.chartEditor2Module.checkbox.Base.prototype.enterDocument = function() {
   anychart.chartEditor2Module.checkbox.Base.base(this, 'enterDocument');
-  goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+  goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', this.excluded);
   if (!this.excluded)
     goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
 };
@@ -165,7 +165,7 @@ anychart.chartEditor2Module.checkbox.Base.prototype.setValueByTarget = function(
 anychart.chartEditor2Module.checkbox.Base.prototype.exclude = function(value) {
   this.excluded = value;
   if (this.isInDocument())
-    goog.dom.classlist.enable(this.getElement(), 'hidden', this.excluded);
+    goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', this.excluded);
   if (this.excluded)
     this.editorModel.removeByKey(this.key, true);
 };

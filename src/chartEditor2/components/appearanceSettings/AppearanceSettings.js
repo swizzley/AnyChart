@@ -173,8 +173,8 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.updatePanels = function
     panel = this.panels_[j].instance;
     button = this.buttons_[j];
     goog.dom.classlist.enable(button, 'active', this.currentPanel_ == j);
-    goog.dom.classlist.enable(button, 'hidden', panel.isExcluded());
-    goog.dom.classlist.enable(panel.getElement(), 'hidden', this.currentPanel_ !== j || panel.isExcluded());
+    goog.dom.classlist.enable(button, 'anychart-hidden', panel.isExcluded());
+    goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ !== j || panel.isExcluded());
 
     if (!goog.events.hasListener(button, goog.events.EventType.CLICK))
       handler.listen(button, goog.events.EventType.CLICK, this.onClickCategoryButton_);
@@ -194,7 +194,7 @@ anychart.chartEditor2Module.AppearanceSettings.prototype.onClickCategoryButton_ 
 
     for (var i = 0; i < this.panels_.length; i++) {
       var panel = this.panels_[i].instance;
-      goog.dom.classlist.enable(panel.getElement(), 'hidden', this.currentPanel_ != i);
+      goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ != i);
       goog.dom.classlist.enable(this.buttons_[i], 'active', this.currentPanel_ == i);
     }
   }

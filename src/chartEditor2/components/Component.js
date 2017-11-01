@@ -53,19 +53,19 @@ anychart.chartEditor2Module.Component.prototype.enterDocument = function() {
 
 
 /**
- * Shows component by assigning 'hidden' class.
+ * Shows component by assigning 'anychart-hidden' class.
  */
 anychart.chartEditor2Module.Component.prototype.hide = function() {
-  goog.dom.classlist.enable(this.getElement(), 'hidden', true);
+  goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', true);
   this.hidden_ = true;
 };
 
 
 /**
- * Shows component by removing 'hidden' class.
+ * Shows component by removing 'anychart-hidden' class.
  */
 anychart.chartEditor2Module.Component.prototype.show = function() {
-  goog.dom.classlist.enable(this.getElement(), 'hidden', false);
+  goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', false);
   this.hidden_ = false;
 };
 
