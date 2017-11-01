@@ -19,7 +19,7 @@ anychart.chartEditor2Module.ContextMenuPanel = function(model, opt_domHelper) {
 
   this.map_ = {
     'exclude': {caption: 'Exclude/include points', checkbox: void 0},
-    'marquee': {caption: 'Start selection marquee', checkbox: void 0},
+    'marquee': {caption: 'Start selection/zoom marquee', checkbox: void 0},
     'saveAs': {caption: 'Save chart as...', checkbox: void 0},
     'saveDataAs': {caption: 'Save data as...', checkbox: void 0},
     'shareWith': {caption: 'Share with...', checkbox: void 0},

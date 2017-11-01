@@ -95,7 +95,7 @@ anychart.chartEditor2Module.EditorModel = function() {
    */
   this.contextMenuItems_ = {
     'exclude': {'items': ['exclude-points-point', 'exclude-points-list', 'exclude-points-keep-only', 'exclude-points-separator'], 'enabled': true},
-    'marquee': {'items': ['select-marquee-start', 'select-marquee-separator'], 'enabled': true},
+    'marquee': {'items': ['select-marquee-start', 'zoom-marquee-start', 'select-marquee-separator'], 'enabled': true},
     'saveAs': {'items': 'save-chart-as', 'enabled': true},
     'saveDataAs': {'items': 'save-data-as', 'enabled': true},
     'shareWith': {'items': 'share-with', 'enabled': true},
@@ -1197,7 +1197,6 @@ anychart.chartEditor2Module.EditorModel.prototype.setContextMenuItemEnable = fun
     disabledItems = goog.array.concat(disabledItems, 'exporting-separator');
   var disabledItemsStr = disabledItems.toString();
 
-  console.log(disabledItems);
   if (disabledItems.length) {
     this.model_['chart']['settings']['contextMenu().itemsFormatter()'] = 'function(items){\n' +
       '\tvar res = {};\n'+
@@ -1377,8 +1376,6 @@ anychart.chartEditor2Module.EditorModel.prototype.dispatchUpdate = function(opt_
     this.needDispatch_ = true;
     return;
   }
-
-  // console.log(this.model_);
 
   this.dispatchEvent({
     type: anychart.chartEditor2Module.events.EventType.EDITOR_MODEL_UPDATE,
@@ -1822,7 +1819,6 @@ anychart.chartEditor2Module.EditorModel.prototype.getChartWithJsCode_ = function
   if (!goog.object.isEmpty(settings['chart']['settings'])) {
     result.push('// Applying appearance settings');
     goog.object.forEach(settings['chart']['settings'], function(value, key) {
-      // //console.log("chart settings", key, value);
       var pVal = value;
       var force = false;
       if (key == "palette()") {
