@@ -31,13 +31,6 @@ anychart.chartEditor2Module.SettingsPanel = function(model, opt_domHelper) {
 
 
   /**
-   * State of exclusion
-   * @type {boolean}
-   */
-  this.excluded = false;
-
-
-  /**
    * @type {boolean}
    * @protected
    */
@@ -80,31 +73,6 @@ anychart.chartEditor2Module.SettingsPanel.prototype.isEnabled = function() {
 /** @return {string} */
 anychart.chartEditor2Module.SettingsPanel.prototype.getStringId = function() {
   return this.stringId;
-};
-
-
-/** @param {boolean} value */
-anychart.chartEditor2Module.SettingsPanel.prototype.exclude = function(value) {
-  if (this.excluded != value) {
-    for (var i = 0, count = this.getChildCount(); i < count; i++) {
-      var child = this.getChildAt(i);
-      if (goog.isFunction(child.exclude))
-        child.exclude(value);
-    }
-
-    this.excluded = value;
-
-    if (this.isInDocument())
-      goog.style.setElementShown(this.getElement(), !this.excluded);
-
-    this.updateKeys();
-  }
-};
-
-
-/** @return {boolean} */
-anychart.chartEditor2Module.SettingsPanel.prototype.isExcluded = function() {
-  return this.excluded;
 };
 
 
@@ -161,11 +129,6 @@ anychart.chartEditor2Module.SettingsPanel.prototype.getName = function() {
 anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
   anychart.chartEditor2Module.SettingsPanel.base(this, 'createDom');
 
-  if (!this.isExcluded()) {
-    var parent = this.getParent();
-    this.exclude(parent && goog.isFunction(parent.isExcluded) && parent.isExcluded());
-  }
-
   var element = /** @type {Element} */(this.getElement());
   goog.dom.classlist.add(element, 'anychart-settings-panel');
 
@@ -179,12 +142,6 @@ anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
     goog.dom.classlist.add(element, 'anychart-settings-panel-no-title');
   
   if (this.allowRemove_) {
-    // var removeBtn = new anychart.ui.button.Base(null, anychart.chartEditor2Module.IconButtonRenderer.getInstance());
-    // removeBtn.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-    // removeBtn.setIcon(goog.getCssName('ac ac-remove'));
-    // removeBtn.addClassName(goog.getCssName('anychart-chart-editor-remove-btn'));
-    // removeBtn.setTooltip('Remove');
-
     var removeBtn = dom.createDom(
         goog.dom.TagName.DIV,
         'anychart-settings-panel-remove-btn',
@@ -235,10 +192,6 @@ anychart.chartEditor2Module.SettingsPanel.prototype.getContentElement = function
 anychart.chartEditor2Module.SettingsPanel.prototype.enterDocument = function() {
   anychart.chartEditor2Module.SettingsPanel.base(this, 'enterDocument');
 
-  if (!this.isExcluded()) {
-    var parent = this.getParent();
-    this.exclude(parent && goog.isFunction(parent.isExcluded) && parent.isExcluded());
-  }
   if (this.isExcluded()) return;
 
   this.updateKeys();
@@ -372,6 +325,14 @@ anychart.chartEditor2Module.SettingsPanel.prototype.updateKeys = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   if (this.enableContentCheckbox)
     this.enableContentCheckbox.init(model, this.genKey('enabled()'));
+};
+
+
+/** @inheritDoc */
+anychart.chartEditor2Module.SettingsPanel.prototype.exclude = function(value) {
+  var oldValue = this.excluded;
+  anychart.chartEditor2Module.SettingsPanel.base(this, 'exclude', value);
+  if (oldValue != value) this.updateKeys();
 };
 
 

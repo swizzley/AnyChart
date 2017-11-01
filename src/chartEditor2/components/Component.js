@@ -19,8 +19,37 @@ anychart.chartEditor2Module.Component = function(opt_domHelper) {
    * @private
    */
   this.hidden_ = false;
+
+
+  /**
+   * State of exclusion
+   * @type {boolean}
+   */
+  this.excluded = false;
 };
 goog.inherits(anychart.chartEditor2Module.Component, anychart.ui.Component);
+
+
+/** @inheritDoc */
+anychart.chartEditor2Module.Component.prototype.createDom = function() {
+  anychart.chartEditor2Module.Component.base(this, 'createDom');
+
+  if (!this.isExcluded()) {
+    var parent = this.getParent();
+    this.exclude(parent && goog.isFunction(parent.isExcluded) && parent.isExcluded());
+  }
+};
+
+
+/** @inheritDoc */
+anychart.chartEditor2Module.Component.prototype.enterDocument = function() {
+  anychart.chartEditor2Module.Component.base(this, 'enterDocument');
+
+  if (!this.isExcluded()) {
+    var parent = this.getParent();
+    this.exclude(parent && goog.isFunction(parent.isExcluded) && parent.isExcluded());
+  }
+};
 
 
 /**
@@ -56,4 +85,27 @@ anychart.chartEditor2Module.Component.prototype.isHidden = function() {
  */
 anychart.chartEditor2Module.Component.prototype.update = function(opt_evt) {
 
+};
+
+
+/** @param {boolean} value */
+anychart.chartEditor2Module.Component.prototype.exclude = function(value) {
+  if (this.excluded != value) {
+    for (var i = 0, count = this.getChildCount(); i < count; i++) {
+      var child = this.getChildAt(i);
+      if (goog.isFunction(child.exclude))
+        child.exclude(value);
+    }
+
+    this.excluded = value;
+
+    if (this.isInDocument())
+      goog.style.setElementShown(this.getElement(), !this.excluded);
+  }
+};
+
+
+/** @return {boolean} */
+anychart.chartEditor2Module.Component.prototype.isExcluded = function() {
+  return this.excluded;
 };

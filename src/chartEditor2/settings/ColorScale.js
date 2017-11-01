@@ -45,7 +45,6 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
   var element = this.getElement();
   goog.dom.classlist.add(element, anychart.chartEditor2Module.settings.ColorScale.CSS_CLASS);
 
-  var content = this.getContentElement();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
   var scaleTypeField = new anychart.chartEditor2Module.controls.select.ColorScaleType({caption: 'Choose type', label: 'Color scale type'});
@@ -57,17 +56,25 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.createDom = function()
   this.addChild(scaleTypeField, true);
   this.scaleTypeField_ = scaleTypeField;
 
-  goog.dom.appendChild(content, goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap')));
-
   this.specificContent_ = new anychart.chartEditor2Module.SettingsPanel(model);
   this.specificContent_.setName(null);
   this.addChild(this.specificContent_, true);
 
   // Linear color scale components
+  this.paletteLabel_ = goog.dom.createDom(
+      goog.dom.TagName.LABEL,
+      [
+        goog.ui.INLINE_BLOCK_CLASSNAME,
+        goog.getCssName('anychart-settings-label')
+      ],
+      'Palette');
+  goog.dom.appendChild(this.specificContent_.getContentElement(), this.paletteLabel_);
+  this.registerLabel(this.paletteLabel_);
+
   this.colors_ = new anychart.chartEditor2Module.input.Palette('Comma separated colors');
   this.specificContent_.addChild(this.colors_, true);
+  goog.dom.classlist.add(this.colors_.getElement(), 'input-palette');
+  goog.dom.classlist.add(this.colors_.getElement(), 'anychart-chart-editor-settings-control-right');
   this.colors_.init(model, this.genKey('colors', true));
 
   // Ordinal color scale components
@@ -114,11 +121,13 @@ anychart.chartEditor2Module.settings.ColorScale.prototype.updateSpecific = funct
     if (this.scaleType_ == 'linear-color') {
       this.ranges_.exclude(true);
       this.colors_.exclude(false);
+      goog.style.setElementShown(this.paletteLabel_, true);
 
     } else {
       // ordinal-color
       this.colors_.exclude(true/*, true*/ /* This redraws chart*/);
       this.ranges_.exclude(false);
+      goog.style.setElementShown(this.paletteLabel_, false);
     }
   }
 };

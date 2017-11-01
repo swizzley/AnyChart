@@ -421,7 +421,7 @@ anychart.chartEditor2Module.EditorModel.Series = {
   },
   'heatMap': {
     'fields': [
-      {'field': 'y', 'name': 'Y'},
+      {'field': 'y', 'name': 'Y Values'},
       {'field': 'heat', 'name': 'Heat'}
     ]
   }

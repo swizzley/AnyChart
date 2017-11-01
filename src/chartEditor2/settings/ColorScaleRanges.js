@@ -34,7 +34,7 @@ goog.inherits(anychart.chartEditor2Module.settings.ColorScaleRanges, anychart.ch
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.ColorScaleRanges.CSS_CLASS = goog.getCssName('settings-color-scale-ranges');
+anychart.chartEditor2Module.settings.ColorScaleRanges.CSS_CLASS = goog.getCssName('anychart-settings-color-scale-ranges');
 
 
 /** @override */
@@ -47,7 +47,13 @@ anychart.chartEditor2Module.settings.ColorScaleRanges.prototype.createDom = func
   this.rangesWrapper_ = new anychart.chartEditor2Module.Component();
   this.addChild(this.rangesWrapper_, true);
 
-  this.addRangeBtn_ = new goog.ui.Button('Add range');
+  // this.addRangeBtn_ = new goog.ui.Button('Add range');
+  // this.addChild(this.addRangeBtn_, true);
+
+  var addRangeBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
+      goog.ui.ButtonRenderer,
+      'anychart-settings-panel-add-range-btn'));
+  this.addRangeBtn_ = new goog.ui.Button('+ Add range', addRangeBtnRenderer);
   this.addChild(this.addRangeBtn_, true);
 
   // var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
@@ -196,7 +202,7 @@ goog.inherits(anychart.chartEditor2Module.settings.ColorScaleSingleRange, anycha
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.ColorScaleSingleRange.CSS_CLASS = goog.getCssName('settings-color-scale-range');
+anychart.chartEditor2Module.settings.ColorScaleSingleRange.CSS_CLASS = goog.getCssName('anychart-settings-color-scale-range-single');
 
 
 /** @override */

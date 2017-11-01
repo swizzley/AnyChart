@@ -121,14 +121,16 @@
     .anychart-checkbox-caption {
       font-size: 15px;
     }
+    .anychart-chart-editor-input {
+      font-size: 15px;
+      padding: 6px 10px;
+    }
   }
 }
 
 .anychart-settings-title {
   .title-text {
     width: 250px;
-    font-size: 15px;
-    padding: 6px 10px;
   }
   .title-color {
     float: right;
@@ -194,7 +196,8 @@
 
 .anychart-settings-panel-legend,
 .anychart-settings-panel-seriessettings,
-.anychart-settings-panel-axes {
+.anychart-settings-panel-axes,
+.anychart-settings-panel-grids {
   > .content {
     background: none !important;
     padding: 0 !important;
@@ -206,7 +209,8 @@
 
 .anychart-settings-panel-legend-single,
 .anychart-settings-panel-series-single,
-.anychart-settings-panel-axis-single {
+.anychart-settings-panel-axis-single,
+.anychart-settings-panel-plot-grids {
   .box-shadow(@shadow-1);
   border: 1px solid #c6d7e3;
   margin-bottom: 15px;
@@ -234,14 +238,14 @@
 }
 
 .anychart-settings-panel-series-single {
-  .anychart-plus-minus {
-    margin-top: 5px;
-    float: right;
-  }
   .series-title {
     padding: 15px;
     font-size: 17px;
     outline: none;
+  }
+  .anychart-plus-minus {
+    margin-top: 5px;
+    float: right;
   }
   .anychart-zippy-expanded {
     .anychart-plus-minus:after {
@@ -271,7 +275,8 @@
   }
 }
 
-.anychart-settings-panel-axis-single {
+.anychart-settings-panel-axis-single,
+.anychart-settings-panel-plot-grids {
   > .top {
     padding: 15px 15px 0 15px;
     margin: 0 !important;
@@ -279,8 +284,8 @@
   .anychart-settings-panel {
     padding: 15px;
   }
-  .anychart-settings-panel-wrapper {
-    padding-bottom: 0;
+  .anychart-settings-stroke {
+    padding: 0;
   }
 }
 
@@ -299,6 +304,18 @@
   }
 }
 
+.anychart-settings-color-scale-range-single {
+  .anychart-chart-editor-input {
+    display: block;
+  }
+  .anychart-chart-editor-color,
+  .anychart-chart-editor-input {
+    float: none;
+    margin-left: 0;
+    margin-bottom: 12px;
+  }
+
+}
 .anychart-chart-editor-icon {
   margin-top: 1px;
   font-size: 14px;

@@ -26,7 +26,7 @@ goog.inherits(anychart.chartEditor2Module.settings.Grid, anychart.chartEditor2Mo
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.Grid.CSS_CLASS = goog.getCssName('anychart-settings-grids');
+anychart.chartEditor2Module.settings.Grid.CSS_CLASS = goog.getCssName('anychart-settings-panel-grid-single');
 
 
 /** @override */
@@ -47,10 +47,6 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
   this.lastLine_.setCaption('Draw last line');
   this.addChild(this.lastLine_, true);
 
-  goog.dom.appendChild(content, goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
-
   var paletteLabel = goog.dom.createDom(
       goog.dom.TagName.LABEL,
       [
@@ -69,7 +65,7 @@ anychart.chartEditor2Module.settings.Grid.prototype.createDom = function() {
 
   goog.dom.appendChild(content, goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
   var stroke = new anychart.chartEditor2Module.settings.Stroke(model, 'Stroke');

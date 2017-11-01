@@ -1,12 +1,12 @@
 goog.provide('anychart.chartEditor2Module.settings.Series');
 
+goog.require('anychart.chartEditor2Module.Component');
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.colorPicker.Base');
 goog.require('anychart.chartEditor2Module.input.Base');
 goog.require('anychart.chartEditor2Module.settings.DataMarkers');
 goog.require('anychart.chartEditor2Module.settings.Stroke');
 goog.require('anychart.chartEditor2Module.settings.Title');
-goog.require('anychart.ui.Component');
 goog.require('goog.ui.AnimatedZippy');
 
 
@@ -59,7 +59,7 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
   // region == Header element ==
-  var zippyHeader = new anychart.ui.Component();
+  var zippyHeader = new anychart.chartEditor2Module.Component();
   zippyHeader.addClassName('series-title');
   this.addChild(zippyHeader, true);
 
@@ -75,13 +75,12 @@ anychart.chartEditor2Module.settings.Series.prototype.createDom = function() {
   zippyHeader.addChild(colorPicker, true);
   // endregion
 
-
   // region == zippyContent element ==
-  var zippyContent = new anychart.ui.Component();
+  var zippyContent = new anychart.chartEditor2Module.Component();
   zippyContent.addClassName('series-content');
   this.addChild(zippyContent, true);
 
-  var innerContent = new anychart.ui.Component();
+  var innerContent = new anychart.chartEditor2Module.Component();
   zippyContent.addClassName('inner-content');
   zippyContent.addChild(innerContent, true);
 
