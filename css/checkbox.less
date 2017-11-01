@@ -58,14 +58,22 @@
 
 }
 
+.anychart-checkbox-caption {
+  color: @color-label;
+  padding: 0 10px;
+}
+
 .anychart-checkbox-disabled {
   cursor: default;
-  color: #b8b8b8;
+  color: @color-text-disabled;
 
   .anychart-checkbox-element {
     color: @color-text-disabled;
     border: 1px solid @color-border-disabled;
     cursor: default;
+  }
+  .anychart-checkbox-caption {
+    color: @color-text-disabled;
   }
 }
 

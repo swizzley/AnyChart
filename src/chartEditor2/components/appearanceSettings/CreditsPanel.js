@@ -38,9 +38,13 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
       'License key');
   goog.dom.appendChild(content, licenseKeyLabel);
 
-  var licenseKey = new anychart.chartEditor2Module.input.Base('License key');
+  var licenseKey = new anychart.chartEditor2Module.input.Base();
   this.addChild(licenseKey, true);
   this.licenseKey_ = licenseKey;
+
+  goog.dom.appendChild(content, goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
   var textLabel = goog.dom.createDom(
       goog.dom.TagName.LABEL,
@@ -57,6 +61,10 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
   this.addChild(text, true);
   this.text_ = text;
 
+  goog.dom.appendChild(content, goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
+
   var urlLabel = goog.dom.createDom(
       goog.dom.TagName.LABEL,
       [
@@ -71,6 +79,10 @@ anychart.chartEditor2Module.CreditsPanel.prototype.createDom = function() {
   var url = new anychart.chartEditor2Module.input.Base('Url');
   this.addChild(url, true);
   this.url_ = url;
+
+  goog.dom.appendChild(content, goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
   var logoLabel = goog.dom.createDom(
       goog.dom.TagName.LABEL,

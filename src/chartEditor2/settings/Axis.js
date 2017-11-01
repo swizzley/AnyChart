@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditor2Module.settings.Axis');
 goog.require('anychart.chartEditor2Module.IconButtonRenderer');
 goog.require('anychart.chartEditor2Module.SettingsPanel');
 goog.require('anychart.chartEditor2Module.checkbox.Base');
-goog.require('anychart.chartEditor2Module.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditor2Module.controls.select.DataField');
 goog.require('anychart.chartEditor2Module.settings.Title');
 
 
@@ -32,7 +32,7 @@ goog.inherits(anychart.chartEditor2Module.settings.Axis, anychart.chartEditor2Mo
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditor2Module.settings.Axis.CSS_CLASS = goog.getCssName('settings-axis');
+anychart.chartEditor2Module.settings.Axis.CSS_CLASS = goog.getCssName('anychart-settings-panel-axis-single');
 
 
 /** @return {number} */
@@ -52,45 +52,30 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditor2Module.EditorModel} */(this.getModel());
 
+  var wrapper = new anychart.chartEditor2Module.SettingsPanel(model);
+  wrapper.setName(null);
+  wrapper.addClassName('anychart-settings-panel');
+  wrapper.addClassName('anychart-settings-panel-wrapper');
+  this.addChild(wrapper, true);
+
   var invertedCheckbox = new anychart.chartEditor2Module.checkbox.Base();
   invertedCheckbox.setCaption('Inverted');
-  this.addChild(invertedCheckbox, true);
+  wrapper.addChild(invertedCheckbox, true);
   this.inverted_ = invertedCheckbox;
 
-  goog.dom.appendChild(content, goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
-
-  //region Orientation
-  var orientationLabel = goog.dom.createDom(
-      goog.dom.TagName.LABEL,
-      [
-        goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('anychart-chart-editor-settings-label')
-      ],
-      'Orientation');
-  goog.dom.appendChild(content, orientationLabel);
-  this.registerLabel(orientationLabel);
-
-  var orientationSelect = new anychart.chartEditor2Module.controls.select.DataFieldSelect();
-  orientationSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  var orientationSelectMenu = orientationSelect.getMenu();
-  orientationSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
-
-  orientationSelect.setOptions([
+  var orientation = new anychart.chartEditor2Module.controls.select.DataField({label: 'Orientation'});
+  orientation.getSelect().setOptions([
     {value: 'left', icon: 'ac ac-position-left'},
     {value: 'right', icon: 'ac ac-position-right'},
     {value: 'top', icon: 'ac ac-position-top'},
     {value: 'bottom', icon: 'ac ac-position-bottom'}
   ]);
-  this.addChild(orientationSelect, true);
+  wrapper.addChild(orientation, true);
+  this.orientation_ = orientation;
 
   goog.dom.appendChild(content, goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap-mini')));
-  //endregion
-
-  this.orientation_ = orientationSelect;
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   var title = new anychart.chartEditor2Module.settings.Title(model, 'Title');
   title.allowEditPosition(false, this.xOrY == 'x' ? 'bottom' : 'left');
@@ -98,9 +83,9 @@ anychart.chartEditor2Module.settings.Axis.prototype.createDom = function() {
   this.addChild(title, true);
   this.title_ = title;
 
-  goog.dom.appendChild(element, goog.dom.createDom(
+  goog.dom.appendChild(content, goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   //region Labels
   var labels = new anychart.chartEditor2Module.settings.Title(model, 'Labels');
@@ -146,7 +131,7 @@ anychart.chartEditor2Module.settings.Axis.prototype.onChartDraw = function(evt) 
     this.enableContentCheckbox.setValueByTarget(chart);
     this.setContentEnabled(this.enableContentCheckbox.isChecked());
 
-    this.orientation_.setValueByTarget(chart);
+    this.orientation_.getSelect().setValueByTarget(chart);
     this.inverted_.setValueByTarget(chart);
   } else {
     this.setContentEnabled(false);

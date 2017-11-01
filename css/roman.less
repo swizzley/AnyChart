@@ -626,13 +626,15 @@
   display: none;
 }
 
-.anychart-plot-panel-remove-btn {
+.anychart-plot-panel-remove-btn,
+.anychart-settings-panel-remove-btn {
   width: 16px;
   height: 16px;
   top: 14px;
   position: absolute;
   right: 7px;
   display: none;
+  cursor: pointer;
 }
 
 .anychart-plot-panel-stock .anychart-plot-panel-plot-title {
@@ -647,13 +649,17 @@
   display: none;
 }
 
-.anychart-plot-panel-remove-btn img {
-  width: 100%;
-  height: 100%;
+.anychart-settings-panel-remove-btn,
+.anychart-plot-panel-remove-btn {
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .anychart-plot-panel-add-series-btn,
-.anychart-chart-data-settings-add-blot-btn {
+.anychart-chart-data-settings-add-plot-btn,
+.anychart-axes-panel-add-axis-btn {
   .border-radius(4px);
   font-size: 14px;
   padding: 6px 10px;
@@ -669,8 +675,12 @@
   margin: 0 14px 14px 14px
 }
 
-.anychart-chart-data-settings-add-blot-btn {
+.anychart-chart-data-settings-add-plot-btn {
   margin-top: 20px;
+}
+
+.anychart-axes-panel-add-axis-btn {
+  margin-top: 5px;
 }
 
 .anychart-plot-panel-series {
@@ -803,24 +813,6 @@
       background: #ffffff;
     }
   }
-}
-
-.anychart-settings-panel {
-  .top {
-    font-size: 17px;
-    color: @color-text;
-    margin-bottom: 10px;
-
-    .title {
-      display: inline-block;
-    }
-
-    .anychart-checkbox {
-      float: left;
-      margin-right: 12px;
-    }
-  }
-
 }
 
 .anychart-visual-appearance-settings-chart-wrapper {

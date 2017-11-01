@@ -28,11 +28,13 @@ anychart.chartEditor2Module.checkbox.Renderer.prototype.createDom = function(che
           dom.createDom(goog.dom.TagName.DIV, [
             goog.getCssName(this.getCssClass(), 'checkmark'),
             'ac ac-check'])),
-      dom.createDom(goog.dom.TagName.DIV, [
+
+      checkbox.getCaption() ? dom.createDom(goog.dom.TagName.DIV, [
             goog.getCssName(this.getCssClass(), 'caption'),
             goog.ui.INLINE_BLOCK_CLASSNAME
           ],
-          checkbox.getCaption()));
+          checkbox.getCaption()) : null
+  );
 
   var state = checkbox.getChecked();
   this.setCheckboxState(element, state);

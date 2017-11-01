@@ -179,13 +179,18 @@ anychart.chartEditor2Module.SettingsPanel.prototype.createDom = function() {
     goog.dom.classlist.add(element, 'anychart-settings-panel-no-title');
   
   if (this.allowRemove_) {
-    var removeBtn = new anychart.ui.button.Base(null, anychart.chartEditor2Module.IconButtonRenderer.getInstance());
-    removeBtn.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-    removeBtn.setIcon(goog.getCssName('ac ac-remove'));
-    removeBtn.addClassName(goog.getCssName('anychart-chart-editor-remove-btn'));
-    removeBtn.setTooltip('Remove');
-    this.addChild(removeBtn, true);
-    this.topEl.appendChild(removeBtn.getElement());
+    // var removeBtn = new anychart.ui.button.Base(null, anychart.chartEditor2Module.IconButtonRenderer.getInstance());
+    // removeBtn.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
+    // removeBtn.setIcon(goog.getCssName('ac ac-remove'));
+    // removeBtn.addClassName(goog.getCssName('anychart-chart-editor-remove-btn'));
+    // removeBtn.setTooltip('Remove');
+
+    var removeBtn = dom.createDom(
+        goog.dom.TagName.DIV,
+        'anychart-settings-panel-remove-btn',
+        goog.dom.createDom(goog.dom.TagName.IMG, {'src': 'https://cdn.anychart.com/images/chart_editor/remove-btn.png'})
+    );
+    goog.dom.appendChild(this.topEl, removeBtn);
     this.removeButton = removeBtn;
   }
   
@@ -240,14 +245,14 @@ anychart.chartEditor2Module.SettingsPanel.prototype.enterDocument = function() {
   this.setEnabled(this.enabled);
 
   if (this.removeButton)
-    goog.events.listen(this.removeButton, goog.ui.Component.EventType.ACTION, this.onRemoveAction, false, this);
+    goog.events.listen(this.removeButton, goog.events.EventType.CLICK, this.onRemoveAction, false, this);
 };
 
 
 /** @override */
 anychart.chartEditor2Module.SettingsPanel.prototype.exitDocument = function() {
   if (this.removeButton)
-    goog.events.unlisten(this.removeButton, goog.ui.Component.EventType.ACTION, this.onRemoveAction, false, this);
+    goog.events.unlisten(this.removeButton, goog.events.EventType.CLICK, this.onRemoveAction, false, this);
   anychart.chartEditor2Module.SettingsPanel.base(this, 'exitDocument');
 };
 
@@ -346,8 +351,8 @@ anychart.chartEditor2Module.SettingsPanel.prototype.setContentEnabled = function
   if (this.enableContentCheckbox)
     this.enableContentCheckbox.setEnabled(this.enabled);
 
-  if (this.removeButton)
-    this.removeButton.setEnabled(this.enabled);
+  // if (this.removeButton)
+  //   this.removeButton.setEnabled(this.enabled);
 };
 
 

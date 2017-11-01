@@ -31,18 +31,30 @@ anychart.chartEditor2Module.AxesPanelBase = function(model, opt_domHelper) {
 goog.inherits(anychart.chartEditor2Module.AxesPanelBase, anychart.chartEditor2Module.SettingsPanel);
 
 
+/**
+ * Default CSS class.
+ * @type {string}
+ */
+anychart.chartEditor2Module.AxesPanelBase.CSS_CLASS = goog.getCssName('anychart-settings-panel-axes');
+
+
 /** @inheritDoc */
 anychart.chartEditor2Module.AxesPanelBase.prototype.createDom = function() {
   anychart.chartEditor2Module.AxesPanelBase.base(this, 'createDom');
-  var element = /** @type {Element} */(this.getElement());
+
+  var element = this.getElement();
+  goog.dom.classlist.add(element, anychart.chartEditor2Module.AxesPanelBase.CSS_CLASS);
+
   var content = /** @type {Element} */(this.getContentElement());
   var dom = this.getDomHelper();
-  goog.dom.classlist.add(element, 'settings-panel-axes');
 
   this.axisContainer_ = dom.createDom(goog.dom.TagName.DIV, null);
   content.appendChild(this.axisContainer_);
 
-  this.addAxisBtn_ = new goog.ui.Button('Add axis');
+  var addAxisBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
+      goog.ui.ButtonRenderer,
+      'anychart-axes-panel-add-axis-btn'));
+  this.addAxisBtn_ = new goog.ui.Button('+ Add axis', addAxisBtnRenderer);
   this.addChild(this.addAxisBtn_, true);
 };
 
@@ -113,7 +125,11 @@ anychart.chartEditor2Module.AxesPanelBase.prototype.addAxis = function(axisIndex
     axis.allowRemove(true);
     this.getHandler().listen(axis, anychart.chartEditor2Module.events.EventType.PANEL_CLOSE, this.onRemoveAxis_);
   }
-  this.axes_.push(axis);
+  if (this.axes_.length > axisIndex)
+    this.axes_[axisIndex] = axis;
+  else
+    this.axes_.push(axis);
+
   this.addChild(axis, true);
   this.axisContainer_.appendChild(axis.getElement());
 };

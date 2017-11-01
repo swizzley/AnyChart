@@ -41,8 +41,8 @@ anychart.chartEditor2Module.controls.select.DataField.prototype.createDom = func
   var model = /** @type {Object} */(this.getModel());
   var element = this.getElement();
 
-  var label = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-select-data-field-label', model.label);
-  goog.dom.appendChild(element, label);
+  this.label_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-select-data-field-label', model.label);
+  goog.dom.appendChild(element, this.label_);
 
   this.addChild(this.select_, true);
 
@@ -123,4 +123,16 @@ anychart.chartEditor2Module.controls.select.DataField.prototype.getValue = funct
  */
 anychart.chartEditor2Module.controls.select.DataField.prototype.updateExclusion = function() {
   this.exclude(!!this.select_.updateExclusion(), true);
+};
+
+
+/**
+ * @param {boolean} enabled
+ */
+anychart.chartEditor2Module.controls.select.DataField.prototype.setEnabled = function(enabled) {
+  if (this.label_)
+    goog.dom.classlist.enable(this.label_, goog.getCssName('anychart-control-disabled'), !enabled);
+
+  if (this.select_)
+    this.select_.setEnabled(enabled);
 };
