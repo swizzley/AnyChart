@@ -421,7 +421,7 @@ anychart.chartEditor2Module.EditorModel.Series = {
   },
   'heatMap': {
     'fields': [
-      {'field': 'y', 'name': 'Y Values'},
+      {'field': 'y', 'name': 'Y'},
       {'field': 'heat', 'name': 'Heat'}
     ]
   }
@@ -785,7 +785,7 @@ anychart.chartEditor2Module.EditorModel.prototype.getGeoDataIndex = function() {
 
 /** @private */
 anychart.chartEditor2Module.EditorModel.prototype.initGeoData_ = function() {
-  var activeGeo = this.data_[this.getActive()]['activeGeo'];
+  var activeGeo = this.data_[this.getActive()].activeGeo;
   if (this.geoDataIndex_.length)
     this.loadGeoData_(activeGeo);
   else {
@@ -1473,10 +1473,9 @@ anychart.chartEditor2Module.EditorModel.prototype.getFullId = function(dataType,
  * @param {Object} data
  */
 anychart.chartEditor2Module.EditorModel.prototype.addData = function(data) {
-  var dataType = data['dataType'] ? data['dataType'] : anychart.chartEditor2Module.EditorModel.DataType.CUSTOM;
-  var setId = goog.isDef(data['setId']) ? data['setId'] : goog.string.createUniqueString();
+  var dataType = data.dataType ? data.dataType : anychart.chartEditor2Module.EditorModel.DataType.CUSTOM;
+  var setId = goog.isDef(data.setId) ? data.setId : goog.string.createUniqueString();
   var setFullId = this.getFullId(dataType, setId);
-  var title = data['title'] || data['caption'] || data['name'];
 
   if (!this.data_[setFullId]) {
     this.data_[setFullId] = {
@@ -1486,7 +1485,7 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(data) {
       setId: setId,
       setFullId: setFullId,
 
-      title: title,
+      title: data.title,
       chartType: data.chartType,
       seriesType: data.seriesType,
       activeGeo: data.activeGeo

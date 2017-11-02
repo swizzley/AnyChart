@@ -302,9 +302,14 @@ anychart.chartEditor2Module.Editor.prototype.steps = function() {
 anychart.chartEditor2Module.Editor.prototype.data = function(data) {
   if (goog.isObject(data)) {
     var preparedData;
-    if (goog.isObject(data['data']))
+    if (goog.isObject(data['data'])) {
       preparedData = data;
-    else
+      preparedData.setId = data['setId'];
+      preparedData.dataType = data['dataType'];
+      preparedData.chartType = data['chartType'];
+      preparedData.seriesType = data['seriesType'];
+      preparedData.title = data['title'] || data['caption'] || data['name'];
+    } else
       preparedData = {data: data};
 
     this.getModel().addData(preparedData);

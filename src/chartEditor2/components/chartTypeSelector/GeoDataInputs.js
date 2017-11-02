@@ -61,6 +61,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.createGeoDataOptions_ = func
   }
 };
 
+
 /** @inheritDoc */
 anychart.chartEditor2Module.GeoDataInputs.prototype.exclude = function(value) {
   anychart.chartEditor2Module.GeoDataInputs.base(this, 'exclude', value);
@@ -95,6 +96,7 @@ anychart.chartEditor2Module.GeoDataInputs.prototype.onChartDraw = function(evt) 
     if (this.geoIdField_) this.geoIdField_.getSelect().setValueByModel();
   }
 };
+
 
 /**
  * Creates options for geo id field select.
