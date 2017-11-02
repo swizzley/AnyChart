@@ -276,6 +276,9 @@ anychart.core.reporting.getWarningDescription_ = function(code, opt_arguments) {
     case anychart.enums.WarningCode.VENN_AREA_NOT_REPRESENTED_ON_SCREEN:
       return 'Area ' + opt_arguments[0] + ' not represented on screen.';
 
+    case anychart.enums.WarningCode.EDITOR_MODEL_VALUE_NOT_FOUND:
+      return 'Editor model value not found by key: ' + opt_arguments;
+
     default:
       return 'Unknown error. Please, contact support team at http://support.anychart.com/.\n' +
           'We will be very grateful for your report!';

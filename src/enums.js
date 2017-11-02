@@ -2396,8 +2396,10 @@ anychart.enums.WarningCode = {
   PARSE_DATETIME: 406,
 
   IMMUTABLE_MARKER_SCALE: 500,
-  IMMUTABLE_MARKER_LAYOUT: 501
+  IMMUTABLE_MARKER_LAYOUT: 501,
 
+  //anychart.chartEditor2Module.EditorModel
+  EDITOR_MODEL_VALUE_NOT_FOUND: 601
 };
 
 

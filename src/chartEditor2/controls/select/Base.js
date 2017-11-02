@@ -238,7 +238,7 @@ anychart.chartEditor2Module.controls.select.Base.prototype.setValueByModel = fun
     this.setValue(modelValue, opt_additionalValues);
 
   if (!this.getSelectedItem()) {
-    console.warn("No model value by key:", this.key);
+    anychart.core.reporting.warning(anychart.enums.WarningCode.EDITOR_MODEL_VALUE_NOT_FOUND, null, this.key);
   }
 
   this.noDispatch = false;
