@@ -38,12 +38,27 @@
   display: inline;
 }
 
-.anychart-clearboth {
+.anychart-clearboth,
+.anychart-clear {
   clear: both;
 }
 
 .anychart-hidden {
   display: none;
+}
+
+.anychart-noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.anychart-border-box {
+  .box-sizing(border-box);
 }
 
 // todo: should be replaced by .anychart-hidden
