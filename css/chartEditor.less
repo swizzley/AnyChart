@@ -1,42 +1,17 @@
 @import "variables.less";
 
-/** Deprecated colors */
-@color-white: #fff;
-@color-gray: #f0f0f0;
-@color-light-gray: #fafafa;
-@color-dark-gray: #b9b9b9;
-@color-dark-blue: #65a0e3;
-@shadow1: 0 4px 16px rgba(0, 0, 0, .2);
-@shadow2: 0 1px 16px rgba(0, 0, 0, .2);
-/** END OF Deprecated colors */
-
-
 .anychart-chart-editor {
   position: relative;
-  background: #ecf0f3;
-  color: #4a6181;
+  background: @color-background;
+  color: @color-label;
   font-family: 'Open Sans', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   width: 100%;
   height: 100%;
-
-  a,
-  a:link,
-  a:visited {
-    color: #06c;
-    cursor: pointer;
-  }
-
-  h1 {
-    font-size: 19px;
-  }
-  h2 {
-    font-size: 16px;
-  }
 }
 
 .anychart-chart-editor-dialog {
-  .box-shadow(@shadow1);
+  .box-shadow(@shadow-dialog);
   background: white;
   border: 1px solid #acacac;
   position: absolute;
@@ -112,7 +87,7 @@
   position: absolute;
   //top: 35px; /* for title */
   top: 0;
-  bottom: 60px; /*for breadcrumbs*/
+  bottom: 62px; /*for breadcrumbs*/
   left: 0;
   right: 0;
   z-index: 1;
@@ -130,15 +105,20 @@
     bottom: 18px;
     left: 18px;
     right: 18px;
-    border: 1px solid @color-gray;
   }
+}
+
+.anychart-chart-editor-section-caption {
+  font-size: 17px;
+  color: @color-caption;
+  margin-bottom: 18px;
 }
 // endregion
 
 // region ---- breadcrumbs
 .anychart-breadcrumbs {
   /*min-height: 60px;*/
-  background: #4d6675;
+  background: @color-breadcrumbs-back;
   padding: 0 12px;
 }
 
@@ -146,19 +126,24 @@
   float: left;
   margin: 13px 30px 13px 0;
   cursor: pointer;
+
+  &:hover {
+    .anychart-breadcrumbs-item-caption {
+      color: @color-blue-hovered;
+    }
+    .anychart-breadcrumbs-item-indicator {
+      background: @color-blue-hovered;
+    }
+  }
 }
 
 .anychart-breadcrumbs-item:last-child {
   margin-right: 0;
 }
 
-.anychart-breadcrumbs-buttons {
-  float: right;
-}
-
 .anychart-breadcrumbs-item-caption {
-  color: #7093aa;
-  font-size: 18px;
+  color: @color-blue-disabled;
+  font-size: 17px;
 }
 
 .anychart-breadcrumbs-item-indicator {
@@ -166,20 +151,26 @@
   margin-top: 6px;
   height: 7px;
   width: 260px;
-  background: #7093aa;
+  background: @color-blue-disabled;
 }
 
 .anychart-breadcrumbs-button {
-  .border-radius(40px);
   float: right;
+
+  .border-radius(40px);
   font-size: 18px;
-  background: @color-blue;
+  line-height: 20px;
+  background-color: @color-blue;
   color: white;
   border: none;
-  padding: 10px 18px;
+  padding: 9px 20px;
   margin-top: 10px;
   outline: none;
   cursor: pointer;
+
+  &:hover {
+    background-color: @color-blue-hovered;
+  }
 }
 
 .anychart-breadcrumbs-left {
@@ -192,14 +183,14 @@
 
 .anychart-breadcrumbs-item-active {
   cursor: default;
-}
+  pointer-events: none;
 
-.anychart-breadcrumbs-item-active .anychart-breadcrumbs-item-caption {
-  color: white;
-}
-
-.anychart-breadcrumbs-item-active .anychart-breadcrumbs-item-indicator {
-  background: @color-blue;
+  .anychart-breadcrumbs-item-caption {
+    color: white;
+  }
+  .anychart-breadcrumbs-item-indicator {
+    background: @color-blue;
+  }
 }
 // endregion
 
@@ -210,10 +201,7 @@
 }
 
 .anychart-user-data-caption {
-  color: #7093aa;
-  font-size: 16px;
   margin-top: 18px;
-  margin-bottom: 18px;
 }
 
 .anychart-user-data-caption:first-child {
@@ -243,12 +231,6 @@
 .anychart-predefined-datasets {
   .box-sizing(border-box);
   padding: 18px;
-}
-
-.anychart-predefined-datasets-caption {
-  color: #7093aa;
-  font-size: 16px;
-  margin-bottom: 18px;
 }
 
 .anychart-predefined-datasets-container {
@@ -327,18 +309,13 @@
   padding: 18px;
 }
 
-.anychart-connected-data-sets-caption {
-  color: #7093aa;
-  font-size: 16px;
-  margin-bottom: 18px;
-}
-
 .anychart-connected-data-sets-intro {
-  color: #4d6675;
-  font-size: 12px;
+  color: @color-label;
+  font-size: 15px;
 }
 
 .anychart-connected-data-sets-intro-caption {
+  text-transform: uppercase;
   margin-bottom: 24px;
 }
 
@@ -709,8 +686,8 @@
 .anychart-chart-editor-input {
   .border-radius(4px);
   .box-sizing(border-box);
-  background-color: @color-control-back;
-  border: 1px solid @color-control-back;
+  background-color: @color-background;
+  border: 1px solid @color-background;
   color: @color-text;
 
   //font-size: 13px;
@@ -1381,7 +1358,7 @@
   .border-radius(4px);
   outline: none;
   background: @color-background;
-  border: 1px solid @color-control-back;
+  border: 1px solid @color-background;
 
   &:focus {
     border-color: @color-shadow;
@@ -1436,7 +1413,7 @@
 
     border-right: @unitSize solid transparent;
     border-left: @unitSize solid transparent;
-    border-top: (@unitSize * 1) solid @color-control-back;
+    border-top: (@unitSize * 1) solid @color-background;
     margin-bottom: @unitSize;
 
     left: -@unitSize;

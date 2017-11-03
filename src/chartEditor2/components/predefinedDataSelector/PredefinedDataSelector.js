@@ -55,7 +55,7 @@ anychart.chartEditor2Module.PredefinedDataSelector.prototype.createDom = functio
   var element = this.getElement();
   var caption = goog.dom.createDom(
       goog.dom.TagName.DIV,
-      'anychart-predefined-datasets-caption',
+      'anychart-chart-editor-section-caption anychart-predefined-datasets-caption',
       'Ready to Use Data Sets'
   );
   var filter = goog.dom.createDom(

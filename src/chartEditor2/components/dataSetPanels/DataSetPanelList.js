@@ -48,6 +48,7 @@ anychart.chartEditor2Module.DataSetPanelList.prototype.update = function(opt_evt
 
   // add caption
   var caption = new anychart.ui.Component();
+  caption.addClassName('anychart-chart-editor-section-caption');
   caption.addClassName('anychart-connected-data-sets-caption');
   this.addChild(caption, true);
 
