@@ -167,6 +167,9 @@ scp -i ~/.ssh/id_rsa dist/${INSTALL_PACKAGE_NAME} $STATIC_HOST_SSH_STRING:/apps/
 echo Unzipping files
 ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "unzip -q -o /apps/static/cdn/releases/${VERSION}/anychart-installation-package-${VERSION}.zip -d /apps/static/cdn/releases/${VERSION}/"
 
+ssh -i ~/.ssh/id_rsa $STATIC_HOST_SSH_STRING "
+    cp /apps/static/cdn/releases/${VERSION}/js/modules.json /apps/static/cdn/releases/${VERSION}/index.json"
+
 # ---- Upload binary files (for all builds) ----------------------------------------------------------------------------
 
 
