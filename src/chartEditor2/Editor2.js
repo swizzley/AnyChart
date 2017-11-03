@@ -308,6 +308,7 @@ anychart.chartEditor2Module.Editor.prototype.data = function(data) {
       preparedData.dataType = data['dataType'];
       preparedData.chartType = data['chartType'];
       preparedData.seriesType = data['seriesType'];
+      preparedData.activeGeo = data['activeGeo'];
       preparedData.title = data['title'] || data['caption'] || data['name'];
     } else
       preparedData = {data: data};

@@ -785,7 +785,10 @@ anychart.chartEditor2Module.EditorModel.prototype.getGeoDataIndex = function() {
 
 /** @private */
 anychart.chartEditor2Module.EditorModel.prototype.initGeoData_ = function() {
-  var activeGeo = this.data_[this.getActive()].activeGeo;
+  var activeGeo = goog.isString(this.model_['dataSettings']['activeGeo']) ?
+      this.model_['dataSettings']['activeGeo'].substring(1) :
+      this.data_[this.getActive()].activeGeo;
+
   if (this.geoDataIndex_.length)
     this.loadGeoData_(activeGeo);
   else {
@@ -921,6 +924,7 @@ anychart.chartEditor2Module.EditorModel.prototype.onChangeView = function() {
     if (this.preparedData_.length > 0) {
       if (this.afterSetModel_) {
         // Use predefined model
+        this.initGeoData_();
         this.analyzeDataBeforeFieldChoose_();
         this.analyzeDataAfterFieldChoose_();
 
