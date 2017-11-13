@@ -1496,7 +1496,8 @@ anychart.chartEditor2Module.EditorModel.prototype.addData = function(data) {
       title: data.title,
       chartType: data.chartType,
       seriesType: data.seriesType,
-      activeGeo: data.activeGeo
+      activeGeo: data.activeGeo,
+      fieldNames: data.fieldNames
     };
   }
   this.preparedData_.length = 0;
@@ -1971,7 +1972,9 @@ anychart.chartEditor2Module.EditorModel.prototype.prepareDataSet_ = function(dat
     type: dataSet.type,
     setId: dataSet.setId,
     setFullId: dataSet.setFullId,
-    title: dataSet.title
+    title: dataSet.title,
+    fieldNames: dataSet.fieldNames,
+    fields: []
   };
 
   var row = dataSet.type == anychart.chartEditor2Module.EditorModel.DataType.GEO ?
@@ -1989,19 +1992,18 @@ anychart.chartEditor2Module.EditorModel.prototype.prepareDataSet_ = function(dat
   var f = new goog.format.JsonPrettyPrinter(settings);
   result.sample = f.format(row);
 
-  var fields = [];
-  var i;
-  var field;
+  for (var key in row) {
+    var name = result.fieldNames && goog.isDef(result.fieldNames[key]) ?
+        result.fieldNames[key] :
+        goog.isArray(row) ? 'Field ' + key : key;
 
-  for (i in row) {
-    field = {
-      name: goog.isArray(row) ? 'Field ' + i : i,
-      type: typeof(row[i]),
-      key: i
+    var field = {
+      key: key,
+      name: name,
+      type: typeof(row[key])
     };
-    fields.push(field);
+    result.fields.push(field);
   }
-  result.fields = fields;
 
   return result;
 };

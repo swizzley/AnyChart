@@ -10,16 +10,16 @@ goog.require('anychart.ui.Component');
 /**
  * List of data set panels on SetupChart step.
  *
- * @param {anychart.chartEditor2Module.EditorModel} dataModel
+ * @param {anychart.chartEditor2Module.EditorModel} model
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
  * @extends {anychart.chartEditor2Module.Component}
  */
-anychart.chartEditor2Module.DataSetPanelList = function(dataModel, opt_domHelper) {
+anychart.chartEditor2Module.DataSetPanelList = function(model, opt_domHelper) {
   anychart.chartEditor2Module.DataSetPanelList.base(this, 'constructor', opt_domHelper);
 
   this.panels_ = [];
-  this.setModel(dataModel);
+  this.setModel(model);
   this.addClassName('anychart-connected-data-sets');
 
 };
@@ -35,7 +35,7 @@ anychart.chartEditor2Module.DataSetPanelList.prototype.enterDocument = function(
 };
 
 
-/** @param {Object=} opt_evt */
+/** @inheritDoc */
 anychart.chartEditor2Module.DataSetPanelList.prototype.update = function(opt_evt) {
   var active = this.getModel().getActive();
   var activeGeo = this.getModel().getActiveGeo();
