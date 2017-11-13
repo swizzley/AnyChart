@@ -180,7 +180,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'value': 'line',
     'name': 'Line',
     'icon': 'line-chart-1.svg', // 'http://www.anychart.com/_design/img/upload/charts/types/'
-    'series': ['line', 'spline', 'column', 'area', 'ohlc'], // first value is default
+    'series': ['line', 'spline', 'area', 'splineArea', 'column', 'ohlc'], // first value is default
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -188,7 +188,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'value': 'area',
     'name': 'Area',
     'icon': 'area-chart.svg',
-    'series': ['area', 'line', 'spline', 'column', 'ohlc'],
+    'series': ['area', 'splineArea', 'line', 'spline', 'column', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -197,7 +197,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'stackMode': 'value',
     'name': 'Area stacked (value)',
     'icon': 'stacked-area-chart.svg',
-    'series': ['area', 'line', 'spline', 'column', 'ohlc'],
+    'series': ['area', 'splineArea', 'line', 'spline', 'column', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -206,7 +206,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'stackMode': 'percent',
     'name': 'Area stacked (percent)',
     'icon': 'percent-stacked-area-chart.svg',
-    'series': ['area', 'line', 'spline', 'column', 'ohlc'],
+    'series': ['area', 'splineArea', 'line', 'spline', 'column', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -214,7 +214,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'value': 'bar',
     'name': 'Bar',
     'icon': 'bar-chart.svg',
-    'series': ['bar', 'line', 'spline', 'area', 'ohlc'],
+    'series': ['bar', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -223,7 +223,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'stackMode': 'value',
     'name': 'Bar stacked (value)',
     'icon': 'stacked-bar-chart.svg',
-    'series': ['bar', 'line', 'spline', 'area', 'ohlc'],
+    'series': ['bar', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -232,7 +232,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'stackMode': 'percent',
     'name': 'Bar stacked (percent)',
     'icon': 'percent-stacked-bar-chart.svg',
-    'series': ['bar', 'line', 'spline', 'area', 'ohlc'],
+    'series': ['bar', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -240,7 +240,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'value': 'column',
     'name': 'Column',
     'icon': 'column-chart.svg',
-    'series': ['column', 'line', 'spline', 'area', 'ohlc'],
+    'series': ['column', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -249,7 +249,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'stackMode': 'value',
     'name': 'Column stacked (value)',
     'icon': 'stacked-column-chart.svg',
-    'series': ['column', 'line', 'spline', 'area', 'ohlc'],
+    'series': ['column', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -258,7 +258,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'stackMode': 'percent',
     'name': 'Column stacked (percent)',
     'icon': 'percent-stacked-step-line-area-chart.svg',
-    'series': ['column', 'line', 'spline', 'area', 'ohlc'],
+    'series': ['column', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes' : ['colorScale']
   },
@@ -301,7 +301,7 @@ anychart.chartEditor2Module.EditorModel.ChartTypes = {
     'value': 'stock',
     'name': 'Stock',
     'icon': 'stock-chart.svg',
-    'series': ['ohlc', 'candlestick', 'line', 'spline', 'column', 'area'],
+    'series': ['ohlc', 'candlestick', 'line', 'spline', 'column', 'area', 'splineArea'],
     'dataSetCtor': 'table',
     'panelsExcludes' : ['data-labels', 'axes', 'colorScale'],
     'settingsExcludes': ['palette()', 'legend().enabled()', 'animation().enabled()']
@@ -344,6 +344,10 @@ anychart.chartEditor2Module.EditorModel.Series = {
     'fields': [{'field': 'value', 'name': 'Y Value'}]
   },
   'area': {
+    'fields': [{'field': 'value', 'name': 'Y Value'}]
+  },
+  'splineArea': {
+    'name': 'Spline Area',
     'fields': [{'field': 'value', 'name': 'Y Value'}]
   },
   'ohlc': {
