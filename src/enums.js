@@ -1224,22 +1224,6 @@ anychart.enums.normalizeGaugeSidePosition = function(value, opt_default) {
 
 
 /**
- * Labels position (inside or outside).
- * @enum {string}
- */
-anychart.enums.LabelsPosition = {
-  /**
-   * Inside a chart, no matter where an axis is.
-   */
-  INSIDE: 'inside',
-  /**
-   * Outside of a chart, no matter where an axis is.
-   */
-  OUTSIDE: 'outside'
-};
-
-
-/**
  * Ticks position (inside ot outside).
  * @enum {string}
  */
