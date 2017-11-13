@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "description": "AnyChart JSON schema, version 8.0.1",
+  "description": "AnyChart JSON Schema, version 8.0.1",
   "type": "object",
   "properties": {
     "chart": {
@@ -122,6 +122,7 @@
         },
         "margin": {"$ref": "#/definitions/anychart.core.utils.Space"},
         "padding": {"$ref": "#/definitions/anychart.core.utils.Space"},
+        "autoRedraw": {"$ref": "boolean"},
         "title": {
           "oneOf": [
             {"type": "string"},

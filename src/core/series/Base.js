@@ -129,6 +129,13 @@ anychart.core.series.Base = function(chart, plot, type, config) {
   this.metaMakers = [];
 
   /**
+   * Whether to disable stroke scaling.
+   * @type {boolean}
+   * @protected
+   */
+  this.disableStrokeScaling = false;
+
+  /**
    * Renderer.
    * @type {anychart.core.series.RenderingSettings}
    * @private
@@ -776,7 +783,8 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
       this.renderingSettings_.getShapesConfig(),
       this.check(anychart.core.series.Capabilities.ALLOW_INTERACTIVITY),
       null,
-      this.config.postProcessor);
+      this.config.postProcessor,
+      this.disableStrokeScaling);
 };
 
 
@@ -2243,11 +2251,13 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
     chartStateFactory = null;
   } else {
     state = anychart.core.utils.InteractivityState.clarifyState(state);
-
+    var pointStateElement;
     if (this.supportsPointSettings() && hasPointOverrides) {
-      pointOverride = point.get(overrideNames[0]);
+      pointStateElement = point.get('normal');
+      pointStateElement = pointStateElement ? pointStateElement[overrideNames[0]] : void 0;
+      pointOverride = anychart.utils.getFirstDefinedValue(pointStateElement, point.get(overrideNames[0]));
       if (state != anychart.PointState.NORMAL) {
-        var pointStateElement = (state == anychart.PointState.HOVER) ? point.get('hovered') : point.get('selected');
+        pointStateElement = (state == anychart.PointState.HOVER) ? point.get('hovered') : point.get('selected');
         pointStateElement = pointStateElement ? pointStateElement[overrideNames[0]] : void 0;
         statePointOverride = anychart.utils.getFirstDefinedValue(pointStateElement, point.get(overrideNames[state]));
       }
