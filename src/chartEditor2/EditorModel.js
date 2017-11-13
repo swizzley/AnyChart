@@ -730,6 +730,13 @@ anychart.chartEditor2Module.EditorModel.prototype.createSeriesConfig = function(
       var j = index + i + (goog.isNumber(opt_startFieldIndex) ? opt_startFieldIndex : 0);
       var numberIndex = numbers.length > j ? j : j % numbers.length;
       config['mapping'][fields[i]['field']] = numbers[numberIndex];
+
+      // Set series name if possible
+      if (fields.length == 1 && this.model_['chart']['type'] != 'stock' && String(numbers[numberIndex]).length > 1) {
+        var stringKey = 'getSeries(\'' + config['id'] + '\').name()';
+        var key = [['chart'], ['settings'], stringKey];
+        this.setValue(key, numbers[numberIndex], true, true, true);
+      }
     }
   }
   return config;
