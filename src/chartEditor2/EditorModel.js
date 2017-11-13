@@ -732,10 +732,16 @@ anychart.chartEditor2Module.EditorModel.prototype.createSeriesConfig = function(
       config['mapping'][fields[i]['field']] = numbers[numberIndex];
 
       // Set series name if possible
-      if (fields.length == 1 && this.model_['chart']['type'] != 'stock' && String(numbers[numberIndex]).length > 1) {
-        var stringKey = 'getSeries(\'' + config['id'] + '\').name()';
-        var key = [['chart'], ['settings'], stringKey];
-        this.setValue(key, numbers[numberIndex], true, true, true);
+      if (fields.length == 1 && this.model_['chart']['type'] != 'stock'/* && String(numbers[numberIndex]).length > 1*/) {
+        var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
+        var fieldName = numbers[numberIndex];
+        var seriesName = data.fieldNames && data.fieldNames[fieldName] || fieldName;
+
+        if (String(seriesName).length > 3) {
+          var stringKey = 'getSeries(\'' + config['id'] + '\').name()';
+          var key = [['chart'], ['settings'], stringKey];
+          this.setValue(key, seriesName, true, true, true);
+        }
       }
     }
   }
