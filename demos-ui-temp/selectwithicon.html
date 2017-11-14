@@ -4,13 +4,13 @@
     <script src="../libs/closure-library/closure/goog/base.js"></script>
     <script src="../src/deps.js"></script>
     <script>
-        goog.require('anychart.chartEditor2.controls.select.SelectWithIcon');
-        goog.require('anychart.chartEditor2.controls.select.MenuItemWithIcon');
-        goog.require('anychart.chartEditor2Module.Breadcrumbs');
-        goog.require('anychart.chartEditor2Module.UserData');
-        goog.require('anychart.chartEditor2.controls.select.DataField');
-        goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuItem');
-        goog.require('anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption');
+        goog.require('anychart.chartEditorModule.controls.select.SelectWithIcon');
+        goog.require('anychart.chartEditorModule.controls.select.MenuItemWithIcon');
+        goog.require('anychart.chartEditorModule.Breadcrumbs');
+        goog.require('anychart.chartEditorModule.UserData');
+        goog.require('anychart.chartEditorModule.controls.select.DataField');
+        goog.require('anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem');
+        goog.require('anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption');
     </script>
     <link rel="stylesheet" href="../out/anychart-ui.css">
 
@@ -66,24 +66,24 @@
 
 
 <script>
-    var select = new anychart.chartEditor2.controls.select.SelectWithIcon('Select your char type');
+    var select = new anychart.chartEditorModule.controls.select.SelectWithIcon('Select your char type');
 
-    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+    select.addItem(new anychart.chartEditorModule.controls.select.MenuItemWithIcon({
         caption: 'Pie Chart',
         value: 'pie-chart',
         icon: 'http://www.anychart.com/_design/img/upload/charts/types/pie-chart.svg'
     }));
-    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+    select.addItem(new anychart.chartEditorModule.controls.select.MenuItemWithIcon({
         caption: 'Bar Chart',
         value: 'bar-chart',
         icon: 'http://www.anychart.com/_design/img/upload/charts/types/bar-chart.svg'
     }));
-    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+    select.addItem(new anychart.chartEditorModule.controls.select.MenuItemWithIcon({
         caption: 'Column Chart',
         value: 'column-chart',
         icon: 'http://www.anychart.com/_design/img/upload/charts/types/column-chart.svg'
     }));
-    select.addItem(new anychart.chartEditor2.controls.select.MenuItemWithIcon({
+    select.addItem(new anychart.chartEditorModule.controls.select.MenuItemWithIcon({
         caption: 'Percent Stacked Column Chart',
         value: 'percent-stacked-column-chart',
         icon: 'http://www.anychart.com/_design/img/upload/charts/types/percent-stacked-column-chart.svg'
@@ -93,21 +93,21 @@
 </script>
 
 <script>
-    breadcrumbs = new anychart.chartEditor2Module.Breadcrumbs();
+    breadcrumbs = new anychart.chartEditorModule.Breadcrumbs();
     breadcrumbs.render(document.getElementById('breadcrumbs'));
     breadcrumbs.setStep(1);
     goog.events.listen(breadcrumbs, [
-        anychart.chartEditor2Module.Breadcrumbs.EventType.COMPLETE,
-        anychart.chartEditor2Module.Breadcrumbs.EventType.NEXT,
-        anychart.chartEditor2Module.Breadcrumbs.EventType.PREV,
-        anychart.chartEditor2Module.Breadcrumbs.EventType.CHANGE_STEP
+        anychart.chartEditorModule.Breadcrumbs.EventType.COMPLETE,
+        anychart.chartEditorModule.Breadcrumbs.EventType.NEXT,
+        anychart.chartEditorModule.Breadcrumbs.EventType.PREV,
+        anychart.chartEditorModule.Breadcrumbs.EventType.CHANGE_STEP
     ], function (e) {
         console.log(e.type, e.step)
     })
 </script>
 
 <script>
-    var userData = new anychart.chartEditor2Module.UserData([
+    var userData = new anychart.chartEditorModule.UserData([
         {id: 'google-spreadsheet', type: 'connect', caption: 'Google Spreadsheet', icon: '../dist/img/google-spreadsheet.png'},
         {id: 'csv-string', type: 'upload', caption: 'CSV String', icon: '../dist/img/csv-string.png'},
         {id: 'csv-file', type: 'upload', caption: 'CSV File', icon: '../dist/img/csv-file.png'},
@@ -116,39 +116,39 @@
     ]);
     userData.render(document.getElementById('userdata'));
 
-    goog.events.listen(userData, anychart.chartEditor2Module.UserData.EventType.ACTION, function(e) {
+    goog.events.listen(userData, anychart.chartEditorModule.UserData.EventType.ACTION, function(e) {
         console.log(e.value);
     })
 </script>
 
 <script>
-    var fieldSelect = new anychart.chartEditor2.controls.select.DataField({
+    var fieldSelect = new anychart.chartEditorModule.controls.select.DataField({
         caption: 'Select Data Set field',
         label: 'X Values'
     });
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption({
         caption: 'USA National Parks'
     }));
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
         caption: 'Field 1'
     }));
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
         caption: 'Field 2'
     }));
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
         caption: 'Field 3'
     }));
 
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuCaption({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption({
         caption: 'USA National Parks USA National Parks USA National Parks'
     }));
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
         caption: 'Field 1'
     }));
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
         caption: 'Field 2'
     }));
-    fieldSelect.getSelect().addItem(new anychart.chartEditor2.controls.select.DataFieldSelectMenuItem({
+    fieldSelect.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
         caption: 'Field 3'
     }));
 

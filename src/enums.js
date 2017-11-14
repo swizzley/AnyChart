@@ -2383,7 +2383,7 @@ anychart.enums.WarningCode = {
   IMMUTABLE_MARKER_SCALE: 500,
   IMMUTABLE_MARKER_LAYOUT: 501,
 
-  //anychart.chartEditor2Module.EditorModel
+  //anychart.chartEditorModule.EditorModel
   EDITOR_MODEL_VALUE_NOT_FOUND: 601
 };
 
