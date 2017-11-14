@@ -735,7 +735,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
       var chartType = this.model_['chart']['type'];
       var singleSeries = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
 
-      if (fields.length == 1 && (!singleSeries || chartType != 'stock')) {
+      if (!singleSeries && chartType != 'stock' && fields.length == 1) {
         var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
         var fieldName = numbers[numberIndex];
         var seriesName = data.fieldNames && data.fieldNames[fieldName] || fieldName;
@@ -944,7 +944,9 @@ anychart.chartEditorModule.EditorModel.prototype.onChangeView = function() {
     if (this.preparedData_.length > 0) {
       if (this.afterSetModel_) {
         // Use predefined model
-        this.initGeoData_();
+        if (this.model_['chart']['type'] === 'map')
+          this.initGeoData_();
+
         this.analyzeDataBeforeFieldChoose_();
         this.analyzeDataAfterFieldChoose_();
 
