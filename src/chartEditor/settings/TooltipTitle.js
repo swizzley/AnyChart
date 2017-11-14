@@ -1,17 +1,6 @@
 goog.provide('anychart.chartEditorModule.settings.TooltipTitle');
 
-goog.require('anychart.chartEditorModule.button.Bold');
-goog.require('anychart.chartEditorModule.button.Italic');
-goog.require('anychart.chartEditorModule.button.Underline');
-goog.require('anychart.chartEditorModule.checkbox.Base');
-goog.require('anychart.chartEditorModule.colorPicker.Base');
-goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.controls.select.Align');
-goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
-goog.require('anychart.chartEditorModule.controls.select.FontFamily');
-goog.require('anychart.chartEditorModule.input.Base');
 goog.require('anychart.chartEditorModule.settings.Title');
-goog.require('goog.ui.ButtonSide');
 
 
 

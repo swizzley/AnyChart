@@ -4,6 +4,7 @@ goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.input.Base');
+goog.require('anychart.chartEditorModule.settings.DataLabels');
 goog.require('anychart.chartEditorModule.settings.DataMarkers');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 goog.require('anychart.chartEditorModule.settings.Title');
@@ -106,12 +107,9 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
       goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   // Data labels
-  var dataLabels = new anychart.chartEditorModule.settings.Title(model, 'Data labels');
+  var dataLabels = new anychart.chartEditorModule.settings.DataLabels(model);
   dataLabels.allowEnabled(true);
-  dataLabels.allowEditPosition(false);
-  dataLabels.allowEditAlign(false);
-  dataLabels.setTitleKey('format()');
-  dataLabels.setKey(this.genKey('labels()')); // This is for enabled working sake!
+  dataLabels.setKey(this.genKey('labels()'));
   innerContent.addChild(dataLabels, true);
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
@@ -124,7 +122,6 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   innerContent.addChild(dataMarkers, true);
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
-  // endregion
 
   // if (this.seriesType_ == 'choropleth') {
   //   var colorScale = new anychart.chartEditorModule.settings.ColorScale(model, null);
@@ -136,7 +133,6 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   //   goog.dispose(this.colorScale_);
   //   this.colorScale_ = null;
   // }
-
 
   this.nameInput_ = nameInput;
   this.colorPicker_ = colorPicker;

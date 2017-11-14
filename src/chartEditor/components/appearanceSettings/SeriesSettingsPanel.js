@@ -26,7 +26,9 @@ goog.inherits(anychart.chartEditorModule.SeriesSettingsPanel, anychart.chartEdit
 /** @inheritDoc */
 anychart.chartEditorModule.SeriesSettingsPanel.prototype.enterDocument = function() {
   anychart.chartEditorModule.SeriesSettingsPanel.base(this, 'enterDocument');
-  this.createSeries();
+
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  if (!model.isChartSingleSeries()) this.createSeries();
 };
 
 

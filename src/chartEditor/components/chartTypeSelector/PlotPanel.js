@@ -85,8 +85,7 @@ anychart.chartEditorModule.PlotPanel.prototype.update = function (evt) {
     goog.dispose(this.addSeriesBtn_);
     this.addSeriesBtn_ = null;
 
-    var singleSeries = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
-    if (!singleSeries) {
+    if (!model.isChartSingleSeries()) {
         var addSeriesBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ButtonRenderer,
             'anychart-plot-panel-add-series-btn'));

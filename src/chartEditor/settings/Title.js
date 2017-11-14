@@ -7,8 +7,7 @@ goog.require('anychart.chartEditorModule.button.Underline');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.controls.select.Align');
-goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
+goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.controls.select.FontFamily');
 goog.require('anychart.chartEditorModule.input.Base');
 goog.require('goog.ui.ButtonSide');
@@ -94,6 +93,27 @@ anychart.chartEditorModule.settings.Title.prototype.setPositionKey = function(va
 
 
 /**
+ * @type {string}
+ * @private
+ */
+anychart.chartEditorModule.settings.Title.prototype.positionLabel_ = 'Orientation';
+
+
+/** @param {string} value */
+anychart.chartEditorModule.settings.Title.prototype.setPositionLabel = function(value) {
+  this.positionLabel_ = value;
+};
+
+
+/**
+ * @return {anychart.chartEditorModule.controls.select.DataField|null}
+ */
+anychart.chartEditorModule.settings.Title.prototype.getPositionField = function() {
+  return this.positionField_;
+};
+
+
+/**
  * @type {boolean}
  * @private
  */
@@ -107,6 +127,40 @@ anychart.chartEditorModule.settings.Title.prototype.allowEditAlign = function(va
 
 
 /**
+ * @type {string}
+ * @private
+ */
+anychart.chartEditorModule.settings.Title.prototype.alignKey_ = 'align()';
+
+
+/** @param {string} value */
+anychart.chartEditorModule.settings.Title.prototype.setAlignKey = function(value) {
+  this.alignKey_ = value;
+};
+
+
+/**
+ * @type {string}
+ * @private
+ */
+anychart.chartEditorModule.settings.Title.prototype.alignLabel_ = 'Align';
+
+
+/** @param {string} value */
+anychart.chartEditorModule.settings.Title.prototype.setAlignLabel = function(value) {
+  this.alignLabel_ = value;
+};
+
+
+/**
+ * @return {anychart.chartEditorModule.controls.select.DataField|null}
+ */
+anychart.chartEditorModule.settings.Title.prototype.getAlignField = function() {
+  return this.alignField_;
+};
+
+
+/**
  * @type {boolean}
  * @private
  */
@@ -116,20 +170,6 @@ anychart.chartEditorModule.settings.Title.prototype.allowEditColor_ = true;
 /** @param {boolean} value */
 anychart.chartEditorModule.settings.Title.prototype.allowEditColor = function(value) {
   this.allowEditColor_ = value;
-};
-
-
-/**
- * @type {?string}
- * @private
- */
-anychart.chartEditorModule.settings.Title.prototype.orientationKey_ = null;
-
-
-/** @param {string|Array.<string>} value */
-anychart.chartEditorModule.settings.Title.prototype.setOrientationKey = function(value) {
-  this.orientationKey_ = goog.isArray(value) ? value[0] : value;
-  this.updateKeys();
 };
 
 
@@ -204,95 +244,73 @@ anychart.chartEditorModule.settings.Title.prototype.createDom = function() {
   italicBtn.setCollapsed(goog.ui.ButtonSide.END | goog.ui.ButtonSide.START);
   underlineBtn.setCollapsed(goog.ui.ButtonSide.START);
 
-  var positionLabel = null;
-  var positionSelect = null;
+  goog.dom.appendChild(content, goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
+
   if (this.allowEditPosition_) {
-    goog.dom.appendChild(content, goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-gap')));
+    var positionField = new anychart.chartEditorModule.controls.select.DataField({label: this.positionLabel_});
 
-    positionLabel = goog.dom.createDom(
-        goog.dom.TagName.LABEL,
-        [
-          goog.ui.INLINE_BLOCK_CLASSNAME,
-          goog.getCssName('anychart-settings-label')
-        ],
-        'Orientation');
-    goog.dom.appendChild(content, positionLabel);
-
-    positionSelect = new anychart.chartEditorModule.controls.select.DataFieldSelect();
-    positionSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-    var positionSelectMenu = positionSelect.getMenu();
-    positionSelectMenu.setOrientation(goog.ui.Container.Orientation.HORIZONTAL);
-
-    positionSelect.setOptions([
+    positionField.getSelect().setOptions([
       {value: 'left', icon: 'ac ac-position-left'},
       {value: 'right', icon: 'ac ac-position-right'},
       {value: 'top', icon: 'ac ac-position-top'},
       {value: 'bottom', icon: 'ac ac-position-bottom'}
     ]);
 
-    this.addChild(positionSelect, true);
+    this.addChild(positionField, true);
   }
 
-  var alignLabel = null;
-  var alignSelect = null;
   if (this.allowEditAlign_) {
-    goog.dom.appendChild(content, goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-gap')));
+    var alignField = new anychart.chartEditorModule.controls.select.DataField({label: this.alignLabel_});
 
-    alignLabel = goog.dom.createDom(
-        goog.dom.TagName.LABEL,
-        [
-          goog.ui.INLINE_BLOCK_CLASSNAME,
-          goog.getCssName('anychart-settings-label')
-        ],
-        'Align');
-    goog.dom.appendChild(content, alignLabel);
+    alignField.getSelect().setOptions([
+      {value: 'left', icon: 'ac ac-position-left'},
+      {value: 'center', icon: 'ac ac-position-center'},
+      {value: 'right', icon: 'ac ac-position-right'}
+    ]);
 
-    alignSelect = new anychart.chartEditorModule.controls.select.Align();
-    alignSelect.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-    this.addChild(alignSelect, true);
+    this.addChild(alignField, true);
   }
 
   goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
   this.textInput_ = textInput;
-  this.positionSelect_ = positionSelect;
-  this.alignSelect_ = alignSelect;
+  this.colorPicker_ = colorPicker;
 
   this.fontFamilySelect_ = fontFamily;
   this.fontSizeSelect_ = fontSizeSelect;
+
   this.boldBtn_ = boldBtn;
   this.italicBtn_ = italicBtn;
   this.underlineBtn_ = underlineBtn;
-  this.colorPicker_ = colorPicker;
+
+  this.positionField_ = positionField;
+  this.alignField_ = alignField;
 
   this.registerLabel(colorLabel);
-  this.registerLabel(positionLabel);
-  this.registerLabel(alignLabel);
 };
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.Title.prototype.onChartDraw = function(evt) {
-  if (this.isExcluded()) return;
   anychart.chartEditorModule.settings.Title.base(this, 'onChartDraw', evt);
 
-  var target = evt.chart;
-  if (this.textInput_) this.textInput_.setValueByTarget(target, true);
-  if (this.positionSelect_) this.positionSelect_.setValueByTarget(target);
-  if (this.alignSelect_) {
-    this.alignSelect_.updateIcons(this.positionValue_ ? this.positionValue_ : this.positionSelect_.getValue());
-    this.alignSelect_.setValueByTarget(target);
+  if (!this.isExcluded()) {
+    var target = evt.chart;
+    if (this.textInput_) this.textInput_.setValueByTarget(target, true);
+    if (this.colorPicker_) this.colorPicker_.setValueByTarget(target);
+
+    if (this.fontFamilySelect_) this.fontFamilySelect_.setValueByTarget(target);
+    if (this.fontSizeSelect_) this.fontSizeSelect_.setValueByTarget(target);
+
+    if (this.boldBtn_) this.boldBtn_.setValueByTarget(target);
+    if (this.italicBtn_) this.italicBtn_.setValueByTarget(target);
+    if (this.underlineBtn_) this.underlineBtn_.setValueByTarget(target);
+
+    if (this.positionField_) this.positionField_.getSelect().setValueByTarget(target);
+    if (this.alignField_) this.alignField_.getSelect().setValueByTarget(target);
   }
-  if (this.fontFamilySelect_) this.fontFamilySelect_.setValueByTarget(target);
-  if (this.fontSizeSelect_) this.fontSizeSelect_.setValueByTarget(target);
-  if (this.boldBtn_) this.boldBtn_.setValueByTarget(target);
-  if (this.italicBtn_) this.italicBtn_.setValueByTarget(target);
-  if (this.underlineBtn_) this.underlineBtn_.setValueByTarget(target);
-  if (this.colorPicker_) this.colorPicker_.setValueByTarget(target);
 };
 
 
@@ -301,37 +319,44 @@ anychart.chartEditorModule.settings.Title.prototype.onChartDraw = function(evt) 
  */
 anychart.chartEditorModule.settings.Title.prototype.updateKeys = function() {
   anychart.chartEditorModule.settings.Title.base(this, 'updateKeys');
-  if (this.isExcluded()) return;
+  if (!this.isExcluded()) {
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    if (this.textInput_) this.textInput_.init(model, this.genKey(this.titleKey_));
+    if (this.colorPicker_) this.colorPicker_.init(model, this.genKey('fontColor()'));
 
-  if (this.enabledBtn_) this.enabledBtn_.init(model, this.genKey('enabled()'));
-  if (this.textInput_) this.textInput_.init(model, this.genKey(this.titleKey_));
-  if (this.positionSelect_) this.positionSelect_.init(model, this.genKey(this.positionKey_));
-  if (this.alignSelect_) {
-    this.alignSelect_.setOrientationKey(this.orientationKey_ ? this.orientationKey_ : this.genKey('orientation()'));
-    this.alignSelect_.init(model, this.genKey('align()'));
+    if (this.fontFamilySelect_) this.fontFamilySelect_.init(model, this.genKey('fontFamily()'));
+    if (this.fontSizeSelect_) this.fontSizeSelect_.init(model, this.genKey('fontSize()'));
+
+    if (this.boldBtn_) this.boldBtn_.init(model, this.genKey('fontWeight()'));
+    if (this.italicBtn_) this.italicBtn_.init(model, this.genKey('fontStyle()'));
+    if (this.underlineBtn_) this.underlineBtn_.init(model, this.genKey('fontDecoration()'));
+
+    if (this.positionField_) this.positionField_.init(model, this.genKey(this.positionKey_));
+    if (this.alignField_) this.alignField_.init(model, this.genKey(this.alignKey_));
   }
-  if (this.fontFamilySelect_) this.fontFamilySelect_.init(model, this.genKey('fontFamily()'));
-  if (this.fontSizeSelect_) this.fontSizeSelect_.init(model, this.genKey('fontSize()'));
-  if (this.boldBtn_) this.boldBtn_.init(model, this.genKey('fontWeight()'));
-  if (this.italicBtn_) this.italicBtn_.init(model, this.genKey('fontStyle()'));
-  if (this.underlineBtn_) this.underlineBtn_.init(model, this.genKey('fontDecoration()'));
-  if (this.colorPicker_) this.colorPicker_.init(model, this.genKey('fontColor()'));
 };
 
 
 /** @override */
 anychart.chartEditorModule.settings.Title.prototype.disposeInternal = function() {
   this.textInput_ = null;
-  this.positionSelect_ = null;
-  this.alignSelect_ = null;
+
+  goog.dispose(this.colorPicker_);
+  this.colorPicker_ = null;
+
   this.fontFamilySelect_ = null;
   this.fontSizeSelect_ = null;
+
   this.boldBtn_ = null;
   this.italicBtn_ = null;
   this.underlineBtn_ = null;
-  this.colorPicker_ = null;
+
+  goog.dispose(this.positionField_);
+  this.positionField_ = null;
+
+  goog.dispose(this.alignField_);
+  this.alignField_ = null;
 
   anychart.chartEditorModule.settings.Title.base(this, 'disposeInternal');
 };

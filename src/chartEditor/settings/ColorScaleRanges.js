@@ -4,7 +4,6 @@ goog.provide('anychart.chartEditorModule.settings.ColorScaleSingleRange');
 goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
-goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
 goog.require('anychart.chartEditorModule.input.Base');
 goog.require('goog.ui.Button');
 

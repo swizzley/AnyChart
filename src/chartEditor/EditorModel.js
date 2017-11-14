@@ -114,7 +114,7 @@ goog.inherits(anychart.chartEditorModule.EditorModel, goog.events.EventTarget);
 
 
 /**
- * @typedef {Array.<(Array|string)>}
+ * @typedef {Array.<(Array.<*>|string)>}
  */
 anychart.chartEditorModule.EditorModel.Key;
 
@@ -425,7 +425,7 @@ anychart.chartEditorModule.EditorModel.Series = {
   },
   'heatMap': {
     'fields': [
-      {'field': 'y', 'name': 'Y'},
+      {'field': 'y', 'name': 'Y Value'},
       {'field': 'heat', 'name': 'Heat'}
     ]
   }
@@ -664,7 +664,7 @@ anychart.chartEditorModule.EditorModel.prototype.createPlotMapping = function() 
   var result = [];
   var chartType = this.model_['chart']['type'];
   var seriesType = this.model_['chart']['seriesType'];
-  var singleSeries = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
+  var singleSeries = this.isChartSingleSeries();
 
   var numValues = 1;
   if (seriesType == 'bubble')
@@ -733,7 +733,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
 
       // Set series name if possible
       var chartType = this.model_['chart']['type'];
-      var singleSeries = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
+      var singleSeries = this.isChartSingleSeries();
 
       if (!singleSeries && chartType != 'stock' && fields.length == 1) {
         var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
@@ -2050,6 +2050,16 @@ anychart.chartEditorModule.EditorModel.prototype.checkSettingForExclusion = func
   var chartType = this.model_['chart']['type'];
   var excludes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['settingsExcludes'];
   return (excludes && goog.array.indexOf(excludes, stringKey) != -1);
+};
+
+
+/**
+ * Check if current chart type is single series.
+ * @return {boolean}
+ */
+anychart.chartEditorModule.EditorModel.prototype.isChartSingleSeries = function() {
+  var chartType = this.model_['chart']['type'];
+  return Boolean(chartType) && Boolean(anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries']);
 };
 
 

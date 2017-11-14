@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.DataLabelsPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.settings.Title');
+goog.require('anychart.chartEditorModule.settings.DataLabels');
 
 
 
@@ -30,15 +30,13 @@ anychart.chartEditorModule.DataLabelsPanel.prototype.createDom = function() {
 
   this.enableContentCheckbox.init(model, this.genKey('enabled()'), 'setSettingForSeries');
 
-  var title = new anychart.chartEditorModule.settings.Title(model);
-  title.allowEnabled(false);
-  title.allowEditPosition(false);
-  title.allowEditAlign(false);
-  title.setTitleKey('format()');
-  title.setKey([['chart'], ['settings'], 'labels()']);
-  this.addChild(title, true);
+  var settings = new anychart.chartEditorModule.settings.DataLabels(model);
+  settings.allowEnabled(false);
+  settings.setName(null);
+  settings.setKey(this.getKey());
+  this.addChild(settings, true);
 
-  this.title_ = title;
+  this.settings_ = settings;
 };
 
 
@@ -46,21 +44,23 @@ anychart.chartEditorModule.DataLabelsPanel.prototype.createDom = function() {
 anychart.chartEditorModule.DataLabelsPanel.prototype.update = function(opt_evt) {
   anychart.chartEditorModule.DataLabelsPanel.base(this, 'update');
 
-  // Set values for all series.
+  // Hardcoding - Set values for all series.
   var lastKey = opt_evt && opt_evt.lastKey;
   if (lastKey) {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     model.suspendDispatch();
-    for (var c = 0, count = this.title_.getChildCount(); c < count; c++) {
-      var child = this.title_.getChildAt(c);
-      if (goog.isFunction(child.getKey)) {
-        var key = child.getKey();
+
+    var settingsComponent = this.settings_.getSettingsComponent();
+    for (var c = 0, count = settingsComponent.getChildCount(); c < count; c++) {
+      var child = settingsComponent.getChildAt(c);
+      if (goog.isFunction(child.getKey) || goog.isFunction(child.getSelect)) {
+        var key = goog.isFunction(child.getKey) ? child.getKey() : child.getSelect().getKey();
         var stringKey = key[key.length - 1];
 
         if (lastKey == stringKey) {
           var value = model.getValue(key);
-          var chartType = model.getValue([['chart'], 'type']);
-          var singleSeries = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
+          var chartType = model.getModel()['chart']['type'];
+          var singleSeries = model.isChartSingleSeries();
 
           if (!singleSeries) {
             var mappings = model.getValue([['dataSettings'], 'mappings']);
@@ -83,6 +83,8 @@ anychart.chartEditorModule.DataLabelsPanel.prototype.update = function(opt_evt) 
 
 /** @override */
 anychart.chartEditorModule.DataLabelsPanel.prototype.disposeInternal = function() {
-  this.title_ = null;
+  goog.dispose(this.settings_);
+  this.settings_ = null;
+
   anychart.chartEditorModule.DataLabelsPanel.base(this, 'disposeInternal');
 };

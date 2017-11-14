@@ -151,6 +151,9 @@ anychart.chartEditorModule.Chart.prototype.update = function() {
     this.chart_['container'](this.containerId_);
     this.chart_['draw']();
   }
+
+  // debug
+  //window['chart'] = this.chart_;
 };
 
 
