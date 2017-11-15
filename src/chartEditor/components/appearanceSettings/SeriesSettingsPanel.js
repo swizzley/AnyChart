@@ -28,7 +28,11 @@ anychart.chartEditorModule.SeriesSettingsPanel.prototype.enterDocument = functio
   anychart.chartEditorModule.SeriesSettingsPanel.base(this, 'enterDocument');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (!model.isChartSingleSeries()) this.createSeries();
+  var singleSeries = model.isChartSingleSeries();
+
+  if (!singleSeries) this.createSeries();
+
+  if (this.series_.length == 1) this.series_[0].expand();
 };
 
 

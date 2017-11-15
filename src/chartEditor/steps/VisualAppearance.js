@@ -55,7 +55,7 @@ anychart.chartEditorModule.steps.VisualAppearance.prototype.createDom = function
   wrapper.addChild(chartWrapper, true);
 
   this.chartWrapper_ = chartWrapper;
-  var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-preview-caption', 'Chart Preview');
+  var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-editor-section-caption anychart-chart-preview-caption', 'Chart Preview');
   goog.dom.appendChild(this.chartWrapper_.getElement(), caption);
 
   //todo: rework as separate components with fixed structure

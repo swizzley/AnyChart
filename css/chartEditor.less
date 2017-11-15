@@ -101,17 +101,17 @@
 
   .chart-container {
     position: absolute;
-    top: 54px;
+    top: 55px;
     bottom: 18px;
-    left: 18px;
+    left: 7px;
     right: 18px;
   }
 }
 
 .anychart-chart-editor-section-caption {
   font-size: 17px;
-  color: @color-caption;
-  margin-bottom: 18px;
+  color: @color-caption !important;
+  margin-bottom: 14px;
 }
 // endregion
 
@@ -242,22 +242,24 @@
 .anychart-predefined-datasets-item {
   .box-shadow(@shadow-1);
   .border-radius(4px);
-  width: 175px;
-  height: 210px;
+  .box-sizing(border-box);
+  width: 205px;
   float: left;
   background: white;
   margin: 0 15px 15px 0;
   padding: 14px;
   overflow: hidden;
 
-  border: 1px solid white;
-  &:hover {
-    border-color: #a6d1fa;
-  }
+  color: @color-text2;
+  border: 2px solid white;
+
+  //&:hover {
+  //  border-color: @color-blue-hovered;
+  //}
 }
 
 .anychart-predefined-datasets-item-image {
-  height: 125px;
+  height: 110px;
   width: 100%;
 }
 
@@ -268,16 +270,10 @@
 
 .anychart-predefined-datasets-item-caption {
   margin-top: 10px;
-  height: 50px;
   width: 100%;
+  height: 66px;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #222222;
-}
-
-.anychart-predefined-datasets-item-buttons {
-  width: 100%;
-  text-align: center;
 }
 
 .anychart-predefined-datasets-item-btn {
@@ -291,14 +287,21 @@
 .anychart-predefined-datasets-item-btn-use {
   background: @color-blue;
   color: white;
-  margin-right: 10px;
+  margin-right: 12px;
+
+  &:hover {
+    background-color: @color-blue-hovered;
+  }
 }
 
 .anychart-predefined-datasets-item-btn-view {
   background: none;
   padding: 5px 10px;
-  border: 1px solid #5fa4e3;
-  color: #5fa4e3;
+  color: @color-blue;
+  border: 1px solid @color-blue;
+  &:hover {
+    background-color: #d0ebff;
+  }
 }
 
 // endregion
@@ -306,12 +309,16 @@
 // region ---- connected data
 .anychart-connected-data-sets {
   .box-sizing(border-box);
-  padding: 18px;
+  padding: 18px 7px 18px 18px;
 }
 
 .anychart-connected-data-sets-intro {
   color: @color-label;
   font-size: 15px;
+}
+
+.anychart-connected-data-sets-caption {
+  padding-left: 15px;
 }
 
 .anychart-connected-data-sets-intro-caption {
@@ -379,7 +386,7 @@
 }
 
 .anychart-connected-data-sets-item-caption {
-  color: #222222;
+  color: @color-text2;
   font-size: 14px;
   margin-right: 30px;
   margin-bottom: 14px;
@@ -403,9 +410,7 @@
 
 // region ---- Step 2
 .anychart-chart-data-settings-caption {
-  color: #7093aa;
-  font-size: 16px;
-  margin-bottom: 18px;
+  padding-left: 15px;
 }
 
 .anychart-chart-data-settings-core {
@@ -554,19 +559,13 @@
   border-bottom-right-radius: 4px;
 }
 
-.anychart-chart-preview-caption {
-  color: #7093aa;
-  font-size: 16px;
-  margin-bottom: 18px;
-}
-
 .anychart-chart-preview {
   .box-sizing(border-box);
-  padding: 18px;
+  padding: 18px 18px 18px 7px;
 }
 
 .anychart-chart-data-settings {
-  padding: 18px;
+  padding: 18px 7px;
 }
 
 .anychart-geo-data-inputs {
@@ -584,7 +583,7 @@
   width: 231px;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 57px 18px 18px;
+  padding: 56px 7px 18px 18px;
 
   .anychart-buttons-wrapper {
     .box-shadow(@shadow-1);
@@ -646,7 +645,7 @@
   right: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 18px;
+  padding: 18px 18px 18px 7px;
 }
 
 .anychart-plus-minus {
@@ -731,11 +730,11 @@
 
     .title {
       display: inline-block;
+      padding-left: 15px;
     }
 
     .anychart-checkbox {
       float: left;
-      margin-right: 12px;
     }
   }
   .anychart-settings-panel-remove-btn {

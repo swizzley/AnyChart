@@ -45,7 +45,7 @@ goog.inherits(anychart.chartEditorModule.ChartTypeSelector, anychart.chartEditor
 anychart.chartEditorModule.ChartTypeSelector.prototype.createDom = function() {
   anychart.chartEditorModule.ChartTypeSelector.base(this, 'createDom');
 
-  var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-data-settings-caption', 'Chart Data Settings');
+  var caption = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-editor-section-caption anychart-chart-data-settings-caption', 'Chart Data Settings');
   goog.dom.appendChild(this.getElement(), caption);
 
   var coreFieldsContainer = new anychart.ui.Component();

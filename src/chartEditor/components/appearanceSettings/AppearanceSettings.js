@@ -154,7 +154,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.updatePanels = function(
       panel.exclude(excluded);
       this.tabContent_.addChild(panel, true);
       goog.dom.classlist.add(panel.getElement(), 'anychart-settings-panel-' + this.panels_[i].name.toLowerCase());
-      goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-preview-caption');
+      goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-editor-section-caption');
 
       button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
       button.setAttribute('data-index', i);
