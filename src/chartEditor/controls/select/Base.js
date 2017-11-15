@@ -113,22 +113,6 @@ anychart.chartEditorModule.controls.select.Base.prototype.getKey = function() {
 };
 
 
-/**
- * @param {string} option
- * @param {string} caption
- * @param {string} icon
- * @return {Array|string}
- */
-anychart.chartEditorModule.controls.select.Base.prototype.createContentElements = function(option, caption, icon) {
-  if (!goog.isDefAndNotNull(option)) return this.getCaption();
-  caption = goog.isDef(caption) ? caption : option.toString();
-  var content = [];
-  if (caption) content.push(caption);
-  if (icon) content.push(goog.dom.createDom(goog.dom.TagName.I, [goog.getCssName('anychart-chart-editor-icon'), icon]));
-  return content;
-};
-
-
 /** @override */
 anychart.chartEditorModule.controls.select.Base.prototype.enterDocument = function() {
   anychart.chartEditorModule.controls.select.Base.base(this, 'enterDocument');
@@ -237,9 +221,8 @@ anychart.chartEditorModule.controls.select.Base.prototype.setValueByModel = func
   if (goog.isDef(modelValue))
     this.setValue(modelValue, opt_additionalValues);
 
-  if (!this.getSelectedItem()) {
+  if (!this.getSelectedItem())
     anychart.core.reporting.warning(anychart.enums.WarningCode.EDITOR_MODEL_VALUE_NOT_FOUND, null, this.key);
-  }
 
   this.noDispatch = false;
 };

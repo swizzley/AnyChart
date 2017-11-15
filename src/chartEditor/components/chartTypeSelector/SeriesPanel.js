@@ -86,22 +86,33 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
 anychart.chartEditorModule.SeriesPanel.prototype.update = function() {
   anychart.chartEditorModule.SeriesPanel.base(this, 'update');
 
-  var chartType = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel()).getValue([['chart'], 'type']);
-  var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'];
-  for (var i = 0; i < seriesTypes.length; i++) {
-    var type = seriesTypes[i];
-    var caption = anychart.chartEditorModule.EditorModel.Series[type]['name'] ?
-        anychart.chartEditorModule.EditorModel.Series[type]['name'] :
-        goog.string.capitalize(type);
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  var chartType = model.getModel()['chart']['type'];
 
-    var item = new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
-      caption: caption,
-      value: type
-    });
-    this.typeSelect_.getSelect().addItem(item);
+  if (model.isChartSingleSeries()) {
+    goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', true);
+    // goog.style.setElementShown(this.typeSelect_.getElement(), false);
+
+  } else {
+    goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', false);
+    // goog.style.setElementShown(this.typeSelect_.getElement(), true);
+
+    var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'];
+    for (var i = 0; i < seriesTypes.length; i++) {
+      var type = seriesTypes[i];
+      var caption = anychart.chartEditorModule.EditorModel.Series[type]['name'] ?
+          anychart.chartEditorModule.EditorModel.Series[type]['name'] :
+          goog.string.capitalize(type);
+
+      var item = new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem({
+        caption: caption,
+        value: type
+      });
+      this.typeSelect_.getSelect().addItem(item);
+    }
+
+    this.typeSelect_.getSelect().setValueByModel();
   }
-
-  this.typeSelect_.getSelect().setValueByModel();
 
   this.createFields();
   this.createFieldsOptions();

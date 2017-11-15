@@ -30,9 +30,10 @@ goog.inherits(anychart.chartEditorModule.controls.Menu, goog.ui.Menu);
 /** @inheritDoc */
 anychart.chartEditorModule.controls.Menu.prototype.setVisible = function(show, opt_force, opt_e) {
   if (show) {
-    var chartSelect = this.getParent();
-    var size = goog.style.getSize(chartSelect.getElement());
-    goog.style.setWidth(this.getElement(), size.width);
+    var select = this.getParent();
+    var bounds = goog.style.getBounds(select.getElement());
+    goog.style.setWidth(this.getElement(), bounds.width);
+    goog.style.setPosition(this.getElement(), bounds.left);
   }
   return anychart.chartEditorModule.controls.Menu.base(this, 'setVisible', show, opt_force, opt_e);
 };
