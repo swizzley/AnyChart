@@ -91,7 +91,6 @@ anychart.chartEditorModule.settings.Stroke.prototype.onChange = function() {
   if (this.noDispatch) return;
 
   var value = {};
-
   var colorValue = this.color_.getSelectedColor();
   if (colorValue)
     value['color'] = colorValue;
@@ -118,7 +117,6 @@ anychart.chartEditorModule.settings.Stroke.prototype.onChartDraw = function(evt)
   var target = evt.chart;
   this.setValueByTarget(target);
 };
-
 
 
 /**

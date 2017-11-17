@@ -162,7 +162,8 @@ anychart.chartEditorModule.SettingsPanel.prototype.createDom = function() {
     }
     this.enableContentCheckbox = enableContentCheckbox;
     this.topEl.appendChild(this.enableContentCheckbox && !this.enabledButtonContainer_ ? this.enableContentCheckbox.getElement() : null);
-  }
+  } else
+    goog.dom.classlist.add(element, 'anychart-settings-panel-no-checkbox');
 
   var noTop = !this.name && !this.allowRemove_ && !(this.enableContentCheckbox && !this.enabledButtonContainer_);
   if (noTop)

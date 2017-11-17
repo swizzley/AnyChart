@@ -57,7 +57,7 @@ anychart.chartEditorModule.settings.DataLabels.prototype.enterDocument = functio
   var positionValuesEnum;
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getModel()['chart']['type'];
-
+  var addValueOption = false;
   switch (chartType) {
     case 'pie':
       positionValuesEnum = anychart.enums.SidePosition;
@@ -67,13 +67,14 @@ anychart.chartEditorModule.settings.DataLabels.prototype.enterDocument = functio
       break;
     default:
       positionValuesEnum = anychart.enums.Position;
-      positionValuesEnum.VALUE = 'value';
+      addValueOption = true;
   }
 
   var positionValues = goog.object.getValues(positionValuesEnum);
   positionValues = goog.array.filter(positionValues, function(i) {
     return goog.typeOf(i) == 'string';
   });
+  if (addValueOption) positionValues.push('value');
 
   var positionField = /** @type {anychart.chartEditorModule.controls.select.DataField} */(this.settings_.getPositionField());
   positionField.getSelect().setOptions(positionValues);
