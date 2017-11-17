@@ -67,8 +67,8 @@ anychart.chartEditorModule.steps.VisualAppearance.prototype.createDom = function
 
 /** @inheritDoc */
 anychart.chartEditorModule.steps.VisualAppearance.prototype.enterDocument = function() {
-  // Shound be called before enterDocument()!
-  this.appearanceSettings_.updatePanels();
+  // Should be called before enterDocument()!
+  this.appearanceSettings_.updateExclusions();
 
   anychart.chartEditorModule.steps.VisualAppearance.base(this, 'enterDocument');
 

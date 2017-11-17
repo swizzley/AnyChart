@@ -11,10 +11,10 @@ goog.require('anychart.chartEditorModule.GeneralTheming');
 goog.require('anychart.chartEditorModule.GridsPanel');
 goog.require('anychart.chartEditorModule.LegendPanel');
 goog.require('anychart.chartEditorModule.SeriesSettingsPanel');
+goog.require('anychart.chartEditorModule.SpecificPanel');
 goog.require('anychart.chartEditorModule.TooltipPanel');
 goog.require('anychart.chartEditorModule.XAxesPanel');
 goog.require('anychart.chartEditorModule.YAxesPanel');
-
 
 
 /**
@@ -37,6 +37,12 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       name: 'GeneralTheming',
       enabled: true,
       classFunc: anychart.chartEditorModule.GeneralTheming,
+      instance: null
+    },
+    {
+      name: 'Specific',
+      enabled: true,
+      classFunc: anychart.chartEditorModule.SpecificPanel,
       instance: null
     },
     {
@@ -127,57 +133,75 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
 goog.inherits(anychart.chartEditorModule.AppearanceSettings, anychart.chartEditorModule.Component);
 
 
-/**
- * Creates panels and buttons and updates panel's exclusion state.
- */
-anychart.chartEditorModule.AppearanceSettings.prototype.updatePanels = function() {
+/** @inheritDoc */
+anychart.chartEditorModule.AppearanceSettings.prototype.createDom = function() {
+  anychart.chartEditorModule.AppearanceSettings.base(this, 'createDom');
+
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var dom = this.getDomHelper();
-  var handler = this.getHandler();
-  var panel;
-  var button;
-  var settings = model.getModel();
-  var panelsExcludes = anychart.chartEditorModule.EditorModel.ChartTypes[settings['chart']['type']]['panelsExcludes'];
-  var excluded;
 
-  if (!this.buttonsWrapper_) {
-    this.buttonsWrapper_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-buttons-wrapper');
-    goog.dom.appendChild(this.tabs_.getElement(), this.buttonsWrapper_);
-  }
+  this.buttonsWrapper_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-buttons-wrapper');
+  goog.dom.appendChild(this.tabs_.getElement(), this.buttonsWrapper_);
 
   for (var i = 0; i < this.panels_.length; i++) {
-    panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
-    if (!panel) {
-      var classFunc = this.panels_[i].classFunc;
-      panel = this.panels_[i].instance = new classFunc(model);
-      excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
-      panel.exclude(excluded);
-      this.tabContent_.addChild(panel, true);
-      goog.dom.classlist.add(panel.getElement(), 'anychart-settings-panel-' + this.panels_[i].name.toLowerCase());
-      goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-editor-section-caption');
+    var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
+    var classFunc = this.panels_[i].classFunc;
+    panel = this.panels_[i].instance = new classFunc(model);
 
-      button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
-      button.setAttribute('data-index', i);
-      this.buttons_.push(button);
-      this.buttonsWrapper_.appendChild(button);
+    this.tabContent_.addChild(panel, true);
+    goog.dom.classlist.add(panel.getElement(), 'anychart-settings-panel-' + this.panels_[i].name.toLowerCase());
+    goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-editor-section-caption');
 
-    } else {
-      excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
-      if (excluded && this.currentPanel_ === i)
-        this.currentPanel_ = 0;
-      panel.exclude(excluded);
-    }
+    var button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
+    button.setAttribute('data-index', i);
+    this.buttons_.push(button);
+    this.buttonsWrapper_.appendChild(button);
   }
+};
+
+
+/** @inheritDoc */
+anychart.chartEditorModule.AppearanceSettings.prototype.enterDocument = function() {
+  anychart.chartEditorModule.AppearanceSettings.base(this, 'enterDocument');
 
   for (var j = 0; j < this.buttons_.length; j++) {
-    panel = this.panels_[j].instance;
-    button = this.buttons_[j];
+    var panel = this.panels_[j].instance;
+    var button = this.buttons_[j];
+
+    if (this.panels_[j].name == 'Specific') {
+      panel.actualize();
+      if (!panel.isExcluded())
+        this.getDomHelper().setTextContent(button, panel.getName());
+    }
+
     goog.dom.classlist.enable(button, 'active', this.currentPanel_ == j);
     goog.dom.classlist.enable(button, 'anychart-hidden', panel.isExcluded());
     goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ !== j || panel.isExcluded());
 
     if (!goog.events.hasListener(button, goog.events.EventType.CLICK))
-      handler.listen(button, goog.events.EventType.CLICK, this.onClickCategoryButton_);
+      this.getHandler().listen(button, goog.events.EventType.CLICK, this.onClickCategoryButton_);
+  }
+};
+
+
+/**
+ * Updates exclusion state of panels.
+ */
+anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = function() {
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
+  var chartType = model.getModel()['chart']['type'];
+  var panelsExcludes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['panelsExcludes'];
+  var panel;
+  var excluded;
+
+  for (var i = 0; i < this.panels_.length; i++) {
+    panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
+
+    excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+    if (excluded && this.currentPanel_ === i)
+      this.currentPanel_ = 0;
+    panel.exclude(excluded);
   }
 };
 
@@ -202,6 +226,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.onClickCategoryButton_ =
 
 
 /**
+ * Update descriptors structure. For enablind/disabling panels from api.
  * @param {Object} values
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.updateDescriptors = function(values) {
@@ -237,7 +262,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.enablePanelByName = func
   var descriptor = this.getDescriptorByName_(name);
   if (descriptor && descriptor.enabled != enabled) {
     descriptor.enabled = enabled;
-    this.updatePanels();
+    this.updateExclusions();
   }
 };
 
