@@ -183,21 +183,18 @@ anychart.chartEditorModule.AppearanceSettings.prototype.enterDocument = function
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-
   var chartType = model.getModel()['chart']['type'];
   var panelsExcludes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['panelsExcludes'];
-  var panel;
-  var excluded;
 
   for (var i = 0; i < this.panels_.length; i++) {
-    panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
+    var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
+    var excluded;
 
     if (this.panels_[i].name == 'Specific') {
       panel.actualize();
       excluded = panel.isExcluded();
-
       if (!excluded)
-        this.getDomHelper().setTextContent(this.buttons_[i], panel.getName());
+        this.getDomHelper().setTextContent(this.buttons_[i], /** @type {string} */(panel.getName()));
 
     } else {
       excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;

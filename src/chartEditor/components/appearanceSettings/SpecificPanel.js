@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.SpecificPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.settings.specific.Waterfall');
 
 
 /**
@@ -12,69 +13,61 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
   anychart.chartEditorModule.SpecificPanel.base(this, 'constructor', model, opt_domHelper);
 
+  this.descriptors_ = [{
+    chartType: 'waterfall',
+    classFunc: anychart.chartEditorModule.settings.specific.Waterfall
+  }];
+
   this.actualize();
 };
 goog.inherits(anychart.chartEditorModule.SpecificPanel, anychart.chartEditorModule.SettingsPanel);
 
 
+/**
+ * Updates specific content and exclusion state of panel.
+ */
 anychart.chartEditorModule.SpecificPanel.prototype.actualize = function() {
+  var self = this;
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var currentChartType = model.getModel()['chart']['type'];
   if (currentChartType != this.chartType_) {
     this.chartType_ = currentChartType;
 
-    // Check for exclusion
-    switch (this.chartType_) {
-      case 'waterfall':
-      case 'bar':
-        this.exclude(false);
-        break;
-      default:
-        this.exclude(true);
-    }
+    var descriptor = goog.array.filter(this.descriptors_, function(item) {
+      return item.chartType == self.chartType_;
+    });
 
-    if (!this.isExcluded()) {
-      // Update name
-      var chartName = anychart.chartEditorModule.EditorModel.ChartTypes[this.chartType_]['name'];
-      this.name = chartName + ' Settings';
-
-      if (this.topEl) {
-        // Update title
-        var titleEl = this.getDomHelper().getElementByClass('title', this.topEl);
-        this.getDomHelper().setTextContent(titleEl, this.name);
+    if (descriptor.length && descriptor[0].classFunc) {
+      if (this.specificComponent_) {
+        this.removeChild(this.specificComponent_, true);
+        goog.dispose(this.specificComponent_);
       }
-    }
+      this.specificComponent_ = new descriptor[0].classFunc(model);
+      this.specificComponent_.allowEnabled(false);
+      this.name = this.specificComponent_.getName();
+      this.addChild(this.specificComponent_, true);
+      goog.style.setElementShown(this.specificComponent_.getTopElement(), false);
+      this.exclude(false);
+
+    } else
+      this.exclude(true);
   }
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.SpecificPanel.prototype.createDom = function() {
-  anychart.chartEditorModule.SpecificPanel.base(this, 'createDom');
-
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 };
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.SpecificPanel.prototype.enterDocument = function() {
   this.actualize();
-
   anychart.chartEditorModule.SpecificPanel.base(this, 'enterDocument');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.SpecificPanel.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.SpecificPanel.base(this, 'onChartDraw', evt);
-  // if (evt.rebuild) {
-  //   if (this.themeSelect) this.themeSelect.getSelect().setValueByTarget(goog.dom.getWindow()['anychart']);
-  //   if (this.paletteSelect) this.paletteSelect.getSelect().setValueByTarget(evt.chart);
-  // }
 };
 
 
 /** @override */
 anychart.chartEditorModule.SpecificPanel.prototype.disposeInternal = function() {
+  if (this.specificComponent_) {
+    goog.dispose(this.specificComponent_);
+    this.specificComponent_ = null;
+  }
+
   anychart.chartEditorModule.SpecificPanel.base(this, 'disposeInternal');
 };

@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.specific.Waterfall');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.controls.select.DataField');
 
 
 
@@ -12,6 +13,10 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
  */
 anychart.chartEditorModule.settings.specific.Waterfall = function(model, opt_domHelper) {
   anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'constructor', model, opt_domHelper);
+
+  this.name = 'Waterfall Chart Settings';
+
+  this.key = [['chart'], ['settings']];
 };
 goog.inherits(anychart.chartEditorModule.settings.specific.Waterfall, anychart.chartEditorModule.SettingsPanel);
 
@@ -30,8 +35,24 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.createDom = fun
   var element = this.getElement();
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.specific.Waterfall.CSS_CLASS);
 
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  // todo: your code here...
+  var dataModeField = new anychart.chartEditorModule.controls.select.DataField({label: 'Data Mode'});
+  dataModeField.getSelect().setOptions([
+    {value: 'diff', caption: 'Difference'},
+    {value: 'absolute', caption: 'Absolute'}
+  ]);
+  this.addChild(dataModeField, true);
+  this.dataModeField_ = dataModeField;
+};
+
+
+/** @inheritDoc */
+anychart.chartEditorModule.settings.specific.Waterfall.prototype.updateKeys = function() {
+  if (!this.isExcluded()) {
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    if (this.dataModeField_) this.dataModeField_.init(model, this.genKey('dataMode()'));
+  }
+
+  anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'updateKeys');
 };
 
 
@@ -40,7 +61,7 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.onChartDraw = f
   anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'onChartDraw', evt);
   if (!this.isExcluded()) {
     var target = evt.chart;
-    // todo: your code here...
+    if (this.dataModeField_) this.dataModeField_.getSelect().setValueByTarget(target);
   }
 };
 
