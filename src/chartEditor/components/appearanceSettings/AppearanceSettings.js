@@ -168,12 +168,6 @@ anychart.chartEditorModule.AppearanceSettings.prototype.enterDocument = function
     var panel = this.panels_[j].instance;
     var button = this.buttons_[j];
 
-    if (this.panels_[j].name == 'Specific') {
-      panel.actualize();
-      if (!panel.isExcluded())
-        this.getDomHelper().setTextContent(button, panel.getName());
-    }
-
     goog.dom.classlist.enable(button, 'active', this.currentPanel_ == j);
     goog.dom.classlist.enable(button, 'anychart-hidden', panel.isExcluded());
     goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ !== j || panel.isExcluded());
@@ -198,10 +192,20 @@ anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = funct
   for (var i = 0; i < this.panels_.length; i++) {
     panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
 
-    excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+    if (this.panels_[i].name == 'Specific') {
+      panel.actualize();
+      excluded = panel.isExcluded();
+
+      if (!excluded)
+        this.getDomHelper().setTextContent(this.buttons_[i], panel.getName());
+
+    } else {
+      excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+      panel.exclude(excluded);
+    }
+
     if (excluded && this.currentPanel_ === i)
       this.currentPanel_ = 0;
-    panel.exclude(excluded);
   }
 };
 
