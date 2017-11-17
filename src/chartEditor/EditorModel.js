@@ -1378,6 +1378,8 @@ anychart.chartEditorModule.EditorModel.prototype.getValue = function(key) {
  * @param {boolean=} opt_noDispatch
  */
 anychart.chartEditorModule.EditorModel.prototype.removeByKey = function(key, opt_noDispatch) {
+  if (!key.length) return;
+
   var target = this.model_;
   var level;
   for (var i = 0; i < key.length; i++) {
