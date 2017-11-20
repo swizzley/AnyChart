@@ -14,7 +14,7 @@ goog.require('anychart.chartEditorModule.comboBox.Base');
 anychart.chartEditorModule.settings.specific.Mekko = function(model, opt_domHelper) {
   anychart.chartEditorModule.settings.specific.Mekko.base(this, 'constructor', model, opt_domHelper);
 
-  this.name = 'Mosaic Chart Settings';
+  this.name = 'Mekko Chart Settings';
 
   this.key = [['chart'], ['settings']];
 };

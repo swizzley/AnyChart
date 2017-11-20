@@ -93,6 +93,8 @@ anychart.chartEditorModule.Chart.prototype.update = function() {
 
     if (dsCtor == 'table')
       dataSet['addData'](rawData);
+    else if (dsCtor == 'tree')
+      dataSet['addData'](rawData, 'as-table');
     else
       dataSet['data'](rawData);
 

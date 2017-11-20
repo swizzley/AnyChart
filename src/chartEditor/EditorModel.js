@@ -358,6 +358,16 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['mekko'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['colorScale']
+  },
+  'treeMap': {
+    'value': 'treeMap',
+    'name': 'Tree Map',
+    'icon': 'treemap-chart.svg',
+    'series': ['treeMap'],
+    'dataSetCtor': 'tree',
+    'singleSeries': true,
+    'panelsExcludes': ['series', 'grids', 'axes'],
+    'settingsExcludes': ['palette()', 'animation().enabled()']
   }
 };
 
@@ -415,12 +425,6 @@ anychart.chartEditorModule.EditorModel.Series = {
       {'field': 'value'},
       {'field': 'outliers'}]
   },
-  'pie': {
-    'fields': [{'field': 'value', 'name': 'Value'}]
-  },
-  'funnel': {
-    'fields': [{'field': 'value', 'name': 'Value'}]
-  },
   'marker': {
     'fields': [{'field': 'value', 'name': 'Value'}]
   },
@@ -472,6 +476,20 @@ anychart.chartEditorModule.EditorModel.Series = {
   },
   'mekko': {
     'fields': [{'field': 'value', 'name': 'Y Value'}]
+  },
+  'pie': {
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'funnel': {
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'treeMap': {
+    'fields': [
+      {'field': 'id', 'name': 'ID'},
+      {'field': 'parent', 'name': 'Parent'},
+      {'field': 'name', 'name': 'Name'},
+      {'field': 'value', 'name': 'Value'}
+    ]
   }
 };
 // endregion
@@ -1824,9 +1842,12 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
           '();')
   );
 
-  if (isTableData) {
+  if (dsCtor == 'table') {
     dataSet['addData'](rawData);
     result.push('data.addData(rawData);');
+  } else if (dsCtor == 'tree') {
+    dataSet['addData'](rawData, 'as-table');
+    result.push('data.addData(rawData, "as-table");');
   } else {
     dataSet['data'](rawData);
     result.push('data.data(rawData);');
@@ -1956,7 +1977,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
  */
 anychart.chartEditorModule.EditorModel.prototype.printKey_ = function(printer, prefix, key, value, opt_forceRawValue) {
   if (goog.isDef(value)) {
-    var valueString = opt_forceRawValue ? '"' + String(value) + '"' : this.printValue_(printer, value);
+    var valueString = opt_forceRawValue ? String(value) : this.printValue_(printer, value);
     key = key.replace(/\)$/, valueString + ');');
   }
   return prefix + '.' + key;
