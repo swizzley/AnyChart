@@ -38,22 +38,6 @@ anychart.chartEditorModule.settings.specific.Pie.prototype.createDom = function(
   var element = this.getElement();
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.specific.Pie.CSS_CLASS);
 
-  // var itemsSourceMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Legend Items Source Mode'});
-  // itemsSourceMode.getSelect().setOptions([
-  //   {value: 'default', caption: 'Default'},
-  //   {value: 'categories', caption: 'Categories'}
-  // ]);
-  // this.addChild(itemsSourceMode, true);
-  // this.itemsSourceMode_ = itemsSourceMode;
-  //
-  // var dataMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Data Mode'});
-  // dataMode.getSelect().setOptions([
-  //   {value: 'diff', caption: 'Difference'},
-  //   {value: 'absolute', caption: 'Absolute'}
-  // ]);
-  // this.addChild(dataMode, true);
-  // this.dataMode_ = dataMode;
-
   var innerRadiusLabel = goog.dom.createDom(
       goog.dom.TagName.LABEL,
       [
@@ -101,8 +85,6 @@ anychart.chartEditorModule.settings.specific.Pie.prototype.onChartDraw = functio
   anychart.chartEditorModule.settings.specific.Pie.base(this, 'onChartDraw', evt);
   if (!this.isExcluded()) {
     var target = evt.chart;
-    // if (this.itemsSourceMode_) this.itemsSourceMode_.getSelect().setValueByTarget(target);
-    // if (this.dataMode_) this.dataMode_.getSelect().setValueByTarget(target);
     if (this.innerRadius_) this.innerRadius_.setValueByTarget(target);
   }
 };
@@ -110,9 +92,6 @@ anychart.chartEditorModule.settings.specific.Pie.prototype.onChartDraw = functio
 
 /** @override */
 anychart.chartEditorModule.settings.specific.Pie.prototype.disposeInternal = function() {
-  // goog.dispose(this.itemsSourceMode_);
-  // this.itemsSourceMode_ = null;
-  //
   goog.dispose(this.innerRadius_);
   this.innerRadius_ = null;
 

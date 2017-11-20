@@ -1124,6 +1124,10 @@ anychart.chartEditorModule.EditorModel.prototype.setChartType = function(input) 
     this.initGeoData_();
   }
 
+  if (prevDefaultSeriesType === 'mekko') {
+    this.dropChartSettings('pointsPadding()');
+  }
+
   if (this.needResetMappings(prevChartType, prevDefaultSeriesType)) {
     this.chooseActiveAndField(/** @type {string} */(this.model_['dataSettings']['active']));
     this.chooseDefaultSeriesType();
