@@ -115,12 +115,6 @@ anychart.chartEditorModule.comboBox.Base.prototype.setOptions = function(value) 
 };
 
 
-/** @param {Array.<string>} value */
-anychart.chartEditorModule.comboBox.Base.prototype.setCaptions = function(value) {
-  this.captions_ = value;
-};
-
-
 /** @return {anychart.chartEditorModule.EditorModel.Key} */
 anychart.chartEditorModule.comboBox.Base.prototype.getKey = function() {
   return this.key;

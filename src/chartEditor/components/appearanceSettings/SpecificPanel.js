@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.SpecificPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.settings.specific.Pie');
 goog.require('anychart.chartEditorModule.settings.specific.Waterfall');
 
 
@@ -16,7 +17,11 @@ anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
   this.descriptors_ = [{
     chartType: 'waterfall',
     classFunc: anychart.chartEditorModule.settings.specific.Waterfall
-  }];
+  },
+    {
+      chartType: 'pie',
+      classFunc: anychart.chartEditorModule.settings.specific.Pie
+    }];
 
   this.actualize();
 };
