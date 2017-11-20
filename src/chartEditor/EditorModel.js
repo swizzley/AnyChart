@@ -334,6 +334,30 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['box', 'line', 'spline', 'column', 'area', 'marker', 'bubble', 'ohlc'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['colorScale']
+  },
+  'mekko': {
+    'value': 'mekko',
+    'name': 'Mekko',
+    'icon': 'bar-mekko-chart.svg',
+    'series': ['mekko'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
+  },
+  'barmekko': {
+    'value': 'barmekko',
+    'name': 'Bar Mekko',
+    'icon': 'bar-mekko-chart.svg',
+    'series': ['mekko'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
+  },
+  'mosaic': {
+    'value': 'mosaic',
+    'name': 'Mosaic',
+    'icon': 'bar-mekko-chart.svg',
+    'series': ['mekko'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
   }
 };
 
@@ -445,6 +469,9 @@ anychart.chartEditorModule.EditorModel.Series = {
       {'field': 'y', 'name': 'Y Value'},
       {'field': 'heat', 'name': 'Heat'}
     ]
+  },
+  'mekko': {
+    'fields': [{'field': 'value', 'name': 'Y Value'}]
   }
 };
 // endregion

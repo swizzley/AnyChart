@@ -88,8 +88,9 @@ anychart.chartEditorModule.SeriesPanel.prototype.update = function() {
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getModel()['chart']['type'];
+  var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'];
 
-  if (model.isChartSingleSeries()) {
+  if (model.isChartSingleSeries() || seriesTypes.length == 1) {
     goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', true);
     // goog.style.setElementShown(this.typeSelect_.getElement(), false);
 
@@ -97,7 +98,6 @@ anychart.chartEditorModule.SeriesPanel.prototype.update = function() {
     goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', false);
     // goog.style.setElementShown(this.typeSelect_.getElement(), true);
 
-    var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'];
     for (var i = 0; i < seriesTypes.length; i++) {
       var type = seriesTypes[i];
       var caption = anychart.chartEditorModule.EditorModel.Series[type]['name'] ?
