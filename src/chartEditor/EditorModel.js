@@ -1916,14 +1916,15 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     goog.object.forEach(settings['chart']['settings'], function(value, key) {
       var pVal = value;
       var force = false;
+      var quotes = false;
       if (key == "palette()") {
         pVal = anychartGlobal['palettes'][value];
         //pVal = 'anychart.palettes.' + value;
       } else if (key == "contextMenu().itemsFormatter()")
-        force = true;
+        quotes = force = true;
 
       if (anychart.bindingModule.testExec(chart, key, value)) {
-        result.push(self.printKey_(printer, 'chart', key, pVal, force));
+        result.push(self.printKey_(printer, 'chart', key, pVal, force, quotes));
       }
     });
     result.push('');
@@ -1972,12 +1973,16 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
  * @param {string} key
  * @param {*} value
  * @param {boolean=} opt_forceRawValue
+ * @param {boolean=} opt_noQuotes
  * @return {string}
  * @private
  */
-anychart.chartEditorModule.EditorModel.prototype.printKey_ = function(printer, prefix, key, value, opt_forceRawValue) {
+anychart.chartEditorModule.EditorModel.prototype.printKey_ = function(printer, prefix, key, value, opt_forceRawValue, opt_noQuotes) {
   if (goog.isDef(value)) {
-    var valueString = opt_forceRawValue ? String(value) : this.printValue_(printer, value);
+    var quote = opt_noQuotes ? '' : '"';
+    var valueString = opt_forceRawValue ?
+        quote + String(value) + quote:
+        this.printValue_(printer, value);
     key = key.replace(/\)$/, valueString + ');');
   }
   return prefix + '.' + key;
