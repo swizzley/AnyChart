@@ -155,7 +155,7 @@ anychart.chartEditorModule.Chart.prototype.update = function() {
   }
 
   // todo: debug
-  // window['chart'] = this.chart_;
+  //window['chart'] = this.chart_;
 };
 
 

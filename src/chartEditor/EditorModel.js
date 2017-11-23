@@ -335,13 +335,21 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'dataSetCtor': 'set',
     'panelsExcludes': ['colorScale']
   },
+  'radar': {
+    'value': 'radar',
+    'name': 'Radar',
+    'icon': 'radar-chart-1.svg',
+    'series': ['line', 'area', 'marker'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
+  },
   'mekko': {
     'value': 'mekko',
     'name': 'Mekko',
     'icon': 'bar-mekko-chart.svg',
     'series': ['mekko'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale']
+    'panelsExcludes': ['grids', 'colorScale']
   },
   'barmekko': {
     'value': 'barmekko',
@@ -349,7 +357,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'bar-mekko-chart.svg',
     'series': ['mekko'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale']
+    'panelsExcludes': ['grids', 'colorScale']
   },
   'mosaic': {
     'value': 'mosaic',
@@ -357,7 +365,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'bar-mekko-chart.svg',
     'series': ['mekko'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale']
+    'panelsExcludes': ['grids', 'colorScale']
   },
   'treeMap': {
     'value': 'treeMap',

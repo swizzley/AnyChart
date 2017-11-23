@@ -5,7 +5,6 @@ goog.require('anychart.chartEditorModule.settings.Axis');
 goog.require('goog.ui.Button');
 
 
-
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
@@ -62,7 +61,17 @@ anychart.chartEditorModule.AxesPanelBase.prototype.createDom = function() {
 /** @inheritDoc */
 anychart.chartEditorModule.AxesPanelBase.prototype.enterDocument = function() {
   anychart.chartEditorModule.AxesPanelBase.base(this, 'enterDocument');
-  this.getHandler().listen(this.addAxisBtn_, goog.ui.Component.EventType.ACTION, this.onAddAxis_);
+
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  var chartType = model.getModel()['chart']['type'];
+
+  if (chartType === 'radar' || chartType === 'polar') {
+    goog.style.setElementShown(this.addAxisBtn_.getElement(), false);
+  } else {
+    goog.style.setElementShown(this.addAxisBtn_.getElement(), true);
+    this.getHandler().listen(this.addAxisBtn_, goog.ui.Component.EventType.ACTION, this.onAddAxis_);
+  }
+
   this.createAxes();
 };
 
@@ -98,17 +107,21 @@ anychart.chartEditorModule.AxesPanelBase.prototype.createAxes = function() {
   this.addAxis(0);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var settings = model.getModel()['chart']['settings'];
+  var chartType = model.getModel()['chart']['type'];
 
-  var pattern = '^' + this.xOrY + 'Axis\\((\\d+)\\)\\.enabled\\(\\)$';
-  var regExp = new RegExp(pattern);
+  if (chartType !== 'radar' && chartType !== 'polar') {
+    var settings = model.getModel()['chart']['settings'];
 
-  for (var key in settings) {
-    var match = key.match(regExp);
-    if (match) {
-      var axisIndex = Number(match[1]);
-      if (axisIndex > 0)
-        this.addAxis(axisIndex);
+    var pattern = '^' + this.xOrY + 'Axis\\((\\d+)\\)\\.enabled\\(\\)$';
+    var regExp = new RegExp(pattern);
+
+    for (var key in settings) {
+      var match = key.match(regExp);
+      if (match) {
+        var axisIndex = Number(match[1]);
+        if (axisIndex > 0)
+          this.addAxis(axisIndex);
+      }
     }
   }
 };

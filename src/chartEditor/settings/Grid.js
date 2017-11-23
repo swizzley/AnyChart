@@ -18,6 +18,9 @@ anychart.chartEditorModule.settings.Grid = function(model, name, opt_domHelper) 
   this.name = name;
 
   this.gridExists = false;
+
+  var chartType = model.getModel()['chart']['type'];
+  this.isRadarGrid = chartType === 'radar' || chartType === 'polar';
 };
 goog.inherits(anychart.chartEditorModule.settings.Grid, anychart.chartEditorModule.SettingsPanel);
 
@@ -39,9 +42,11 @@ anychart.chartEditorModule.settings.Grid.prototype.createDom = function() {
   var content = this.getContentElement();
   //var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  this.firstLine_ = new anychart.chartEditorModule.checkbox.Base();
-  this.firstLine_.setCaption('Draw first line');
-  this.addChild(this.firstLine_, true);
+  if (!this.isRadarGrid) {
+    this.firstLine_ = new anychart.chartEditorModule.checkbox.Base();
+    this.firstLine_.setCaption('Draw first line');
+    this.addChild(this.firstLine_, true);
+  }
 
   this.lastLine_ = new anychart.chartEditorModule.checkbox.Base();
   this.lastLine_.setCaption('Draw last line');
@@ -119,7 +124,7 @@ anychart.chartEditorModule.settings.Grid.prototype.onChartDraw = function(evt) {
     this.enableContentCheckbox.setValueByTarget(chart);
     this.setContentEnabled(this.enableContentCheckbox.isChecked());
 
-    this.firstLine_.setValueByTarget(chart);
+    if (this.firstLine_) this.firstLine_.setValueByTarget(chart);
     this.lastLine_.setValueByTarget(chart);
     this.palette_.setValueByTarget(chart, true);
   } else {
@@ -130,11 +135,16 @@ anychart.chartEditorModule.settings.Grid.prototype.onChartDraw = function(evt) {
 
 /** @override */
 anychart.chartEditorModule.settings.Grid.prototype.disposeInternal = function() {
+  goog.dispose(this.firstLine_);
   this.firstLine_ = null;
+
+  goog.dispose(this.lastLine_);
   this.lastLine_ = null;
+
+  goog.dispose(this.palette_);
   this.palette_ = null;
 
-  this.stroke_.dispose();
+  goog.dispose(this.stroke_);
   this.stroke_ = null;
 
   anychart.chartEditorModule.settings.Grid.base(this, 'disposeInternal');

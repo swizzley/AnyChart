@@ -328,6 +328,18 @@ anychart.radarPolarBaseModule.Chart.prototype.defaultMinorGridSettings = functio
 };
 
 
+/** @return {number} */
+anychart.radarPolarBaseModule.Chart.prototype.getXGridsCount = function() {
+  return this.xGrids_.length;
+};
+
+
+/** @return {number} */
+anychart.radarPolarBaseModule.Chart.prototype.getYGridsCount = function() {
+  return this.yGrids_.length;
+};
+
+
 //endregion
 //region --- Axes
 //------------------------------------------------------------------------------
