@@ -87,8 +87,8 @@ anychart.chartEditorModule.SeriesPanel.prototype.update = function() {
   anychart.chartEditorModule.SeriesPanel.base(this, 'update');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartType = model.getModel()['chart']['type'];
-  var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'];
+  var chartTypeKey = model.getChartTypeKey();
+  var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'];
 
   if (model.isChartSingleSeries() || seriesTypes.length == 1) {
     goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', true);

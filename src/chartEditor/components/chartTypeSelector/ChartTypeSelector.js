@@ -72,8 +72,8 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.update = function(evt) {
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
-
   var stackMode = model.getValue([['chart'], ['settings'], 'yScale().stackMode()']);
+
   this.chartTypeSelect_.setValueByModel({stackMode: stackMode});
 
   if (this.activeAndFieldSelect_) {

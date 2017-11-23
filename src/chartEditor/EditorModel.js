@@ -343,6 +343,24 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'dataSetCtor': 'set',
     'panelsExcludes': ['colorScale']
   },
+  'radar-stacked-value': {
+    'value': 'radar',
+    'stackMode': 'value',
+    'name': 'Radar stacked (value)',
+    'icon': 'radar-chart-1.svg',
+    'series': ['area'/*, 'line', 'marker'*/],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
+  },
+  'radar-stacked-percent': {
+    'value': 'radar',
+    'stackMode': 'percent',
+    'name': 'Radar stacked (percent)',
+    'icon': 'radar-chart-1.svg',
+    'series': ['area'/*, 'line', 'marker'*/],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
+  },
   'mekko': {
     'value': 'mekko',
     'name': 'Mekko',
@@ -662,17 +680,18 @@ anychart.chartEditorModule.EditorModel.prototype.chooseDefaultChartType = functi
  * Chooses default series type.
  */
 anychart.chartEditorModule.EditorModel.prototype.chooseDefaultSeriesType = function() {
+  var chartTypeKey = this.getChartTypeKey();
   var seriesType = null;
   var recomendedSeriesType = this.data_[this.getActive()].seriesType;
   if (recomendedSeriesType) {
-    var availableTypes = anychart.chartEditorModule.EditorModel.ChartTypes[this.model_['chart']['type']]['series'];
+    var availableTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'];
     if (goog.array.indexOf(availableTypes, recomendedSeriesType) !== -1)
       seriesType = recomendedSeriesType;
   }
 
   if (!seriesType) {
-    seriesType = anychart.chartEditorModule.EditorModel.ChartTypes[this.model_['chart']['type']]['series'][0];
-    switch (this.model_['chart']['type']) {
+    seriesType = anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'][0];
+    switch (chartTypeKey) {
       case 'map':
         if (this.fieldsState_.coordinates.length == 2) {
           if (this.fieldsState_.numbersCount)
@@ -830,14 +849,13 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
  * @return {boolean} true if mappings are not compatible.
  */
 anychart.chartEditorModule.EditorModel.prototype.needResetMappings = function(prevChartType, prevSeriesType) {
-  if (goog.array.indexOf(anychart.chartEditorModule.EditorModel.ChartTypes[this.model_['chart']['type']]['series'], prevSeriesType) == -1)
-    return true;
+  var chartType = this.getChartTypeKey();
 
-  var chartType = this.model_['chart']['type'];
-
-  return (prevChartType == 'stock' || chartType == 'stock') ||
+  return (goog.array.indexOf(anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'], prevSeriesType) == -1) ||
+      (prevChartType == 'stock' || chartType == 'stock') ||
       (prevChartType == 'map' || chartType == 'map') ||
       (prevChartType == 'heatMap' || chartType == 'heatMap') ||
+      (prevChartType == 'treeMap' || chartType == 'treeMap') ||
       chartType == 'pie';
 };
 
@@ -996,6 +1014,7 @@ anychart.chartEditorModule.EditorModel.prototype.dropChartSettings = function(op
   } else {
     this.resetContextMenuItems();
     this.model_['chart']['settings'] = {};
+    this.stackMode = false;
   }
 
   this.applyDefaults_();
@@ -1139,6 +1158,7 @@ anychart.chartEditorModule.EditorModel.prototype.setChartType = function(input) 
   var prevChartType = /** @type {string} */(this.model_['chart']['type']);
   var selectValue = /** @type {Object} */(input.getValue());
   this.model_['chart']['type'] = selectValue.value;
+  this.stackMode = selectValue.stackMode;
 
   var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
 
@@ -1156,7 +1176,11 @@ anychart.chartEditorModule.EditorModel.prototype.setChartType = function(input) 
 
   if (this.needResetMappings(prevChartType, prevDefaultSeriesType)) {
     this.chooseActiveAndField(/** @type {string} */(this.model_['dataSettings']['active']));
+
+    // set it again because it was reset in chooseActiveAndField()
+    this.stackMode = selectValue.stackMode;
     this.chooseDefaultSeriesType();
+
     this.createDefaultMappings();
 
   } else {
@@ -1187,9 +1211,11 @@ anychart.chartEditorModule.EditorModel.prototype.setChartType = function(input) 
  */
 anychart.chartEditorModule.EditorModel.prototype.setStackMode = function(opt_stackMode) {
   this.dropChartSettings("stackMode(");
+  this.stackMode = false;
   if (opt_stackMode) {
     if (this.model_['chart']['type'] != 'stock') {
       this.setValue([['chart'], ['settings'], 'yScale().stackMode()'], opt_stackMode, true);
+      this.stackMode = opt_stackMode;
     }
   }
 };
@@ -2142,6 +2168,15 @@ anychart.chartEditorModule.EditorModel.prototype.checkSettingForExclusion = func
 anychart.chartEditorModule.EditorModel.prototype.isChartSingleSeries = function() {
   var chartType = this.model_['chart']['type'];
   return Boolean(chartType) && Boolean(anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries']);
+};
+
+
+/**
+ * @return {string}
+ */
+anychart.chartEditorModule.EditorModel.prototype.getChartTypeKey = function() {
+  var chartType = this.model_['chart']['type'];
+  return this.stackMode ? (chartType + '-stacked-' + this.stackMode) : chartType;
 };
 
 
