@@ -335,6 +335,14 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'dataSetCtor': 'set',
     'panelsExcludes': ['colorScale']
   },
+  'polar': {
+    'value': 'polar',
+    'name': 'Polar',
+    'icon': 'polar-column-chart.svg',
+    'series': ['line', 'area', 'column', 'marker', 'polygon', 'polyline', 'rangeColumn'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['colorScale']
+  },
   'radar': {
     'value': 'radar',
     'name': 'Radar',
@@ -420,6 +428,19 @@ anychart.chartEditorModule.EditorModel.Series = {
   'splineArea': {
     'name': 'Spline Area',
     'fields': [{'field': 'value', 'name': 'Y Value'}]
+  },
+  'polygon': {
+    'fields': [{'field': 'value', 'name': 'Y Value'}]
+  },
+  'polyline': {
+    'fields': [{'field': 'value', 'name': 'Y Value'}]
+  },
+  'rangeColumn': {
+    'name': 'Range Column',
+    'fields': [
+      {'field': 'high', 'name': 'High'},
+      {'field': 'low', 'name': 'Low'}
+    ]
   },
   'waterfall': {
     'name': 'Waterfall',

@@ -1,8 +1,10 @@
 goog.provide('anychart.chartEditorModule.SpecificPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.settings.specific.Cartesian');
 goog.require('anychart.chartEditorModule.settings.specific.Mekko');
 goog.require('anychart.chartEditorModule.settings.specific.Pie');
+goog.require('anychart.chartEditorModule.settings.specific.Radar');
 goog.require('anychart.chartEditorModule.settings.specific.Waterfall');
 
 
@@ -16,6 +18,7 @@ anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
   anychart.chartEditorModule.SpecificPanel.base(this, 'constructor', model, opt_domHelper);
 
   this.descriptors_ = [
+
     {
       chartType: 'waterfall',
       classFunc: anychart.chartEditorModule.settings.specific.Waterfall
@@ -25,12 +28,16 @@ anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
       classFunc: anychart.chartEditorModule.settings.specific.Pie
     },
     {
-      chartType: 'mekko',
+      chartType: 'radar',
+      classFunc: anychart.chartEditorModule.settings.specific.Radar
+    },
+    {
+      chartType: ['mosaic', 'mekko'],
       classFunc: anychart.chartEditorModule.settings.specific.Mekko
     },
     {
-      chartType: 'mosaic',
-      classFunc: anychart.chartEditorModule.settings.specific.Mekko
+      chartType: ['line', 'spline', 'column', 'bar', 'area'],
+      classFunc: anychart.chartEditorModule.settings.specific.Cartesian
     }];
 
   this.actualize();
@@ -46,10 +53,10 @@ anychart.chartEditorModule.SpecificPanel.prototype.actualize = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var currentChartType = model.getModel()['chart']['type'];
   if (currentChartType != this.chartType_) {
-    this.chartType_ = currentChartType;
+    self.chartType_ = currentChartType;
 
     var descriptor = goog.array.filter(this.descriptors_, function(item) {
-      return item.chartType == self.chartType_;
+      return goog.isString(item.chartType) ? item.chartType == self.chartType_ : goog.array.indexOf(item.chartType, self.chartType_) !== -1;
     });
 
     if (descriptor.length && descriptor[0].classFunc) {
