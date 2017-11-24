@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditorModule.settings.specific.Radar');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-
+goog.require('anychart.chartEditorModule.controls.ControlWrapper');
 
 
 /**
@@ -32,32 +32,16 @@ anychart.chartEditorModule.settings.specific.Radar.CSS_CLASS = goog.getCssName('
 anychart.chartEditorModule.settings.specific.Radar.prototype.createDom = function() {
   anychart.chartEditorModule.settings.specific.Radar.base(this, 'createDom');
 
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.specific.Radar.CSS_CLASS);
-
-  var startAngleLabel = goog.dom.createDom(
-      goog.dom.TagName.LABEL,
-      [
-        goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('anychart-settings-label')
-      ],
-      'Start Angle');
-  goog.dom.appendChild(this.getContentElement(), startAngleLabel);
-  this.registerLabel(startAngleLabel);
+  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.Radar.CSS_CLASS);
 
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([0, 90, 180, 270]);
   startAngle.setFormatterFunction(function(value) {
     return String(goog.math.clamp(Number(value), 0, 360));
   });
-  this.addChild(startAngle, true);
-  goog.dom.classlist.add(startAngle.getElement(), 'anychart-chart-editor-settings-control-right');
-  this.startAngle_ = startAngle;
 
-  // goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-  //     goog.dom.TagName.DIV,
-  //     goog.getCssName('anychart-chart-editor-settings-item-gap')));
+  this.startAngle_ = new anychart.chartEditorModule.controls.ControlWrapper(startAngle, 'Start Angle');
+  this.addChild(this.startAngle_, true);
 };
 
 

@@ -2,9 +2,9 @@ goog.provide('anychart.chartEditorModule.settings.specific.Pie');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.controls.ControlWrapper');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
-
 
 
 /**
@@ -34,36 +34,16 @@ anychart.chartEditorModule.settings.specific.Pie.CSS_CLASS = goog.getCssName('an
 anychart.chartEditorModule.settings.specific.Pie.prototype.createDom = function() {
   anychart.chartEditorModule.settings.specific.Pie.base(this, 'createDom');
 
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.specific.Pie.CSS_CLASS);
-
-  var innerRadiusLabel = goog.dom.createDom(
-      goog.dom.TagName.LABEL,
-      [
-        goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('anychart-settings-label')
-      ],
-      'Inner radius');
-  goog.dom.appendChild(this.getContentElement(), innerRadiusLabel);
-  this.registerLabel(innerRadiusLabel);
+  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.Pie.CSS_CLASS);
 
   var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
   innerRadius.setOptions([5, 10, 20, 30, 40]);
-  // innerRadius.setFormatterFunction(function(value) {
-  //   return String(goog.math.clamp(Number(value), 0, 80)) + "%";
-  // });
-  this.addChild(innerRadius, true);
-  goog.dom.classlist.add(innerRadius.getElement(), 'anychart-chart-editor-settings-control-right');
-  this.innerRadius_ = innerRadius;
+  this.innerRadius_ = new anychart.chartEditorModule.controls.ControlWrapper(innerRadius, 'Inner radius');
+  this.addChild(this.innerRadius_, true);
 
-  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-gap')));
-
-  var stroke = new anychart.chartEditorModule.settings.Stroke(model, 'Connector Stroke');
-  this.addChild(stroke, true);
-  this.connectorStroke_ = stroke;
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  this.connectorStroke_ = new anychart.chartEditorModule.settings.Stroke(model, 'Connector Stroke');
+  this.addChild(this.connectorStroke_, true);
 };
 
 

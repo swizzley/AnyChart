@@ -2,6 +2,7 @@ goog.provide('anychart.chartEditorModule.settings.specific.Cartesian');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.controls.ControlWrapper');
 
 
 
@@ -36,26 +37,20 @@ anychart.chartEditorModule.settings.specific.Cartesian.prototype.createDom = fun
   var element = this.getElement();
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.specific.Cartesian.CSS_CLASS);
 
-  var pointWidthLabel = goog.dom.createDom(
-      goog.dom.TagName.LABEL,
-      [
-        goog.ui.INLINE_BLOCK_CLASSNAME,
-        goog.getCssName('anychart-settings-label')
-      ],
-      'Point Width');
-  goog.dom.appendChild(this.getContentElement(), pointWidthLabel);
-  this.registerLabel(pointWidthLabel);
-
   var pointWidth = new anychart.chartEditorModule.comboBox.Percentage();
-  pointWidth.setOptions([10, 20, 30, 40, 50]);
+  pointWidth.setOptions([10, 30, 50, 70, 90]);
+  this.pointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(pointWidth, 'Point Width');
+  this.addChild(this.pointWidth_, true);
 
-  this.addChild(pointWidth, true);
-  goog.dom.classlist.add(pointWidth.getElement(), 'anychart-chart-editor-settings-control-right');
-  this.pointWidth_ = pointWidth;
+  var maxPointWidth = new anychart.chartEditorModule.comboBox.Percentage();
+  maxPointWidth.setOptions([10, 30, 50, 70, 90, 100]);
+  this.maxPointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(maxPointWidth, 'Max Point Width');
+  this.addChild(this.maxPointWidth_, true);
 
-  // goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-  //     goog.dom.TagName.DIV,
-  //     goog.getCssName('anychart-chart-editor-settings-item-gap')));
+  var minPointLength = new anychart.chartEditorModule.comboBox.Percentage();
+  minPointLength.setOptions([0, 2, 5, 10]);
+  this.minPointLength_ = new anychart.chartEditorModule.controls.ControlWrapper(minPointLength, 'Min Point Length');
+  this.addChild(this.minPointLength_, true);
 };
 
 
@@ -64,6 +59,8 @@ anychart.chartEditorModule.settings.specific.Cartesian.prototype.updateKeys = fu
   if (!this.isExcluded()) {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     if (this.pointWidth_) this.pointWidth_.init(model, this.genKey('pointWidth()'));
+    if (this.maxPointWidth_) this.maxPointWidth_.init(model, this.genKey('maxPointWidth()'));
+    if (this.minPointLength_) this.minPointLength_.init(model, this.genKey('minPointLength()'));
   }
   anychart.chartEditorModule.settings.specific.Cartesian.base(this, 'updateKeys');
 };
@@ -75,6 +72,8 @@ anychart.chartEditorModule.settings.specific.Cartesian.prototype.onChartDraw = f
   if (!this.isExcluded()) {
     var target = evt.chart;
     if (this.pointWidth_) this.pointWidth_.setValueByTarget(target);
+    if (this.maxPointWidth_) this.maxPointWidth_.setValueByTarget(target);
+    if (this.minPointLength_) this.minPointLength_.setValueByTarget(target);
   }
 };
 
@@ -83,6 +82,12 @@ anychart.chartEditorModule.settings.specific.Cartesian.prototype.onChartDraw = f
 anychart.chartEditorModule.settings.specific.Cartesian.prototype.disposeInternal = function() {
   goog.dispose(this.pointWidth_);
   this.pointWidth_ = null;
+
+  goog.dispose(this.maxPointWidth_);
+  this.maxPointWidth_ = null;
+
+  goog.dispose(this.minPointLength_);
+  this.minPointLength_ = null;
 
   anychart.chartEditorModule.settings.specific.Cartesian.base(this, 'disposeInternal');
 };

@@ -512,8 +512,10 @@
   display: none;
 }
 
-.anychart-plot-panel-series .anychart-select-data-field {
-  margin-top: 14px;
+.anychart-plot-panel-series {
+  .anychart-chart-editor-control-wrapper {
+    margin-top: 14px;
+  }
 }
 
 .anychart-plot-panel-series-remove-btn {
@@ -1354,11 +1356,11 @@
 
 
 // region ---- data field select
-.anychart-select-data-field {
+.anychart-chart-editor-control-wrapper {
   position: relative;
   margin-bottom: 13px;
 
-  .anychart-select-data-field-label {
+  .anychart-chart-editor-control-wrapper-label {
     float: left;
     font-size: 15px;
     color: @color-label;
@@ -1370,6 +1372,10 @@
     min-width: 150px;
     float: right;
     position: relative;
+  }
+
+  .anychart-combobox {
+    float: right;
   }
 }
 
