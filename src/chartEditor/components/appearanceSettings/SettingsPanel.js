@@ -64,15 +64,17 @@ anychart.chartEditorModule.SettingsPanel.prototype.isEnabled = function() {
 };
 
 
-// /** @param {number} value */
-// anychart.chartEditorModule.SettingsPanel.prototype.setPlotIndex = function(value) {
-//   this.plotIndex_ = value;
-// };
-
-
 /** @return {string} */
 anychart.chartEditorModule.SettingsPanel.prototype.getStringId = function() {
   return this.stringId;
+};
+
+
+/**
+ * @return {?string|undefined}
+ */
+anychart.chartEditorModule.SettingsPanel.prototype.getName = function() {
+  return this.name;
 };
 
 
@@ -117,13 +119,6 @@ anychart.chartEditorModule.SettingsPanel.prototype.setEnabledButtonContainer = f
   this.enabledButtonContainer_ = enabledButtonContainer;
 };
 
-
-/**
- * @return {?string|undefined}
- */
-anychart.chartEditorModule.SettingsPanel.prototype.getName = function() {
-  return this.name;
-};
 
 /** @inheritDoc */
 anychart.chartEditorModule.SettingsPanel.prototype.createDom = function() {

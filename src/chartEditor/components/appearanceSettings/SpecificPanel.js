@@ -6,6 +6,7 @@ goog.require('anychart.chartEditorModule.settings.specific.Mekko');
 goog.require('anychart.chartEditorModule.settings.specific.Pie');
 goog.require('anychart.chartEditorModule.settings.specific.Polar');
 goog.require('anychart.chartEditorModule.settings.specific.Radar');
+goog.require('anychart.chartEditorModule.settings.specific.TreeMap');
 goog.require('anychart.chartEditorModule.settings.specific.Waterfall');
 
 
@@ -35,6 +36,10 @@ anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
     {
       chartType: 'polar',
       classFunc: anychart.chartEditorModule.settings.specific.Polar
+    },
+    {
+      chartType: 'treeMap',
+      classFunc: anychart.chartEditorModule.settings.specific.TreeMap
     },
     {
       chartType: ['mosaic', 'mekko'],
