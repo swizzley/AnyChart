@@ -47,9 +47,8 @@ anychart.chartEditorModule.settings.Stroke.prototype.createDom = function() {
 
   var thickness = new anychart.chartEditorModule.comboBox.Base();
   thickness.setOptions([1, 2, 3, 4, 5]);
-  thickness.setFormatterFunction(function(value) {
-    return String(goog.math.clamp(Number(value), 0, 10));
-  });
+  thickness.setRange(1, 10);
+
   this.addChild(thickness, true);
   goog.dom.classlist.add(thickness.getElement(), goog.getCssName('anychart-stroke-thickness'));
   this.thickness_ = thickness;

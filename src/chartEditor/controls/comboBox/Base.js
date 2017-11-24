@@ -52,8 +52,22 @@ anychart.chartEditorModule.comboBox.Base = function(opt_domHelper, opt_menu, opt
     // not a number
     return !(goog.isNull(numberValue) || goog.isBoolean(numberValue) || isNaN(numberValue));
   });
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minimum_ = 6;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maximum_ = 40;
+
+  var self = this;
   this.setFormatterFunction(function(value) {
-    return String(goog.math.clamp(Number(value), 6, 40));
+    return String(goog.math.clamp(Number(value), self.minimum_, self.maximum_));
   });
 
   /**
@@ -71,6 +85,16 @@ goog.inherits(anychart.chartEditorModule.comboBox.Base, goog.ui.ComboBox);
  * @private
  */
 anychart.chartEditorModule.comboBox.Base.prototype.useTypeahead_ = true;
+
+
+/**
+ * @param {number} minimum
+ * @param {number} maximum
+ */
+anychart.chartEditorModule.comboBox.Base.prototype.setRange = function(minimum, maximum) {
+  this.minimum_ = minimum;
+  this.maximum_ = maximum;
+};
 
 
 /**

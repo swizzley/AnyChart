@@ -36,9 +36,7 @@ anychart.chartEditorModule.settings.specific.Mekko.prototype.createDom = functio
 
   var pointsPadding = new anychart.chartEditorModule.comboBox.Base();
   pointsPadding.setOptions([0, 1, 3, 5, 10, 15]);
-  pointsPadding.setFormatterFunction(function(value) {
-    return String(goog.math.clamp(Number(value), 0, 20));
-  });
+  pointsPadding.setRange(0, 20);
 
   this.pointsPadding_ = new anychart.chartEditorModule.controls.ControlWrapper(pointsPadding, 'Points Padding');
   this.addChild(this.pointsPadding_, true);

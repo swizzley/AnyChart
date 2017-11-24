@@ -23,7 +23,7 @@ anychart.chartEditorModule.comboBox.Percentage = function(opt_domHelper, opt_men
   });
 
   this.setFormatterFunction(function(value) {
-    var match = value.match(/^(\d{1,3})%?$/);
+    var match = String(value).match(/^(\d{1,3})%?$/);
     return String(goog.math.clamp(Number(match[1]), 0, 100)) + "%";
   });
 };

@@ -870,14 +870,15 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
  * @return {boolean} true if mappings are not compatible.
  */
 anychart.chartEditorModule.EditorModel.prototype.needResetMappings = function(prevChartType, prevSeriesType) {
-  var chartType = this.getChartTypeKey();
+  var chartTypeKey = this.getChartTypeKey();
+  var chartType = this.model_['chart']['type'];
 
-  return (goog.array.indexOf(anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['series'], prevSeriesType) == -1) ||
+  return (goog.array.indexOf(anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'], prevSeriesType) == -1) ||
       (prevChartType == 'stock' || chartType == 'stock') ||
       (prevChartType == 'map' || chartType == 'map') ||
       (prevChartType == 'heatMap' || chartType == 'heatMap') ||
       (prevChartType == 'treeMap' || chartType == 'treeMap') ||
-      chartType == 'pie';
+      chartType == 'pie' || chartType == 'radar' || chartType == 'polar';
 };
 
 

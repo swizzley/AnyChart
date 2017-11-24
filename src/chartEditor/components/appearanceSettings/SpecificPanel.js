@@ -4,6 +4,7 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.settings.specific.Cartesian');
 goog.require('anychart.chartEditorModule.settings.specific.Mekko');
 goog.require('anychart.chartEditorModule.settings.specific.Pie');
+goog.require('anychart.chartEditorModule.settings.specific.Polar');
 goog.require('anychart.chartEditorModule.settings.specific.Radar');
 goog.require('anychart.chartEditorModule.settings.specific.Waterfall');
 
@@ -32,11 +33,15 @@ anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
       classFunc: anychart.chartEditorModule.settings.specific.Radar
     },
     {
+      chartType: 'polar',
+      classFunc: anychart.chartEditorModule.settings.specific.Polar
+    },
+    {
       chartType: ['mosaic', 'mekko'],
       classFunc: anychart.chartEditorModule.settings.specific.Mekko
     },
     {
-      chartType: ['line', 'spline', 'column', 'bar', 'area'],
+      chartType: ['line', 'area', 'bar', 'column', 'box'],
       classFunc: anychart.chartEditorModule.settings.specific.Cartesian
     }];
 
@@ -66,9 +71,17 @@ anychart.chartEditorModule.SpecificPanel.prototype.actualize = function() {
       }
       this.specificComponent_ = new descriptor[0].classFunc(model);
       this.specificComponent_.allowEnabled(false);
-      this.name = this.specificComponent_.getName();
+
       this.addChild(this.specificComponent_, true);
       goog.style.setElementShown(this.specificComponent_.getTopElement(), false);
+
+      this.name = this.specificComponent_.getName();
+      if (this.topEl) {
+        // Update title
+        var titleEl = this.getDomHelper().getElementByClass('title', this.topEl);
+        this.getDomHelper().setTextContent(titleEl, /** @type {string} */(this.name));
+      }
+
       this.exclude(false);
 
     } else

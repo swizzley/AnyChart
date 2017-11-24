@@ -1,6 +1,8 @@
 goog.provide('anychart.chartEditorModule.settings.specific.Waterfall');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.controls.ControlWrapper');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 
@@ -56,6 +58,21 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.createDom = fun
   var stroke = new anychart.chartEditorModule.settings.Stroke(model, 'Connector Stroke');
   this.addChild(stroke, true);
   this.connectorStroke_ = stroke;
+
+  var pointWidth = new anychart.chartEditorModule.comboBox.Percentage();
+  pointWidth.setOptions([10, 30, 50, 70, 90]);
+  this.pointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(pointWidth, 'Point Width');
+  this.addChild(this.pointWidth_, true);
+
+  var maxPointWidth = new anychart.chartEditorModule.comboBox.Percentage();
+  maxPointWidth.setOptions([10, 30, 50, 70, 90, 100]);
+  this.maxPointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(maxPointWidth, 'Max Point Width');
+  this.addChild(this.maxPointWidth_, true);
+
+  var minPointLength = new anychart.chartEditorModule.comboBox.Percentage();
+  minPointLength.setOptions([0, 2, 5, 10]);
+  this.minPointLength_ = new anychart.chartEditorModule.controls.ControlWrapper(minPointLength, 'Min Point Length');
+  this.addChild(this.minPointLength_, true);
 };
 
 
@@ -65,8 +82,10 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.updateKeys = fu
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     if (this.itemsSourceMode_) this.itemsSourceMode_.init(model, this.genKey('legend().itemsSourceMode()'));
     if (this.dataMode_) this.dataMode_.init(model, this.genKey('dataMode()'));
-
     if (this.connectorStroke_) this.connectorStroke_.setKey(this.genKey('connectorStroke()'));
+    if (this.pointWidth_) this.pointWidth_.init(model, this.genKey('pointWidth()'));
+    if (this.maxPointWidth_) this.maxPointWidth_.init(model, this.genKey('maxPointWidth()'));
+    if (this.minPointLength_) this.minPointLength_.init(model, this.genKey('minPointLength()'));
   }
 
   anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'updateKeys');
@@ -80,6 +99,9 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.onChartDraw = f
     var target = evt.chart;
     if (this.itemsSourceMode_) this.itemsSourceMode_.getSelect().setValueByTarget(target);
     if (this.dataMode_) this.dataMode_.getSelect().setValueByTarget(target);
+    if (this.pointWidth_) this.pointWidth_.setValueByTarget(target);
+    if (this.maxPointWidth_) this.maxPointWidth_.setValueByTarget(target);
+    if (this.minPointLength_) this.minPointLength_.setValueByTarget(target);
   }
 };
 
@@ -94,6 +116,15 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.disposeInternal
 
   goog.dispose(this.connectorStroke_);
   this.connectorStroke_ = null;
+
+  goog.dispose(this.pointWidth_);
+  this.pointWidth_ = null;
+
+  goog.dispose(this.maxPointWidth_);
+  this.maxPointWidth_ = null;
+
+  goog.dispose(this.minPointLength_);
+  this.minPointLength_ = null;
 
   anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'disposeInternal');
 };

@@ -36,10 +36,7 @@ anychart.chartEditorModule.settings.specific.Radar.prototype.createDom = functio
 
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([0, 90, 180, 270]);
-  startAngle.setFormatterFunction(function(value) {
-    return String(goog.math.clamp(Number(value), 0, 360));
-  });
-
+  startAngle.setRange(0, 360);
   this.startAngle_ = new anychart.chartEditorModule.controls.ControlWrapper(startAngle, 'Start Angle');
   this.addChild(this.startAngle_, true);
 };
