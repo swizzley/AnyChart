@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.AppearanceSettings');
 
 goog.require('anychart.chartEditorModule.ChartTitlePanel');
+goog.require('anychart.chartEditorModule.ColorRangePanel');
 goog.require('anychart.chartEditorModule.ColorScalePanel');
 goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.ContextMenuPanel');
@@ -97,6 +98,12 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       name: 'ColorScale',
       enabled: true,
       classFunc: anychart.chartEditorModule.ColorScalePanel,
+      instance: null
+    },
+    {
+      name: 'ColorRange',
+      enabled: true,
+      classFunc: anychart.chartEditorModule.ColorRangePanel,
       instance: null
     },
     {
