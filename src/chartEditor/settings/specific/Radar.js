@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditorModule.settings.specific.Radar');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.controls.ControlWrapper');
+goog.require('anychart.chartEditorModule.controls.LabeledControl');
 
 
 /**
@@ -37,7 +37,7 @@ anychart.chartEditorModule.settings.specific.Radar.prototype.createDom = functio
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([0, 90, 180, 270]);
   startAngle.setRange(0, 360);
-  this.startAngle_ = new anychart.chartEditorModule.controls.ControlWrapper(startAngle, 'Start Angle');
+  this.startAngle_ = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
   this.addChild(this.startAngle_, true);
 };
 

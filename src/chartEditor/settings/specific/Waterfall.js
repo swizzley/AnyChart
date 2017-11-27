@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditorModule.settings.specific.Waterfall');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
-goog.require('anychart.chartEditorModule.controls.ControlWrapper');
+goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 
@@ -61,17 +61,17 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.createDom = fun
 
   var pointWidth = new anychart.chartEditorModule.comboBox.Percentage();
   pointWidth.setOptions([10, 30, 50, 70, 90]);
-  this.pointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(pointWidth, 'Point Width');
+  this.pointWidth_ = new anychart.chartEditorModule.controls.LabeledControl(pointWidth, 'Point Width');
   this.addChild(this.pointWidth_, true);
 
   var maxPointWidth = new anychart.chartEditorModule.comboBox.Percentage();
   maxPointWidth.setOptions([10, 30, 50, 70, 90, 100]);
-  this.maxPointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(maxPointWidth, 'Max Point Width');
+  this.maxPointWidth_ = new anychart.chartEditorModule.controls.LabeledControl(maxPointWidth, 'Max Point Width');
   this.addChild(this.maxPointWidth_, true);
 
   var minPointLength = new anychart.chartEditorModule.comboBox.Percentage();
   minPointLength.setOptions([0, 2, 5, 10]);
-  this.minPointLength_ = new anychart.chartEditorModule.controls.ControlWrapper(minPointLength, 'Min Point Length');
+  this.minPointLength_ = new anychart.chartEditorModule.controls.LabeledControl(minPointLength, 'Min Point Length');
   this.addChild(this.minPointLength_, true);
 };
 

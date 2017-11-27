@@ -2,7 +2,7 @@ goog.provide('anychart.chartEditorModule.settings.specific.Mekko');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.controls.ControlWrapper');
+goog.require('anychart.chartEditorModule.controls.LabeledControl');
 
 
 /**
@@ -38,7 +38,7 @@ anychart.chartEditorModule.settings.specific.Mekko.prototype.createDom = functio
   pointsPadding.setOptions([0, 1, 3, 5, 10, 15]);
   pointsPadding.setRange(0, 20);
 
-  this.pointsPadding_ = new anychart.chartEditorModule.controls.ControlWrapper(pointsPadding, 'Points Padding');
+  this.pointsPadding_ = new anychart.chartEditorModule.controls.LabeledControl(pointsPadding, 'Points Padding');
   this.addChild(this.pointsPadding_, true);
 };
 

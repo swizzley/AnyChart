@@ -2,9 +2,10 @@ goog.provide('anychart.chartEditorModule.settings.specific.TreeMap');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
-goog.require('anychart.chartEditorModule.controls.ControlWrapper');
+goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
+goog.require('anychart.chartEditorModule.settings.TreemapHeaders');
 
 
 /**
@@ -36,9 +37,16 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.TreeMap.CSS_CLASS);
 
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  var headers = new anychart.chartEditorModule.settings.TreemapHeaders(model);
+  headers.allowEnabled(true);
+  this.addChild(headers, true);
+
+  this.headers_ = headers;
+
   // var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
   // innerRadius.setOptions([5, 10, 20, 30, 40]);
-  // this.innerRadius_ = new anychart.chartEditorModule.controls.ControlWrapper(innerRadius, 'Inner radius');
+  // this.innerRadius_ = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner radius');
   // this.addChild(this.innerRadius_, true);
   //
   // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -50,10 +58,12 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
 /** @inheritDoc */
 anychart.chartEditorModule.settings.specific.TreeMap.prototype.updateKeys = function() {
   if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-    if (this.innerRadius_) this.innerRadius_.init(model, this.genKey('innerRadius()'));
-    if (this.connectorStroke_) this.connectorStroke_.setKey(this.genKey('connectorStroke()'));
+    //if (this.headers_) this.headers_.setKey(this.getKey());
+
+    // if (this.innerRadius_) this.innerRadius_.init(model, this.genKey('innerRadius()'));
+    // if (this.connectorStroke_) this.connectorStroke_.setKey(this.genKey('connectorStroke()'));
   }
 
   anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'updateKeys');
@@ -64,19 +74,16 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.updateKeys = func
 anychart.chartEditorModule.settings.specific.TreeMap.prototype.onChartDraw = function(evt) {
   anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'onChartDraw', evt);
   if (!this.isExcluded()) {
-    var target = evt.chart;
-    if (this.innerRadius_) this.innerRadius_.setValueByTarget(target);
+    // var target = evt.chart;
+    // if (this.innerRadius_) this.innerRadius_.setValueByTarget(target);
   }
 };
 
 
 /** @override */
 anychart.chartEditorModule.settings.specific.TreeMap.prototype.disposeInternal = function() {
-  goog.dispose(this.innerRadius_);
-  this.innerRadius_ = null;
-
-  goog.dispose(this.connectorStroke_);
-  this.connectorStroke_ = null;
+  goog.dispose(this.headers_);
+  this.headers_ = null;
 
   anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'disposeInternal');
 };

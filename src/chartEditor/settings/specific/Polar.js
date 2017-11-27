@@ -4,7 +4,7 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
-goog.require('anychart.chartEditorModule.controls.ControlWrapper');
+goog.require('anychart.chartEditorModule.controls.LabeledControl');
 
 
 /**
@@ -44,24 +44,24 @@ anychart.chartEditorModule.settings.specific.Polar.prototype.createDom = functio
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([0, 90, 180, 270]);
   startAngle.setRange(0, 360);
-  this.startAngle_ = new anychart.chartEditorModule.controls.ControlWrapper(startAngle, 'Start Angle');
+  this.startAngle_ = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
   this.addChild(this.startAngle_, true);
 
   var pointWidth = new anychart.chartEditorModule.comboBox.Base();
   pointWidth.setOptions([1, 5, 10, 20, 40]);
   pointWidth.setRange(1, 200);
-  this.pointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(pointWidth, 'Point Width');
+  this.pointWidth_ = new anychart.chartEditorModule.controls.LabeledControl(pointWidth, 'Point Width');
   this.addChild(this.pointWidth_, true);
 
   var maxPointWidth = new anychart.chartEditorModule.comboBox.Base();
   maxPointWidth.setOptions([1, 5, 10, 20, 40]);
   maxPointWidth.setRange(1, 200);
-  this.maxPointWidth_ = new anychart.chartEditorModule.controls.ControlWrapper(maxPointWidth, 'Max Point Width');
+  this.maxPointWidth_ = new anychart.chartEditorModule.controls.LabeledControl(maxPointWidth, 'Max Point Width');
   this.addChild(this.maxPointWidth_, true);
 
   var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
   innerRadius.setOptions([5, 10, 20, 30, 40]);
-  this.innerRadius_ = new anychart.chartEditorModule.controls.ControlWrapper(innerRadius, 'Inner radius');
+  this.innerRadius_ = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner radius');
   this.addChild(this.innerRadius_, true);
 };
 

@@ -1,6 +1,6 @@
 goog.provide('anychart.chartEditorModule.controls.select.DataField');
 
-goog.require('anychart.chartEditorModule.controls.ControlWrapper');
+goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
 goog.require('anychart.ui.Component');
 
@@ -13,7 +13,7 @@ goog.require('anychart.ui.Component');
  * @param {!goog.ui.MenuRenderer=} opt_menuRenderer
  * @param {string=} opt_menuAdditionalClass
  * @constructor
- * @extends {anychart.chartEditorModule.controls.ControlWrapper}
+ * @extends {anychart.chartEditorModule.controls.LabeledControl}
  */
 anychart.chartEditorModule.controls.select.DataField = function(opt_model, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
   var select = new anychart.chartEditorModule.controls.select.DataFieldSelect(
@@ -27,7 +27,7 @@ anychart.chartEditorModule.controls.select.DataField = function(opt_model, opt_m
   var label = opt_model && opt_model.label || '';
   anychart.chartEditorModule.controls.select.DataField.base(this, 'constructor', select, label, opt_domHelper);
 };
-goog.inherits(anychart.chartEditorModule.controls.select.DataField, anychart.chartEditorModule.controls.ControlWrapper);
+goog.inherits(anychart.chartEditorModule.controls.select.DataField, anychart.chartEditorModule.controls.LabeledControl);
 
 
 /** @inheritDoc */
@@ -73,16 +73,4 @@ anychart.chartEditorModule.controls.select.DataField.prototype.init = function(m
  */
 anychart.chartEditorModule.controls.select.DataField.prototype.updateExclusion = function() {
   this.exclude(!!this.control_.updateExclusion()/*, true*/);
-};
-
-
-/**
- * @param {boolean} enabled
- */
-anychart.chartEditorModule.controls.select.DataField.prototype.setEnabled = function(enabled) {
-  if (this.label_)
-    goog.dom.classlist.enable(this.label_, goog.getCssName('anychart-control-disabled'), !enabled);
-
-  if (this.control_)
-    this.control_.setEnabled(enabled);
 };

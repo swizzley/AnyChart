@@ -1,4 +1,4 @@
-goog.provide('anychart.chartEditorModule.controls.ControlWrapper');
+goog.provide('anychart.chartEditorModule.controls.LabeledControl');
 
 goog.require('anychart.chartEditorModule.Component');
 
@@ -10,20 +10,20 @@ goog.require('anychart.chartEditorModule.Component');
  * @constructor
  * @extends {anychart.chartEditorModule.Component}
  */
-anychart.chartEditorModule.controls.ControlWrapper = function(control, opt_label, opt_domHelper) {
-  anychart.chartEditorModule.controls.ControlWrapper.base(this, 'constructor', opt_domHelper);
+anychart.chartEditorModule.controls.LabeledControl = function(control, opt_label, opt_domHelper) {
+  anychart.chartEditorModule.controls.LabeledControl.base(this, 'constructor', opt_domHelper);
 
   this.control_ = control;
   this.labelString_ = opt_label ? opt_label : '';
 
   this.addClassName('anychart-chart-editor-control-wrapper');
 };
-goog.inherits(anychart.chartEditorModule.controls.ControlWrapper, anychart.chartEditorModule.Component);
+goog.inherits(anychart.chartEditorModule.controls.LabeledControl, anychart.chartEditorModule.Component);
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.createDom = function() {
-  anychart.chartEditorModule.controls.ControlWrapper.base(this, 'createDom');
+anychart.chartEditorModule.controls.LabeledControl.prototype.createDom = function() {
+  anychart.chartEditorModule.controls.LabeledControl.base(this, 'createDom');
 
   var element = this.getElement();
 
@@ -41,7 +41,7 @@ anychart.chartEditorModule.controls.ControlWrapper.prototype.createDom = functio
 /**
  * @return {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base)}
  */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.getControl = function() {
+anychart.chartEditorModule.controls.LabeledControl.prototype.getControl = function() {
   return this.control_;
 };
 
@@ -49,7 +49,7 @@ anychart.chartEditorModule.controls.ControlWrapper.prototype.getControl = functi
 /**
  * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base)} control
  */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.setControl = function(control) {
+anychart.chartEditorModule.controls.LabeledControl.prototype.setControl = function(control) {
   this.control_ = control;
 };
 
@@ -64,7 +64,7 @@ anychart.chartEditorModule.controls.ControlWrapper.prototype.setControl = functi
  * @param {boolean=} opt_noRebuild Should or not rebuild target (chart) on change value of this control.
  * @public
  */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
+anychart.chartEditorModule.controls.LabeledControl.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
   this.control_.init(model, key, opt_callback, opt_noRebuild);
 };
 
@@ -73,7 +73,7 @@ anychart.chartEditorModule.controls.ControlWrapper.prototype.init = function(mod
  * Wrapper for control's method.
  * @param {?Object} target
  */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.setValueByTarget = function(target) {
+anychart.chartEditorModule.controls.LabeledControl.prototype.setValueByTarget = function(target) {
   this.control_.setValueByTarget(target);
 };
 
@@ -82,7 +82,7 @@ anychart.chartEditorModule.controls.ControlWrapper.prototype.setValueByTarget = 
  * @param {string} value
  * @param {boolean=} opt_noDispatch
  */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.setValue = function(value, opt_noDispatch) {
+anychart.chartEditorModule.controls.LabeledControl.prototype.setValue = function(value, opt_noDispatch) {
   this.control_.suspendDispatch(!!opt_noDispatch);
   this.control_.setValue(value);
   this.control_.suspendDispatch(false);
@@ -92,17 +92,29 @@ anychart.chartEditorModule.controls.ControlWrapper.prototype.setValue = function
 /**
  * @return {*}
  */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.getValue = function() {
+anychart.chartEditorModule.controls.LabeledControl.prototype.getValue = function() {
   return this.control_ ? this.control_.getValue() : null;
 };
 
 
+/**
+ * @param {boolean} enabled
+ */
+anychart.chartEditorModule.controls.LabeledControl.prototype.setEnabled = function(enabled) {
+  if (this.label_)
+    goog.dom.classlist.enable(this.label_, goog.getCssName('anychart-control-disabled'), !enabled);
+
+  if (this.control_)
+    this.control_.setEnabled(enabled);
+};
+
+
 /** @override */
-anychart.chartEditorModule.controls.ControlWrapper.prototype.disposeInternal = function() {
+anychart.chartEditorModule.controls.LabeledControl.prototype.disposeInternal = function() {
   goog.dispose(this.control_);
   this.control_ = null;
 
   this.label_ = null;
 
-  anychart.chartEditorModule.controls.ControlWrapper.base(this, 'disposeInternal');
+  anychart.chartEditorModule.controls.LabeledControl.base(this, 'disposeInternal');
 };
