@@ -1,6 +1,8 @@
 goog.provide('anychart.chartEditorModule.settings.specific.TreeMap');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.checkbox.Base');
+goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
@@ -69,6 +71,10 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
   adjustFontSize.setCaption('Adjust Labels Font Size');
   this.adjustFontSize_ = adjustFontSize;
   this.addChild(this.adjustFontSize_, true);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
 
   var headers = new anychart.chartEditorModule.settings.TreemapHeaders(model);
   headers.allowEnabled(true);

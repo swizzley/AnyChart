@@ -150,7 +150,8 @@ anychart.chartEditorModule.checkbox.Base.prototype.setValueByTarget = function(t
   this.target = target;
 
   var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
-  var value = !!(/** @type {string|boolean} */(anychart.bindingModule.exec(this.target, stringKey)));
+  var value = anychart.bindingModule.exec(this.target, stringKey);
+  value = goog.typeOf(value) === 'boolean' ? /** @type {boolean} */(value) : false;
 
   this.noDispatch = true;
   this.setChecked(value);
