@@ -293,8 +293,7 @@ anychart.chartEditorModule.comboBox.Base.prototype.getFormatterFunction = functi
  * @suppress {visibility}
  */
 anychart.chartEditorModule.comboBox.Base.prototype.setValue = function(value) {
-  // goog.log.info(this.logger_, 'setValue() - ' + value);
-  if (this.lastToken_ != value && this.validateFunction_(value)) {
+  if (this.lastToken_ !== value && this.validateFunction_(value)) {
     value = this.formatterFunction_(value);
     this.lastToken_ = value;
     this.labelInput_.setValue(value);

@@ -46,7 +46,6 @@ anychart.chartEditorModule.settings.TreemapHeaders.prototype.createDom = functio
   settings.setTitleKey('format()');
   settings.setKey(this.getKey()); // This is for enabled working sake!
   this.addChild(settings, true);
-
   this.settings_ = settings;
 
   var maxHeadersHeight = new anychart.chartEditorModule.comboBox.Base();

@@ -4,7 +4,6 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.button.Bold');
 goog.require('anychart.chartEditorModule.button.Italic');
 goog.require('anychart.chartEditorModule.button.Underline');
-goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataField');

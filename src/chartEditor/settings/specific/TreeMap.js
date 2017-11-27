@@ -38,32 +38,55 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.TreeMap.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
+  this.sort_ = new anychart.chartEditorModule.controls.select.DataField({label: 'Sort'});
+  this.sort_.getSelect().setOptions([
+    {value: 'asc', caption: 'Ascending'},
+    {value: 'desc', caption: 'Descending'},
+    {value: 'none', caption: 'No sorting'}
+  ]);
+  this.addChild(this.sort_, true);
+
+  var maxDepth = new anychart.chartEditorModule.comboBox.Base();
+  maxDepth.setOptions([1, 2, 3, 4, 5]);
+  maxDepth.setRange(1, 10);
+  this.maxDepth_ = new anychart.chartEditorModule.controls.LabeledControl(maxDepth, 'Max Depth');
+  this.addChild(this.maxDepth_, true);
+
+  var hintDepth = new anychart.chartEditorModule.comboBox.Base();
+  hintDepth.setOptions([0, 1, 2, 3, 4]);
+  hintDepth.setRange(0, 10);
+  this.hintDepth_ = new anychart.chartEditorModule.controls.LabeledControl(hintDepth, 'Hint Depth');
+  this.addChild(this.hintDepth_, true);
+
+  var hintOpacity = new anychart.chartEditorModule.comboBox.Base();
+  hintOpacity.setOptions([0, 0.2, 0.5, 0.7, 1]);
+  hintOpacity.setRange(0, 1);
+  this.hintOpacity_ = new anychart.chartEditorModule.controls.LabeledControl(hintOpacity, 'Hint Opacity');
+  this.addChild(this.hintOpacity_, true);
+
+  var adjustFontSize = new anychart.chartEditorModule.checkbox.Base();
+  adjustFontSize.setCaption('Adjust Labels Font Size');
+  this.adjustFontSize_ = adjustFontSize;
+  this.addChild(this.adjustFontSize_, true);
+
   var headers = new anychart.chartEditorModule.settings.TreemapHeaders(model);
   headers.allowEnabled(true);
   this.addChild(headers, true);
 
   this.headers_ = headers;
-
-  // var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
-  // innerRadius.setOptions([5, 10, 20, 30, 40]);
-  // this.innerRadius_ = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner radius');
-  // this.addChild(this.innerRadius_, true);
-  //
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  // this.connectorStroke_ = new anychart.chartEditorModule.settings.Stroke(model, 'Connector Stroke');
-  // this.addChild(this.connectorStroke_, true);
 };
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.specific.TreeMap.prototype.updateKeys = function() {
   if (!this.isExcluded()) {
-    // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-
-    //if (this.headers_) this.headers_.setKey(this.getKey());
-
-    // if (this.innerRadius_) this.innerRadius_.init(model, this.genKey('innerRadius()'));
-    // if (this.connectorStroke_) this.connectorStroke_.setKey(this.genKey('connectorStroke()'));
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    if (this.sort_) this.sort_.init(model, this.genKey('sort()'));
+    if (this.maxDepth_) this.maxDepth_.init(model, this.genKey('maxDepth()'));
+    if (this.hintDepth_) this.hintDepth_.init(model, this.genKey('hintDepth()'));
+    if (this.hintOpacity_) this.hintOpacity_.init(model, this.genKey('hintOpacity()'));
+    if (this.adjustFontSize_) this.adjustFontSize_.init(model, this.genKey('labels().adjustFontSize()'));
   }
 
   anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'updateKeys');
@@ -74,14 +97,33 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.updateKeys = func
 anychart.chartEditorModule.settings.specific.TreeMap.prototype.onChartDraw = function(evt) {
   anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'onChartDraw', evt);
   if (!this.isExcluded()) {
-    // var target = evt.chart;
-    // if (this.innerRadius_) this.innerRadius_.setValueByTarget(target);
+    var target = evt.chart;
+    if (this.sort_) this.sort_.setValueByTarget(target);
+    if (this.maxDepth_) this.maxDepth_.setValueByTarget(target);
+    if (this.hintDepth_) this.hintDepth_.setValueByTarget(target);
+    if (this.hintOpacity_) this.hintOpacity_.setValueByTarget(target);
+    if (this.adjustFontSize_) this.adjustFontSize_.setValueByTarget(target);
   }
 };
 
 
 /** @override */
 anychart.chartEditorModule.settings.specific.TreeMap.prototype.disposeInternal = function() {
+  goog.dispose(this.sort_);
+  this.sort_ = null;
+
+  goog.dispose(this.maxDepth_);
+  this.maxDepth_ = null;
+
+  goog.dispose(this.hintDepth_);
+  this.hintDepth_ = null;
+
+  goog.dispose(this.hintOpacity_);
+  this.hintOpacity_ = null;
+
+  goog.dispose(this.adjustFontSize_);
+  this.adjustFontSize_ = null;
+
   goog.dispose(this.headers_);
   this.headers_ = null;
 
