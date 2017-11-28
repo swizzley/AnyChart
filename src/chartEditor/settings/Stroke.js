@@ -6,7 +6,6 @@ goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
 
 
-
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
  * @param {?string=} opt_name

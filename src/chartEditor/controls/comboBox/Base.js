@@ -34,8 +34,9 @@ anychart.chartEditorModule.comboBox.Base = function(opt_domHelper, opt_menu, opt
   // If no value is set.
   this.lastToken_ = '';
 
-  this.options_ = [];
-  this.captions_ = [];
+  this.options = [];
+
+  this.captions = [];
 
   /**
    * Editor Model key.
@@ -121,21 +122,21 @@ anychart.chartEditorModule.comboBox.Base.prototype.formatterFunction_ = function
 
 /**
  * @type {Array.<string>}
- * @private
+ * @protected
  */
-anychart.chartEditorModule.comboBox.Base.prototype.options_;
+anychart.chartEditorModule.comboBox.Base.prototype.options;
 
 
 /**
  * @type {Array.<string>}
- * @private
+ * @protected
  */
-anychart.chartEditorModule.comboBox.Base.prototype.captions_;
+anychart.chartEditorModule.comboBox.Base.prototype.captions;
 
 
 /** @param {Array.<string>} value */
 anychart.chartEditorModule.comboBox.Base.prototype.setOptions = function(value) {
-  this.options_ = value;
+  this.options = value;
 };
 
 
@@ -201,15 +202,15 @@ anychart.chartEditorModule.comboBox.Base.prototype.createDom = function() {
  * @suppress {checkTypes} set option to ComboBoxItem
  */
 anychart.chartEditorModule.comboBox.Base.prototype.updateOptions = function() {
-  var optionsCount = this.options_.length;
+  var optionsCount = this.options.length;
   var count = Math.max(this.getChildCount(), optionsCount);
 
   for (var i = 0; i < count; i++) {
     var optionItem = this.getItemAt(i);
 
     if (i < optionsCount) {
-      var option = this.options_[i];
-      var caption = this.captions_[i] || option.toString();
+      var option = this.options[i];
+      var caption = this.captions[i] || option.toString();
 
       if (!optionItem) {
         optionItem = new anychart.chartEditorModule.comboBox.ComboBoxItem(caption, option);

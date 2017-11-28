@@ -33,6 +33,7 @@ goog.inherits(anychart.chartEditorModule.controls.select.DataField, anychart.cha
 /** @inheritDoc */
 anychart.chartEditorModule.controls.select.DataField.prototype.enterDocument = function() {
   anychart.chartEditorModule.controls.select.DataField.base(this, 'enterDocument');
+
   this.updateExclusion();
 };
 
@@ -52,6 +53,7 @@ anychart.chartEditorModule.controls.select.DataField.prototype.setSelect = funct
 /** @inheritDoc */
 anychart.chartEditorModule.controls.select.DataField.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
   anychart.chartEditorModule.controls.select.DataField.base(this, 'init', model, key, opt_callback, opt_noRebuild);
+
   this.updateExclusion();
 };
 

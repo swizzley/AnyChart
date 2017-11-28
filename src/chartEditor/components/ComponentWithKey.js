@@ -14,7 +14,10 @@ goog.require('anychart.chartEditorModule.Component');
 anychart.chartEditorModule.ComponentWithKey = function(model, opt_domHelper) {
   anychart.chartEditorModule.ComponentWithKey.base(this, 'constructor', opt_domHelper);
 
-  this.setModel(model);
+  if (model)
+    this.setModel(model);
+  else
+    console.warn('anychart.chartEditorModule.ComponentWithKey: Model could not be undefined!');
 
   /**
    * Editor Model key.

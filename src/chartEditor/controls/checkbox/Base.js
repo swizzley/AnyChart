@@ -167,7 +167,7 @@ anychart.chartEditorModule.checkbox.Base.prototype.exclude = function(value) {
   this.excluded = value;
   if (this.isInDocument())
     goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', this.excluded);
-  if (this.excluded)
+  if (this.excluded && this.editorModel)
     this.editorModel.removeByKey(this.key, true);
 };
 

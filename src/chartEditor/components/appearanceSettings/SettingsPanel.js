@@ -48,6 +48,12 @@ anychart.chartEditorModule.SettingsPanel = function(model, opt_domHelper) {
   this.allowRemove_ = false;
 
   /**
+   * @type {Array.<anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField>}
+   * @protected
+   */
+  this.controls = [];
+
+  /**
    * @type {Array.<Element>}
    * @protected
    */
@@ -233,6 +239,11 @@ anychart.chartEditorModule.SettingsPanel.prototype.onChartDraw = function(evt) {
     this.enableContentCheckbox.setValueByTarget(evt.chart);
     this.setContentEnabled(this.enableContentCheckbox.isChecked());
   }
+
+  for (var i = 0; i < this.controls.length; i++) {
+    var control = this.controls[i];
+    if (control && !goog.isFunction(control.addLabeledControl)) control.setValueByTarget(evt.chart);
+  }
 };
 
 
@@ -342,8 +353,20 @@ anychart.chartEditorModule.SettingsPanel.prototype.registerLabel = function(labe
 };
 
 
+/**
+ * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField} control
+ */
+anychart.chartEditorModule.SettingsPanel.prototype.addLabeledControl = function(control) {
+  this.controls.push(control);
+  this.addChild(control, true);
+};
+
+
 /** @override */
 anychart.chartEditorModule.SettingsPanel.prototype.disposeInternal = function() {
+  goog.disposeAll(this.controls);
+  this.controls.length = 0;
+
   this.labels.length = 0;
   anychart.chartEditorModule.SettingsPanel.base(this, 'disposeInternal');
 };

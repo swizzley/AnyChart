@@ -1,4 +1,4 @@
-goog.provide('anychart.chartEditorModule.settings.DataMarkers');
+goog.provide('anychart.chartEditorModule.settings.Markers');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
@@ -13,41 +13,30 @@ goog.require('anychart.enums');
 
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
- * @param {string|number} seriesId
- * @param {number=} opt_plotIndex
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
-anychart.chartEditorModule.settings.DataMarkers = function(model, seriesId, opt_plotIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.DataMarkers.base(this, 'constructor', model, opt_domHelper);
-  this.name = 'Data markers';
-  this.seriesId_ = String(seriesId);
-
-  var stringKey = 'getSeries(\'' + this.seriesId_ + '\')';
-  if (goog.isDef(opt_plotIndex)) {
-    this.plotIndex_ = opt_plotIndex;
-    stringKey = 'plot(' + this.plotIndex_ + ').' + stringKey;
-  }
-
-  this.key = [['chart'], ['settings'], stringKey];
+anychart.chartEditorModule.settings.Markers = function(model, opt_domHelper) {
+  anychart.chartEditorModule.settings.Markers.base(this, 'constructor', model, opt_domHelper);
+  this.name = 'Markers';
 };
-goog.inherits(anychart.chartEditorModule.settings.DataMarkers, anychart.chartEditorModule.SettingsPanel);
+goog.inherits(anychart.chartEditorModule.settings.Markers, anychart.chartEditorModule.SettingsPanel);
 
 
 /**
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditorModule.settings.DataMarkers.CSS_CLASS = goog.getCssName('anychart-settings-data-markers');
+anychart.chartEditorModule.settings.Markers.CSS_CLASS = goog.getCssName('anychart-chart-editor-settings-markers');
 
 
 /** @override */
-anychart.chartEditorModule.settings.DataMarkers.prototype.createDom = function() {
-  anychart.chartEditorModule.settings.DataMarkers.base(this, 'createDom');
+anychart.chartEditorModule.settings.Markers.prototype.createDom = function() {
+  anychart.chartEditorModule.settings.Markers.base(this, 'createDom');
 
   var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.DataMarkers.CSS_CLASS);
+  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.Markers.CSS_CLASS);
 
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -72,17 +61,21 @@ anychart.chartEditorModule.settings.DataMarkers.prototype.createDom = function()
 
   goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
-  var stroke = new anychart.chartEditorModule.settings.Stroke(model, 'Stroke');
-  this.addChild(stroke, true);
-  this.stroke_ = stroke;
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-gap')));
+
+  var stroke = new anychart.chartEditorModule.settings.Stroke(model);
+  stroke.setKey(this.genKey('stroke()'));
+  this.addLabeledControl(stroke);
 };
 
 
 /**
  * Update model keys.
  */
-anychart.chartEditorModule.settings.DataMarkers.prototype.updateKeys = function() {
-  anychart.chartEditorModule.settings.DataMarkers.base(this, 'updateKeys');
+anychart.chartEditorModule.settings.Markers.prototype.updateKeys = function() {
+  anychart.chartEditorModule.settings.Markers.base(this, 'updateKeys');
 
   if (this.isExcluded()) return;
 
@@ -91,13 +84,13 @@ anychart.chartEditorModule.settings.DataMarkers.prototype.updateKeys = function(
   if (this.fillSelect_) this.fillSelect_.init(model, this.genKey('fill()'));
   if (this.sizeSelect_) this.sizeSelect_.init(model, this.genKey('size()'));
 
-  if (this.stroke_) this.stroke_.setKey(this.genKey('stroke()'));
+
 };
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.DataMarkers.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.DataMarkers.base(this, 'onChartDraw', evt);
+anychart.chartEditorModule.settings.Markers.prototype.onChartDraw = function(evt) {
+  anychart.chartEditorModule.settings.Markers.base(this, 'onChartDraw', evt);
 
   var target = evt.chart;
   this.typeSelect_.setValueByTarget(target);
@@ -107,13 +100,11 @@ anychart.chartEditorModule.settings.DataMarkers.prototype.onChartDraw = function
 
 
 /** @override */
-anychart.chartEditorModule.settings.DataMarkers.prototype.disposeInternal = function() {
+anychart.chartEditorModule.settings.Markers.prototype.disposeInternal = function() {
+  goog.disposeAll([this.typeSelect_, this.fillSelect_, this.sizeSelect_]);
   this.typeSelect_ = null;
   this.fillSelect_ = null;
   this.sizeSelect_ = null;
 
-  this.stroke_.dispose();
-  this.stroke_ = null;
-
-  anychart.chartEditorModule.settings.DataMarkers.base(this, 'disposeInternal');
+  anychart.chartEditorModule.settings.Markers.base(this, 'disposeInternal');
 };

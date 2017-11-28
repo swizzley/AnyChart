@@ -4,8 +4,8 @@ goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.input.Base');
-goog.require('anychart.chartEditorModule.settings.DataLabels');
-goog.require('anychart.chartEditorModule.settings.DataMarkers');
+goog.require('anychart.chartEditorModule.settings.Labels');
+goog.require('anychart.chartEditorModule.settings.Markers');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 goog.require('anychart.chartEditorModule.settings.Title');
 goog.require('goog.ui.AnimatedZippy');
@@ -107,7 +107,8 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
       goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   // Data labels
-  var dataLabels = new anychart.chartEditorModule.settings.DataLabels(model);
+  var dataLabels = new anychart.chartEditorModule.settings.Labels(model);
+  dataLabels.setName('Data Labels');
   dataLabels.allowEnabled(true);
   dataLabels.setKey(this.genKey('labels()'));
   innerContent.addChild(dataLabels, true);
@@ -117,22 +118,13 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
       goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
   // Data markers
-  var dataMarkers = new anychart.chartEditorModule.settings.DataMarkers(model, 'Data markers');
+  var dataMarkers = new anychart.chartEditorModule.settings.Markers(model);
+  dataMarkers.setName('Data Markers');
   dataMarkers.allowEnabled(true);
+  dataMarkers.setKey(this.genKey('markers()'));
   innerContent.addChild(dataMarkers, true);
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
-
-  // if (this.seriesType_ == 'choropleth') {
-  //   var colorScale = new anychart.chartEditorModule.settings.ColorScale(model, null);
-  //   colorScale.allowEnabled(false);
-  //   colorScale.setKey(this.genKey('colorScale()'));
-  //   this.addChild(colorScale, true);
-  //   this.colorScale_ = colorScale;
-  // } else if (this.colorScale_) {
-  //   goog.dispose(this.colorScale_);
-  //   this.colorScale_ = null;
-  // }
 
   this.nameInput_ = nameInput;
   this.colorPicker_ = colorPicker;

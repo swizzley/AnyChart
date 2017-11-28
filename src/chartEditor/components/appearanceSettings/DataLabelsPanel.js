@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.DataLabelsPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.settings.DataLabels');
+goog.require('anychart.chartEditorModule.settings.Labels');
 
 
 
@@ -30,7 +30,7 @@ anychart.chartEditorModule.DataLabelsPanel.prototype.createDom = function() {
 
   this.enableContentCheckbox.init(model, this.genKey('enabled()'), 'setSettingForSeries');
 
-  var settings = new anychart.chartEditorModule.settings.DataLabels(model);
+  var settings = new anychart.chartEditorModule.settings.Labels(model);
   settings.allowEnabled(false);
   settings.setName(null);
   settings.setKey(this.getKey());
