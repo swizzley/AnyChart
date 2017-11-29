@@ -9,6 +9,7 @@ goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Markers');
 goog.require('anychart.chartEditorModule.settings.Stroke');
+goog.require('anychart.chartEditorModule.settings.Ticks');
 goog.require('anychart.chartEditorModule.settings.Title');
 
 
@@ -86,6 +87,15 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   stroke.setKey(this.genKey('stroke()'));
   this.addLabeledControl(stroke);
 
+  // Overlap mode
+  var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Overlap Mode'});
+  overlapMode.getControl().setOptions([
+    {value: 'allow-overlap', caption: 'Overlap'},
+    {value: 'no-overlap', caption: 'No overlap'}
+  ]);
+  overlapMode.init(model, this.genKey('overlapMode()'));
+  this.addLabeledControl(overlapMode);
+
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
@@ -118,6 +128,40 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   drawLastLabel.setCaption('Draw Last Label');
   drawLastLabel.init(model, this.genKey('drawLastLabel()'));
   labels.addLabeledControl(drawLastLabel);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  // Ticks
+  var ticks = new anychart.chartEditorModule.settings.Ticks(model);
+  ticks.allowEnabled(true);
+  ticks.setKey(this.genKey('ticks()'));
+  this.addLabeledControl(ticks);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  // Minor Labels
+  var minorLabels = new anychart.chartEditorModule.settings.Labels(model);
+  minorLabels.setName('Minor Labels');
+  minorLabels.allowEnabled(true);
+  minorLabels.allowEditPosition(false);
+  minorLabels.allowEditAnchor(false);
+  minorLabels.setKey(this.genKey('minorLabels()'));
+  this.addLabeledControl(minorLabels);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  // Minor Ticks
+  var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
+  minorTicks.setName('Minor Ticks');
+  minorTicks.allowEnabled(true);
+  minorTicks.setKey(this.genKey('minorTicks()'));
+  this.addLabeledControl(minorTicks);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
