@@ -91,18 +91,16 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
     goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName('anychart-chart-editor-settings-item-separator')));
-  }
 
-  // Overlap mode
-  var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
-  overlapMode.getControl().setOptions([
-    {value: 'allow-overlap', caption: 'Overlap'},
-    {value: 'no-overlap', caption: 'No overlap'}
-  ]);
-  overlapMode.init(model, this.genKey('overlapMode()'));
-  wrapper.addLabeledControl(overlapMode);
+    // Overlap mode
+    var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
+    overlapMode.getControl().setOptions([
+      {value: 'allow-overlap', caption: 'Overlap'},
+      {value: 'no-overlap', caption: 'No overlap'}
+    ]);
+    overlapMode.init(model, this.genKey('overlapMode()'));
+    wrapper.addLabeledControl(overlapMode);
 
-  if (!this.isRadarAxis) {
     var title = new anychart.chartEditorModule.settings.Title(model, 'Title');
     title.allowEditPosition(false, this.xOrY == 'x' ? 'bottom' : 'left');
     title.setKey(this.genKey('title()')); // This is for enabled working sake!
@@ -130,6 +128,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   // Ticks
   var ticks = new anychart.chartEditorModule.settings.Ticks(model);
   ticks.allowEnabled(true);
+  ticks.allowEditPosition(!this.isRadarAxis);
   ticks.setKey(this.genKey('ticks()'));
   this.addLabeledControl(ticks);
   this.ticks_ = ticks;

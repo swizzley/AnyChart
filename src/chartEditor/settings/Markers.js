@@ -83,8 +83,6 @@ anychart.chartEditorModule.settings.Markers.prototype.updateKeys = function() {
   if (this.typeSelect_) this.typeSelect_.init(model, this.genKey('type()'));
   if (this.fillSelect_) this.fillSelect_.init(model, this.genKey('fill()'));
   if (this.sizeSelect_) this.sizeSelect_.init(model, this.genKey('size()'));
-
-
 };
 
 

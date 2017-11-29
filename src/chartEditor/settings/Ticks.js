@@ -28,6 +28,21 @@ goog.inherits(anychart.chartEditorModule.settings.Ticks, anychart.chartEditorMod
 anychart.chartEditorModule.settings.Ticks.CSS_CLASS = goog.getCssName('anychart-chart-editor-settings-ticks');
 
 
+/**
+ * @type {boolean}
+ * @private
+ */
+anychart.chartEditorModule.settings.Ticks.prototype.allowEditPosition_ = true;
+
+
+/**
+ * @param {boolean} value
+ */
+anychart.chartEditorModule.settings.Ticks.prototype.allowEditPosition = function(value) {
+  this.allowEditPosition_ = value;
+};
+
+
 /** @inheritDoc */
 anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Ticks.base(this, 'createDom');
@@ -36,14 +51,17 @@ anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var position = new anychart.chartEditorModule.controls.select.DataField({label: 'Position'});
-  var positionValues = goog.object.getValues(anychart.enums.SidePosition);
-  positionValues = goog.array.filter(positionValues, function(i) {
-    return goog.typeOf(i) == 'string';
-  });
-  position.getControl().setOptions(positionValues);
-  position.init(model, this.genKey('position()'));
-  this.addLabeledControl(position);
+  // Position
+  if (this.allowEditPosition_) {
+    var position = new anychart.chartEditorModule.controls.select.DataField({label: 'Position'});
+    var positionValues = goog.object.getValues(anychart.enums.SidePosition);
+    positionValues = goog.array.filter(positionValues, function(i) {
+      return goog.typeOf(i) == 'string';
+    });
+    position.getControl().setOptions(positionValues);
+    position.init(model, this.genKey('position()'));
+    this.addLabeledControl(position);
+  }
 
   // Length
   var length = new anychart.chartEditorModule.comboBox.Base();
