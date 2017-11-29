@@ -76,10 +76,9 @@ anychart.chartEditorModule.GeneralTheming.prototype.onChartDraw = function(evt) 
 
 /** @override */
 anychart.chartEditorModule.GeneralTheming.prototype.disposeInternal = function() {
-  this.themeSelect.dispose();
-  this.themeSelect = null;
+  goog.disposeAll([this.themeSelect, this.paletteSelect]);
 
-  this.paletteSelect.dispose();
+  this.themeSelect = null;
   this.paletteSelect = null;
 
   anychart.chartEditorModule.GeneralTheming.base(this, 'disposeInternal');

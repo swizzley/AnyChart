@@ -58,21 +58,19 @@ anychart.chartEditorModule.controls.select.DataField.prototype.init = function(m
 };
 
 
-// /**
-//  * Hide or show control by assigning 'hidden' class
-//  * @param {boolean} value True if excluded.
-//  * @param {boolean=} opt_skipSelect
-//  */
-// anychart.chartEditorModule.controls.select.DataField.prototype.exclude = function(value, opt_skipSelect) {
-//   if (this.isInDocument()) goog.style.setElementShown(this.getElement(), !value);
-//   if (!opt_skipSelect)
-//     this.control_.exclude(value);
-// };
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ */
+anychart.chartEditorModule.controls.select.DataField.prototype.exclude = function(value) {
+  if (this.isInDocument()) goog.style.setElementShown(this.getElement(), !value);
+  this.control_.exclude(value);
+};
 
 
 /**
  * @public
  */
 anychart.chartEditorModule.controls.select.DataField.prototype.updateExclusion = function() {
-  this.exclude(!!this.control_.updateExclusion()/*, true*/);
+  this.exclude(!!this.control_.updateExclusion());
 };
