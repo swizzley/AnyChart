@@ -1,9 +1,11 @@
 goog.provide('anychart.chartEditorModule.settings.Axis');
 
-goog.require('anychart.chartEditorModule.IconButtonRenderer');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
+goog.require('anychart.chartEditorModule.settings.Labels');
+goog.require('anychart.chartEditorModule.settings.Stagger');
+goog.require('anychart.chartEditorModule.settings.Ticks');
 goog.require('anychart.chartEditorModule.settings.Title');
 
 
@@ -81,6 +83,26 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
         goog.dom.TagName.DIV,
         goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
+    // Stagger settings
+    var staggerSettings = new anychart.chartEditorModule.settings.Stagger(model);
+    staggerSettings.setKey(this.getKey());
+    wrapper.addLabeledControl(staggerSettings);
+
+    goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName('anychart-chart-editor-settings-item-separator')));
+  }
+
+  // Overlap mode
+  var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
+  overlapMode.getControl().setOptions([
+    {value: 'allow-overlap', caption: 'Overlap'},
+    {value: 'no-overlap', caption: 'No overlap'}
+  ]);
+  overlapMode.init(model, this.genKey('overlapMode()'));
+  wrapper.addLabeledControl(overlapMode);
+
+  if (!this.isRadarAxis) {
     var title = new anychart.chartEditorModule.settings.Title(model, 'Title');
     title.allowEditPosition(false, this.xOrY == 'x' ? 'bottom' : 'left');
     title.setKey(this.genKey('title()')); // This is for enabled working sake!
@@ -93,14 +115,24 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   }
 
   //region Labels
-  var labels = new anychart.chartEditorModule.settings.Title(model, 'Labels');
-  labels.allowEditPosition(false, '');
-  labels.allowEditAlign(false);
-  labels.setTitleKey('format()');
+  var labels = new anychart.chartEditorModule.settings.Labels(model);
+  labels.allowEnabled(true);
+  labels.allowEditPosition(false);
+  labels.allowEditAnchor(false);
   labels.setKey(this.genKey('labels()'));
-  this.addChild(labels, true);
-
+  this.addLabeledControl(labels);
   this.labels_ = labels;
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+
+  // Ticks
+  var ticks = new anychart.chartEditorModule.settings.Ticks(model);
+  ticks.allowEnabled(true);
+  ticks.setKey(this.genKey('ticks()'));
+  this.addLabeledControl(ticks);
+  this.ticks_ = ticks;
   //endregion
 };
 
@@ -114,7 +146,6 @@ anychart.chartEditorModule.settings.Axis.prototype.updateKeys = function() {
   if (this.orientation_) this.orientation_.init(model, this.genKey('orientation()'));
   if (this.inverted_) this.inverted_.init(model, [['chart'], ['settings'], this.xOrY + 'Scale().inverted()']);
   if (this.title_) this.title_.setKey(this.genKey('title()'));
-  if (this.labels_) this.labels_.setKey(this.genKey('labels()'));
 };
 
 
@@ -129,6 +160,7 @@ anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
     this.axisExists = (this.xOrY == 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
     this.title_.exclude(!this.axisExists);
     this.labels_.exclude(!this.axisExists);
+    this.ticks_.exclude(!this.axisExists);
   }
 
   if (evt.rebuild && this.axisExists) {
@@ -145,13 +177,10 @@ anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
 
 /** @override */
 anychart.chartEditorModule.settings.Axis.prototype.disposeInternal = function() {
+  goog.disposeAll([this.inverted_, this.orientation_, this.title_]);
   this.orientation_ = null;
   this.inverted_ = null;
-
-  goog.dispose(this.title_);
   this.title_ = null;
-  goog.dispose(this.labels_);
-  this.labels_ = null;
 
   anychart.chartEditorModule.settings.Axis.base(this, 'disposeInternal');
 };

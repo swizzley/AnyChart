@@ -89,7 +89,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   this.addLabeledControl(stroke);
 
   // Overlap mode
-  var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Overlap Mode'});
+  var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
   overlapMode.getControl().setOptions([
     {value: 'allow-overlap', caption: 'Overlap'},
     {value: 'no-overlap', caption: 'No overlap'}
