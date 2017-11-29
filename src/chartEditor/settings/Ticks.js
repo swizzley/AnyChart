@@ -5,7 +5,6 @@ goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
-goog.require('anychart.chartEditorModule.settings.Title');
 
 
 /**
@@ -33,8 +32,7 @@ anychart.chartEditorModule.settings.Ticks.CSS_CLASS = goog.getCssName('anychart-
 anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Ticks.base(this, 'createDom');
 
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.Ticks.CSS_CLASS);
+  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.Ticks.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 

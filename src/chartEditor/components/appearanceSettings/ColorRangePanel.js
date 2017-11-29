@@ -8,6 +8,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Markers');
+goog.require('anychart.chartEditorModule.settings.Stagger');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 goog.require('anychart.chartEditorModule.settings.Ticks');
 goog.require('anychart.chartEditorModule.settings.Title');
@@ -95,6 +96,11 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   ]);
   overlapMode.init(model, this.genKey('overlapMode()'));
   this.addLabeledControl(overlapMode);
+
+  // Stagger settings
+  var staggerSettings = new anychart.chartEditorModule.settings.Stagger(model);
+  staggerSettings.setKey(this.getKey());
+  this.addLabeledControl(staggerSettings);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,

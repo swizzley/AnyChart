@@ -90,6 +90,12 @@ anychart.chartEditorModule.SettingsPanel.prototype.setName = function(value) {
 };
 
 
+/** @param {anychart.chartEditorModule.EditorModel.Key} key */
+anychart.chartEditorModule.SettingsPanel.prototype.setEnabledKey = function(key) {
+  this.enabledKey_ = key;
+};
+
+
 /**
  * @type {boolean}
  * @private
@@ -331,7 +337,7 @@ anychart.chartEditorModule.SettingsPanel.prototype.updateKeys = function() {
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   if (this.enableContentCheckbox)
-    this.enableContentCheckbox.init(model, this.genKey('enabled()'));
+    this.enableContentCheckbox.init(model, this.enabledKey_ ? this.enabledKey_ : this.genKey('enabled()'));
 };
 
 
