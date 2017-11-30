@@ -35,7 +35,7 @@ anychart.chartEditorModule.settings.Series = function(model, seriesId, seriesInd
 
   var plotIndex = goog.isDef(opt_plotIndex) ? opt_plotIndex : 0;
 
-  this.seriesType_ = model.getValue([['dataSettings'], ['mappings', plotIndex], [0, 'ctor']]);
+  this.seriesType_ = model.getValue([['dataSettings'], ['mappings', plotIndex], [this.index_, 'ctor']]);
   this.key = [['chart'], ['settings'], stringKey];
 };
 goog.inherits(anychart.chartEditorModule.settings.Series, anychart.chartEditorModule.SettingsPanel);
@@ -125,7 +125,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   innerContent.addChild(dataMarkers, true);
 
   // Color Scale
-  if (this.seriesType_ == 'choropleth') {
+  if (this.seriesType_ === 'choropleth') {
     var colorScale = new anychart.chartEditorModule.settings.ColorScale(model);
     colorScale.setKey(this.genKey('colorScale()'));
     innerContent.addChild(colorScale, true);

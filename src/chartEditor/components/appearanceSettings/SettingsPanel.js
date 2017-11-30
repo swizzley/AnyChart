@@ -49,9 +49,9 @@ anychart.chartEditorModule.SettingsPanel = function(model, opt_name, opt_domHelp
 
   /**
    * @type {Array.<anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField>}
-   * @protected
+   * @private
    */
-  this.controls = [];
+  this.labeledControls_ = [];
 
   /**
    * @type {Array.<Element>}
@@ -238,16 +238,17 @@ anychart.chartEditorModule.SettingsPanel.prototype.update = function() {
 
 /** @inheritDoc */
 anychart.chartEditorModule.SettingsPanel.prototype.onChartDraw = function(evt) {
-  if (this.isExcluded()) return;
   anychart.chartEditorModule.SettingsPanel.base(this, 'onChartDraw', evt);
+
+  if (this.isExcluded()) return;
 
   if (evt.rebuild && this.enableContentCheckbox && this.canBeEnabled()) {
     this.enableContentCheckbox.setValueByTarget(evt.chart);
     this.setContentEnabled(this.enableContentCheckbox.isChecked());
   }
 
-  for (var i = 0; i < this.controls.length; i++) {
-    var control = this.controls[i];
+  for (var i = 0; i < this.labeledControls_.length; i++) {
+    var control = this.labeledControls_[i];
     if (control && !goog.isFunction(control.addLabeledControl)) control.setValueByTarget(evt.chart);
   }
 };
@@ -363,15 +364,15 @@ anychart.chartEditorModule.SettingsPanel.prototype.registerLabel = function(labe
  * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField} control
  */
 anychart.chartEditorModule.SettingsPanel.prototype.addLabeledControl = function(control) {
-  this.controls.push(control);
+  this.labeledControls_.push(control);
   this.addChild(control, true);
 };
 
 
 /** @override */
 anychart.chartEditorModule.SettingsPanel.prototype.disposeInternal = function() {
-  goog.disposeAll(this.controls);
-  this.controls.length = 0;
+  goog.disposeAll(this.labeledControls_);
+  this.labeledControls_.length = 0;
 
   this.labels.length = 0;
   anychart.chartEditorModule.SettingsPanel.base(this, 'disposeInternal');

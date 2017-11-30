@@ -49,24 +49,30 @@ anychart.chartEditorModule.Component.prototype.enterDocument = function() {
     var parent = this.getParent();
     this.exclude(parent && goog.isFunction(parent.isExcluded) && parent.isExcluded());
   }
+
+  if (this.hidden_)
+    this.hide();
 };
 
 
 /**
- * Shows component by assigning 'anychart-hidden' class.
+ * Hides component in DOM by setting 'display: none' style
+ * @param {boolean=} opt_hide default TRUE
  */
-anychart.chartEditorModule.Component.prototype.hide = function() {
-  goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', true);
-  this.hidden_ = true;
+anychart.chartEditorModule.Component.prototype.hide = function(opt_hide) {
+  this.hidden_ = goog.isDef(opt_hide) ? opt_hide : true;
+  if (this.isInDocument())
+    goog.style.setElementShown(this.getElement(), !this.hidden_);
 };
 
 
 /**
- * Shows component by removing 'anychart-hidden' class.
+ * Shows component in DOM by removing 'display: none' style
+  @param {boolean=} opt_show default TRUE
  */
-anychart.chartEditorModule.Component.prototype.show = function() {
-  goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', false);
-  this.hidden_ = false;
+anychart.chartEditorModule.Component.prototype.show = function(opt_show) {
+  var hide = goog.isDef(opt_show) ? !opt_show : false;
+  this.hide(hide);
 };
 
 
@@ -99,8 +105,7 @@ anychart.chartEditorModule.Component.prototype.exclude = function(value) {
 
     this.excluded = value;
 
-    if (this.isInDocument())
-      goog.style.setElementShown(this.getElement(), !this.excluded);
+    this.hide(this.excluded);
   }
 };
 

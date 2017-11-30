@@ -64,19 +64,10 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.enterDocument = f
 /** @inheritDoc */
 anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onChartDraw = function(evt) {
   anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'onChartDraw', evt);
+
   if (this.isExcluded()) return;
 
-  if (!this.ranges_.length) {
-    var target = evt.chart;
-    var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
-    var rangesValue = /** @type {?Array} */(anychart.bindingModule.exec(target, stringKey));
-    if (rangesValue && rangesValue.length) {
-      for (var i = 0; i < rangesValue.length; i++) {
-        this.addRange(i);
-        this.ranges_[i].setValue(rangesValue[i]);
-      }
-    }
-  }
+  this.createAllRanges(evt.chart);
 };
 
 
@@ -158,6 +149,24 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.exitDocument = fu
 anychart.chartEditorModule.settings.ColorScaleRanges.prototype.disposeInternal = function() {
   this.removeAllRanges();
   anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'disposeInternal');
+};
+
+
+/**
+ * Create ranges components if need
+ * @param {Object} chart
+ */
+anychart.chartEditorModule.settings.ColorScaleRanges.prototype.createAllRanges = function(chart) {
+  if (!this.ranges_.length) {
+    var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
+    var rangesValue = /** @type {?Array} */(anychart.bindingModule.exec(chart, stringKey));
+    if (rangesValue && rangesValue.length) {
+      for (var i = 0; i < rangesValue.length; i++) {
+        this.addRange(i);
+        this.ranges_[i].setValue(rangesValue[i]);
+      }
+    }
+  }
 };
 
 

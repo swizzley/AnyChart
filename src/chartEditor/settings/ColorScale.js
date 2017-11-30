@@ -71,8 +71,8 @@ anychart.chartEditorModule.settings.ColorScale.prototype.createDom = function() 
   this.specificContent_.addChild(this.ranges_, true);
   this.ranges_.setKey(this.genKey('ranges', true));
 
-  this.colors_.exclude(true);
-  this.ranges_.exclude(true);
+  this.colors_.hide();
+  this.ranges_.hide();
   goog.style.setElementShown(this.ranges_.getElement(), false);
 };
 
@@ -80,6 +80,7 @@ anychart.chartEditorModule.settings.ColorScale.prototype.createDom = function() 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.ColorScale.prototype.onChartDraw = function(evt) {
   anychart.chartEditorModule.settings.ColorScale.base(this, 'onChartDraw', evt);
+
   if (this.isExcluded()) return;
 
   var target = evt.chart;
@@ -87,6 +88,9 @@ anychart.chartEditorModule.settings.ColorScale.prototype.onChartDraw = function(
   this.scale_ = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(anychart.bindingModule.exec(target, stringKey));
 
   if (this.scale_) {
+    this.colors_.show();
+    this.ranges_.show();
+
     if (this.scaleTypeField_) {
       var type = this.scale_.getType();
       this.scaleTypeField_.setValue(type, true);
