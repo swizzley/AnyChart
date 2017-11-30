@@ -12,9 +12,8 @@ goog.require('anychart.chartEditorModule.checkbox.Base');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.ContextMenuPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.ContextMenuPanel.base(this, 'constructor', model, opt_domHelper);
+  anychart.chartEditorModule.ContextMenuPanel.base(this, 'constructor', model, 'Context menu', opt_domHelper);
 
-  this.name = 'Context menu';
   this.key = [['chart'], ['settings'], 'contextMenu()'];
 
   this.map_ = {

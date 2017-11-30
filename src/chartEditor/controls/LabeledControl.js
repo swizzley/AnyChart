@@ -4,7 +4,7 @@ goog.require('anychart.chartEditorModule.Component');
 
 
 /**
- * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base)} control
+ * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base)} control
  * @param {string=} opt_label
  * @param {goog.dom.DomHelper=} opt_domHelper
  * @constructor
@@ -16,7 +16,7 @@ anychart.chartEditorModule.controls.LabeledControl = function(control, opt_label
   this.control_ = control;
   this.labelString_ = opt_label ? opt_label : '';
 
-  this.addClassName('anychart-chart-editor-control-wrapper');
+  this.addClassName('anychart-chart-editor-labeled-control');
 };
 goog.inherits(anychart.chartEditorModule.controls.LabeledControl, anychart.chartEditorModule.Component);
 
@@ -27,19 +27,18 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.createDom = functio
 
   var element = this.getElement();
 
-  this.label_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-editor-control-wrapper-label', this.labelString_);
+  this.label_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-chart-editor-labeled-control-label', this.labelString_);
   goog.dom.appendChild(element, this.label_);
 
   this.addChild(this.control_, true);
+  goog.dom.classlist.add(this.control_.getElement(), 'anychart-chart-editor-settings-control-right');
 
-  var clear = new anychart.chartEditorModule.Component();
-  clear.addClassName('anychart-clear');
-  this.addChild(clear, true);
+  goog.dom.appendChild(this.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 };
 
 
 /**
- * @return {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base)}
+ * @return {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base)}
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.getControl = function() {
   return this.control_;
@@ -47,7 +46,7 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.getControl = functi
 
 
 /**
- * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base)} control
+ * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base)} control
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.setControl = function(control) {
   this.control_ = control;
@@ -106,6 +105,24 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.setEnabled = functi
 
   if (this.control_)
     this.control_.setEnabled(enabled);
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ */
+anychart.chartEditorModule.controls.LabeledControl.prototype.exclude = function(value) {
+  if (this.isInDocument()) goog.style.setElementShown(this.getElement(), !value);
+  this.control_.exclude(value);
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.chartEditorModule.controls.LabeledControl.prototype.isExcluded = function() {
+  return this.control_.isExcluded();
 };
 
 

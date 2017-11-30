@@ -265,11 +265,12 @@ anychart.chartEditorModule.controls.select.Base.prototype.suspendDispatch = func
  * @return {boolean}
  */
 anychart.chartEditorModule.controls.select.Base.prototype.exclude = function(value) {
+  var dirty = this.excluded != value;
   this.excluded = value;
   if (this.isInDocument())
     goog.style.setElementShown(this.getElement(), !this.excluded);
 
-  if (this.excluded && this.editorModel)
+  if (dirty && this.excluded && this.editorModel)
     this.editorModel.removeByKey(this.key, true);
 
   return this.excluded;

@@ -11,9 +11,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Labels = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.Labels.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Labels';
+  anychart.chartEditorModule.settings.Labels.base(this, 'constructor', model, 'Labels', opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.Labels, anychart.chartEditorModule.SettingsPanel);
 

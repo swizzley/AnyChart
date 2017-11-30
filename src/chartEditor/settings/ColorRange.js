@@ -12,8 +12,8 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.ColorRange = function(model,  opt_domHelper) {
-  anychart.chartEditorModule.settings.ColorRange.base(this, 'constructor', model, opt_domHelper);
-  this.name = 'Color Range';
+  anychart.chartEditorModule.settings.ColorRange.base(this, 'constructor', model, 'Color Range', opt_domHelper);
+
   this.key = [['chart'], ['settings'], 'colorRange()'];
 };
 goog.inherits(anychart.chartEditorModule.settings.ColorRange, anychart.chartEditorModule.SettingsPanel);

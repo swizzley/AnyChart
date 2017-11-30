@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.ChartTitlePanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.ChartTitlePanel.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Chart Title';
+  anychart.chartEditorModule.ChartTitlePanel.base(this, 'constructor', model, 'Chart Title', opt_domHelper);
 
   this.key = [['chart'], ['settings'], 'title()'];
 };

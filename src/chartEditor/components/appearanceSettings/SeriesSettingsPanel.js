@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.settings.Series');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.SeriesSettingsPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.SeriesSettingsPanel.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Series';
+  anychart.chartEditorModule.SeriesSettingsPanel.base(this, 'constructor', model, 'Series', opt_domHelper);
 
   this.stringId = 'series';
 

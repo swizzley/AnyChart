@@ -13,9 +13,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Stagger = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.Stagger.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Stagger mode';
+  anychart.chartEditorModule.settings.Stagger.base(this, 'constructor', model, 'Stagger Mode', opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.Stagger, anychart.chartEditorModule.SettingsPanel);
 

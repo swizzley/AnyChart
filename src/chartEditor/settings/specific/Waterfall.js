@@ -15,9 +15,7 @@ goog.require('anychart.chartEditorModule.settings.Stroke');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.specific.Waterfall = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Waterfall Chart Settings';
+  anychart.chartEditorModule.settings.specific.Waterfall.base(this, 'constructor', model, 'Waterfall Chart Settings', opt_domHelper);
 
   this.key = [['chart'], ['settings']];
 };

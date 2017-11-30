@@ -14,9 +14,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.TreemapHeaders = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.TreemapHeaders.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Headers';
+  anychart.chartEditorModule.settings.TreemapHeaders.base(this, 'constructor', model, 'Headers', opt_domHelper);
 
   this.key = [['chart'], ['settings'], 'headers()'];
 };

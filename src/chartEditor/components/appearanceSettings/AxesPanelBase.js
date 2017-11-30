@@ -12,9 +12,7 @@ goog.require('goog.ui.Button');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.AxesPanelBase = function(model, opt_domHelper) {
-  anychart.chartEditorModule.AxesPanelBase.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'AxesPanelBase';
+  anychart.chartEditorModule.AxesPanelBase.base(this, 'constructor', model, 'AxesPanelBase', opt_domHelper);
 
   this.stringId = 'axes';
 

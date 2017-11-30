@@ -18,7 +18,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domHelper) {
-  anychart.chartEditorModule.settings.Axis.base(this, 'constructor', model, opt_domHelper);
+  anychart.chartEditorModule.settings.Axis.base(this, 'constructor', model, null, opt_domHelper);
 
   var chartType = model.getModel()['chart']['type'];
   this.isRadarAxis = chartType === 'radar' || chartType === 'polar';

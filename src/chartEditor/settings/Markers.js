@@ -18,8 +18,7 @@ goog.require('anychart.enums');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Markers = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.Markers.base(this, 'constructor', model, opt_domHelper);
-  this.name = 'Markers';
+  anychart.chartEditorModule.settings.Markers.base(this, 'constructor', model, 'Markers', opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.Markers, anychart.chartEditorModule.SettingsPanel);
 

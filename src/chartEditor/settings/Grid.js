@@ -14,8 +14,7 @@ goog.require('anychart.chartEditorModule.settings.Stroke');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Grid = function(model, name, opt_domHelper) {
-  anychart.chartEditorModule.settings.Grid.base(this, 'constructor', model, opt_domHelper);
-  this.name = name;
+  anychart.chartEditorModule.settings.Grid.base(this, 'constructor', model, name, opt_domHelper);
 
   this.gridExists = false;
 

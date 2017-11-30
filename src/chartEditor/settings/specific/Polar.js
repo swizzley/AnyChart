@@ -14,9 +14,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.specific.Polar = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.specific.Polar.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Polar Chart Settings';
+  anychart.chartEditorModule.settings.specific.Polar.base(this, 'constructor', model, 'Polar Chart Settings', opt_domHelper);
 
   this.key = [['chart'], ['settings']];
 };

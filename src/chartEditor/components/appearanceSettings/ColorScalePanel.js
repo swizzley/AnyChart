@@ -12,9 +12,8 @@ goog.require('anychart.chartEditorModule.settings.ColorScale');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.ColorScalePanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.ColorScalePanel.base(this, 'constructor', model, opt_domHelper);
+  anychart.chartEditorModule.ColorScalePanel.base(this, 'constructor', model, 'Color Scale', opt_domHelper);
 
-  this.name = 'Color Scale';
   this.stringId = 'colorScale';
 };
 goog.inherits(anychart.chartEditorModule.ColorScalePanel, anychart.chartEditorModule.SettingsPanel);
@@ -27,8 +26,8 @@ anychart.chartEditorModule.ColorScalePanel.prototype.createDom = function() {
   goog.dom.classlist.add(element, 'settings-panel-color-scale');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartColorScale = new anychart.chartEditorModule.settings.ColorScale(model, null);
-  chartColorScale.allowEnabled(false);
+  var chartColorScale = new anychart.chartEditorModule.settings.ColorScale(model);
+  chartColorScale.setName(null);
   chartColorScale.setKey([['chart'], ['settings'], 'colorScale()']);
   this.addChild(chartColorScale, true);
 };

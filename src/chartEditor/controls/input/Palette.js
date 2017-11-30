@@ -17,6 +17,20 @@ anychart.chartEditorModule.input.Palette = function(opt_label, opt_domHelper) {
 goog.inherits(anychart.chartEditorModule.input.Palette, anychart.chartEditorModule.input.Base);
 
 
+/**
+ * Default CSS class.
+ * @type {string}
+ */
+anychart.chartEditorModule.input.Palette.CSS_CLASS = goog.getCssName('anychart-chart-editor-input-palette');
+
+
+/** @override */
+anychart.chartEditorModule.input.Palette.prototype.createDom = function() {
+  anychart.chartEditorModule.input.Palette.base(this, 'createDom');
+  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.input.Palette.CSS_CLASS);
+};
+
+
 /** @inheritDoc */
 anychart.chartEditorModule.input.Palette.prototype.enterDocument = function() {
   anychart.chartEditorModule.input.Palette.base(this, 'enterDocument');

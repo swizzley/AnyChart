@@ -209,11 +209,13 @@ anychart.chartEditorModule.input.Base.prototype.setValueByTarget = function(targ
  * @param {boolean=} opt_needRedraw
  */
 anychart.chartEditorModule.input.Base.prototype.exclude = function(value, opt_needRedraw) {
+  var dirty = this.excluded != value;
   this.excluded = value;
+
   if (this.isInDocument())
     goog.style.setElementShown(this.getElement(), !this.excluded);
 
-  if (this.excluded && this.editorModel)
+  if (dirty && this.excluded && this.editorModel)
     this.editorModel.removeByKey(this.key, !opt_needRedraw);
 };
 

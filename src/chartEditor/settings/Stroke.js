@@ -14,7 +14,7 @@ goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Stroke = function(model, opt_name, opt_domHelper) {
-  anychart.chartEditorModule.settings.Stroke.base(this, 'constructor', model, opt_domHelper);
+  anychart.chartEditorModule.settings.Stroke.base(this, 'constructor', model, null, opt_domHelper);
 
   this.name = goog.isDef(opt_name) ? opt_name : 'Stroke';
 

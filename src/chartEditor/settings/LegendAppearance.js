@@ -13,9 +13,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.LegendAppearance = function(model, opt_name, opt_domHelper) {
-  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = opt_name;
+  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'constructor', model, opt_name, opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.LegendAppearance, anychart.chartEditorModule.SettingsPanel);
 

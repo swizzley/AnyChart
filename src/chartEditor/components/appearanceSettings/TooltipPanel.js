@@ -14,9 +14,7 @@ goog.require('anychart.chartEditorModule.settings.TooltipTitle');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.TooltipPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.TooltipPanel.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Tooltip';
+  anychart.chartEditorModule.TooltipPanel.base(this, 'constructor', model, 'Tooltip', opt_domHelper);
 
   this.key = [['chart'], ['settings'], 'tooltip()'];
 };

@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.settings.Labels');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.DataLabelsPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.DataLabelsPanel.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Data Labels';
+  anychart.chartEditorModule.DataLabelsPanel.base(this, 'constructor', model, 'Data Labels', opt_domHelper);
 
   this.stringId = 'data-labels';
 

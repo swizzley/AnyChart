@@ -14,9 +14,7 @@ goog.require('anychart.chartEditorModule.settings.Stroke');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Ticks = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.Ticks.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Ticks';
+  anychart.chartEditorModule.settings.Ticks.base(this, 'constructor', model, 'Ticks', opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.Ticks, anychart.chartEditorModule.SettingsPanel);
 

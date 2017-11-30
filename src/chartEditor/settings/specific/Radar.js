@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.specific.Radar = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.specific.Radar.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Radar Chart Settings';
+  anychart.chartEditorModule.settings.specific.Radar.base(this, 'constructor', model, 'Radar Chart Settings', opt_domHelper);
 
   this.key = [['chart'], ['settings']];
 };

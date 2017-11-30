@@ -14,7 +14,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Legend = function(model, opt_plotIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.Legend.base(this, 'constructor', model, opt_domHelper);
+  anychart.chartEditorModule.settings.Legend.base(this, 'constructor', model, null, opt_domHelper);
   this.plotIndex_ = opt_plotIndex;
   this.name = goog.isDef(this.plotIndex_) ? 'Legend (plot ' + this.plotIndex_ + ')': 'Chart Legend';
   this.key = [['chart'], ['settings'], 'legend()'];

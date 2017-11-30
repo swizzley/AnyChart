@@ -21,9 +21,7 @@ goog.require('goog.ui.ButtonSide');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Title = function(model, opt_name, opt_domHelper) {
-  anychart.chartEditorModule.settings.Title.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = opt_name;
+  anychart.chartEditorModule.settings.Title.base(this, 'constructor', model, opt_name, opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.Title, anychart.chartEditorModule.SettingsPanel);
 

@@ -13,9 +13,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.specific.Cartesian = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.specific.Cartesian.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Cartesian Chart Settings';
+  anychart.chartEditorModule.settings.specific.Cartesian.base(this, 'constructor', model, 'Cartesian Chart Settings', opt_domHelper);
 
   this.key = [['chart'], ['settings']];
 };

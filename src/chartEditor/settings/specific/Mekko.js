@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.specific.Mekko = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.specific.Mekko.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Mekko Chart Settings';
+  anychart.chartEditorModule.settings.specific.Mekko.base(this, 'constructor', model, 'Mekko Chart Settings', opt_domHelper);
 
   this.key = [['chart'], ['settings']];
 };

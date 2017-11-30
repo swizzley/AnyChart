@@ -16,9 +16,7 @@ goog.require('goog.ui.Button');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.ColorScaleRanges = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Ranges';
+  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'constructor', model, null, opt_domHelper);
 
   /**
    * @type {Array.<anychart.chartEditorModule.settings.ColorScaleSingleRange>}
@@ -46,16 +44,11 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.createDom = funct
   this.rangesWrapper_ = new anychart.chartEditorModule.Component();
   this.addChild(this.rangesWrapper_, true);
 
-  // this.addRangeBtn_ = new goog.ui.Button('Add range');
-  // this.addChild(this.addRangeBtn_, true);
-
   var addRangeBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
       goog.ui.ButtonRenderer,
       'anychart-settings-panel-add-range-btn'));
   this.addRangeBtn_ = new goog.ui.Button('+ Add range', addRangeBtnRenderer);
   this.addChild(this.addRangeBtn_, true);
-
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 };
 
 
@@ -188,7 +181,7 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.removeAllRanges =
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.ColorScaleSingleRange = function(model, index, opt_domHelper) {
-  anychart.chartEditorModule.settings.ColorScaleSingleRange.base(this, 'constructor', model, opt_domHelper);
+  anychart.chartEditorModule.settings.ColorScaleSingleRange.base(this, 'constructor', model, null, opt_domHelper);
 
   this.index_ = index;
 

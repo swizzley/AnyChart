@@ -15,9 +15,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.GeneralTheming = function(model, opt_domHelper) {
-  anychart.chartEditorModule.GeneralTheming.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'General Theming';
+  anychart.chartEditorModule.GeneralTheming.base(this, 'constructor', model, 'General Theming', opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.GeneralTheming, anychart.chartEditorModule.SettingsPanel);
 

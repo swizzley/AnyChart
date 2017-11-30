@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.input.Base');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.CreditsPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.CreditsPanel.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'License & Credits';
+  anychart.chartEditorModule.CreditsPanel.base(this, 'constructor', model, 'License & Credits', opt_domHelper);
 
   this.key = [['chart'], ['settings'], 'credits()'];
 

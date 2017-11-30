@@ -4,12 +4,12 @@ goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.input.Base');
+goog.require('anychart.chartEditorModule.settings.ColorScale');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Markers');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 goog.require('anychart.chartEditorModule.settings.Title');
 goog.require('goog.ui.AnimatedZippy');
-
 
 
 /**
@@ -22,8 +22,8 @@ goog.require('goog.ui.AnimatedZippy');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.Series = function(model, seriesId, seriesIndex, opt_plotIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.Series.base(this, 'constructor', model, opt_domHelper);
-  this.name = null;
+  anychart.chartEditorModule.settings.Series.base(this, 'constructor', model, null, opt_domHelper);
+
   this.index_ = seriesIndex;
   this.seriesId_ = String(seriesId);
 
@@ -124,6 +124,13 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   dataMarkers.setKey(this.genKey('markers()'));
   innerContent.addChild(dataMarkers, true);
 
+  // Color Scale
+  if (this.seriesType_ == 'choropleth') {
+    var colorScale = new anychart.chartEditorModule.settings.ColorScale(model);
+    colorScale.setKey(this.genKey('colorScale()'));
+    innerContent.addChild(colorScale, true);
+    this.colorScale_ = colorScale;
+  }
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
   this.nameInput_ = nameInput;
@@ -136,7 +143,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   this.zippy_ = new goog.ui.AnimatedZippy(zippyHeader.getElement(), zippyContent.getElement());
   this.zippy_.setHandleKeyboardEvents(false);
   this.zippy_.setHandleMouseEvents(false);
-  this.getHandler().listen(plusMinus, goog.events.EventType.CLICK, function(){
+  this.getHandler().listen(plusMinus, goog.events.EventType.CLICK, function() {
     this.zippy_.toggle();
   });
 };
@@ -167,6 +174,8 @@ anychart.chartEditorModule.settings.Series.prototype.updateKeys = function() {
     if (this.tooltip_) this.tooltip_.setKey(this.genKey('tooltip()'));
     if (this.dataLabels_) this.dataLabels_.setKey(this.genKey('labels()'));
     if (this.dataMarkers_) this.dataMarkers_.setKey(this.genKey('markers()'));
+
+    if (this.colorScale_) this.colorScale_.setKey(this.genKey('colorScale()'));
   }
 
   anychart.chartEditorModule.settings.Series.base(this, 'updateKeys');
@@ -186,23 +195,23 @@ anychart.chartEditorModule.settings.Series.prototype.onChartDraw = function(evt)
 
 /** @override */
 anychart.chartEditorModule.settings.Series.prototype.disposeInternal = function() {
+  goog.disposeAll([
+    this.nameInput_,
+    this.colorPicker_,
+    this.stroke_,
+    this.tooltip_,
+    this.dataLabels_,
+    this.dataMarkers_,
+    this.colorScale_
+  ]);
+
   this.nameInput_ = null;
   this.colorPicker_ = null;
-
-  this.stroke_.dispose();
   this.stroke_ = null;
-
-  this.tooltip_.dispose();
   this.tooltip_ = null;
-
-  this.dataLabels_.dispose();
   this.dataLabels_ = null;
-
-  this.dataMarkers_.dispose();
   this.dataMarkers_ = null;
-
-  // goog.dispose(this.colorScale_);
-  // this.colorScale_ = null;
+  this.colorScale_ = null;
 
   anychart.chartEditorModule.settings.Series.base(this, 'disposeInternal');
 };

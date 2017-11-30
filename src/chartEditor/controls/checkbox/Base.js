@@ -164,10 +164,12 @@ anychart.chartEditorModule.checkbox.Base.prototype.setValueByTarget = function(t
  * @param {boolean} value True if excluded.
  */
 anychart.chartEditorModule.checkbox.Base.prototype.exclude = function(value) {
+  var dirty = this.excluded != value;
   this.excluded = value;
+
   if (this.isInDocument())
     goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', this.excluded);
-  if (this.excluded && this.editorModel)
+  if (dirty && this.excluded && this.editorModel)
     this.editorModel.removeByKey(this.key, true);
 };
 

@@ -14,9 +14,7 @@ goog.require('anychart.chartEditorModule.settings.Stroke');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.settings.specific.Pie = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.specific.Pie.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Pie Chart Settings';
+  anychart.chartEditorModule.settings.specific.Pie.base(this, 'constructor', model, 'Pie Chart Settings', opt_domHelper);
 
   this.key = [['chart'], ['settings']];
 };

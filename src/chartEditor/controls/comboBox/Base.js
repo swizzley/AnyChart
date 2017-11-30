@@ -231,6 +231,7 @@ anychart.chartEditorModule.comboBox.Base.prototype.updateOptions = function() {
 anychart.chartEditorModule.comboBox.Base.prototype.enterDocument = function() {
   anychart.chartEditorModule.comboBox.Base.base(this, 'enterDocument');
 
+  goog.style.setElementShown(this.getElement(), !this.excluded);
   goog.events.listen(this, goog.ui.Component.EventType.CHANGE, this.onChange, false, this);
 };
 
@@ -516,6 +517,8 @@ anychart.chartEditorModule.comboBox.Base.prototype.onChange = function(evt) {
   evt.preventDefault();
   evt.stopPropagation();
 
+  if (this.excluded) return;
+
   if (!this.noDispatch && this.editorModel) {
     var value = this.getToken();
 
@@ -557,6 +560,8 @@ anychart.chartEditorModule.comboBox.Base.prototype.init = function(model, key, o
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  */
 anychart.chartEditorModule.comboBox.Base.prototype.setValueByTarget = function(target) {
+  if (this.excluded) return;
+
   this.target = target;
 
   var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
@@ -564,6 +569,31 @@ anychart.chartEditorModule.comboBox.Base.prototype.setValueByTarget = function(t
   this.noDispatch = true;
   this.setValue(value);
   this.noDispatch = false;
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ * @param {boolean=} opt_needRedraw
+ */
+anychart.chartEditorModule.comboBox.Base.prototype.exclude = function(value, opt_needRedraw) {
+  var dirty = this.excluded != value;
+  this.excluded = value;
+
+  if (this.isInDocument())
+    goog.style.setElementShown(this.getElement(), !this.excluded);
+
+  if (dirty && this.excluded && this.editorModel)
+    this.editorModel.removeByKey(this.key, !opt_needRedraw);
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.chartEditorModule.comboBox.Base.prototype.isExcluded = function() {
+  return this.excluded;
 };
 
 

@@ -8,19 +8,19 @@ goog.require('anychart.ui.button.Base');
 
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
+ * @param {?string=} opt_name
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
  * @extends {anychart.chartEditorModule.ComponentWithKey}
  */
-anychart.chartEditorModule.SettingsPanel = function(model, opt_domHelper) {
+anychart.chartEditorModule.SettingsPanel = function(model, opt_name, opt_domHelper) {
   anychart.chartEditorModule.SettingsPanel.base(this, 'constructor', model, opt_domHelper);
 
   /**
    * @type {?string|undefined}
    * @protected
    */
-  this.name = 'Settings Panel';
-
+  this.name = goog.isDef(opt_name) ? opt_name : 'Settings Panel';
 
   /**
    * String id for excludes.
@@ -343,9 +343,9 @@ anychart.chartEditorModule.SettingsPanel.prototype.updateKeys = function() {
 
 /** @inheritDoc */
 anychart.chartEditorModule.SettingsPanel.prototype.exclude = function(value) {
-  var oldValue = this.excluded;
+  var dirty = this.excluded != value;
   anychart.chartEditorModule.SettingsPanel.base(this, 'exclude', value);
-  if (oldValue != value) this.updateKeys();
+  if (dirty) this.updateKeys();
 };
 
 

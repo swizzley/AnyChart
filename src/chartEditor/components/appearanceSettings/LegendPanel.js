@@ -12,9 +12,7 @@ goog.require('anychart.chartEditorModule.settings.Legend');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.LegendPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.LegendPanel.base(this, 'constructor', model, opt_domHelper);
-
-  this.name = 'Legend';
+  anychart.chartEditorModule.LegendPanel.base(this, 'constructor', model, 'Legend', opt_domHelper);
 
   this.legends_ = [];
 };

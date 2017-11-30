@@ -16,8 +16,7 @@ goog.require('anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.GeoDataInputs = function(model, opt_domHelper) {
-  anychart.chartEditorModule.GeoDataInputs.base(this, 'constructor', model, opt_domHelper);
-  this.name = null;
+  anychart.chartEditorModule.GeoDataInputs.base(this, 'constructor', model, null, opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.GeoDataInputs, anychart.chartEditorModule.SettingsPanel);
 
