@@ -113,7 +113,7 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.setEnabled = functi
  * @param {boolean} value True if excluded.
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.exclude = function(value) {
-  if (this.isInDocument()) goog.style.setElementShown(this.getElement(), !value);
+  this.hide(value);
   this.control_.exclude(value);
 };
 
@@ -130,7 +130,6 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.isExcluded = functi
 anychart.chartEditorModule.controls.LabeledControl.prototype.disposeInternal = function() {
   goog.dispose(this.control_);
   this.control_ = null;
-
   this.label_ = null;
 
   anychart.chartEditorModule.controls.LabeledControl.base(this, 'disposeInternal');

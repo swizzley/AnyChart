@@ -324,7 +324,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['heatMap'],
     'dataSetCtor': 'set',
     'singleSeries': true,
-    'panelsExcludes': ['series'],
+    'panelsExcludes': ['series', 'colorRange'],
     'settingsExcludes': ['palette()', 'animation().enabled()']
   },
   'box': {

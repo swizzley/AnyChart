@@ -17,10 +17,9 @@ goog.require('anychart.chartEditorModule.settings.specific.Waterfall');
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
 anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
-  anychart.chartEditorModule.SpecificPanel.base(this, 'constructor', model, null, opt_domHelper);
+  anychart.chartEditorModule.SpecificPanel.base(this, 'constructor', model, 'Specific Settings', opt_domHelper);
 
   this.descriptors_ = [
-
     {
       chartType: 'waterfall',
       classFunc: anychart.chartEditorModule.settings.specific.Waterfall

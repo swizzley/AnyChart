@@ -104,9 +104,8 @@ anychart.chartEditorModule.Component.prototype.exclude = function(value) {
     }
 
     this.excluded = value;
-
-    this.hide(this.excluded);
   }
+  this.hide(this.excluded);
 };
 
 

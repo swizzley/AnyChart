@@ -70,10 +70,19 @@ anychart.chartEditorModule.settings.ColorScale.prototype.createDom = function() 
   this.ranges_ = new anychart.chartEditorModule.settings.ColorScaleRanges(model);
   this.specificContent_.addChild(this.ranges_, true);
   this.ranges_.setKey(this.genKey('ranges', true));
+};
 
-  this.colors_.hide();
-  this.ranges_.hide();
-  goog.style.setElementShown(this.ranges_.getElement(), false);
+
+/** @override */
+anychart.chartEditorModule.settings.ColorScale.prototype.enterDocument = function() {
+  anychart.chartEditorModule.settings.ColorScale.base(this, 'enterDocument');
+
+  if (this.scaleType_)
+    this.updateSpecific(true);
+  else {
+    this.ranges_.exclude(true);
+    this.colors_.exclude(true);
+  }
 };
 
 
@@ -88,9 +97,6 @@ anychart.chartEditorModule.settings.ColorScale.prototype.onChartDraw = function(
   this.scale_ = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(anychart.bindingModule.exec(target, stringKey));
 
   if (this.scale_) {
-    this.colors_.show();
-    this.ranges_.show();
-
     if (this.scaleTypeField_) {
       var type = this.scale_.getType();
       this.scaleTypeField_.setValue(type, true);
@@ -111,11 +117,12 @@ anychart.chartEditorModule.settings.ColorScale.prototype.onChartDraw = function(
 
 /**
  * Creates dom for specific section.
+ * @param {boolean=} opt_force
  */
-anychart.chartEditorModule.settings.ColorScale.prototype.updateSpecific = function() {
+anychart.chartEditorModule.settings.ColorScale.prototype.updateSpecific = function(opt_force) {
   var newScaleType = this.scaleTypeField_.getValue().value;
 
-  if (newScaleType && newScaleType != this.scaleType_) {
+  if (newScaleType && (opt_force || newScaleType != this.scaleType_)) {
     this.scaleType_ = newScaleType;
     if (this.scaleType_ == 'linear-color') {
       // ordinal-color
