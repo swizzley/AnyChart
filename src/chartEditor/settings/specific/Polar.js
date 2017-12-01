@@ -59,7 +59,7 @@ anychart.chartEditorModule.settings.specific.Polar.prototype.createDom = functio
 
   var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
   innerRadius.setOptions([5, 10, 20, 30, 40]);
-  this.innerRadius_ = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner radius');
+  this.innerRadius_ = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner Radius');
   this.addChild(this.innerRadius_, true);
 };
 

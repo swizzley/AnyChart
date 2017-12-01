@@ -24,7 +24,7 @@ anychart.chartEditorModule.ChartTitlePanel.prototype.createDom = function() {
   anychart.chartEditorModule.ChartTitlePanel.base(this, 'createDom');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var title = new anychart.chartEditorModule.settings.Title(model);
+  var title = new anychart.chartEditorModule.settings.Title(model, null);
   title.allowEnabled(false);
   title.setPositionKey('orientation()');
   title.setKey([['chart'], ['settings'], 'title()']);

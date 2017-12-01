@@ -61,7 +61,7 @@ anychart.chartEditorModule.settings.Labels.prototype.createDom = function() {
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.Labels.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var settings = new anychart.chartEditorModule.settings.Title(model);
+  var settings = new anychart.chartEditorModule.settings.Title(model, null);
   settings.allowEnabled(false);
 
   settings.allowEditPosition(this.allowEditPosition_);

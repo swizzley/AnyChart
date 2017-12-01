@@ -133,6 +133,34 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   this.addLabeledControl(ticks);
   this.ticks_ = ticks;
   //endregion
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+
+  //region Minor Labels
+  var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
+  minorlabels.setName('Minor Labels');
+  minorlabels.allowEnabled(true);
+  minorlabels.allowEditPosition(false);
+  minorlabels.allowEditAnchor(false);
+  minorlabels.setKey(this.genKey('minorLabels()'));
+  this.addLabeledControl(minorlabels);
+  this.minorLabels_ = minorlabels;
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+
+  // Minor Ticks
+  var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
+  minorTicks.setName('Minor Ticks');
+  minorTicks.allowEnabled(true);
+  minorTicks.allowEditPosition(!this.isRadarAxis);
+  minorTicks.setKey(this.genKey('minorTicks()'));
+  this.addLabeledControl(minorTicks);
+  this.minorTicks_ = minorTicks;
+  //endregion
 };
 
 
@@ -158,8 +186,12 @@ anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
   if (!this.isSingleAxis && !this.axisExists) {
     this.axisExists = (this.xOrY == 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
     this.title_.exclude(!this.axisExists);
+
     this.labels_.exclude(!this.axisExists);
     this.ticks_.exclude(!this.axisExists);
+
+    this.minorLabels_.exclude(!this.axisExists);
+    this.minorTicks_.exclude(!this.axisExists);
   }
 
   if (evt.rebuild && this.axisExists) {

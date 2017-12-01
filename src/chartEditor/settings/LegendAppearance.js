@@ -7,13 +7,12 @@ goog.require('anychart.chartEditorModule.settings.Title');
 
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
- * @param {?string=} opt_name
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
  * @extends {anychart.chartEditorModule.SettingsPanel}
  */
-anychart.chartEditorModule.settings.LegendAppearance = function(model, opt_name, opt_domHelper) {
-  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'constructor', model, opt_name, opt_domHelper);
+anychart.chartEditorModule.settings.LegendAppearance = function(model, opt_domHelper) {
+  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'constructor', model, null, opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.LegendAppearance, anychart.chartEditorModule.SettingsPanel);
 
@@ -58,7 +57,7 @@ anychart.chartEditorModule.settings.LegendAppearance.prototype.createDom = funct
   ]);
   this.addChild(alignField, true);
 
-  var items = new anychart.chartEditorModule.settings.Title(model);
+  var items = new anychart.chartEditorModule.settings.Title(model, null);
   items.allowEnabled(false);
   items.allowEditTitle(false);
   items.allowEditPosition(false);
