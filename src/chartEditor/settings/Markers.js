@@ -66,7 +66,7 @@ anychart.chartEditorModule.settings.Markers.prototype.createDom = function() {
 
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
   stroke.setKey(this.genKey('stroke()'));
-  this.addLabeledControl(stroke);
+  this.addChildControl(stroke);
 };
 
 

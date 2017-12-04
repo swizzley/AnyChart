@@ -23,7 +23,7 @@ goog.inherits(anychart.chartEditorModule.settings.specific.Radar, anychart.chart
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditorModule.settings.specific.Radar.CSS_CLASS = goog.getCssName('anychart-settings-panel-radar');
+anychart.chartEditorModule.settings.specific.Radar.CSS_CLASS = goog.getCssName('anychart-chart-editor-settings-panel-radar');
 
 
 /** @override */
@@ -32,38 +32,12 @@ anychart.chartEditorModule.settings.specific.Radar.prototype.createDom = functio
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.Radar.CSS_CLASS);
 
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([0, 90, 180, 270]);
   startAngle.setRange(0, 360);
-  this.startAngle_ = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
-  this.addChild(this.startAngle_, true);
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.Radar.prototype.updateKeys = function() {
-  if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    if (this.startAngle_) this.startAngle_.init(model, this.genKey('startAngle()'));
-  }
-  anychart.chartEditorModule.settings.specific.Radar.base(this, 'updateKeys');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.Radar.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.specific.Radar.base(this, 'onChartDraw', evt);
-  if (!this.isExcluded()) {
-    var target = evt.chart;
-    if (this.startAngle_) this.startAngle_.setValueByTarget(target);
-  }
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.specific.Radar.prototype.disposeInternal = function() {
-  goog.dispose(this.startAngle_);
-  this.startAngle_ = null;
-
-  anychart.chartEditorModule.settings.specific.Radar.base(this, 'disposeInternal');
+  var startAngleLC = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
+  startAngleLC.init(model, this.genKey('startAngle()'));
+  this.addChildControl(startAngleLC);
 };

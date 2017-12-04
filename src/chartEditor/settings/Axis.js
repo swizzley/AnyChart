@@ -86,7 +86,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
     // Stagger settings
     var staggerSettings = new anychart.chartEditorModule.settings.Stagger(model);
     staggerSettings.setKey(this.getKey());
-    wrapper.addLabeledControl(staggerSettings);
+    wrapper.addChildControl(staggerSettings);
 
     goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
         goog.dom.TagName.DIV,
@@ -99,7 +99,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
       {value: 'no-overlap', caption: 'No overlap'}
     ]);
     overlapMode.init(model, this.genKey('overlapMode()'));
-    wrapper.addLabeledControl(overlapMode);
+    wrapper.addChildControl(overlapMode);
 
     var title = new anychart.chartEditorModule.settings.Title(model, 'Title');
     title.allowEditPosition(false, this.xOrY == 'x' ? 'bottom' : 'left');
@@ -118,7 +118,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   labels.allowEditPosition(false);
   labels.allowEditAnchor(false);
   labels.setKey(this.genKey('labels()'));
-  this.addLabeledControl(labels);
+  this.addChildControl(labels);
   this.labels_ = labels;
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
@@ -130,7 +130,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   ticks.allowEnabled(true);
   ticks.allowEditPosition(!this.isRadarAxis);
   ticks.setKey(this.genKey('ticks()'));
-  this.addLabeledControl(ticks);
+  this.addChildControl(ticks);
   this.ticks_ = ticks;
   //endregion
 
@@ -145,7 +145,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   minorlabels.allowEditPosition(false);
   minorlabels.allowEditAnchor(false);
   minorlabels.setKey(this.genKey('minorLabels()'));
-  this.addLabeledControl(minorlabels);
+  this.addChildControl(minorlabels);
   this.minorLabels_ = minorlabels;
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
@@ -158,7 +158,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   minorTicks.allowEnabled(true);
   minorTicks.allowEditPosition(!this.isRadarAxis);
   minorTicks.setKey(this.genKey('minorTicks()'));
-  this.addLabeledControl(minorTicks);
+  this.addChildControl(minorTicks);
   this.minorTicks_ = minorTicks;
   //endregion
 };

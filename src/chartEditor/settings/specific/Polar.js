@@ -25,7 +25,7 @@ goog.inherits(anychart.chartEditorModule.settings.specific.Polar, anychart.chart
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditorModule.settings.specific.Polar.CSS_CLASS = goog.getCssName('anychart-settings-panel-polar');
+anychart.chartEditorModule.settings.specific.Polar.CSS_CLASS = goog.getCssName('anychart-chart-editor-settings-panel-polar');
 
 
 /** @override */
@@ -34,80 +34,37 @@ anychart.chartEditorModule.settings.specific.Polar.prototype.createDom = functio
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.Polar.CSS_CLASS);
 
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
   var sortPointsByX = new anychart.chartEditorModule.checkbox.Base();
   sortPointsByX.setCaption('Sort Points By X');
-  this.sortPointsByX_ = sortPointsByX;
-  this.addChild(this.sortPointsByX_, true);
+  sortPointsByX.init(model, [['chart'], ['settings'], 'sortPointsByX()']);
+  this.addChildControl(sortPointsByX);
 
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([0, 90, 180, 270]);
   startAngle.setRange(0, 360);
-  this.startAngle_ = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
-  this.addChild(this.startAngle_, true);
+  var startAngleLC = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
+  startAngleLC.init(model, this.genKey('startAngle()'));
+  this.addChildControl(startAngleLC);
 
   var pointWidth = new anychart.chartEditorModule.comboBox.Base();
   pointWidth.setOptions([1, 5, 10, 20, 40]);
   pointWidth.setRange(1, 200);
-  this.pointWidth_ = new anychart.chartEditorModule.controls.LabeledControl(pointWidth, 'Point Width');
-  this.addChild(this.pointWidth_, true);
+  var pointWidthLC = new anychart.chartEditorModule.controls.LabeledControl(pointWidth, 'Point Width');
+  pointWidthLC.init(model, this.genKey('pointWidth()'));
+  this.addChildControl(pointWidthLC);
 
   var maxPointWidth = new anychart.chartEditorModule.comboBox.Base();
   maxPointWidth.setOptions([1, 5, 10, 20, 40]);
   maxPointWidth.setRange(1, 200);
-  this.maxPointWidth_ = new anychart.chartEditorModule.controls.LabeledControl(maxPointWidth, 'Max Point Width');
-  this.addChild(this.maxPointWidth_, true);
+  var maxPointWidthLC = new anychart.chartEditorModule.controls.LabeledControl(maxPointWidth, 'Max Point Width');
+  maxPointWidthLC.init(model, this.genKey('maxPointWidth()'));
+  this.addChildControl(maxPointWidthLC);
 
   var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
   innerRadius.setOptions([5, 10, 20, 30, 40]);
-  this.innerRadius_ = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner Radius');
-  this.addChild(this.innerRadius_, true);
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.Polar.prototype.updateKeys = function() {
-  if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    if (this.sortPointsByX_) this.sortPointsByX_.init(model, [['chart'], ['settings'], 'sortPointsByX()']);
-    if (this.startAngle_) this.startAngle_.init(model, this.genKey('startAngle()'));
-    if (this.pointWidth_) this.pointWidth_.init(model, this.genKey('pointWidth()'));
-    if (this.maxPointWidth_) this.maxPointWidth_.init(model, this.genKey('maxPointWidth()'));
-    if (this.innerRadius_) this.innerRadius_.init(model, this.genKey('innerRadius()'));
-  }
-  anychart.chartEditorModule.settings.specific.Polar.base(this, 'updateKeys');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.Polar.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.specific.Polar.base(this, 'onChartDraw', evt);
-  if (!this.isExcluded()) {
-    var target = evt.chart;
-    if (this.sortPointsByX_) this.sortPointsByX_.setValueByTarget(target);
-    if (this.startAngle_) this.startAngle_.setValueByTarget(target);
-    if (this.pointWidth_) this.pointWidth_.setValueByTarget(target);
-    if (this.maxPointWidth_) this.maxPointWidth_.setValueByTarget(target);
-    if (this.innerRadius_) this.innerRadius_.setValueByTarget(target);
-  }
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.specific.Polar.prototype.disposeInternal = function() {
-  goog.dispose(this.sortPointsByX_);
-  this.sortPointsByX_ = null;
-
-  goog.dispose(this.startAngle_);
-  this.startAngle_ = null;
-
-  goog.dispose(this.pointWidth_);
-  this.pointWidth_ = null;
-
-  goog.dispose(this.maxPointWidth_);
-  this.maxPointWidth_ = null;
-
-  goog.dispose(this.innerRadius_);
-  this.innerRadius_ = null;
-
-  anychart.chartEditorModule.settings.specific.Polar.base(this, 'disposeInternal');
+  var innerRadiusLC = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner Radius');
+  innerRadiusLC.init(model, this.genKey('innerRadius()'));
+  this.addChildControl(innerRadiusLC);
 };

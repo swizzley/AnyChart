@@ -47,7 +47,7 @@ anychart.chartEditorModule.settings.Stagger.prototype.createDom = function() {
   staggerLines.setRange(0, 10);
   var staggerLinesLC = new anychart.chartEditorModule.controls.LabeledControl(staggerLines, 'Stagger Lines');
   staggerLinesLC.init(model, this.genKey('staggerLines()'));
-  this.addLabeledControl(staggerLinesLC);
+  this.addChildControl(staggerLinesLC);
 
   // Stagger max lines
   var staggerMaxLines = new anychart.chartEditorModule.comboBox.Base();
@@ -55,5 +55,5 @@ anychart.chartEditorModule.settings.Stagger.prototype.createDom = function() {
   staggerMaxLines.setRange(0, 10);
   var staggerMaxLinesLC = new anychart.chartEditorModule.controls.LabeledControl(staggerMaxLines, 'Stagger Max Lines');
   staggerMaxLinesLC.init(model, this.genKey('staggerMaxLines()'));
-  this.addLabeledControl(staggerMaxLinesLC);
+  this.addChildControl(staggerMaxLinesLC);
 };

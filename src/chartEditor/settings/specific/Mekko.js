@@ -32,39 +32,12 @@ anychart.chartEditorModule.settings.specific.Mekko.prototype.createDom = functio
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.specific.Mekko.CSS_CLASS);
 
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
   var pointsPadding = new anychart.chartEditorModule.comboBox.Base();
   pointsPadding.setOptions([0, 1, 3, 5, 10, 15]);
   pointsPadding.setRange(0, 20);
-
-  this.pointsPadding_ = new anychart.chartEditorModule.controls.LabeledControl(pointsPadding, 'Points Padding');
-  this.addChild(this.pointsPadding_, true);
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.Mekko.prototype.updateKeys = function() {
-  if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    if (this.pointsPadding_) this.pointsPadding_.init(model, this.genKey('pointsPadding()'));
-  }
-  anychart.chartEditorModule.settings.specific.Mekko.base(this, 'updateKeys');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.Mekko.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.specific.Mekko.base(this, 'onChartDraw', evt);
-  if (!this.isExcluded()) {
-    var target = evt.chart;
-    if (this.pointsPadding_) this.pointsPadding_.setValueByTarget(target);
-  }
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.specific.Mekko.prototype.disposeInternal = function() {
-  goog.dispose(this.pointsPadding_);
-  this.pointsPadding_ = null;
-
-  anychart.chartEditorModule.settings.specific.Mekko.base(this, 'disposeInternal');
+  var pointsPaddingLC = new anychart.chartEditorModule.controls.LabeledControl(pointsPadding, 'Points Padding');
+  pointsPaddingLC.init(model, this.genKey('pointsPadding()'));
+  this.addChildControl(pointsPaddingLC);
 };

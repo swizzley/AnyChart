@@ -54,7 +54,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
     {value: 'bottom', icon: 'ac ac-position-bottom'}
   ]);
   orientation.init(model, this.genKey('orientation()'));
-  this.addLabeledControl(orientation);
+  this.addChildControl(orientation);
 
   // Align
   var align = new anychart.chartEditorModule.controls.select.DataField({label: 'Align'});
@@ -64,7 +64,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
     {value: 'right', icon: 'ac ac-position-right'}
   ]);
   align.init(model, this.genKey('align()'));
-  this.addLabeledControl(align);
+  this.addChildControl(align);
 
   // Color Line Size
   var colorLineSize = new anychart.chartEditorModule.comboBox.Base();
@@ -72,19 +72,19 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   colorLineSize.setRange(0, 100);
   var colorLineSizeLC = new anychart.chartEditorModule.controls.LabeledControl(colorLineSize, 'Color Line Size');
   colorLineSizeLC.init(model, this.genKey('colorLineSize()'));
-  this.addLabeledControl(colorLineSizeLC);
+  this.addChildControl(colorLineSizeLC);
 
   // Length
   var length = new anychart.chartEditorModule.comboBox.Percentage();
   length.setOptions([20, 50, 80, 100]);
   var lengthLC = new anychart.chartEditorModule.controls.LabeledControl(length, 'Length');
   lengthLC.init(model, this.genKey('length()'));
-  this.addLabeledControl(lengthLC);
+  this.addChildControl(lengthLC);
 
   // Stroke
   var stroke = new anychart.chartEditorModule.settings.Stroke(model, 'Stroke');
   stroke.setKey(this.genKey('stroke()'));
-  this.addLabeledControl(stroke);
+  this.addChildControl(stroke);
 
   // Overlap mode
   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
@@ -93,12 +93,12 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
     {value: 'no-overlap', caption: 'No overlap'}
   ]);
   overlapMode.init(model, this.genKey('overlapMode()'));
-  this.addLabeledControl(overlapMode);
+  this.addChildControl(overlapMode);
 
   // Stagger settings
   var staggerSettings = new anychart.chartEditorModule.settings.Stagger(model);
   staggerSettings.setKey(this.getKey());
-  this.addLabeledControl(staggerSettings);
+  this.addChildControl(staggerSettings);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -109,7 +109,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   marker.setName('Marker');
   marker.allowEnabled(true);
   marker.setKey(this.genKey('marker()'));
-  this.addLabeledControl(marker);
+  this.addChildControl(marker);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -121,17 +121,17 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   labels.allowEditPosition(false);
   labels.allowEditAnchor(false);
   labels.setKey(this.genKey('labels()'));
-  this.addLabeledControl(labels);
+  this.addChildControl(labels);
 
   var drawFirstLabel = new anychart.chartEditorModule.checkbox.Base();
   drawFirstLabel.setCaption('Draw First Label');
   drawFirstLabel.init(model, this.genKey('drawFirstLabel()'));
-  labels.addLabeledControl(drawFirstLabel);
+  labels.addChildControl(drawFirstLabel);
 
   var drawLastLabel = new anychart.chartEditorModule.checkbox.Base();
   drawLastLabel.setCaption('Draw Last Label');
   drawLastLabel.init(model, this.genKey('drawLastLabel()'));
-  labels.addLabeledControl(drawLastLabel);
+  labels.addChildControl(drawLastLabel);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -141,7 +141,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   var ticks = new anychart.chartEditorModule.settings.Ticks(model);
   ticks.allowEnabled(true);
   ticks.setKey(this.genKey('ticks()'));
-  this.addLabeledControl(ticks);
+  this.addChildControl(ticks);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -154,7 +154,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   minorLabels.allowEditPosition(false);
   minorLabels.allowEditAnchor(false);
   minorLabels.setKey(this.genKey('minorLabels()'));
-  this.addLabeledControl(minorLabels);
+  this.addChildControl(minorLabels);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -165,7 +165,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   minorTicks.setName('Minor Ticks');
   minorTicks.allowEnabled(true);
   minorTicks.setKey(this.genKey('minorTicks()'));
-  this.addLabeledControl(minorTicks);
+  this.addChildControl(minorTicks);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -177,5 +177,5 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   title.allowEditPosition(false);
   title.allowEditAlign(false);
   title.setKey(this.genKey('title()'));
-  this.addLabeledControl(title);
+  this.addChildControl(title);
 };

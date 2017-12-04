@@ -58,7 +58,7 @@ anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
     });
     position.getControl().setOptions(positionValues);
     position.init(model, this.genKey('position()'));
-    this.addLabeledControl(position);
+    this.addChildControl(position);
   }
 
   // Length
@@ -67,10 +67,10 @@ anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
   length.setRange(0, 100);
   var lengthLC = new anychart.chartEditorModule.controls.LabeledControl(length, 'Length');
   lengthLC.init(model, this.genKey('length()'));
-  this.addLabeledControl(lengthLC);
+  this.addChildControl(lengthLC);
 
   // Stroke
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
   stroke.setKey(this.genKey('stroke()'));
-  this.addLabeledControl(stroke);
+  this.addChildControl(stroke);
 };
