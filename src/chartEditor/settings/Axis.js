@@ -21,8 +21,9 @@ anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domH
   anychart.chartEditorModule.settings.Axis.base(this, 'constructor', model, null, opt_domHelper);
 
   var chartType = model.getModel()['chart']['type'];
-  this.isRadarAxis = chartType === 'radar' || chartType === 'polar';
-  this.isSingleAxis = this.isRadarAxis;
+  this.chartType = chartType;
+  this.isRadarPolarAxis = chartType === 'radar' || chartType === 'polar';
+  this.isSingleAxis = this.isRadarPolarAxis;
   this.axisExists = this.isSingleAxis;
 
   this.xOrY = xOrY;
@@ -68,7 +69,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   wrapper.addChild(invertedCheckbox, true);
   this.inverted_ = invertedCheckbox;
 
-  if (!this.isRadarAxis) {
+  if (!this.isRadarPolarAxis) {
     var orientation = new anychart.chartEditorModule.controls.select.DataField({label: 'Orientation'});
     orientation.getSelect().setOptions([
       {value: 'left', icon: 'ac ac-position-left'},
@@ -128,39 +129,41 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   // Ticks
   var ticks = new anychart.chartEditorModule.settings.Ticks(model);
   ticks.allowEnabled(true);
-  ticks.allowEditPosition(!this.isRadarAxis);
+  ticks.allowEditPosition(!this.isRadarPolarAxis);
   ticks.setKey(this.genKey('ticks()'));
   this.addChildControl(ticks);
   this.ticks_ = ticks;
   //endregion
 
-  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+  if (!(this.chartType === 'radar' && this.xOrY == 'x')) {
+    goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
-  //region Minor Labels
-  var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
-  minorlabels.setName('Minor Labels');
-  minorlabels.allowEnabled(true);
-  minorlabels.allowEditPosition(false);
-  minorlabels.allowEditAnchor(false);
-  minorlabels.setKey(this.genKey('minorLabels()'));
-  this.addChildControl(minorlabels);
-  this.minorLabels_ = minorlabels;
+    //region Minor Labels
+    var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
+    minorlabels.setName('Minor Labels');
+    minorlabels.allowEnabled(true);
+    minorlabels.allowEditPosition(false);
+    minorlabels.allowEditAnchor(false);
+    minorlabels.setKey(this.genKey('minorLabels()'));
+    this.addChildControl(minorlabels);
+    this.minorLabels_ = minorlabels;
 
-  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+    goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName('anychart-chart-editor-settings-item-separator')));
 
-  // Minor Ticks
-  var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
-  minorTicks.setName('Minor Ticks');
-  minorTicks.allowEnabled(true);
-  minorTicks.allowEditPosition(!this.isRadarAxis);
-  minorTicks.setKey(this.genKey('minorTicks()'));
-  this.addChildControl(minorTicks);
-  this.minorTicks_ = minorTicks;
-  //endregion
+    // Minor Ticks
+    var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
+    minorTicks.setName('Minor Ticks');
+    minorTicks.allowEnabled(true);
+    minorTicks.allowEditPosition(!this.isRadarPolarAxis);
+    minorTicks.setKey(this.genKey('minorTicks()'));
+    this.addChildControl(minorTicks);
+    this.minorTicks_ = minorTicks;
+    //endregion
+  }
 };
 
 
@@ -190,8 +193,11 @@ anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
     this.labels_.exclude(!this.axisExists);
     this.ticks_.exclude(!this.axisExists);
 
-    this.minorLabels_.exclude(!this.axisExists);
-    this.minorTicks_.exclude(!this.axisExists);
+    if (this.minorLabels_)
+      this.minorLabels_.exclude(!this.axisExists);
+
+    if (this.minorTicks_)
+      this.minorTicks_.exclude(!this.axisExists);
   }
 
   if (evt.rebuild && this.axisExists) {
