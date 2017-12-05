@@ -1,13 +1,11 @@
-goog.provide('anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer');
 goog.provide('anychart.chartEditorModule.select.ChartType');
+goog.provide('anychart.chartEditorModule.select.ChartTypeRenderer');
 
-goog.require('anychart.chartEditorModule.controls.Menu');
-goog.require('anychart.chartEditorModule.controls.MenuRenderer');
-goog.require('anychart.chartEditorModule.controls.select.MenuItemWithIcon');
-goog.require('anychart.chartEditorModule.controls.select.SelectWithIcon');
-goog.require('goog.ui.Menu');
-goog.require('goog.ui.MenuRenderer');
-
+goog.require('anychart.chartEditorModule.controls.chartType.Menu');
+goog.require('anychart.chartEditorModule.controls.chartType.MenuRenderer');
+goog.require('anychart.chartEditorModule.controls.select.Base');
+goog.require('anychart.chartEditorModule.controls.select.MenuItem');
+goog.require('goog.ui.ButtonRenderer');
 
 
 /**
@@ -23,71 +21,60 @@ goog.require('goog.ui.MenuRenderer');
  *     document interaction.
  * @param {!goog.ui.MenuRenderer=} opt_menuRenderer Renderer used to render or
  *     decorate the menu; defaults to {@link goog.ui.MenuRenderer}.
- * @param {string=} opt_menuAdditionalClass
  * @constructor
- * @extends {anychart.chartEditorModule.controls.select.SelectWithIcon}
+ * @extends {anychart.chartEditorModule.controls.select.Base}
  */
-anychart.chartEditorModule.select.ChartType = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer, opt_menuAdditionalClass) {
-  anychart.chartEditorModule.select.ChartType.base(this, 'constructor', opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer);
-
-  /**
-   * @type {Array}
-   * @private
-   */
-  this.extendedOptions_ = [];
-
+anychart.chartEditorModule.select.ChartType = function(opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
   /**
    * @type {goog.ui.MenuRenderer}
    * @private
    */
-  this.cMenuRenderer_ = opt_menuRenderer || anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer.getInstance();
+  this.cMenuRenderer_ = opt_menuRenderer || anychart.chartEditorModule.controls.chartType.MenuRenderer.getInstance();
 
   /**
-   * @type {(goog.ui.Menu|undefined)}
+   * @type {(anychart.chartEditorModule.controls.chartType.Menu|undefined)}
    * @private
    */
-  this.cMenu_ = opt_menu;
+  this.cMenu_ = /** @type {anychart.chartEditorModule.controls.chartType.Menu} */(opt_menu) || null;
 
-  /**
-   * @type {string}
-   */
-  this.menuAdditionalClass = opt_menuAdditionalClass || '';
+  anychart.chartEditorModule.select.ChartType.base(this, 'constructor',
+      opt_caption,
+      this.cMenu_,
+      opt_renderer || anychart.chartEditorModule.select.ChartTypeRenderer.getInstance(),
+      opt_domHelper,
+      this.cMenuRenderer_);
 };
-goog.inherits(anychart.chartEditorModule.select.ChartType, anychart.chartEditorModule.controls.select.SelectWithIcon);
+goog.inherits(anychart.chartEditorModule.select.ChartType, anychart.chartEditorModule.controls.select.Base);
 
+
+/** @type {string} */
+anychart.chartEditorModule.select.ChartType.CSS_CLASS = goog.getCssName('anychart-chart-editor-select-chart-type');
 
 /** @inheritDoc */
 anychart.chartEditorModule.select.ChartType.prototype.createDom = function() {
   anychart.chartEditorModule.select.ChartType.base(this, 'createDom');
 
-  for (var i = 0; i < this.extendedOptions_.length; i++) {
-    var item = new anychart.chartEditorModule.controls.select.MenuItemWithIcon({
-      caption: this.extendedOptions_[i]['name'],
-      value: this.extendedOptions_[i]['value'],
-      stackMode: this.extendedOptions_[i]['stackMode'],
-      icon: 'http://www.anychart.com/_design/img/upload/charts/types/' + this.extendedOptions_[i]['icon']
+  this.addClassName(anychart.chartEditorModule.select.ChartType.CSS_CLASS);
+
+  // Chart Types
+  var chartTypesOptions = goog.object.getValues(anychart.chartEditorModule.EditorModel.ChartTypes);
+  for (var i = 0; i < chartTypesOptions.length; i++) {
+    var chartTypeItem = new anychart.chartEditorModule.controls.select.MenuItem({
+      caption: chartTypesOptions[i]['name'],
+      value: chartTypesOptions[i]['value'],
+      stackMode: chartTypesOptions[i]['stackMode'],
+      icon: 'http://www.anychart.com/_design/img/upload/charts/types/' + chartTypesOptions[i]['icon'],
+      filters: chartTypesOptions[i]['filters']
     });
-    this.addItem(item);
+    this.addItem(chartTypeItem);
   }
-
-  this.addClassName('anychart-select-chart-type');
-};
-
-
-/**
- * Init select by array of options as Objects as they stored in anychart.chartEditorModule.EditorModel.ChartTypes.
- * @param {Array.<Object>} options
- */
-anychart.chartEditorModule.select.ChartType.prototype.initOptions = function(options) {
-  this.extendedOptions_ = options;
 };
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.select.ChartType.prototype.getMenu = function() {
   if (!this.cMenu_) {
-    this.cMenu_ = new anychart.chartEditorModule.controls.Menu(
-        this.menuAdditionalClass,
+    this.cMenu_ = new anychart.chartEditorModule.controls.chartType.Menu(
         this.getDomHelper(),
         this.cMenuRenderer_
     );
@@ -96,21 +83,92 @@ anychart.chartEditorModule.select.ChartType.prototype.getMenu = function() {
   return this.cMenu_ || null;
 };
 
+// /** @inheritDoc */
+// anychart.chartEditorModule.select.ChartType.prototype.handleMenuAction = function(e) {
+// var item = e.target;
 
-// region ---- ChartTypeMenuRenderer
+// console.log(e.target, e.currentTarget);
+//if (item instanceof anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption) {
+//   e.preventDefault();
+//   e.stopPropagation();
+// } else {
+//   anychart.chartEditorModule.controls.select.DataFieldSelect.base(this, 'handleMenuAction', e);
+// }
+
+//     var renderer = /** @type {anychart.chartEditorModule.select.ChartTypeRenderer} */(this.getRenderer());
+//     renderer.updateIcon(this);
+// };
+
+
+/** @override */
+anychart.chartEditorModule.select.ChartType.prototype.handleBlur = function(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
+
+// region ---- SelectWithIconRenderer
 /**
  * @constructor
- * @extends {anychart.chartEditorModule.controls.MenuRenderer}
+ * @extends {goog.ui.ButtonRenderer}
  */
-anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer = function() {
-  anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer.base(this, 'constructor');
+anychart.chartEditorModule.select.ChartTypeRenderer = function() {
+  goog.ui.ButtonRenderer.call(this);
 };
-goog.inherits(anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer, anychart.chartEditorModule.controls.MenuRenderer);
-goog.addSingletonGetter(anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer);
+goog.inherits(anychart.chartEditorModule.select.ChartTypeRenderer, goog.ui.ButtonRenderer);
+goog.addSingletonGetter(anychart.chartEditorModule.select.ChartTypeRenderer);
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.controls.select.ChartTypeMenuRenderer.prototype.getCssClass = function() {
-  return 'anychart-select-chart-type-menu';
+anychart.chartEditorModule.select.ChartTypeRenderer.prototype.createDom = function(control) {
+  var dom = control.getDomHelper();
+
+  var icon = dom.createDom(goog.dom.TagName.IMG);
+  var element = dom.createDom(goog.dom.TagName.DIV, this.getClassNames(control).join(' '), [
+    icon,
+    dom.createDom(goog.dom.TagName.SPAN, '', control.getContent())
+  ]);
+
+  var selectedItem = control.getSelectedItem();
+  if (selectedItem) {
+    var model = selectedItem.getModel();
+    goog.dom.setProperties(icon, {'src': model.icon});
+  } else {
+    goog.style.setElementShown(icon, false);
+  }
+
+  return element;
+};
+
+/** @inheritDoc */
+anychart.chartEditorModule.select.ChartTypeRenderer.prototype.getContentElement = function(element) {
+  if (element) {
+    return goog.dom.getElementsByTagName(goog.dom.TagName.SPAN, element)[0];
+  }
+  return null;
+};
+
+// /** @param {anychart.chartEditorModule.select.ChartType} control */
+// anychart.chartEditorModule.select.ChartTypeRenderer.prototype.updateIcon = function(control) {
+//   var element = control.getElement();
+//   if (element) {
+//     var iconElement = goog.dom.getElementsByTagName(goog.dom.TagName.IMG, element)[0];
+//     var selectedItem = control.getSelectedItem();
+//     if (selectedItem) {
+//       var model = selectedItem.getModel();
+//       goog.dom.setProperties(iconElement, {'src': model.icon});
+//       if (iconElement) goog.style.setElementShown(iconElement, true);
+//     } else {
+//       if (iconElement) goog.style.setElementShown(iconElement, false);
+//     }
+//   }
+// };
+
+
+/** @inheritDoc */
+anychart.chartEditorModule.select.ChartTypeRenderer.prototype.getCssClass = function() {
+  return 'anychart-ui-select-with-icon';
 };
 // endregion
+

@@ -544,11 +544,11 @@
   border: none;
 }
 
-.anychart-select-chart-type {
+.anychart-chart-editor-select-chart-type {
   margin-bottom: 14px;
 }
 
-.anychart-select-chart-type-menu {
+.anychart-chart-editor-select-chart-type-menu {
   .box-sizing(border-box);
   position: absolute;
   z-index: 1002; // for dialog mode
@@ -1486,7 +1486,8 @@
   }
 }
 
-.anychart-control-menu {
+.anychart-control-menu,
+.anychart-chart-editor-select-chart-type-menu {
   .box-sizing(border-box);
   position: absolute;
   background: @color-background;
@@ -1521,4 +1522,59 @@
   cursor: default;
 }
 
+.anychart-chart-editor-select-chart-type-menu {
+  max-height: 80%;
+  cursor: default;
+
+  .anychart-menuitem {
+    white-space: normal;
+    display: inline-block;
+    width: 50px;
+    height: 80px;
+    margin: 0 15px 15px 0;
+    cursor: pointer;
+    font-size: 12px;
+  }
+}
+
+.anychart-chart-editor-chart-type-filters {
+  padding: 10px 15px;
+
+  .anychart-checkbox {
+    .anychart-checkbox-element {
+      background: #fff;
+    }
+  }
+}
+
+.anychart-chart-editor-chart-type-pages {
+  padding: 15px 10px; // todo: to single page
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.anychart-chart-editor-pager {
+  text-align: center;
+  position: absolute;
+
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 40px;
+
+  div {
+    .border-radius(3px);
+
+    display: inline-block;
+    width: 36px;
+    height: 6px;
+    background-color: @color-label;
+    cursor: pointer;
+    margin: 10px 5px;
+  }
+  .current {
+    background: @color-blue;
+  }
+}
 // endregion

@@ -56,27 +56,6 @@ goog.inherits(anychart.chartEditorModule.controls.select.Base, goog.ui.Select);
 
 
 /**
- * @type {Array.<string>}
- * @private
- */
-anychart.chartEditorModule.controls.select.Base.prototype.options_;
-
-
-/**
- * @type {Array.<string>}
- * @private
- */
-anychart.chartEditorModule.controls.select.Base.prototype.captions_;
-
-
-/**
- * @type {Array.<string>}
- * @private
- */
-anychart.chartEditorModule.controls.select.Base.prototype.icons_;
-
-
-/**
  * Set model for options.
  * @param {Array.<Object|string>} options
  */

@@ -33,6 +33,7 @@ anychart.chartEditorModule.ChartTypeSelector = function(model, opt_domHelper) {
    * @private
    */
   this.plots_ = [];
+
   this.geoDataInputs_ = null;
 
   this.addClassName('anychart-border-box');
@@ -56,7 +57,6 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.createDom = function() {
 
   this.chartTypeSelect_ = new anychart.chartEditorModule.select.ChartType();
   this.chartTypeSelect_.init(model, [['chart'], 'type'], 'setChartType');
-  this.chartTypeSelect_.initOptions(goog.object.getValues(anychart.chartEditorModule.EditorModel.ChartTypes));
   coreFieldsContainer.addChild(this.chartTypeSelect_, true);
 
   this.geoDataInputs_ = new anychart.chartEditorModule.GeoDataInputs(model);
