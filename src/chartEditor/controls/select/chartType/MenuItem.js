@@ -44,11 +44,12 @@ goog.addSingletonGetter(anychart.chartEditorModule.controls.select.MenuItemRende
  */
 anychart.chartEditorModule.controls.select.MenuItemRenderer.prototype.createDom = function(item) {
   var element = anychart.chartEditorModule.controls.select.MenuItemRenderer.base(this, 'createDom', item);
-  var content = this.getContentElement(element);
+
+  //var content = this.getContentElement(element);
 
   var iconUrl = item.getModel().icon;
   var icon = goog.dom.createDom('img', {'src': iconUrl});
-  goog.dom.insertChildAt(content, icon, 0);
+  goog.dom.insertChildAt(element, icon, 0);
   return element;
 };
 

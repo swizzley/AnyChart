@@ -72,6 +72,15 @@ anychart.chartEditorModule.select.ChartType.prototype.createDom = function() {
 
 
 /** @inheritDoc */
+anychart.chartEditorModule.select.ChartType.prototype.enterDocument = function() {
+  anychart.chartEditorModule.select.ChartType.base(this, 'enterDocument');
+
+  var renderer = /** @type {anychart.chartEditorModule.select.ChartTypeRenderer} */(this.getRenderer());
+  renderer.updateIcon(this);
+};
+
+
+/** @inheritDoc */
 anychart.chartEditorModule.select.ChartType.prototype.getMenu = function() {
   if (!this.cMenu_) {
     this.cMenu_ = new anychart.chartEditorModule.controls.chartType.Menu(
@@ -83,21 +92,13 @@ anychart.chartEditorModule.select.ChartType.prototype.getMenu = function() {
   return this.cMenu_ || null;
 };
 
-// /** @inheritDoc */
-// anychart.chartEditorModule.select.ChartType.prototype.handleMenuAction = function(e) {
-// var item = e.target;
+/** @inheritDoc */
+anychart.chartEditorModule.select.ChartType.prototype.handleMenuAction = function(e) {
+  anychart.chartEditorModule.select.ChartType.base(this, 'handleMenuAction', e);
 
-// console.log(e.target, e.currentTarget);
-//if (item instanceof anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption) {
-//   e.preventDefault();
-//   e.stopPropagation();
-// } else {
-//   anychart.chartEditorModule.controls.select.DataFieldSelect.base(this, 'handleMenuAction', e);
-// }
-
-//     var renderer = /** @type {anychart.chartEditorModule.select.ChartTypeRenderer} */(this.getRenderer());
-//     renderer.updateIcon(this);
-// };
+  var renderer = /** @type {anychart.chartEditorModule.select.ChartTypeRenderer} */(this.getRenderer());
+  renderer.updateIcon(this);
+};
 
 
 /** @override */
@@ -149,21 +150,21 @@ anychart.chartEditorModule.select.ChartTypeRenderer.prototype.getContentElement 
   return null;
 };
 
-// /** @param {anychart.chartEditorModule.select.ChartType} control */
-// anychart.chartEditorModule.select.ChartTypeRenderer.prototype.updateIcon = function(control) {
-//   var element = control.getElement();
-//   if (element) {
-//     var iconElement = goog.dom.getElementsByTagName(goog.dom.TagName.IMG, element)[0];
-//     var selectedItem = control.getSelectedItem();
-//     if (selectedItem) {
-//       var model = selectedItem.getModel();
-//       goog.dom.setProperties(iconElement, {'src': model.icon});
-//       if (iconElement) goog.style.setElementShown(iconElement, true);
-//     } else {
-//       if (iconElement) goog.style.setElementShown(iconElement, false);
-//     }
-//   }
-// };
+/** @param {anychart.chartEditorModule.select.ChartType} control */
+anychart.chartEditorModule.select.ChartTypeRenderer.prototype.updateIcon = function(control) {
+  var element = control.getElement();
+  if (element) {
+    var iconElement = goog.dom.getElementsByTagName(goog.dom.TagName.IMG, element)[0];
+    var selectedItem = control.getSelectedItem();
+    if (selectedItem) {
+      var model = selectedItem.getModel();
+      goog.dom.setProperties(iconElement, {'src': model.icon});
+      if (iconElement) goog.style.setElementShown(iconElement, true);
+    } else {
+      if (iconElement) goog.style.setElementShown(iconElement, false);
+    }
+  }
+};
 
 
 /** @inheritDoc */

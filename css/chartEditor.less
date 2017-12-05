@@ -1523,34 +1523,72 @@
 }
 
 .anychart-chart-editor-select-chart-type-menu {
+  max-width: 695px;
   max-height: 80%;
   cursor: default;
+  border-top: 1px solid @color-border;
+  border-top-right-radius: 4px;
 
   .anychart-menuitem {
     white-space: normal;
     display: inline-block;
-    width: 50px;
-    height: 80px;
-    margin: 0 15px 15px 0;
+    width: 155px;
+    height: 40px;
+    margin: 0 15px 20px 0;
+    padding: 0;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
+    color: @color-label;
+    position: relative;
+
+    img {
+      width: 34px;
+      height: auto;
+      display: inline-block;
+    }
+    .anychart-menuitem-content {
+      position: absolute;
+      top: 0;
+      left: 50px;
+    }
+  }
+
+  .anychart-menuitem-highlight {
+    background: none;
+    color: @color-blue-hovered;
+    border: none;
   }
 }
 
 .anychart-chart-editor-chart-type-filters {
-  padding: 10px 15px;
+  padding: 18px 10px 6px;
+  border-bottom: 1px solid @color-border;
 
   .anychart-checkbox {
+    width: 170px;
+    margin-bottom: 12px;
+    font-size: 14px;
     .anychart-checkbox-element {
+      width: 15px;
+      height: 15px;
       background: #fff;
     }
+  }
+  .anychart-checkbox-checked {
+    background: none;
+  }
+  .anychart-checkbox-caption {
+    padding-left: 5px;
+  }
+  .anychart-checkbox-checkmark {
+    left: 1px;
+    top: -1px;
   }
 }
 
 .anychart-chart-editor-chart-type-pages {
-  padding: 15px 10px; // todo: to single page
+  padding: 18px 0 40px 10px; // todo: to single page
   position: relative;
-  padding-bottom: 40px;
 }
 
 .anychart-chart-editor-pager {
