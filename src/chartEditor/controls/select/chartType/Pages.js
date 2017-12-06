@@ -3,6 +3,8 @@ goog.provide('anychart.chartEditorModule.controls.chartType.Pager');
 goog.provide('anychart.chartEditorModule.controls.chartType.Pages');
 
 goog.require('anychart.chartEditorModule.Component');
+goog.require('goog.fx.AnimationSerialQueue');
+goog.require('goog.fx.dom.Slide');
 
 
 // region ---- Pages
@@ -57,10 +59,13 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.enterDocument = fu
  */
 anychart.chartEditorModule.controls.chartType.Pages.prototype.switchPage = function(nextOrPrevious) {
   var nextIndex = this.currentPageIndex_ + (nextOrPrevious ? 1 : -1);
-  if (nextIndex < 0)
-    nextIndex = this.pages_.length - 1;
-  else if (nextIndex == this.pages_.length)
-    nextIndex = 0;
+  if (nextIndex < 0 || nextIndex == this.pages_.length)
+    return;
+
+  // if (nextIndex < 0)
+  //   nextIndex = this.pages_.length - 1;
+  // else if (nextIndex == this.pages_.length)
+  //   nextIndex = 0;
 
   this.setCurrentPage(nextIndex);
   this.pager_.update(this.pages_.length, this.currentPageIndex_);
@@ -72,11 +77,41 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.switchPage = funct
  * @param {number} index
  */
 anychart.chartEditorModule.controls.chartType.Pages.prototype.setCurrentPage = function(index) {
+  if (this.locked_) return;
+
+  var self = this;
+  this.locked_ = true;
+  var animationSpeed = 300;
+
+  var size =  goog.style.getSize(this.getElement());
+  var endPointOld = this.currentPageIndex_ < index ? [-size.width, 0] : [size.width, 0];
+  var startPointNew = this.currentPageIndex_ < index ? [size.width, 0] : [-size.width, 0];
+
+  var oldPage = this.pages_[this.currentPageIndex_];
   this.currentPageIndex_ = index;
-  for (var i = 0; i < this.pages_.length; i++) {
-    var page = this.pages_[i];
-    page.hide(i != this.currentPageIndex_);
-  }
+  var newPage = this.pages_[this.currentPageIndex_];
+
+  var removeAnimation = new goog.fx.AnimationSerialQueue();
+  removeAnimation.add(new goog.fx.dom.Slide(oldPage.getElement(), [0, 0], endPointOld, animationSpeed));
+  goog.events.listenOnce(
+      removeAnimation,
+      goog.fx.Transition.EventType.END,
+      function() {
+        oldPage.hide(true);
+        self.locked_ = false;
+      });
+  removeAnimation.play();
+
+  var appearAnimation = new goog.fx.AnimationSerialQueue();
+  appearAnimation.add(new goog.fx.dom.Slide(newPage.getElement(), startPointNew, [0, 0], animationSpeed));
+  newPage.hide(false);
+  appearAnimation.play();
+
+  // this.currentPageIndex_ = index;
+  // for (var i = 0; i < this.pages_.length; i++) {
+  //   var page = this.pages_[i];
+  //   page.hide(i != this.currentPageIndex_);
+  // }
 };
 
 
