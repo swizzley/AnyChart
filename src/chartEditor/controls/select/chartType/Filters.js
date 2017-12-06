@@ -4,13 +4,12 @@ goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 
 
-
 /**
  * @param {goog.dom.DomHelper=} opt_domHelper
  * @constructor
  * @extends {anychart.chartEditorModule.Component}
  */
-anychart.chartEditorModule.controls.chartType.Filters = function (opt_domHelper) {
+anychart.chartEditorModule.controls.chartType.Filters = function(opt_domHelper) {
   anychart.chartEditorModule.controls.chartType.Filters.base(this, 'constructor', opt_domHelper);
 
 };
@@ -29,7 +28,7 @@ anychart.chartEditorModule.controls.chartType.Filters.Map = {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.controls.chartType.Filters.prototype.createDom = function () {
+anychart.chartEditorModule.controls.chartType.Filters.prototype.createDom = function() {
   anychart.chartEditorModule.controls.chartType.Filters.base(this, 'createDom');
 
   this.addClassName(anychart.chartEditorModule.controls.chartType.Filters.CSS_CLASS);
@@ -39,6 +38,8 @@ anychart.chartEditorModule.controls.chartType.Filters.prototype.createDom = func
     var checkbox = new anychart.chartEditorModule.checkbox.Base();
     checkbox.setModel(key);
     checkbox.setCaption(map[key]);
+    if (key == 'common') checkbox.setChecked(true);
+
     this.addChild(checkbox, true);
   }
 };
@@ -47,7 +48,7 @@ anychart.chartEditorModule.controls.chartType.Filters.prototype.createDom = func
 /**
  * @return {Array} All checked checkboxes values.
  */
-anychart.chartEditorModule.controls.chartType.Filters.prototype.getValue = function () {
+anychart.chartEditorModule.controls.chartType.Filters.prototype.getValue = function() {
   var result = [];
   for (var i = 0; i < this.getChildCount(); i++) {
     var checkbox = this.getChildAt(i);
