@@ -66,8 +66,11 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
-anychart.chartEditorModule.ChartTypeSelector.prototype.update = function(evt) {
+/**
+ * Editor model change handler
+ * @param {?Object} evt
+ */
+anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(evt) {
   if (evt && !evt.rebuildMapping) return;
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -136,13 +139,13 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.update = function(evt) {
 
 /** @inheritDoc */
 anychart.chartEditorModule.ChartTypeSelector.prototype.enterDocument = function() {
-  this.update();
+  this.onModelChange(null);
 
   if (this.addPlotBtn_)
     this.getHandler().listen(this.addPlotBtn_, goog.ui.Component.EventType.ACTION, this.onAddPlot_);
 
   this.getHandler().listen(/** @type {anychart.chartEditorModule.EditorModel} */(this.getModel()),
-      anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.update);
+      anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.onModelChange);
 
   anychart.chartEditorModule.ChartTypeSelector.base(this, 'enterDocument');
 };

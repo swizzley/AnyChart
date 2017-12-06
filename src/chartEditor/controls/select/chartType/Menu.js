@@ -41,6 +41,8 @@ anychart.chartEditorModule.controls.chartType.Menu.prototype.enterDocument = fun
   anychart.chartEditorModule.controls.chartType.Menu.base(this, 'enterDocument');
 
   var filters = this.getRenderer().getFilters();
+  this.applyFilter(filters.getValue());
+
   // var pages = this.getRenderer().getPages();
 
   this.getHandler().listen(filters, goog.ui.Component.EventType.CHANGE, this.onFiltersChange, true);
@@ -53,9 +55,7 @@ anychart.chartEditorModule.controls.chartType.Menu.prototype.enterDocument = fun
  */
 anychart.chartEditorModule.controls.chartType.Menu.prototype.onFiltersChange = function(evt) {
   var filters = this.getRenderer().getFilters();
-  var values = filters.getValue();
-
-  this.applyFilter(values);
+  this.applyFilter(filters.getValue());
 };
 
 

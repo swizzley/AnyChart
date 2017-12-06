@@ -9,7 +9,7 @@ goog.require('goog.ui.ButtonRenderer');
 
 
 /**
- * Select for chart type.
+ * Select control for chart type.
  *
  * @param {goog.ui.ControlContent=} opt_caption Default caption or existing DOM
  *     structure to display as the button's caption when nothing is selected.
@@ -57,14 +57,14 @@ anychart.chartEditorModule.select.ChartType.prototype.createDom = function() {
   this.addClassName(anychart.chartEditorModule.select.ChartType.CSS_CLASS);
 
   // Chart Types
-  var chartTypesOptions = goog.object.getValues(anychart.chartEditorModule.EditorModel.ChartTypes);
-  for (var i = 0; i < chartTypesOptions.length; i++) {
+  var chartTypeOptions = goog.object.getValues(anychart.chartEditorModule.EditorModel.ChartTypes);
+  for (var i = 0; i < chartTypeOptions.length; i++) {
     var chartTypeItem = new anychart.chartEditorModule.controls.select.MenuItem({
-      caption: chartTypesOptions[i]['name'],
-      value: chartTypesOptions[i]['value'],
-      stackMode: chartTypesOptions[i]['stackMode'],
-      icon: 'http://www.anychart.com/_design/img/upload/charts/types/' + chartTypesOptions[i]['icon'],
-      filters: chartTypesOptions[i]['filters']
+      caption: chartTypeOptions[i]['name'],
+      value: chartTypeOptions[i]['value'],
+      stackMode: chartTypeOptions[i]['stackMode'],
+      icon: 'http://www.anychart.com/_design/img/upload/charts/types/' + chartTypeOptions[i]['icon'],
+      filters: chartTypeOptions[i]['filters']
     });
     this.addItem(chartTypeItem);
   }

@@ -56,9 +56,9 @@ anychart.chartEditorModule.GeneralTheming.prototype.createDom = function() {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.GeneralTheming.prototype.update = function() {
+anychart.chartEditorModule.GeneralTheming.prototype.onModelChange = function(evt) {
   if (this.paletteSelect) this.paletteSelect.updateExclusion();
-  anychart.chartEditorModule.GeneralTheming.base(this, 'update');
+  anychart.chartEditorModule.GeneralTheming.base(this, 'onModelChange', evt);
 };
 
 

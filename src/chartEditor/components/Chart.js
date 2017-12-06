@@ -44,14 +44,19 @@ anychart.chartEditorModule.Chart.prototype.createDom = function() {
 /** @inheritDoc */
 anychart.chartEditorModule.Chart.prototype.enterDocument = function() {
   anychart.chartEditorModule.Chart.base(this, 'enterDocument');
-  this.update();
+
+  this.onModelChange(null);
+
   this.getHandler().listen(/** @type {anychart.chartEditorModule.EditorModel} */(this.getModel()),
-      anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.update);
+      anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.onModelChange);
 };
 
 
-/** @inheritDoc */
-anychart.chartEditorModule.Chart.prototype.update = function() {
+/**
+ * Updates component on model change.
+ * @param {?Object} evt
+ */
+anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   var self = this;
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var rawData = model.getRawData();

@@ -58,7 +58,7 @@ anychart.chartEditorModule.PlotPanel.prototype.createDom = function () {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.PlotPanel.prototype.update = function (evt) {
+anychart.chartEditorModule.PlotPanel.prototype.onModelChange = function (evt) {
     if (evt && !evt.rebuildMapping) return;
 
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -93,12 +93,6 @@ anychart.chartEditorModule.PlotPanel.prototype.update = function (evt) {
         this.addChildAt(this.addSeriesBtn_, this.getChildCount(), true);
         this.getHandler().listen(this.addSeriesBtn_, goog.ui.Component.EventType.ACTION, this.onAddSeries_);
     }
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.PlotPanel.prototype.enterDocument = function () {
-    anychart.chartEditorModule.PlotPanel.base(this, 'enterDocument');
 };
 
 

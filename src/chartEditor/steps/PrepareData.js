@@ -121,7 +121,7 @@ anychart.chartEditorModule.steps.PrepareData.prototype.openDataDialog = function
     goog.events.listen(this.dataDialog_, goog.ui.Dialog.EventType.SELECT, this.onCloseDataDialog, void 0, this);
   }
 
-  this.dataDialog_.update(dialogType, opt_dataType);
+  this.dataDialog_.updateContent(dialogType, opt_dataType);
   this.dataDialog_.setVisible(true);
 };
 

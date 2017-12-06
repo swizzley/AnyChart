@@ -24,7 +24,7 @@ goog.inherits(anychart.chartEditorModule.DataDialog, goog.ui.Dialog);
  * @param {string} dialogType
  * @param {string=} opt_dataType
  */
-anychart.chartEditorModule.DataDialog.prototype.update = function(dialogType, opt_dataType){
+anychart.chartEditorModule.DataDialog.prototype.updateContent = function(dialogType, opt_dataType){
   this.type_ = dialogType;
   this.dataType_ = opt_dataType;
 

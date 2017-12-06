@@ -29,14 +29,19 @@ goog.inherits(anychart.chartEditorModule.DataSetPanelList, anychart.chartEditorM
 /** @inheritDoc */
 anychart.chartEditorModule.DataSetPanelList.prototype.enterDocument = function() {
   anychart.chartEditorModule.DataSetPanelList.base(this, 'enterDocument');
+
+  this.onModelChange(null);
+
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  this.update();
-  this.getHandler().listen(model, anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.update);
+  this.getHandler().listen(model, anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.onModelChange);
 };
 
 
-/** @inheritDoc */
-anychart.chartEditorModule.DataSetPanelList.prototype.update = function(opt_evt) {
+/**
+ * Updates component on model change.
+ * @param {?Object} evt
+ */
+anychart.chartEditorModule.DataSetPanelList.prototype.onModelChange = function(evt) {
   var active = this.getModel().getActive();
   var activeGeo = this.getModel().getActiveGeo();
   var data = this.getModel().getPreparedData();

@@ -83,8 +83,8 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.SeriesPanel.prototype.update = function() {
-  anychart.chartEditorModule.SeriesPanel.base(this, 'update');
+anychart.chartEditorModule.SeriesPanel.prototype.onModelChange = function(evt) {
+  anychart.chartEditorModule.SeriesPanel.base(this, 'onModelChange', evt);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartTypeKey = model.getChartTypeKey();

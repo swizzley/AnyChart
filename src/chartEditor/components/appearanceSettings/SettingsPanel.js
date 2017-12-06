@@ -229,9 +229,9 @@ anychart.chartEditorModule.SettingsPanel.prototype.onRemoveAction = function(evt
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.SettingsPanel.prototype.update = function() {
+anychart.chartEditorModule.SettingsPanel.prototype.onModelChange = function(evt) {
   if (this.isExcluded()) return;
-  anychart.chartEditorModule.SettingsPanel.base(this, 'update');
+  anychart.chartEditorModule.SettingsPanel.base(this, 'onModelChange', evt);
 };
 
 

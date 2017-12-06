@@ -32,11 +32,11 @@ goog.inherits(anychart.chartEditorModule.ComponentWithKey, anychart.chartEditorM
 
 /** @inheritDoc */
 anychart.chartEditorModule.ComponentWithKey.prototype.enterDocument = function() {
-  this.update();
+  this.onModelChange(null);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   if (model)
-    this.getHandler().listen(model, anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.update);
+    this.getHandler().listen(model, anychart.chartEditorModule.events.EventType.EDITOR_MODEL_UPDATE, this.onModelChange);
 
   anychart.chartEditorModule.ComponentWithKey.base(this, 'enterDocument');
 };
@@ -95,8 +95,9 @@ anychart.chartEditorModule.ComponentWithKey.prototype.genKey = function(opt_comp
 
 /**
  * Updates component on model change.
+ * @param {?Object} evt
  */
-anychart.chartEditorModule.ComponentWithKey.prototype.update = function() {
+anychart.chartEditorModule.ComponentWithKey.prototype.onModelChange = function(evt) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   if (model)
     this.getHandler().listenOnce(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);

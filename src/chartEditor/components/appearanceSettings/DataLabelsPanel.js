@@ -39,11 +39,11 @@ anychart.chartEditorModule.DataLabelsPanel.prototype.createDom = function() {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.DataLabelsPanel.prototype.update = function(opt_evt) {
-  anychart.chartEditorModule.DataLabelsPanel.base(this, 'update');
+anychart.chartEditorModule.DataLabelsPanel.prototype.onModelChange = function(evt) {
+  anychart.chartEditorModule.DataLabelsPanel.base(this, 'onModelChange', evt);
 
   // Hardcoding - Set values for all series.
-  var lastKey = opt_evt && opt_evt.lastKey;
+  var lastKey = evt && evt.lastKey;
   if (lastKey) {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     model.suspendDispatch();
