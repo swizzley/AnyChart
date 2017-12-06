@@ -62,7 +62,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   var rawData = model.getRawData();
   var settings = model.getModel();
   var chartType = settings['chart']['type'];
-  var rebuild = !arguments.length || arguments[0].rebuildChart;
+  var rebuild = !arguments.length || !arguments[0] || arguments[0].rebuildChart;
 
   if (!chartType)
     return;

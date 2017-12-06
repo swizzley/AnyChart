@@ -18,6 +18,8 @@ anychart.chartEditorModule.controls.chartType.Menu = function (opt_domHelper, op
   anychart.chartEditorModule.controls.chartType.Menu.base(this, 'constructor',
       opt_domHelper,
       opt_renderer || anychart.chartEditorModule.controls.chartType.MenuRenderer.getInstance());
+
+
 };
 goog.inherits(anychart.chartEditorModule.controls.chartType.Menu, goog.ui.Menu);
 
@@ -40,44 +42,58 @@ anychart.chartEditorModule.controls.chartType.Menu.prototype.setVisible = functi
 anychart.chartEditorModule.controls.chartType.Menu.prototype.enterDocument = function() {
   anychart.chartEditorModule.controls.chartType.Menu.base(this, 'enterDocument');
 
-  var filters = this.getRenderer().getFilters();
-  this.applyFilter(filters.getValue());
+  this.onFiltersChange();
 
-  // var pages = this.getRenderer().getPages();
+  this.getHandler().listen(this.getRenderer().getFilters(), goog.ui.Component.EventType.CHANGE, this.onFiltersChange, true);
 
-  this.getHandler().listen(filters, goog.ui.Component.EventType.CHANGE, this.onFiltersChange, true);
+  this.getHandler().listen(this.getElement(), goog.events.EventType.WHEEL, this.onWheel);
+};
+
+
+/**
+ *
+ * @param {goog.events.BrowserEvent} evt
+ */
+anychart.chartEditorModule.controls.chartType.Menu.prototype.onWheel = function(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  var pages = this.getRenderer().getPages();
+  pages.switchPage(evt.getBrowserEvent().deltaY > 0);
 };
 
 
 /**
  * Filters checkbox change handler.
- * @param {Object} evt
  */
-anychart.chartEditorModule.controls.chartType.Menu.prototype.onFiltersChange = function(evt) {
+anychart.chartEditorModule.controls.chartType.Menu.prototype.onFiltersChange = function() {
   var filters = this.getRenderer().getFilters();
-  this.applyFilter(filters.getValue());
-};
+  var filterValues = filters.getValue();
 
+  var pages = this.getRenderer().getPages();
+  pages.resetPages();
 
-/**
- * Hides or shows menu items depend on filters state.
- * @param {Array.<string>} filterValues Values of checked filters.
- */
-anychart.chartEditorModule.controls.chartType.Menu.prototype.applyFilter = function(filterValues) {
-  var filters = this.getRenderer().getFilters();
   var showEverything = !filterValues.length || filters.getChildCount() == filterValues.length;
 
   for (var i = 0; i < this.getChildCount(); i++) {
     var item = this.getChildAt(i);
+    var itemVisible = false;
     if (showEverything)
-      item.setVisible(true);
+      itemVisible = true;
     else {
       var itemFilters = item.getModel().filters;
       var joined = goog.array.join(itemFilters, filterValues);
       goog.array.removeDuplicates(joined);
-      item.setVisible(joined.length < (itemFilters.length + filterValues.length));
+      itemVisible = joined.length < (itemFilters.length + filterValues.length);
     }
+
+    item.setVisible(itemVisible);
+
+    if (itemVisible)
+      pages.registerItem(item.getElement());
   }
+
+  pages.updatePages();
 };
 
 
