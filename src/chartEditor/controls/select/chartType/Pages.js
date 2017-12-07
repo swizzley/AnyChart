@@ -18,7 +18,7 @@ anychart.chartEditorModule.controls.chartType.Pages = function(opt_domHelper) {
 
   this.currentPageIndex_ = 0;
 
-  this.itemsPerPage_ = 8;
+  this.itemsPerPage_ = 1;
 
   this.pages_ = [];
 
@@ -46,9 +46,18 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.createDom = functi
 anychart.chartEditorModule.controls.chartType.Pages.prototype.enterDocument = function() {
   anychart.chartEditorModule.controls.chartType.Pages.base(this, 'enterDocument');
 
-  this.getHandler().listen(this.pager_, anychart.chartEditorModule.controls.chartType.Pager.EventType.CHANGE_PAGE, function(evt){
+  this.getHandler().listen(this.pager_, anychart.chartEditorModule.controls.chartType.Pager.EventType.CHANGE_PAGE, function(evt) {
     this.setCurrentPage(evt.index);
   });
+};
+
+
+/**
+ * @param {number} value
+ */
+anychart.chartEditorModule.controls.chartType.Pages.prototype.setItemsPerPage = function(value) {
+  this.itemsPerPage_ = value;
+  this.updatePages();
 };
 
 
@@ -61,11 +70,6 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.switchPage = funct
   var nextIndex = this.currentPageIndex_ + (nextOrPrevious ? 1 : -1);
   if (nextIndex < 0 || nextIndex == this.pages_.length)
     return;
-
-  // if (nextIndex < 0)
-  //   nextIndex = this.pages_.length - 1;
-  // else if (nextIndex == this.pages_.length)
-  //   nextIndex = 0;
 
   this.setCurrentPage(nextIndex);
   this.pager_.update(this.pages_.length, this.currentPageIndex_);
@@ -83,7 +87,7 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.setCurrentPage = f
   this.locked_ = true;
   var animationSpeed = 300;
 
-  var size =  goog.style.getSize(this.getElement());
+  var size = goog.style.getSize(this.getElement());
   var endPointOld = this.currentPageIndex_ < index ? [-size.width, 0] : [size.width, 0];
   var startPointNew = this.currentPageIndex_ < index ? [size.width, 0] : [-size.width, 0];
 
@@ -116,6 +120,14 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.setCurrentPage = f
 
 
 /**
+ * @return {Element}
+ */
+anychart.chartEditorModule.controls.chartType.Pages.prototype.getCurrentPageElement = function() {
+  return this.pages_[this.currentPageIndex_].getElement();
+};
+
+
+/**
  * Reset widget state to initial condition.
  */
 anychart.chartEditorModule.controls.chartType.Pages.prototype.resetPages = function() {
@@ -140,13 +152,15 @@ anychart.chartEditorModule.controls.chartType.Pages.prototype.resetPages = funct
  */
 anychart.chartEditorModule.controls.chartType.Pages.prototype.updatePages = function() {
   this.currentPageIndex_ = 0;
+  goog.disposeAll(this.pages_);
+  this.pages_.length = 0;
 
   var dom = this.getDomHelper();
   var count = 0;
   var currentPage = null;
   var currentPageIndex = 0;
 
-  for (var i = 0; i <this.items_.length; i++) {
+  for (var i = 0; i < this.items_.length; i++) {
     if (count == 0) {
       currentPage = new anychart.chartEditorModule.controls.chartType.Page(currentPageIndex);
       this.addChild(currentPage, true);
@@ -261,7 +275,10 @@ anychart.chartEditorModule.controls.chartType.Pager.prototype.update = function(
   dom.removeChildren(element);
   if (this.numPages_ > 1) {
     for (var i = 0; i < this.numPages_; i++) {
-      var dot = dom.createDom(goog.dom.TagName.DIV, {'data-index': i, 'class': (i == this.currentPageIndex_ ? 'current' : '')});
+      var dot = dom.createDom(goog.dom.TagName.DIV, {
+        'data-index': i,
+        'class': (i == this.currentPageIndex_ ? 'current' : '')
+      });
       dom.appendChild(element, dot);
     }
   }

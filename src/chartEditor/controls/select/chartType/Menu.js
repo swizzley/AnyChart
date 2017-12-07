@@ -28,11 +28,42 @@ goog.inherits(anychart.chartEditorModule.controls.chartType.Menu, goog.ui.Menu);
 anychart.chartEditorModule.controls.chartType.Menu.prototype.setVisible = function(show, opt_force, opt_e) {
   if (show) {
     var select = this.getParent();
-    var bounds = goog.style.getBounds(select.getElement());
-    goog.style.setPosition(this.getElement(), bounds.left);
+    var pages = this.getRenderer().getPages();
+    var filters = this.getRenderer().getFilters();
 
-    // todo: calculate width
-    goog.style.setWidth(this.getElement(), /*bounds.width*/ 800);
+    var selectBounds = goog.style.getBounds(select.getElement());
+    goog.style.setPosition(this.getElement(), selectBounds.left);
+
+    // hack: to get size of inner elements menu should be visible
+    goog.style.setElementShown(this.getElement(), true);
+
+    var menuSize = goog.style.getSize(this.getElement());
+    var filtersSize = goog.style.getSize(filters.getElement());
+
+    goog.style.setHeight(pages.getElement(), menuSize.height - filtersSize.height);
+
+    var pageEl = pages.getCurrentPageElement();
+    var menuItemEl = goog.dom.getElementByClass('anychart-menuitem', pageEl);
+
+    var pageContentSize = goog.style.getContentBoxSize(pageEl);
+    var menuItemSize = goog.style.getSize(menuItemEl);
+    var pagePaddings = menuSize.height - pageContentSize.height;
+
+    var editorEl = goog.dom.getAncestorByClass(select.getElement(), anychart.chartEditorModule.Editor.CSS_CLASS);
+    var editorSize = goog.style.getSize(editorEl);
+    var maxContentHeight = (editorSize.height * 0.70) - pagePaddings;
+
+    var numCols = Math.floor(pageContentSize.width / menuItemSize.width);
+    var numRows = Math.floor(maxContentHeight / menuItemSize.height);
+    var newMenuHeight = menuItemSize.height * numRows + pagePaddings;
+
+    goog.style.setHeight(this.getElement(), newMenuHeight);
+
+    pages.setItemsPerPage(numRows * numCols);
+    goog.style.setHeight(pages.getElement(), newMenuHeight - filtersSize.height);
+
+    // end of hack
+    goog.style.setElementShown(this.getElement(), false);
   }
   return anychart.chartEditorModule.controls.chartType.Menu.base(this, 'setVisible', show, opt_force, opt_e);
 };
@@ -47,6 +78,12 @@ anychart.chartEditorModule.controls.chartType.Menu.prototype.enterDocument = fun
   this.getHandler().listen(this.getRenderer().getFilters(), goog.ui.Component.EventType.CHANGE, this.onFiltersChange, true);
 
   this.getHandler().listen(this.getElement(), goog.events.EventType.WHEEL, this.onWheel);
+
+  var window = this.getDomHelper().getWindow();
+  this.getHandler().listen(window, goog.events.EventType.RESIZE, function(){
+    var select = this.getParent();
+    select.setOpen(false);
+  });
 };
 
 

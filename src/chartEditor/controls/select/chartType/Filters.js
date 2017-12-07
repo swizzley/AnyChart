@@ -52,7 +52,7 @@ anychart.chartEditorModule.controls.chartType.Filters.prototype.getValue = funct
   var result = [];
   for (var i = 0; i < this.getChildCount(); i++) {
     var checkbox = this.getChildAt(i);
-    if (checkbox.isChecked()) {
+    if (goog.isFunction(checkbox.isChecked) && checkbox.isChecked()) {
       result.push(checkbox.getModel());
     }
   }
