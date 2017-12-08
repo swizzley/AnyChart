@@ -97,7 +97,7 @@ goog.addSingletonGetter(anychart.chartEditorModule.controls.select.DataFieldSele
 anychart.chartEditorModule.controls.select.DataFieldSelectRenderer.prototype.createDom = function(control) {
   return control.getDomHelper().createDom(goog.dom.TagName.DIV, this.getClassNames(control).join(' '), [
     control.getDomHelper().createDom(goog.dom.TagName.DIV, 'anychart-select-data-field-select-content', control.getContent()),
-    control.getDomHelper().createDom(goog.dom.TagName.DIV, 'anychart-select-data-field-select-indicator')
+    control.getDomHelper().createDom(goog.dom.TagName.DIV, 'anychart-ui-select-indicator')
   ]);
 };
 

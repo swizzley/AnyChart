@@ -128,7 +128,8 @@ anychart.chartEditorModule.select.ChartTypeRenderer.prototype.createDom = functi
   var icon = dom.createDom(goog.dom.TagName.IMG);
   var element = dom.createDom(goog.dom.TagName.DIV, this.getClassNames(control).join(' '), [
     icon,
-    dom.createDom(goog.dom.TagName.SPAN, '', control.getContent())
+    dom.createDom(goog.dom.TagName.SPAN, '', control.getContent()),
+    dom.createDom(goog.dom.TagName.DIV, 'anychart-ui-select-indicator')
   ]);
 
   var selectedItem = control.getSelectedItem();
