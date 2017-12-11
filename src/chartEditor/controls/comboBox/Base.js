@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.events.BrowserEvent');
 anychart.chartEditorModule.comboBox.Base = function(opt_domHelper, opt_menu, opt_labelInput) {
   anychart.chartEditorModule.comboBox.Base.base(this, 'constructor',
       opt_domHelper,
-      opt_menu || new anychart.chartEditorModule.controls.Menu('', this.getDomHelper()),
+      opt_menu || new anychart.chartEditorModule.controls.Menu('', opt_domHelper),
       opt_labelInput);
 
   // If no value is set.
@@ -594,6 +594,14 @@ anychart.chartEditorModule.comboBox.Base.prototype.exclude = function(value, opt
  */
 anychart.chartEditorModule.comboBox.Base.prototype.isExcluded = function() {
   return this.excluded;
+};
+
+
+/** @inheritDoc */
+anychart.chartEditorModule.comboBox.Base.prototype.positionMenu = function() {
+  anychart.chartEditorModule.comboBox.Base.base(this, 'positionMenu');
+  var o = goog.style.getPageOffset(this.getElement());
+  goog.style.setPosition(this.getMenu().getElement(), o.x);
 };
 
 
