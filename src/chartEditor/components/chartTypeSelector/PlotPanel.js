@@ -45,11 +45,7 @@ anychart.chartEditorModule.PlotPanel.prototype.createDom = function () {
     this.title_ = dom.createDom(goog.dom.TagName.DIV, 'anychart-plot-panel-plot-title', 'Plot ' + (this.index_ + 1));
     goog.dom.appendChild(element, this.title_);
 
-    var remove = dom.createDom(
-        goog.dom.TagName.DIV,
-        'anychart-plot-panel-remove-btn',
-        goog.dom.createDom(goog.dom.TagName.IMG, {'src': 'https://cdn.anychart.com/images/chart_editor/remove-btn.png'})
-    );
+    var remove = dom.createDom(goog.dom.TagName.DIV, 'anychart-plot-panel-remove-btn', '');
     goog.dom.appendChild(this.getElement(), remove);
     this.getHandler().listen(remove, goog.events.EventType.CLICK, function () {
         /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel()).dropPlot(this.index_);

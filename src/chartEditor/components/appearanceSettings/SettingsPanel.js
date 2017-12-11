@@ -148,11 +148,7 @@ anychart.chartEditorModule.SettingsPanel.prototype.createDom = function() {
     goog.dom.classlist.add(element, 'anychart-settings-panel-no-title');
 
   if (this.allowRemove_) {
-    var removeBtn = dom.createDom(
-        goog.dom.TagName.DIV,
-        'anychart-settings-panel-remove-btn',
-        goog.dom.createDom(goog.dom.TagName.IMG, {'src': 'https://cdn.anychart.com/images/chart_editor/remove-btn.png'})
-    );
+    var removeBtn = dom.createDom(goog.dom.TagName.DIV, 'anychart-settings-panel-remove-btn', '');
     goog.dom.appendChild(this.topEl, removeBtn);
     this.removeButton = removeBtn;
   }

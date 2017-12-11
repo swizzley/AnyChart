@@ -215,6 +215,9 @@ anychart.chartEditorModule.Editor.prototype.createDom = function() {
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.Editor.CSS_CLASS);
 
+  // Class for Qlik
+  // goog.dom.classlist.add(this.getElement(), goog.getCssName('anychart-qlik-theme'));
+
   // Add breadcrumbs
   var BreadcrumbsEventType = anychart.chartEditorModule.Breadcrumbs.EventType;
   this.breadcrumbs_ = new anychart.chartEditorModule.Breadcrumbs();

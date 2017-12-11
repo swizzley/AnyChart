@@ -135,10 +135,10 @@
       background: @color-blue-hovered;
     }
   }
-}
 
-.anychart-breadcrumbs-item:last-child {
-  margin-right: 0;
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .anychart-breadcrumbs-item-caption {
@@ -152,6 +152,18 @@
   height: 7px;
   width: 260px;
   background: @color-blue-disabled;
+}
+
+.anychart-breadcrumbs-item-active {
+  cursor: default;
+  pointer-events: none;
+
+  .anychart-breadcrumbs-item-caption {
+    color: white;
+  }
+  .anychart-breadcrumbs-item-indicator {
+    background: @color-blue;
+  }
 }
 
 .anychart-breadcrumbs-button {
@@ -179,18 +191,6 @@
 
 .anychart-breadcrumbs-right {
   float: right;
-}
-
-.anychart-breadcrumbs-item-active {
-  cursor: default;
-  pointer-events: none;
-
-  .anychart-breadcrumbs-item-caption {
-    color: white;
-  }
-  .anychart-breadcrumbs-item-indicator {
-    background: @color-blue;
-  }
 }
 // endregion
 
@@ -417,7 +417,7 @@
   .box-shadow(@shadow-1);
   width: 100%;
   background: white;
-  padding: 14px;
+  padding: 14px 32px 14px 16px;
 }
 
 .anychart-plot-panel {
@@ -428,26 +428,29 @@
 }
 
 .anychart-plot-panel-stock {
-  margin-top: 14px;
+  margin-top: 16px;
   border: none;
 }
 
 .anychart-plot-panel-plot-title {
   color: @color-label;
-  font-size: 14px;
-  padding: 14px 14px 0 14px;
+  font-size: 16px;
+  padding: 16px 16px 0 16px;
   display: none;
 }
 
+.anychart-settings-panel-remove-btn,
 .anychart-plot-panel-remove-btn,
-.anychart-settings-panel-remove-btn {
-  width: 16px;
-  height: 16px;
-  top: 14px;
+.anychart-plot-panel-series-remove-btn {
+  width: 18px;
+  height: 18px;
+  top: 16px;
   position: absolute;
-  right: 7px;
+  right: 8px;
   display: none;
   cursor: pointer;
+
+  background: url("https://cdn.anychart.com/images/chart_editor/remove-btn.png") no-repeat;
 }
 
 .anychart-plot-panel-stock .anychart-plot-panel-plot-title {
@@ -460,14 +463,6 @@
 
 .anychart-plot-panel-first .anychart-plot-panel-remove-btn {
   display: none;
-}
-
-.anychart-settings-panel-remove-btn,
-.anychart-plot-panel-remove-btn {
-  img {
-    width: 100%;
-    height: 100%;
-  }
 }
 
 .anychart-plot-panel-add-series-btn,
@@ -504,41 +499,30 @@
 .anychart-plot-panel-series {
   position: relative;
   border-top: 1px solid @color-border;
-  padding: 14px;
-}
+  padding: 14px 32px 14px 16px;
 
-.anychart-plot-panel-series-first {
-  border: none;
-}
-
-.anychart-plot-panel-series-first .anychart-plot-panel-series-remove-btn {
-  display: none;
-}
-
-.anychart-plot-panel-series {
   .anychart-chart-editor-labeled-control {
-    margin-top: 14px;
+    margin-top: 16px;
   }
 }
 
 .anychart-plot-panel-series-remove-btn {
-  width: 16px;
-  height: 16px;
-  top: 7px;
-  position: absolute;
-  right: 7px;
+  top: 20px;
+  right: 8px;
+  display: block;
 }
 
-.anychart-plot-panel-series-remove-btn img {
-  width: 100%;
-  height: 100%;
+.anychart-plot-panel-series-first {
+  border: none;
+  .anychart-plot-panel-series-remove-btn {
+    display: none;
+  }
 }
 
 .anychart-plot-panel-series-name {
   .border-radius(4px);
   .box-sizing(border-box);
   font-size: 16px;
-  padding: 7px 14px;
   width: 100%;
   display: block;
   height: 32px;
@@ -591,6 +575,10 @@
     padding: 23px 0 24px 15px;
     font-size: 16px;
     cursor: pointer;
+
+    &:hover {
+      background-color: @color-button-hover-background;
+    }
   }
   .active {
     color: @color-blue;
@@ -733,15 +721,12 @@
       display: inline-block;
       padding-left: 15px;
     }
-
     .anychart-checkbox {
       float: left;
     }
   }
   .anychart-settings-panel-remove-btn {
     display: block;
-    top: -9px;
-    right: -4px;
   }
 
   .content {
@@ -1310,7 +1295,7 @@
   padding: 4px 0;
   background: @color-background;
   position: relative;
-  text-align: right;
+  text-align: left;
   outline: none;
 
   img {
@@ -1373,11 +1358,14 @@
 
 .anychart-select-data-field-select-open,
 .anychart-ui-select-with-icon-open {
-  //.border-radiuses() // try to use
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border: 1px solid @color-border;
   border-bottom: none;
+
+  .anychart-ui-select-indicator {
+    .rotate(180deg);
+  }
 }
 
 .anychart-select-data-field-select-content {
@@ -1393,7 +1381,7 @@
   .anychart-select-data-field-select-content {
     .border-radius(4px);
     padding: 3px 20px;
-    background: white;
+    background: @color-content-background;
   }
 }
 
@@ -1451,11 +1439,12 @@
 
   max-height: 210px;
   overflow-y: auto;
+
+  font-family: 'Open Sans', sans-serif;
 }
 
 .anychart-control-menu-item {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   color: @color-text;
   padding: 5px 10px;
   cursor: pointer;
@@ -1463,11 +1452,12 @@
 
 .anychart-control-menu-item-highlight {
   background: @color-menu-item-background;
+  color: @color-blue;
 }
 
 .anychart-control-menu-caption {
   padding: 5px 10px;
-  font-size: 12px;
+  font-size: 13px;
   color: @color-label;
   cursor: default;
 }
@@ -1545,7 +1535,6 @@
   }
   .anychart-checkbox-checkmark {
     left: 1px;
-    top: -1px;
   }
 }
 
@@ -1600,6 +1589,95 @@
     cursor: default;
     &:hover {
       background-color: @color-blue;
+    }
+  }
+}
+// endregion
+
+// region ---- Qlik theme
+.anychart-qlik-theme {
+  .anychart-connected-data-sets-item {
+    .anychart-connected-data-sets-item-menuBtn {
+      display: none;
+    }
+  }
+
+  .anychart-select-data-field-select,
+  .anychart-ui-select-with-icon {
+    background-color: white;
+  }
+  .anychart-select-with-content {
+    //.anychart-select-data-field-select-content {
+    //  color: @color-text;
+    //}
+    .anychart-select-data-field-select-open {
+      .anychart-select-data-field-select-content {
+        background-color: white;
+      }
+    }
+  }
+  .anychart-select-data-field-select-open,
+  .anychart-ui-select-with-icon-open {
+    background-color: @color-background;
+  }
+
+  .anychart-breadcrumbs-item-caption {
+    color: @color-text-disabled;
+  }
+
+  .anychart-breadcrumbs-item-indicator {
+    background: @color-text-disabled;
+  }
+
+  .anychart-breadcrumbs-item-active,
+  .anychart-breadcrumbs-item:hover {
+    .anychart-breadcrumbs-item-caption {
+      color: white;
+    }
+    .anychart-breadcrumbs-item-indicator {
+      background: white;
+    }
+  }
+  .anychart-chart-data-settings-core,
+  .anychart-plot-panel {
+    border: 1px solid @color-border;
+  }
+  .anychart-plot-panel {
+    border-top: none;
+  }
+  .anychart-chart-editor-input {
+    background: white;
+  }
+
+  .anychart-settings-panel-remove-btn,
+  .anychart-plot-panel-remove-btn,
+  .anychart-plot-panel-series-remove-btn {
+    background: url("https://cdn.anychart.com/images/chart_editor/remove-btn-qlik.png") no-repeat;
+    width: 19px;
+    height: 19px;
+  }
+  .anychart-plot-panel-series-remove-btn {
+    top: 20px;
+  }
+
+  .anychart-checkbox-checked {
+    .anychart-checkbox-element {
+      background-color: @color-blue !important;
+    }
+    .anychart-checkbox-checkmark {
+      color: white;
+    }
+  }
+
+  .anychart-button-standard {
+    &:hover {
+      background-color: @color-button-active-background;
+      color: @color-blue;
+    }
+
+    &.anychart-button-checked {
+      background-color: @color-blue;
+      color: white;
     }
   }
 }

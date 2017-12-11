@@ -193,9 +193,12 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.createActiveAndFieldOptio
     var title = dataItem.title;
     var fields = dataItem.fields;
 
-    this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption({
-      caption: title
-    }));
+    if (data.length > 1) {
+      // Add captions if count of data sets is more than one
+      this.activeAndFieldSelect_.getSelect().addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuCaption({
+        caption: title
+      }));
+    }
 
     if (dataItem.type === anychart.chartEditorModule.EditorModel.DataType.GEO) {
       continue;
