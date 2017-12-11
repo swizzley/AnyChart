@@ -65,6 +65,12 @@ anychart.chartEditorModule.Editor = function(opt_domHelper) {
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   this.getHandler().listen(model, anychart.chartEditorModule.events.EventType.WAIT, this.onWait_);
+
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.theme_ = '';
 };
 goog.inherits(anychart.chartEditorModule.Editor, anychart.chartEditorModule.Component);
 
@@ -91,6 +97,14 @@ anychart.chartEditorModule.Editor.prototype.decorate = function(element) {
 
 
 /**
+ * @return {?string|undefined}
+ */
+anychart.chartEditorModule.Editor.prototype.getTheme = function() {
+  return this.theme_;
+};
+
+
+/**
  * Renders the Chart Editor as modal dialog.
  * @param {string=} opt_class CSS class name for the dialog element, also used
  *     as a class name prefix for related elements; defaults to modal-dialog.
@@ -101,6 +115,9 @@ anychart.chartEditorModule.Editor.prototype.decorate = function(element) {
  */
 anychart.chartEditorModule.Editor.prototype.renderAsDialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
   this.dialog_ = new anychart.chartEditorModule.Editor.Dialog(opt_class, opt_useIframeMask, opt_domHelper);
+
+  if (this.theme_) this.dialog_.setTheme(this.theme_);
+
   this.dialog_.addChild(this, true);
 
   this.getHandler().listen(this.dialog_, goog.ui.PopupBase.EventType.HIDE, this.onCloseDialog_);
@@ -215,8 +232,8 @@ anychart.chartEditorModule.Editor.prototype.createDom = function() {
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.Editor.CSS_CLASS);
 
-  // Class for Qlik
-  // goog.dom.classlist.add(this.getElement(), goog.getCssName('anychart-qlik-theme'));
+  if (this.theme_)
+    goog.dom.classlist.add(this.getElement(), 'anychart-' + this.theme_ + '-theme');
 
   // Add breadcrumbs
   var BreadcrumbsEventType = anychart.chartEditorModule.Breadcrumbs.EventType;
@@ -402,13 +419,31 @@ anychart.chartEditorModule.Editor.Dialog = function(opt_class, opt_useIframeMask
 
   this.setTitle('Chart Editor');
   this.setButtonSet(null);
+
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.theme_ = null;
 };
 goog.inherits(anychart.chartEditorModule.Editor.Dialog, goog.ui.Dialog);
+
+
+/**
+ * @param {?string} value
+ */
+anychart.chartEditorModule.Editor.Dialog.prototype.setTheme = function(value) {
+  this.theme_ = value;
+};
 
 
 /** @override */
 anychart.chartEditorModule.Editor.Dialog.prototype.createDom = function() {
   anychart.chartEditorModule.Editor.Dialog.base(this, 'createDom');
+
+  if (this.theme_)
+    goog.dom.classlist.add(this.getElement(), 'anychart-chart-editor-dialog-' + this.theme_ + '-theme');
+
   this.initTitleElements_();
 };
 
