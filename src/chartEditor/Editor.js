@@ -70,7 +70,7 @@ anychart.chartEditorModule.Editor = function(opt_domHelper) {
    * @type {?string}
    * @private
    */
-  this.theme_ = '';
+  this.theme_ = 'qlik';
 };
 goog.inherits(anychart.chartEditorModule.Editor, anychart.chartEditorModule.Component);
 
