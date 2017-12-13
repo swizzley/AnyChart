@@ -71,7 +71,7 @@
 
   .anychart-checkbox-element {
     //background-color: @color-border-disabled;
-    border: 1px solid @color-border-disabled;
+    border: 1px solid @color-border-disabled !important;
     cursor: default;
   }
   .anychart-checkbox-caption {
@@ -81,6 +81,9 @@
 .anychart-checkbox-disabled.anychart-checkbox-checked {
   .anychart-checkbox-element {
     background-color: @color-blue-disabled !important;
+  }
+  .anychart-checkbox-checkmark {
+    color: @color-text-disabled !important;
   }
 }
 

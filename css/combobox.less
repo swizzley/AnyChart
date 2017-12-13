@@ -22,27 +22,6 @@
   vertical-align: middle;
   cursor: pointer;
 
-  &.anychart-combobox-active {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border: 1px solid @color-border;
-    border-bottom: none;
-  }
-
-  &.anychart-combobox-disabled {
-    border: 1px solid @color-border-disabled;
-    cursor: default;
-
-    input {
-      color: @color-text-disabled;
-      background-color: inherit;
-    }
-
-    .anychart-combobox-button {
-      border-color: @color-border-disabled;
-    }
-  }
-
   input {
     .border-radius(4px);
     .box-sizing(content-box);
@@ -69,6 +48,31 @@
   }
 }
 
+.anychart-combobox-disabled {
+  border-color: @color-border-disabled !important;
+  cursor: default;
+
+  input {
+    color: @color-text-disabled;
+    background-color: inherit;
+  }
+
+  .anychart-combobox-button {
+    border-color: @color-border-disabled transparent;
+  }
+}
+
+.anychart-combobox-active {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid @color-border;
+  border-bottom: none;
+
+  .anychart-combobox-button {
+    .rotate(180deg);
+  }
+}
+
 .anychart-combobox-button {
   @thickness: 3px;
   @unitSize: 6px;
@@ -82,7 +86,7 @@
 
   border-right: @unitSize solid transparent;
   border-left: @unitSize solid transparent;
-  border-top: (@unitSize * 1) solid #738db0;
+  border-top: (@unitSize * 1) solid @color-arrow;
   //margin-bottom: @unitSize;
 
   &:before {

@@ -700,7 +700,9 @@
   }
 }
 
+.anychart-button-disabled,
 .anychart-chart-editor-input-label-disabled {
+  border-color: @color-border-disabled !important;
   color: @color-text-disabled !important;
 }
 
@@ -1398,7 +1400,7 @@
 
   border-right: @unitSize solid transparent;
   border-left: @unitSize solid transparent;
-  border-top: (@unitSize * 1) solid #738db0;
+  border-top: (@unitSize * 1) solid @color-arrow;
   //margin-bottom: @unitSize;
 
   &:before {
@@ -1416,6 +1418,8 @@
 }
 
 .anychart-select-data-field-select-disabled {
+  border-color: @color-border-disabled !important;
+
   .anychart-select-data-field-select-content {
     color: @color-text-disabled;
   }
@@ -1451,8 +1455,8 @@
 }
 
 .anychart-control-menu-item-highlight {
-  background: @color-menu-item-background;
-  color: @color-blue;
+  background-color: @color-menu-item--highlight-background;
+  color: @color-menu-item-highlight-color;
 }
 
 .anychart-control-menu-caption {
@@ -1621,6 +1625,7 @@
   .anychart-select-data-field-select,
   .anychart-ui-select-with-icon,
   .anychart-combobox,
+  .anychart-checkbox .anychart-checkbox-element,
   .anychart-chart-editor-input,
   .anychart-flat-menu-button,
   .anychart-button-toggle {
@@ -1628,24 +1633,29 @@
     border-color: @color-border;
   }
 
-  .anychart-combobox {
-    border-color: @color-border;
-  }
   .anychart-combobox-active {
     background-color: @color-background;
   }
 
-  .anychart-ui-select-indicator {
-    border-top-color: @color-border;
+  .anychart-ui-select-indicator,
+  .anychart-combobox-button,
+  .anychart-flat-menu-button-dropdown {
     &:before {
       border-top-color: white;
     }
   }
 
+  .anychart-select-data-field-select-open,
+  .anychart-ui-select-with-icon-open {
+    .anychart-ui-select-indicator:before {
+      border-top-color: @color-background;
+    }
+  }
+  .anychart-combobox-active .anychart-combobox-button:before {
+    border-top-color: @color-background;
+  }
+
   .anychart-select-with-content {
-    //.anychart-select-data-field-select-content {
-    //  color: @color-text;
-    //}
     .anychart-select-data-field-select-open {
       .anychart-select-data-field-select-content {
         background-color: white;
@@ -1712,8 +1722,14 @@
     }
 
     &.anychart-button-checked {
-      background-color: @color-text;
+      background-color: @color-breadcrumbs-back;
       color: white;
+    }
+  }
+  .anychart-button-disabled {
+    background-color: white !important;
+    &.anychart-button-checked {
+      background-color: @color-background !important;
     }
   }
 }
