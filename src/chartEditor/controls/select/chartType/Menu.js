@@ -18,8 +18,6 @@ anychart.chartEditorModule.controls.chartType.Menu = function (opt_domHelper, op
   anychart.chartEditorModule.controls.chartType.Menu.base(this, 'constructor',
       opt_domHelper,
       opt_renderer || anychart.chartEditorModule.controls.chartType.MenuRenderer.getInstance());
-
-
 };
 goog.inherits(anychart.chartEditorModule.controls.chartType.Menu, goog.ui.Menu);
 
@@ -84,6 +82,17 @@ anychart.chartEditorModule.controls.chartType.Menu.prototype.enterDocument = fun
     var select = this.getParent();
     select.setOpen(false);
   });
+
+  // Add theme class
+  var editorEl = goog.dom.getAncestorByClass(this.getParent().getElement(), anychart.chartEditorModule.Editor.CSS_CLASS);
+  if (editorEl) {
+    var classes = goog.dom.classlist.get(editorEl);
+    for (var i = 0; i < classes.length; i++) {
+      if (String(classes[i]).indexOf('-theme') != -1) {
+        goog.dom.classlist.add(this.getElement(), classes[i]);
+      }
+    }
+  }
 };
 
 
