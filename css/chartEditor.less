@@ -1622,6 +1622,11 @@
   .anychart-ui-select-with-icon {
     background-color: white;
   }
+
+  .anychart-ui-select-indicator:before {
+    border-top-color: white;
+  }
+
   .anychart-select-with-content {
     //.anychart-select-data-field-select-content {
     //  color: @color-text;
@@ -1676,9 +1681,10 @@
     top: 20px;
   }
 
-  .anychart-checkbox-checked {
+  .anychart-checkbox-checked,
+  .anychart-visual-appearance-settings-tab-content > .anychart-settings-panel > .top .anychart-checkbox-checked {
     .anychart-checkbox-element {
-      background-color: @color-blue !important;
+      background-color: @color-blue;
     }
     .anychart-checkbox-checkmark {
       color: white;

@@ -70,12 +70,17 @@
   color: @color-text-disabled;
 
   .anychart-checkbox-element {
-    color: @color-text-disabled;
+    //background-color: @color-border-disabled;
     border: 1px solid @color-border-disabled;
     cursor: default;
   }
   .anychart-checkbox-caption {
     color: @color-text-disabled;
+  }
+}
+.anychart-checkbox-disabled.anychart-checkbox-checked {
+  .anychart-checkbox-element {
+    background-color: @color-blue-disabled !important;
   }
 }
 
