@@ -1619,13 +1619,26 @@
   }
 
   .anychart-select-data-field-select,
-  .anychart-ui-select-with-icon {
+  .anychart-ui-select-with-icon,
+  .anychart-combobox,
+  .anychart-chart-editor-input,
+  .anychart-flat-menu-button,
+  .anychart-button-toggle {
     background-color: white;
+    border-color: @color-border;
   }
 
-  .anychart-ui-select-indicator:before {
-    border-top-color: white;
+  .anychart-combobox {
+    border-color: @color-border;
   }
+
+  .anychart-ui-select-indicator {
+    border-top-color: @color-border;
+    &:before {
+      border-top-color: white;
+    }
+  }
+
 
   .anychart-select-with-content {
     //.anychart-select-data-field-select-content {
