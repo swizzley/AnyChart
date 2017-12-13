@@ -1631,6 +1631,9 @@
   .anychart-combobox {
     border-color: @color-border;
   }
+  .anychart-combobox-active {
+    background-color: @color-background;
+  }
 
   .anychart-ui-select-indicator {
     border-top-color: @color-border;
@@ -1638,7 +1641,6 @@
       border-top-color: white;
     }
   }
-
 
   .anychart-select-with-content {
     //.anychart-select-data-field-select-content {
@@ -1706,12 +1708,11 @@
 
   .anychart-button-standard {
     &:hover {
-      background-color: @color-button-active-background;
-      color: @color-blue;
+      //border-color: @color-caption;
     }
 
     &.anychart-button-checked {
-      background-color: @color-blue;
+      background-color: @color-text;
       color: white;
     }
   }
