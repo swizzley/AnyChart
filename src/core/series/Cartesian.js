@@ -1087,11 +1087,8 @@ anychart.core.series.Cartesian.prototype.pointIsInRect = function(point, left, t
 //  Interactivity
 //
 //----------------------------------------------------------------------------------------------------------------------
-/**
- * Apply appearance to point.
- * @param {anychart.PointState|number} pointState
- */
-anychart.core.series.Cartesian.prototype.applyAppearanceToPoint = function(pointState) {
+/** @inheritDoc */
+anychart.core.series.Cartesian.prototype.applyAppearanceToPoint = function(pointState, opt_value) {
   var iterator = this.getIterator();
   if (this.isDiscreteBased()) {
     this.shapeManager.updateColors(pointState,
@@ -1105,12 +1102,12 @@ anychart.core.series.Cartesian.prototype.applyAppearanceToPoint = function(point
     this.drawMarker(iterator, pointState, true);
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
     this.drawLabel(iterator, pointState, true);
+
+  return opt_value;
 };
 
 
-/**
- * Finalization point appearance. For drawing labels and markers.
- */
+/** @inheritDoc */
 anychart.core.series.Cartesian.prototype.finalizePointAppearance = goog.nullFunction;
 
 
@@ -1127,6 +1124,10 @@ anychart.core.series.Cartesian.prototype.applyAppearanceToSeries = function(poin
     this.drawPointOutliers(iterator, pointState, true);
   }
 };
+
+
+/** @inheritDoc */
+anychart.core.series.Cartesian.prototype.getStartValueForAppearanceReduction = goog.nullFunction;
 
 
 /**
