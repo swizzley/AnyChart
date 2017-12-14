@@ -165,7 +165,8 @@ anychart.chartEditorModule.PredefinedDataSet.prototype.dispatchLoadData = functi
       title: opt_name,
       chartType: json['chartType'],
       seriesType: json['seriesType'],
-      activeGeo: json['activeGeo']
+      activeGeo: json['activeGeo'],
+      defaults: json['defaults'] || []
     });
   }
 };

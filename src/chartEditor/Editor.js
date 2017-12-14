@@ -331,6 +331,7 @@ anychart.chartEditorModule.Editor.prototype.data = function(data) {
       preparedData.activeGeo = data['activeGeo'];
       preparedData.fieldNames = data['fieldNames'];
       preparedData.title = data['title'] || data['caption'] || data['name'];
+      preparedData.defaults = data['defaults'];
     } else
       preparedData = {data: data};
 

@@ -333,17 +333,6 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'settingsExcludes': ['palette()', 'legend().enabled()', 'animation().enabled()'],
     'filters': ['common']
   },
-  'heatMap': {
-    'value': 'heatMap',
-    'name': 'Heat Map',
-    'icon': 'heatmap-chart.svg',
-    'series': ['heatMap'],
-    'dataSetCtor': 'set',
-    'singleSeries': true,
-    'panelsExcludes': ['series', 'colorRange'],
-    'settingsExcludes': ['palette()', 'animation().enabled()'],
-    'filters': ['common']
-  },
   'box': {
     'value': 'box',
     'name': 'Box',
@@ -416,6 +405,17 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['mekko'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['grids', 'colorScale', 'colorRange'],
+    'filters': ['common']
+  },
+  'heatMap': {
+    'value': 'heatMap',
+    'name': 'Heat Map',
+    'icon': 'heatmap-chart.svg',
+    'series': ['heatMap'],
+    'dataSetCtor': 'set',
+    'singleSeries': true,
+    'panelsExcludes': ['series', 'colorRange'],
+    'settingsExcludes': ['palette()', 'animation().enabled()'],
     'filters': ['common']
   },
   'treeMap': {
@@ -573,7 +573,7 @@ anychart.chartEditorModule.EditorModel.Series = {
  * Processes analysis of active data set.  Need ['dataSettings']['active'] to be set.
  * @private
  */
-anychart.chartEditorModule.EditorModel.prototype.analyzeDataBeforeFieldChoose_ = function() {
+anychart.chartEditorModule.EditorModel.prototype.analyzeDataBeforeChooseField_ = function() {
   this.fieldsState_ = {
     numbersCount: 0,
     coordinates: [],
@@ -622,7 +622,7 @@ anychart.chartEditorModule.EditorModel.prototype.analyzeDataBeforeFieldChoose_ =
  * Processes analysis of active data set. Need ['dataSettings']['field'] to be set.
  * @private
  */
-anychart.chartEditorModule.EditorModel.prototype.analyzeDataAfterFieldChoose_ = function() {
+anychart.chartEditorModule.EditorModel.prototype.analyzeDataAfterChooseField_ = function() {
   var rawData = this.getRawData();
   var dataRow = rawData[0];
   var numberValue;
@@ -649,12 +649,19 @@ anychart.chartEditorModule.EditorModel.prototype.analyzeDataAfterFieldChoose_ = 
  * @param {string=} opt_field Field id
  */
 anychart.chartEditorModule.EditorModel.prototype.chooseActiveAndField = function(opt_active, opt_field) {
-  this.dropChartSettings();
-
   var preparedData = this.getPreparedData();
   this.model_['dataSettings']['active'] = goog.isDefAndNotNull(opt_active) ? opt_active : preparedData[0].setFullId;
 
-  this.analyzeDataBeforeFieldChoose_();
+  if (this.data_[this.model_['dataSettings']['active']].chartType &&
+      (!this.model_['chart']['type'] || this.data_[this.model_['dataSettings']['active']].chartType === this.model_['chart']['type'])) {
+    var defaults = this.data_[this.model_['dataSettings']['active']].defaults;
+    this.setDefaults(defaults);
+  } else
+    this.setDefaults([]);
+
+  this.dropChartSettings();
+
+  this.analyzeDataBeforeChooseField_();
 
   // Set up field
   if (goog.isDefAndNotNull(opt_field)) {
@@ -670,7 +677,7 @@ anychart.chartEditorModule.EditorModel.prototype.chooseActiveAndField = function
                 preparedData[0].fields[0].key;
   }
 
-  this.analyzeDataAfterFieldChoose_();
+  this.analyzeDataAfterChooseField_();
 };
 
 
@@ -904,7 +911,8 @@ anychart.chartEditorModule.EditorModel.prototype.needResetMappings = function(pr
       (prevChartType == 'map' || chartType == 'map') ||
       (prevChartType == 'heatMap' || chartType == 'heatMap') ||
       (prevChartType == 'treeMap' || chartType == 'treeMap') ||
-      chartType == 'pie' || chartType == 'radar' || chartType == 'polar';
+      chartType == 'pie' || chartType == 'radar' || chartType == 'polar' ||
+      prevChartType == 'pie' || prevChartType == 'radar' || prevChartType == 'polar';
 };
 
 
@@ -1060,12 +1068,12 @@ anychart.chartEditorModule.EditorModel.prototype.dropChartSettings = function(op
         delete this.model_['chart']['settings'][key];
     }
   } else {
-    this.resetContextMenuItems();
     this.model_['chart']['settings'] = {};
     this.stackMode = false;
-  }
+    this.resetContextMenuItems();
 
-  this.applyDefaults_();
+    this.applyDefaults();
+  }
 };
 
 
@@ -1083,14 +1091,13 @@ anychart.chartEditorModule.EditorModel.prototype.onChangeView = function() {
         if (this.model_['chart']['type'] === 'map')
           this.initGeoData_();
 
-        this.analyzeDataBeforeFieldChoose_();
-        this.analyzeDataAfterFieldChoose_();
+        this.analyzeDataBeforeChooseField_();
+        this.analyzeDataAfterChooseField_();
 
         this.afterSetModel_ = false;
 
       } else {
-        this.dropChartSettings();
-
+        this.model_['chart']['type'] = null;
         this.chooseActiveAndField();
         this.chooseDefaultChartType();
         this.chooseDefaultSeriesType();
@@ -1169,8 +1176,7 @@ anychart.chartEditorModule.EditorModel.prototype.setActiveAndField = function(in
   this.suspendDispatch();
 
   if (active != this.model_['dataSettings']['active']) {
-    this.dropChartSettings('getSeries');
-
+    this.model_['chart']['type'] = null;
     this.chooseActiveAndField(active, field);
     this.chooseDefaultChartType();
     this.chooseDefaultSeriesType();
@@ -1203,18 +1209,23 @@ anychart.chartEditorModule.EditorModel.prototype.setActiveGeo = function(input) 
  * @param {anychart.chartEditorModule.controls.select.Base} input
  */
 anychart.chartEditorModule.EditorModel.prototype.setChartType = function(input) {
-  var prevChartType = /** @type {string} */(this.model_['chart']['type']);
   var selectValue = /** @type {Object} */(input.getValue());
-  this.model_['chart']['type'] = selectValue.value;
+  var chartType = selectValue.value;
+  var prevChartType = /** @type {string} */(this.model_['chart']['type']);
+  this.model_['chart']['type'] = chartType;
   this.stackMode = selectValue.stackMode;
-
   var prevDefaultSeriesType = /** @type {string} */(this.model_['chart']['seriesType']);
+
+  if (this.data_[this.model_['dataSettings']['active']].chartType &&
+      this.data_[this.model_['dataSettings']['active']].chartType !== chartType) {
+    this.setDefaults([]);
+  }
 
   if (prevChartType === 'map') {
     delete this.data_[this.model_['dataSettings']['activeGeo']];
     this.preparedData_.length = 0;
 
-  } else if (this.model_['chart']['type'] === 'map') {
+  } else if (chartType === 'map') {
     this.initGeoData_();
   }
 
@@ -1623,7 +1634,7 @@ anychart.chartEditorModule.EditorModel.prototype.setDefaults = function(values) 
  * Applies default setting to model without override existing settings.
  * @private
  */
-anychart.chartEditorModule.EditorModel.prototype.applyDefaults_ = function() {
+anychart.chartEditorModule.EditorModel.prototype.applyDefaults = function() {
   for (var i = 0; i < this.defaults_.length; i++) {
     this.setValue(this.defaults_[i]['key'], this.defaults_[i]['value'], true, void 0, void 0, true);
   }
@@ -1663,7 +1674,8 @@ anychart.chartEditorModule.EditorModel.prototype.addData = function(data) {
       chartType: data.chartType,
       seriesType: data.seriesType,
       activeGeo: data.activeGeo,
-      fieldNames: data.fieldNames
+      fieldNames: data.fieldNames,
+      defaults: data.defaults || []
     };
   }
   this.preparedData_.length = 0;
