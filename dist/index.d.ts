@@ -1,4 +1,4 @@
-// Type definitions for AnyChart charting library, Version 8.0.2
+// Type definitions for AnyChart charting library, Version 8.1.0
 // Project: https://www.anychart.com/
 // Definitions by: AnyChart <https://www.anychart.com>
 declare namespace anychart {
