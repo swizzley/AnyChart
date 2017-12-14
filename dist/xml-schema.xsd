@@ -76,6 +76,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="hatch_fill" type="HatchFill"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="outline" type="core.Outline"/>
             <!-- charts.Sparkline elements -->
             <xsd:element minOccurs="0" maxOccurs="1" name="clip" type="utils.Rect"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="last_fill" type="Fill"/>
@@ -180,7 +181,7 @@
         <xsd:attribute name="sort" type="enums.Sort" default="none"/>
         <xsd:attribute name="radius" type="simple.NumberOrPercent" default="100%"/>
         <xsd:attribute name="inner_radius" type="simple.NumberOrPercent" default="0"/>
-        <xsd:attribute name="explode" type="simple.NumberOrPercent" default="15"/>
+        <xsd:attribute name="explode" type="simple.NumberOrPercent" default="5%"/>
         <xsd:attribute name="outside_labels_space" type="simple.NumberOrPercent" default="30%"/>
         <xsd:attribute name="inside_labels_offset" type="simple.NumberOrPercent" default="50%"/>
         <xsd:attribute name="overlap_mode" type="enums.LabelsOverlapMode" default="no-overlap"/>
@@ -612,6 +613,8 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="headers" type="core.LabelsFactory"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="upper_labels" type="core.LabelsFactory"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="lower_labels" type="core.LabelsFactory"/>
+            <!-- pie -->
+            <xsd:element minOccurs="0" maxOccurs="1" name="outline" type="core.Outline"/>
         </xsd:all>
         <xsd:attribute name="labels" type="simple.BoolOrNull"/>
         <xsd:attribute name="markers" type="simple.MarkerType"/>
@@ -652,6 +655,8 @@
         <xsd:attribute name="font_style" type="enums.FontStyle"/>
         <xsd:attribute name="font_variant" type="enums.FontVariant"/>
         <xsd:attribute name="font_weight" type="xsd:string"/>
+        <!-- pie -->
+        <xsd:attribute name="explode" type="simple.NumberOrPercent"/>
     </xsd:complexType>
 
     <!-- data complex types -->
@@ -1395,6 +1400,17 @@
         <xsd:attribute name="corners_radius" type="xsd:double" />
     </xsd:complexType>
 
+    <xsd:complexType name="core.Outline">
+        <xsd:all>
+            <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke" />
+        </xsd:all>
+        <xsd:attribute name="fill" type="xsd:string" />
+        <xsd:attribute name="stroke" type="xsd:string" />
+        <xsd:attribute name="width" type="simple.NumberOrPercent" />
+        <xsd:attribute name="offset" type="simple.NumberOrPercent" />
+    </xsd:complexType>
+
     <xsd:complexType name="core.DataGrid">
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="row_stroke" type="Stroke"/>
@@ -1718,6 +1734,8 @@
         <xsd:attribute name="selection_mode" type="enums.SelectionMode"/>
         <xsd:attribute name="spot_radius" type="xsd:integer"/>
         <xsd:attribute name="allow_multi_series_selection" type="xsd:boolean"/>
+        <xsd:attribute name="multi_select_on_click" type="xsd:boolean"/>
+        <xsd:attribute name="unselect_on_click_out_of_point" type="xsd:boolean"/>
     </xsd:complexType>
 
     <xsd:complexType name="utils.MapInteractivity">

@@ -486,11 +486,8 @@ anychart.tagCloudModule.Chart.prototype.createTooltipContextProvider = function(
 anychart.tagCloudModule.Chart.prototype.applyAppearanceToSeries = function(pointState) {};
 
 
-/**
- * Apply appearance to point.
- * @param {anychart.PointState|number} pointState
- */
-anychart.tagCloudModule.Chart.prototype.applyAppearanceToPoint = function(pointState) {
+/** @inheritDoc */
+anychart.tagCloudModule.Chart.prototype.applyAppearanceToPoint = function(pointState, opt_value) {
   var iterator = this.getIterator();
   var item = iterator.meta('item');
 
@@ -523,7 +520,13 @@ anychart.tagCloudModule.Chart.prototype.applyAppearanceToPoint = function(pointS
 
   if (manualSuspend)
     stage.resume();
+
+  return opt_value;
 };
+
+
+/** @inheritDoc */
+anychart.tagCloudModule.Chart.prototype.getStartValueForAppearanceReduction = goog.nullFunction;
 
 
 /** @inheritDoc */

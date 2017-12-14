@@ -113,6 +113,7 @@ anychart.ConsistencyState = {
   //---------------------------------- PIE STATES (CHART) ---------------------------------
   PIE_LABELS: 1 << 12,
   PIE_DATA: 1 << 13,
+  PIE_CENTER_CONTENT: 1 << 14,
   //---------------------------------- SPARKLINE STATES (CHART) ---------------------------------
   SPARK_SCALES: 1 << 12,
   SPARK_SERIES: 1 << 13,

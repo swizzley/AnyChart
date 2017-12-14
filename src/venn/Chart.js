@@ -912,22 +912,23 @@ anychart.vennModule.Chart.prototype.unhover = function(opt_indexOrIndexes) {
 };
 
 
-/**
- * Apply appearance to point.
- * @param {anychart.PointState|number} pointState
- */
-anychart.vennModule.Chart.prototype.applyAppearanceToPoint = function(pointState) {
+/** @inheritDoc */
+anychart.vennModule.Chart.prototype.applyAppearanceToPoint = function(pointState, opt_value) {
   var iterator = this.getIterator();
   this.shapeManager_.updateColors(pointState, /** @type {Object.<string, acgraph.vector.Shape>} */(iterator.meta('shapes')));
   this.drawLabel_(pointState, iterator);
   this.drawMarker_(pointState, iterator);
+
+  return opt_value;
 };
 
 
-/**
- * Finalization point appearance. For drawing labels and markers.
- */
+/** @inheritDoc */
 anychart.vennModule.Chart.prototype.finalizePointAppearance = goog.nullFunction;
+
+
+/** @inheritDoc */
+anychart.vennModule.Chart.prototype.getStartValueForAppearanceReduction = goog.nullFunction;
 
 
 /**

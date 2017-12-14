@@ -1259,7 +1259,9 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'hoverMode': 'single',
       'selectionMode': 'multi-select',
       'spotRadius': 2,
-      'allowMultiSeriesSelection': true
+      'allowMultiSeriesSelection': true,
+      'multiSelectOnClick': false,
+      'unselectOnClickOutOfPoint': true
     },
     'tooltip': {
       'displayMode': 'single',
@@ -1941,7 +1943,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'neckWidth': null,
     'neckHeight': null,
     'pointsPadding': 0,
-    'forceHoverLabels': false,
+    'forceHoverLabels': true,
     'outsideLabels': {
       'disablePointerEvents': false,
       'autoColor': anychart.core.defaultTheme.fontColorBright
