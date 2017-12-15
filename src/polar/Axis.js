@@ -656,7 +656,7 @@ anychart.polarModule.Axis.prototype.calculateAxisBounds_ = function() {
         }
 
         iterateStep++;
-      } while (radiusChanged);
+      } while (radiusChanged && radiusDelta <= this.radius_);
 
       this.originalRadius_ = this.radius_;
       this.radius_ = Math.max(0, Math.floor(this.radius_ - radiusDelta));
