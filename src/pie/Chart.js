@@ -919,7 +919,7 @@ anychart.pieModule.Chart.prototype.resolveOption = function(name, state, point, 
     var pointStateName = hasSelectState ? 'selected' : hasHoverState ? 'hovered' : 'normal';
     var pointStateObject = point.get(pointStateName);
     var pointStateValue = goog.isDef(pointStateObject) ?
-        goog.array.reduce(path, function(rval, val) {return rval[val];}, pointStateObject) :
+        goog.array.reduce(path, function(rval, val) {return rval ? rval[val] : rval;}, pointStateObject) :
         void 0;
 
     val = anychart.utils.getFirstDefinedValue(
