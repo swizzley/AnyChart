@@ -77,11 +77,25 @@ anychart.chartEditorModule.settings.ColorScale.prototype.createDom = function() 
 anychart.chartEditorModule.settings.ColorScale.prototype.enterDocument = function() {
   anychart.chartEditorModule.settings.ColorScale.base(this, 'enterDocument');
 
-  if (this.scaleType_)
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  if (model.getValue([['chart'], ['settings'], ['colorScale()', 'type']]))
     this.updateSpecific(true);
   else {
     this.ranges_.exclude(true);
     this.colors_.exclude(true);
+  }
+};
+
+
+/** @inheritDoc */
+anychart.chartEditorModule.settings.ColorScale.prototype.onModelChange = function(evt) {
+  anychart.chartEditorModule.settings.ColorScale.base(this, 'onModelChange', evt);
+  if (!this.isExcluded()) {
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    var scaleType = model.getValue([['chart'], ['settings'], ['colorScale()', 'type']]);
+    if (this.scaleTypeField_ && scaleType) {
+      this.scaleTypeField_.setValue(scaleType, true);
+    }
   }
 };
 

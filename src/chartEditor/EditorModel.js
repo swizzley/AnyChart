@@ -543,7 +543,7 @@ anychart.chartEditorModule.EditorModel.Series = {
   },
   'heatMap': {
     'fields': [
-      {'field': 'y', 'name': 'Y Value'},
+      {'field': 'y', 'name': 'Y Value', 'type': 'string'},
       {'field': 'heat', 'name': 'Heat'}
     ]
   },
@@ -577,7 +577,8 @@ anychart.chartEditorModule.EditorModel.prototype.analyzeDataBeforeChooseField_ =
   this.fieldsState_ = {
     numbersCount: 0,
     coordinates: [],
-    numbers: []
+    numbers: [],
+    strings: []
   };
 
   var rawData = this.getRawData();
@@ -637,6 +638,9 @@ anychart.chartEditorModule.EditorModel.prototype.analyzeDataAfterChooseField_ = 
     if (!isNaN(numberValue)) {
       this.fieldsState_.numbers.push(key);
       this.fieldsState_.numbersCount++;
+
+    } else if (goog.isString(dataRow[key])) {
+      this.fieldsState_.strings.push(key);
     }
   }
 };
@@ -848,6 +852,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
   var config = {'ctor': type, 'mapping': {}};
   config['id'] = goog.isDef(opt_id) ? opt_id : goog.string.createUniqueString();
 
+  var strings = goog.array.clone(this.fieldsState_.strings);
   var numbers = goog.array.clone(this.fieldsState_.numbers);
   if (this.model_['chart']['type'] == 'map') {
     var self = this;
@@ -872,7 +877,12 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
     } else {
       var j = index + i + (goog.isNumber(opt_startFieldIndex) ? opt_startFieldIndex : 0);
       var numberIndex = numbers.length > j ? j : j % numbers.length;
-      config['mapping'][fields[i]['field']] = numbers[numberIndex];
+      var stringIndex = strings.length > j ? j : j % strings.length;
+
+      config['mapping'][fields[i]['field']] =
+          (fields[i]['type'] === 'string' && strings.length) ?
+              strings[stringIndex] :
+              numbers[numberIndex];
 
       // Set series name if possible
       var chartType = this.model_['chart']['type'];
@@ -1497,7 +1507,8 @@ anychart.chartEditorModule.EditorModel.prototype.getValue = function(key) {
     if (i == key.length - 1) {
       // result
       if (goog.isArray(level))
-        return target[level[0]][level[1]];
+        return goog.isDef(target[level[0]]) ? target[level[0]][level[1]] : void 0;
+
       else if (goog.isString(level))
         return target[level];
 
@@ -1505,6 +1516,7 @@ anychart.chartEditorModule.EditorModel.prototype.getValue = function(key) {
       // drill down
       if (goog.isArray(level))
         target = goog.isArray(target[level[0]]) ? target[level[0]][level[1]] : target[level[0]];
+
       else if (goog.isString(level))
         target = target[level];
 
