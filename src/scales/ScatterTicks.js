@@ -637,9 +637,9 @@ anychart.scales.ScatterTicks.prototype.setupByJSON = function(config, opt_defaul
   this.mode(config['mode']);
   this.base(config['base']);
   this.explicit_ = config['explicit'] || null;
-  this.minCount_ = config['count'] || config['minCount'] || NaN;
-  this.maxCount_ = config['count'] || config['maxCount'] || NaN;
-  this.interval_ = config['interval'] || NaN;
+  this.minCount_ = anychart.utils.toNumber(config['count']) || anychart.utils.toNumber(config['minCount']) || NaN;
+  this.maxCount_ = anychart.utils.toNumber(config['count']) || anychart.utils.toNumber(config['maxCount']) || NaN;
+  this.interval_ = anychart.utils.toNumber(config['interval']) || NaN;
   if (this.explicit_) {
     this.minCount_ = this.maxCount_ = this.interval_ = NaN;
   } else if (this.interval_) {
