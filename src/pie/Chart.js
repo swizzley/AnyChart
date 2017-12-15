@@ -1993,7 +1993,8 @@ anychart.pieModule.Chart.prototype.calculate = function() {
  * Update bounds.
  */
 anychart.pieModule.Chart.prototype.updateBounds = function() {
-  this.radiusValue_ = Math.max(this.radiusValue_ - this.labelsRadiusOffset_, 0);
+  var labelRadiusOffset = Math.max(this.labelsRadiusOffset_, 0);
+  this.radiusValue_ = Math.max(this.radiusValue_ - labelRadiusOffset, 0);
 
   var innerRadius = /** @type {Function|string|number} */ (this.getOption('innerRadius'));
   this.innerRadiusValue_ = goog.isFunction(innerRadius) ?
