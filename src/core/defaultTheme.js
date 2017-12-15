@@ -1100,20 +1100,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'y': 0,
     'axisIndex': 0,
     'anchor': null,
-    /**
-     * @return {*}
-     * @this {*}
-     */
-    'format': function() {
-      var scale = this['scale'];
-      var type = scale.getType();
-      var prec = NaN;
-      if (type == 'linear' || type == 'log') {
-        var ticks = (/** @type {anychart.scales.Linear} */(scale)).ticks().getInternal();
-        prec = anychart.math.getPrecision(anychart.math.specialRound(ticks[1] - ticks[0]));
-      }
-      return anychart.core.defaultTheme.locNum(this['value'], isNaN(prec) ? undefined : prec);
-    },
+    'format': anychart.core.defaultTheme.returnValue,
     'enabled': true,
     'fontSize': 12,
     'minFontSize': 8,
