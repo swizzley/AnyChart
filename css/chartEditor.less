@@ -1617,10 +1617,23 @@
 }
 
 .anychart-qlik-theme {
-  .anychart-connected-data-sets-item {
-    .anychart-connected-data-sets-item-menuBtn {
-      display: none;
-    }
+  .chart-container,
+  .anychart-connected-data-sets-item,
+  .anychart-buttons-wrapper,
+  .anychart-visual-appearance-settings-tab-content > .anychart-settings-panel > .content {
+    border: 1px solid @color-border;
+  }
+  .anychart-connected-data-sets-item-disabled {
+    border-color: @color-border-disabled;
+  }
+  .anychart-connected-data-sets-item-menuBtn {
+    display: none;
+  }
+  .anychart-settings-panel-legend-single,
+  .anychart-settings-panel-series-single,
+  .anychart-settings-panel-axis-single,
+  .anychart-settings-panel-plot-grids {
+    border: none;
   }
 
   .anychart-select-data-field-select,
