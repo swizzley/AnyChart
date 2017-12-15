@@ -225,7 +225,7 @@ anychart.pieModule.Center.prototype.clearContent = function() {
   if (this.contentToClear) {
     var content = this.contentToClear;
     if (anychart.utils.instanceOf(content, acgraph.vector.Element)) {
-      this.contentLayer.unlisten(acgraph.vector.Stage.EventType.RENDER_FINISH, this.pie.acgraphElemetnsListener, false, this.pie);
+      this.contentLayer.getStage().unlisten(acgraph.vector.Stage.EventType.RENDER_FINISH, this.pie.acgraphElemetnsListener, false, this.pie);
       content.remove();
     } else {
       content.suspendSignalsDispatching();
