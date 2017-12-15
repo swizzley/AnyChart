@@ -829,7 +829,7 @@ anychart.core.ui.Crosshair.prototype.getLabelsFormatProvider = function(axis, ra
     case anychart.enums.ScaleTypes.LOG:
       var ticks = (/** @type {anychart.scales.Linear} */(scale)).ticks().getInternal();
       var prec = anychart.math.getPrecision(anychart.math.specialRound(ticks[1] - ticks[0]));
-      labelText = anychart.format.number(scaleValue, Math.max(prec, 0));
+      labelText = anychart.math.round(scaleValue, Math.max(prec, 0));
       break;
     case anychart.enums.ScaleTypes.ORDINAL:
       labelText = String(scaleValue);
