@@ -1834,6 +1834,7 @@ anychart.tagCloudModule.Chart.prototype.calculate = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.TAG_CLOUD_TAGS)) {
     arrAngles = this.angles_ ? this.angles_ : this.calculatedAngles_;
+    var zeroAngleIndex = Math.max(goog.array.indexOf(arrAngles, 0), 0);
     anglesCount = /** @type {number} */(arrAngles.length);
     maxValue = this.normalizedData.length ? this.normalizedData[0].value : NaN;
 
@@ -1856,8 +1857,7 @@ anychart.tagCloudModule.Chart.prototype.calculate = function() {
       t.weight = /** @type {number|string} */(fontWeight);
       t.fill = fill;
 
-      t.rotate = arrAngles[i % anglesCount];
-      t.sizeRatio = t.value / maxValue;
+      t.rotate = arrAngles[(i + zeroAngleIndex + anglesCount) % anglesCount];
 
       sum += t.value;
     }, this);
