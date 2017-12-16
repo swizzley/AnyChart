@@ -2329,18 +2329,19 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
-    if (anychart.utils.instanceOf(this.center_.realContent, acgraph.vector.Element)) {
-      var ccbb = this.center_.realContent.getBounds();
+    var realContent = this.center_.realContent;
+    var contentLayer = this.center_.contentLayer;
+    if (anychart.utils.instanceOf(realContent, acgraph.vector.Element)) {
+      var ccbb = realContent.getBounds();
       this.transformCenterContent(ccbb);
-      this.center_.contentLayer.clip(null);
-    } else if (anychart.utils.instanceOf(this.center_.realContent, anychart.core.VisualBase)) {
-      this.center_.realContent.suspendSignalsDispatching();
-      this.center_.realContent.parentBounds(this.centerContentBounds);
-      this.center_.realContent.resumeSignalsDispatching(false);
-      this.center_.realContent.draw();
+      contentLayer.clip(null);
+    } else if (anychart.utils.instanceOf(realContent, anychart.core.VisualBase)) {
+      realContent.parentBounds(this.centerContentBounds);
+      realContent.resumeSignalsDispatching(false);
+      realContent.draw();
 
-      this.center_.contentLayer.setTransformationMatrix(1, 0, 0, 1, 0, 0);
-      this.center_.contentLayer.clip(acgraph.circle(this.cx, this.cy, this.innerRadiusValue_ + 2));
+      contentLayer.setTransformationMatrix(1, 0, 0, 1, 0, 0);
+      contentLayer.clip(acgraph.circle(this.cx, this.cy, this.innerRadiusValue_ + 2));
     }
 
     if (this.centerContentBg_ && this.innerRadiusValue_) {
