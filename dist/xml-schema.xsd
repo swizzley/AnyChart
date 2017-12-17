@@ -77,6 +77,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="hatch_fill" type="HatchFill"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="outline" type="core.Outline"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="center" type="core.Center"/>
             <!-- charts.Sparkline elements -->
             <xsd:element minOccurs="0" maxOccurs="1" name="clip" type="utils.Rect"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="last_fill" type="Fill"/>
@@ -194,6 +195,7 @@
         <xsd:attribute name="stroke" type="xsd:string"/>
         <xsd:attribute name="hatch_fill" type="simple.HatchFill" default="false"/>
         <xsd:attribute name="force_hover_labels" type="simple.Bool" default="false"/>
+        <xsd:attribute name="center" type="simple.StringOrBoolOrNull"/>
         <!-- charts.Pyramid attrs -->
         <xsd:attribute name="reversed" type="simple.Bool" default="false"/>
         <!-- charts.Sparkline elements -->
@@ -1405,10 +1407,21 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill" />
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke" />
         </xsd:all>
+        <xsd:attribute name="enabled" type="simple.BoolOrNull" />
         <xsd:attribute name="fill" type="xsd:string" />
         <xsd:attribute name="stroke" type="xsd:string" />
         <xsd:attribute name="width" type="simple.NumberOrPercent" />
         <xsd:attribute name="offset" type="simple.NumberOrPercent" />
+    </xsd:complexType>
+
+    <xsd:complexType name="core.Center">
+        <xsd:all>
+            <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="center" type="Anychart" />
+        </xsd:all>
+        <xsd:attribute name="fill" type="xsd:string" />
+        <xsd:attribute name="stroke" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="core.DataGrid">

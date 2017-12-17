@@ -209,6 +209,8 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
 
   var hoveredDescriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(hoveredDescriptorsMeta, [
+    ['explode', anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.PIE_LABELS,
+      anychart.Signal.NEEDS_REDRAW],
     ['fill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
     ['stroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
     ['hatchFill', 0, 0],
@@ -220,6 +222,8 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
 
   var selectedDescriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(selectedDescriptorsMeta, [
+    ['explode', anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.PIE_LABELS,
+      anychart.Signal.NEEDS_REDRAW],
     ['fill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
     ['stroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
     ['hatchFill', 0, 0],
@@ -4639,6 +4643,7 @@ anychart.pieModule.Chart.prototype.serialize = function() {
   //  }
   //}
 
+
   return {'chart': json};
 };
 
@@ -4658,11 +4663,19 @@ anychart.pieModule.Chart.prototype.setupByJSON = function(config, opt_default) {
     this.tooltip().setupInternal(!!opt_default, config['tooltip']);
 
   anychart.core.settings.deserialize(this, anychart.pieModule.Chart.PROPERTY_DESCRIPTORS, config);
+  
+  this.selected_.setupInternal(!!opt_default, config['selected']);
+
+  if (goog.isDef(config['explode'])) {
+    config = goog.object.clone(config);
+    this.selected_.setupInternal(!!opt_default, {'explode': config['explode']});
+    delete config['explode'];
+  }
+
   this.normal_.setupInternal(!!opt_default, config);
   this.normal_.setupInternal(!!opt_default, config['normal']);
 
   this.hovered_.setupInternal(!!opt_default, config['hovered']);
-  this.selected_.setupInternal(!!opt_default, config['selected']);
 };
 
 
