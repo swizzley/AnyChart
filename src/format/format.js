@@ -227,7 +227,7 @@ goog.exportSymbol('anychart.format.locales.default.dateTimeLocale', {
   }
 });
 goog.exportSymbol('anychart.format.locales.default.numberLocale', {
-  'decimalsCount': 1,
+  'decimalsCount': 10,
   'decimalPoint': '.',
   'groupsSeparator': '',
   'scale': false,
@@ -377,7 +377,7 @@ anychart.format.dateTimeSymbolsCache_ = {};
  */
 anychart.format.getLocale = function(locale) {
   if (!goog.isObject(locale)) {
-    locale = goog.global['anychart']['format']['locales'][String(locale)];
+    locale = anychart.window['anychart']['format']['locales'][String(locale)];
   }
   return locale || null;
 };
@@ -634,7 +634,6 @@ anychart.format.outputTimezone = function(opt_value) {
  * @return {?Date} - Parsed date or null if got wrong input value.
  */
 anychart.format.parseDateTime = function(value, opt_format, opt_baseDate, opt_locale) {
-  var locales = goog.global['anychart']['format']['locales'];
   if (goog.isDateLike(value)) {
     return /** @type {Date} */ (value);
   } else if (goog.isNumber(value)) {
@@ -662,19 +661,17 @@ anychart.format.parseDateTime = function(value, opt_format, opt_baseDate, opt_lo
 
       var date = goog.isDateLike(opt_baseDate) ? /** @type {Date} */ (opt_baseDate) : anychart.format.inputBaseDate();
 
-      var timezoneOffset = (format.replace(/'.+?'/g, '').search(/z+/i) == -1) ? date.getTimezoneOffset() * 60000 : 0;
-      if (timezoneOffset) {
-        var localTime = date.getTime() + timezoneOffset;
-        date.setTime(localTime);
+      var hasNoTZInFormat = (format.replace(/'.+?'/g, '').search(/z+/i) == -1);
+      if (hasNoTZInFormat) {
+        date.setTime(date.getTime() + date.getTimezoneOffset() * 60000);
       }
 
       var valueLength = value.length;
       var resultLength = parser.parse(value, date);
 
       if (valueLength == resultLength) {//parsing successful.
-        if (timezoneOffset) {
-          var utcTime = date.getTime() - timezoneOffset;
-          date.setTime(utcTime);
+        if (hasNoTZInFormat) {
+          date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
         }
         return /** @type {Date} */ (date);
       } else {
@@ -884,7 +881,7 @@ anychart.format.time = function(date, opt_timeZone, opt_locale) {
  * @return {string}
  */
 anychart.format.dateTime = function(date, opt_format, opt_timeZone, opt_locale) {
-  date = (date instanceof Date) ? date : new Date(date);
+  date = (anychart.utils.instanceOf(date, Date)) ? date : new Date(date);
   if (isNaN(date.getTime())) return String(date);
 
   var locale = anychart.format.getDateTimeLocale(opt_locale) ||
@@ -909,7 +906,7 @@ anychart.format.dateTime = function(date, opt_format, opt_timeZone, opt_locale) 
   }
   var timeZone = anychart.format.UTCTimeZoneCache_[opt_timeZone];
 
-  return formatter.format(date, timeZone);
+  return formatter.format(/** @type {Date} */(date), timeZone);
 };
 
 
@@ -1036,9 +1033,9 @@ anychart.format.number = function(number, opt_decimalsCountOrLocale, opt_decimal
 };
 
 
+
+
 //endregion
-
-
 //exports
 goog.exportSymbol('anychart.format.inputLocale', anychart.format.inputLocale);
 goog.exportSymbol('anychart.format.inputBaseDate', anychart.format.inputBaseDate);

@@ -43,7 +43,19 @@ anychart.scales.Base = function() {
    */
   this.zoomStart_ = 0;
 
-  this.applyStacking = anychart.scales.Base.prototype.applyModeNone_;
+  /**
+   * Stack mode.
+   * @type {anychart.enums.ScaleStackMode}
+   * @private
+   */
+  this.stackMode_ = anychart.enums.ScaleStackMode.NONE;
+
+  /**
+   * Stack direction.
+   * @type {anychart.enums.ScaleStackDirection}
+   * @private
+   */
+  this.stackDirection_ = anychart.enums.ScaleStackDirection.DIRECT;
 };
 goog.inherits(anychart.scales.Base, anychart.core.Base);
 
@@ -55,6 +67,15 @@ goog.inherits(anychart.scales.Base, anychart.core.Base);
 anychart.scales.Base.prototype.SUPPORTED_SIGNALS =
     anychart.Signal.NEEDS_REAPPLICATION |
     anychart.Signal.NEEDS_RECALCULATION;
+
+
+/**
+ * If the scale is a color scale.
+ * @return {boolean}
+ */
+anychart.scales.Base.prototype.isColorScale = function() {
+  return false;
+};
 
 
 /**
@@ -70,6 +91,14 @@ anychart.scales.Base.prototype.transform = goog.abstractMethod;
  * @return {*} Value transformed to output scope.
  */
 anychart.scales.Base.prototype.inverseTransform = goog.abstractMethod;
+
+
+/**
+ * Gets or sets a set of scale ticks in terms of data values.
+ * @param {(Object|Array)=} opt_value An array of ticks to set.
+ * @return {!(anychart.scales.Base|*)} Ticks or itself for chaining.
+ */
+anychart.scales.Base.prototype.ticks = goog.nullFunction;
 
 
 /**
@@ -204,6 +233,12 @@ anychart.scales.Base.prototype.finishAutoCalc = function(opt_silently) {
 anychart.scales.Base.prototype.checkScaleChanged = goog.abstractMethod;
 
 
+/** @inheritDoc */
+anychart.scales.Base.prototype.checkWeights = function() {
+  return false;
+};
+
+
 //region --- Section Internal methods ---
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -248,60 +283,9 @@ anychart.scales.Base.prototype.getPointWidthRatio = function() {
   // TODO(Anton Saukh): non-Ordinal scales must have min distance between points calculation algorithm.
   return 0;
 };
+
+
 //endregion
-
-
-//region --- Section Stacking ---
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Stacking
-//
-//----------------------------------------------------------------------------------------------------------------------
-/**
- * Positive stack maximum for percent stacking.
- * @type {number}
- * @private
- */
-anychart.scales.Base.prototype.stackMax_ = NaN;
-
-
-/**
- * Negative stack minimum for percent stacking.
- * @type {number}
- * @private
- */
-anychart.scales.Base.prototype.stackMin_ = NaN;
-
-
-/**
- * Positive stack value.
- * @type {number}
- * @private
- */
-anychart.scales.Base.prototype.stackPositive_ = 0;
-
-
-/**
- * Negative stack value.
- * @type {number}
- * @private
- */
-anychart.scales.Base.prototype.stackNegative_ = 0;
-
-
-/**
- * @type {boolean}
- * @private
- */
-anychart.scales.Base.prototype.stackMissing_ = false;
-
-
-/**
- * Stacking mode.
- * @type {anychart.enums.ScaleStackMode}
- * @private
- */
-anychart.scales.Base.prototype.stackMode_ = anychart.enums.ScaleStackMode.NONE;
 
 
 /**
@@ -320,132 +304,35 @@ anychart.scales.Base.prototype.canBeStacked = false;
  */
 anychart.scales.Base.prototype.stackMode = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    var str = anychart.enums.normalizeScaleStackMode(opt_value);
-    var res, fn;
-    if (this.canBeStacked && str == anychart.enums.ScaleStackMode.PERCENT) {
-      res = anychart.enums.ScaleStackMode.PERCENT;
-      fn = this.applyModePercent_;
-    } else if (this.canBeStacked && str == anychart.enums.ScaleStackMode.VALUE) {
-      res = anychart.enums.ScaleStackMode.VALUE;
-      fn = this.applyModeValue_;
-    } else {
-      res = anychart.enums.ScaleStackMode.NONE;
-      fn = this.applyModeNone_;
-    }
+    var res = this.canBeStacked ? anychart.enums.normalizeScaleStackMode(opt_value) : anychart.enums.ScaleStackMode.NONE;
     if (this.stackMode_ != res) {
       this.stackMode_ = res;
-      this.applyStacking = fn;
       this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION | anychart.Signal.NEEDS_RECALCULATION);
     }
     return this;
   }
-  return this.stackMode_;
+  return this.canBeStacked ? this.stackMode_ : anychart.enums.ScaleStackMode.NONE;
 };
 
 
 /**
- * Applies positive stack top as a stack max for current iteration.
- * @param {number} min Negative stack limit.
- * @param {number} max Positive stack limit.
- * @return {anychart.scales.Base} Returns itself for method chaining.
+ * Getter/setter for stackDirection.
+ * Accepts 'none', 'value', 'percent'.
+ * @param {(anychart.enums.ScaleStackDirection|string)=} opt_value Stack direction if used as a setter.
+ * @return {!anychart.scales.Base|anychart.enums.ScaleStackDirection} StackDirection or itself for method chaining.
  */
-anychart.scales.Base.prototype.setStackRange = function(min, max) {
-  this.stackMin_ = Math.min(min, max, 0);
-  this.stackMax_ = Math.max(max, min, 0);
-  return this;
-};
-
-
-/**
- * Resets current stack to the initial value.
- * @return {anychart.scales.Base} .
- */
-anychart.scales.Base.prototype.resetStack = function() {
-  this.stackPositive_ = 0;
-  this.stackNegative_ = 0;
-  this.stackMissing_ = false;
-  return this;
-};
-
-
-/**
- * Applies stacking to passed value.
- * @param {*} value Data value.
- * @return {*} Stacked data value.
- */
-anychart.scales.Base.prototype.applyStacking;
-
-
-/**
- * Returns previously stacked value.
- * @param {*} value Data value.
- * @return {number} Previously stacked data value. Returns 0, if previous value was NaN.
- */
-anychart.scales.Base.prototype.getPrevVal = function(value) {
-  value = anychart.utils.toNumber(value);
-  if (this.stackMode_ == anychart.enums.ScaleStackMode.NONE || isNaN(value)) {
-    return 0;
-  } else {
-    if (value >= 0)
-      return this.stackPositive_;
-    else
-      return this.stackNegative_;
-  }
-};
-
-
-/**
- * @return {boolean} .
- */
-anychart.scales.Base.prototype.isStackValMissing = function() {
-  return this.stackMissing_;
-};
-
-
-/**
- * Apply stack function for NONE mode of Stacker.
- * @param {*} value Data value.
- * @return {*} Stacked data value.
- * @private
- */
-anychart.scales.Base.prototype.applyModeNone_ = function(value) {
-  return value;
-};
-
-
-/**
- * Apply stack function for VALUE mode of Stacker.
- * @param {*} value Data value.
- * @return {*} Stacked data value.
- * @private
- */
-anychart.scales.Base.prototype.applyModeValue_ = function(value) {
-  value = anychart.utils.toNumber(value);
-  var isNotMissing = !isNaN(value);
-  if (isNotMissing) {
-    if (/** @type {number} */(value) >= 0) {
-      value = this.stackPositive_ += /** @type {number} */(value); // both value and stackVal become a sum of them.
-    } else {
-      value = this.stackNegative_ += /** @type {number} */(value); // both value and stackVal become a sum of them.
+anychart.scales.Base.prototype.stackDirection = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    var res = anychart.enums.normalizeScaleStackDirection(opt_value);
+    if (this.stackDirection_ != res) {
+      this.stackDirection_ = res;
+      if (this.stackMode() != anychart.enums.ScaleStackMode.NONE)
+        this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION | anychart.Signal.NEEDS_RECALCULATION);
     }
+    return this;
   }
-  this.stackMissing_ = !isNotMissing;
-  return value;
+  return this.stackDirection_;
 };
-
-
-/**
- * Apply stack function for PERCENT mode of Stacker.
- * @param {*} value Data value.
- * @return {*} Stacked data value.
- * @private
- */
-anychart.scales.Base.prototype.applyModePercent_ = function(value) {
-  value = anychart.utils.toNumber(value);
-  var max = value < 0 ? -this.stackMin_ : this.stackMax_;
-  return this.applyModeValue_(goog.math.clamp(value * 100 / max, -100, 100));
-};
-//endregion
 
 
 /**
@@ -477,33 +364,145 @@ anychart.scales.Base.prototype.setupByJSON = function(config, opt_default) {
  * @return {anychart.scales.Base}
  */
 anychart.scales.Base.fromString = function(type, defaultIsOrdinal) {
-  type = (type + '').toLowerCase();
-  switch (type) {
-    case 'log':
-    case 'logarithmic':
-      return anychart.scales.log();
-    case 'lin':
-    case 'linear':
-      return anychart.scales.linear();
-    case 'date':
-    case 'datetime':
-    case 'dt':
-      return anychart.scales.dateTime();
-    case 'ordinal':
-    case 'ord':
-    case 'discrete':
-      return anychart.scales.ordinal();
-    case 'color':
-    case 'ordinalcolor':
-    case 'discretecolor':
-      return anychart.scales.ordinalColor();
-    case 'linearcolor':
-      return anychart.scales.linearColor();
-    default:
-      return goog.isNull(defaultIsOrdinal) ?
-          null :
-          (!!defaultIsOrdinal ? anychart.scales.ordinal() : anychart.scales.linear());
+  return anychart.scales.Base.createOfType(
+      anychart.scales.Base.ScaleTypesMapping[/** @type {anychart.enums.ScaleTypes} */(type)],
+      defaultIsOrdinal ? anychart.scales.Base.ScaleTypes.ORDINAL : anychart.scales.Base.ScaleTypes.LINEAR);
+};
+
+
+/**
+ * Mixable enum for scale types.
+ * @enum {number}
+ */
+anychart.scales.Base.ScaleTypes = {
+  UNKNOWN: 0,
+  LINEAR: 1,
+  LOG: 2,
+  SCATTER: 3,
+  DATE_TIME: 4,
+  SCATTER_OR_DATE_TIME: 7,
+  ORDINAL: 8,
+  ALL_DEFAULT: 15,
+  ORDINAL_COLOR: 16,
+  LINEAR_COLOR: 32,
+  COLOR_SCALES: 48,
+  ALL: 63
+};
+
+
+/**
+ * Mapping for the two enums.
+ * @type {Object<anychart.enums.ScaleTypes,anychart.scales.Base.ScaleTypes>}
+ */
+anychart.scales.Base.ScaleTypesMapping = (function() {
+  var map = {};
+  map[anychart.enums.ScaleTypes.LINEAR] = anychart.scales.Base.ScaleTypes.LINEAR;
+  map[anychart.enums.ScaleTypes.LOG] = anychart.scales.Base.ScaleTypes.LOG;
+  map[anychart.enums.ScaleTypes.DATE_TIME] = anychart.scales.Base.ScaleTypes.DATE_TIME;
+  map[anychart.enums.ScaleTypes.ORDINAL] = anychart.scales.Base.ScaleTypes.ORDINAL;
+  map[anychart.enums.ScaleTypes.LINEAR_COLOR] = anychart.scales.Base.ScaleTypes.LINEAR_COLOR;
+  map[anychart.enums.ScaleTypes.ORDINAL_COLOR] = anychart.scales.Base.ScaleTypes.ORDINAL_COLOR;
+  return map;
+})();
+
+
+/**
+ * @type {Object.<anychart.scales.Base.ScaleTypes,Function>}
+ */
+anychart.scales.Base.constructorsMap_;
+
+
+/**
+ *
+ * @param {anychart.scales.Base.ScaleTypes} type
+ * @param {?anychart.scales.Base.ScaleTypes} defaultType
+ * @return {?anychart.scales.Base}
+ */
+anychart.scales.Base.createOfType = function(type, defaultType) {
+ if (!anychart.scales.Base.constructorsMap_) {
+   anychart.scales.Base.constructorsMap_ = {};
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LINEAR] = anychart.scales.linear;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LOG] = anychart.scales.log;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.DATE_TIME] = anychart.scales.dateTime;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.ORDINAL] = anychart.scales.ordinal;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LINEAR_COLOR] = function() {
+     var cls;
+     return (cls = anychart.window['anychart']['scales']['linearColor']) ?
+         cls() :
+         anychart.core.reporting.error(anychart.enums.ErrorCode.NO_FEATURE_IN_MODULE, null, ['Color scales']);
+   };
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.ORDINAL_COLOR] = function() {
+     var cls;
+     return (cls = anychart.window['anychart']['scales']['ordinalColor']) ?
+         cls() :
+         anychart.core.reporting.error(anychart.enums.ErrorCode.NO_FEATURE_IN_MODULE, null, ['Color scales']);
+   };
+ }
+ var cls = anychart.scales.Base.constructorsMap_[type] || anychart.scales.Base.constructorsMap_[defaultType] || null;
+ // cls can return undefined
+ return /** @type {?anychart.scales.Base} */(cls && cls() || null);
+};
+
+
+/**
+ * Rules up all the scale setup needed. Returns a new scale if needed otherwise
+ * all the setup is made through the scale signals listeners.
+ * @param {?anychart.scales.Base} currentScale
+ * @param {*=} opt_newScaleSetupValue
+ * @param {?anychart.enums.ScaleTypes=} opt_defaultScaleType
+ * @param {anychart.scales.Base.ScaleTypes=} opt_allowedScaleTypes
+ * @param {Array=} opt_errorParams - if set, dispatches error on wrong scale type.
+ * @param {Function=} opt_signalsHandler
+ * @param {*=} opt_signalsHandlerContext
+ * @return {?anychart.scales.Base}
+ */
+anychart.scales.Base.setupScale = function(currentScale, opt_newScaleSetupValue, opt_defaultScaleType,
+                                           opt_allowedScaleTypes, opt_errorParams, opt_signalsHandler,
+                                           opt_signalsHandlerContext) {
+  var result = null;
+  if (currentScale != opt_newScaleSetupValue) {
+    opt_allowedScaleTypes = opt_allowedScaleTypes || anychart.scales.Base.ScaleTypes.ALL_DEFAULT;
+    var currentType = currentScale ? currentScale.getType() : null;
+    var type, config, instance;
+    config = instance = null;
+    if (goog.isString(opt_newScaleSetupValue)) {
+      type = opt_newScaleSetupValue || currentType;
+    } else if (anychart.utils.instanceOf(opt_newScaleSetupValue, anychart.scales.Base)) {
+      type = opt_newScaleSetupValue.getType();
+      instance = /** @type {anychart.scales.Base} */(opt_newScaleSetupValue);
+    } else if (goog.isObject(opt_newScaleSetupValue)) {
+      type = opt_newScaleSetupValue['type'] || currentType || opt_defaultScaleType;
+      config = opt_newScaleSetupValue;
+    }
+    var internalType = anychart.scales.Base.ScaleTypesMapping[type];
+    if (!!(internalType & opt_allowedScaleTypes)) {
+      if (!instance && type != currentType) {
+        instance = anychart.scales.Base.createOfType(internalType,
+            anychart.scales.Base.ScaleTypesMapping[/** @type {anychart.enums.ScaleTypes} */(opt_defaultScaleType)] || null);
+      }
+      if (instance) {
+        instance.suspendSignalsDispatching();
+        if (opt_signalsHandler) {
+          if (currentScale) {
+            currentScale.unlistenSignals(opt_signalsHandler, opt_signalsHandlerContext);
+          }
+          instance.listenSignals(opt_signalsHandler, opt_signalsHandlerContext);
+        }
+        instance.dispatchSignal(anychart.Signal.NEEDS_RECALCULATION);
+        result = currentScale = instance;
+      }
+      if (currentScale && config) {
+        // if instance exists, we have already suspended it
+        if (!instance)
+          currentScale.suspendSignalsDispatching();
+        currentScale.setupByJSON(config);
+        result = currentScale;
+      }
+    } else if (opt_errorParams) {
+        anychart.core.reporting.error(anychart.enums.ErrorCode.INCORRECT_SCALE_TYPE, undefined, opt_errorParams);
+    }
   }
+  return /** @type {anychart.scales.Base} */(result);
 };
 
 

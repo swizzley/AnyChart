@@ -2,22 +2,35 @@ language: java
 jdk:
   - oraclejdk8
 
-before_script: 
-- git submodule update
-- ./build.py contrib
-script: 
-- ./build.py compile
-- ls -lah /home/travis/build/AnyChart/AnyChart/out/
+git:
+  submodules: false
+  depth: 1
+
+addons:
+  ssh_known_hosts:
+  - 104.236.0.245
+  - static.anychart.com
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_70c31ee585ad_key -iv $encrypted_70c31ee585ad_iv -in bin/anychart-deploy-key.enc -out bin/anychart-deploy-key -d
+  - cp bin/anychart-deploy-key ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+
+install:
+  - git submodule update --init
+  - pip install requests --user --upgrade
+  - pip install maxcdn --user --upgrade
+  - ./build.py libs
+
+cache: pip
+
+script:
+  - echo -e "//registry.npmjs.org/:_authToken=$NPM_TOKEN\n" >> ~/.npmrc
+  - echo -e "Host $STATIC_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - git rev-parse HEAD >> ./dist/commit-hash.txt
+  - ./bin/make_build.sh
+
 
 after_success:
-- echo -e "Host $STATIC_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- ssh $STATIC_HOST_SSH_STRING "mkdir -p /apps/static/js/$TRAVIS_BRANCH"
-- ssh $STATIC_HOST_SSH_STRING "mkdir -p /apps/static/css/$TRAVIS_BRANCH"
-- git rev-parse HEAD >> ./out/commit-hash.txt
-- scp /home/travis/build/AnyChart/AnyChart/out/anychart-bundle.min.js $STATIC_HOST_SSH_STRING:/apps/static/js/$TRAVIS_BRANCH/anychart-bundle.min.js
-- scp /home/travis/build/AnyChart/AnyChart/out/anychart-ui.min.css $STATIC_HOST_SSH_STRING:/apps/static/css/$TRAVIS_BRANCH/anychart-ui.min.css
-- scp /home/travis/build/AnyChart/AnyChart/out/commit-hash.txt $STATIC_HOST_SSH_STRING:/apps/static/js/$TRAVIS_BRANCH/commit-hash.txt
-- curl -X POST $TESTS_HOST/ci_test --data "branch=$TRAVIS_BRANCH&commit=$TRAVIS_COMMIT"
-
-notifications:
-  slack: anychart-team:$SLACK_CHAT_KEY
+  - curl -X POST $TESTS_HOST/ci_test --data "branch=$TRAVIS_BRANCH&commit=$TRAVIS_COMMIT"

@@ -33,7 +33,7 @@ anychart.core.ui.StageCredits = function(stage, disabledByDefault) {
    * @type {boolean}
    * @private
    */
-  this.onAnyChartDomain_ = anychart.core.ui.StageCredits.DOMAIN_REGEXP.test(goog.dom.getWindow().location.hostname);
+  this.onAnyChartDomain_ = anychart.core.ui.StageCredits.DOMAIN_REGEXP.test(anychart.window.location.hostname);
 
   /**
    * Default enabled value is determined by the domain regexp and the constructor param.
@@ -183,9 +183,9 @@ anychart.core.ui.StageCredits.prototype.invalidate = function(state, opt_dispatc
   if (!this.isDisposed() && !this.stage_.isSuspended() && !!effective && !!opt_dispatch)
     this.stage_.render();
 };
+
+
 //endregion
-
-
 //region --- OWN API ---
 /**
  * Adds protocol to url.
@@ -194,7 +194,7 @@ anychart.core.ui.StageCredits.prototype.invalidate = function(state, opt_dispatc
  * @private
  */
 anychart.core.ui.StageCredits.prototype.addProtocol_ = function(url) {
-  return ('https:' == goog.dom.getWindow().location.protocol ? 'https://' : 'http://') + url;
+  return ('https:' == anychart.window.location.protocol ? 'https://' : 'http://') + url;
 };
 
 
@@ -322,9 +322,9 @@ anychart.core.ui.StageCredits.prototype.getStage = function() {
 anychart.core.ui.StageCredits.prototype.domElement = function() {
   return this.domElement_;
 };
+
+
 //endregion
-
-
 //region --- UTILS ---
 /**
  * @enum {string}
@@ -387,9 +387,14 @@ anychart.core.ui.StageCredits.prototype.render = function() {
   }
 
   if (this.hasInvalidationState(anychart.core.ui.StageCredits.States.URL_ALT)) {
+    var version = anychart.VERSION ?
+        goog.string.subs.apply(null, [', v%s.%s.%s.%s'].concat(anychart.VERSION.split('.'))) :
+        '';
+    var defaultTitle = 'AnyChart - JavaScript Charts designed to be embedded and integrated{{anychart-version}}';
+    var title = valid ? this.alt() : defaultTitle;
     goog.dom.setProperties(this.a_, {
-      'href': valid ? this.url() : 'http://www.anychart.com/?utm_source=trial',
-      'title': valid ? this.alt() : 'AnyChart - JavaScript Charts designed to be embedded and integrated',
+      'href': valid ? this.url() : 'https://www.anychart.com/?utm_source=trial',
+      'title': title.replace('{{anychart-version}}', version),
       'target': '_blank'
     });
     goog.dom.setProperties(this.image_, {
@@ -487,9 +492,9 @@ anychart.core.ui.StageCredits.prototype.onImageErrorHandler_ = function(e) {
   if (e.target.id != this.tagetSrc) return;
   goog.dom.removeNode(this.image_);
 };
+
+
 //endregion
-
-
 //region --- SETUP/DISPOSE ---
 /**
  * Setup.
@@ -532,8 +537,9 @@ anychart.core.ui.StageCredits.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.ui.StageCredits.prototype.disposeInternal = function() {
-  var imageLoader = acgraph.getRenderer().getImageLoader();
-  if (imageLoader) {
+  if (acgraph.getRenderer().isImageLoader()) {
+    var imageLoader = acgraph.getRenderer().getImageLoader();
+
     goog.events.unlisten(imageLoader, goog.events.EventType.LOAD, this.onImageLoadHandler_, false, this);
     goog.events.unlisten(imageLoader, goog.net.EventType.COMPLETE, this.onImageCompleteHandler_, false, this);
     goog.events.unlisten(imageLoader, goog.net.EventType.ERROR, this.onImageErrorHandler_, false, this);
@@ -550,9 +556,9 @@ anychart.core.ui.StageCredits.prototype.disposeInternal = function() {
   this.stage_ = null;
   anychart.core.ui.StageCredits.base(this, 'disposeInternal');
 };
+
+
 //endregion
-
-
 //exports
 (function() {
   var proto = anychart.core.ui.StageCredits.prototype;

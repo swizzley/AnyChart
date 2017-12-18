@@ -19,25 +19,10 @@ goog.require('anychart.utils');
  * @param {(string|number)=} opt_left Left space.
  * @constructor
  * @extends {anychart.core.Base}
- * @implements {anychart.core.settings.IObjectWithSettings}
  * @implements {anychart.core.settings.IResolvable}
  */
 anychart.core.utils.Space = function(opt_spaceOrTopOrTopAndBottom, opt_rightOrRightAndLeft, opt_bottom, opt_left) {
   anychart.core.utils.Space.base(this, 'constructor');
-
-  /**
-   * Theme settings.
-   * @type {Object}
-   */
-  this.themeSettings = {};
-
-
-  /**
-   * Own settings (Settings set by user with API).
-   * @type {Object}
-   */
-  this.ownSettings = {};
-
 
   /**
    * Parent.
@@ -55,6 +40,13 @@ anychart.core.utils.Space = function(opt_spaceOrTopOrTopAndBottom, opt_rightOrRi
 
   if (goog.isDef(opt_spaceOrTopOrTopAndBottom) || goog.isDef(opt_rightOrRightAndLeft) || goog.isDef(opt_bottom) || goog.isDef(opt_left))
     this.set.apply(this, arguments);
+
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['left'],
+    ['top'],
+    ['bottom'],
+    ['right']
+  ]);
 };
 goog.inherits(anychart.core.utils.Space, anychart.core.Base);
 
@@ -86,56 +78,40 @@ anychart.core.utils.Space.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEEDS_RE
 anychart.core.utils.Space.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['left'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'left',
-      anychart.core.settings.numberOrZeroNormalizer,
-      anychart.ConsistencyState.ONLY_DISPATCHING,
-      anychart.Signal.NEEDS_REAPPLICATION);
+      anychart.core.settings.numberOrZeroNormalizer);
 
-  map['top'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'top',
-      anychart.core.settings.numberOrZeroNormalizer,
-      anychart.ConsistencyState.ONLY_DISPATCHING,
-      anychart.Signal.NEEDS_REAPPLICATION);
+      anychart.core.settings.numberOrZeroNormalizer);
 
-  map['bottom'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'bottom',
-      anychart.core.settings.numberOrZeroNormalizer,
-      anychart.ConsistencyState.ONLY_DISPATCHING,
-      anychart.Signal.NEEDS_REAPPLICATION);
+      anychart.core.settings.numberOrZeroNormalizer);
 
-  map['right'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'right',
-      anychart.core.settings.numberOrZeroNormalizer,
-      anychart.ConsistencyState.ONLY_DISPATCHING,
-      anychart.Signal.NEEDS_REAPPLICATION);
+      anychart.core.settings.numberOrZeroNormalizer);
 
   return map;
 })();
 anychart.core.settings.populate(anychart.core.utils.Space, anychart.core.utils.Space.SIMPLE_PROPS_DESCRIPTORS);
+
+
 //endregion
-
-
 //region -- IObjectWithSettings implementation
-/** @inheritDoc */
-anychart.core.utils.Space.prototype.getOwnOption = function(name) {
-  return this.ownSettings[name];
-};
-
-
 /** @inheritDoc */
 anychart.core.utils.Space.prototype.hasOwnOption = function(name) {
   return goog.isDefAndNotNull(this.ownSettings[name]);
-};
-
-
-/** @inheritDoc */
-anychart.core.utils.Space.prototype.getThemeOption = function(name) {
-  return this.themeSettings[name];
 };
 
 
@@ -146,18 +122,26 @@ anychart.core.utils.Space.prototype.getOption = function(name) {
 
 
 /** @inheritDoc */
-anychart.core.utils.Space.prototype.setOption = function(name, value) {
-  this.ownSettings[name] = value;
+anychart.core.utils.Space.prototype.getConsistencyState = function(fieldName) {
+  // because all descriptors invalidates ONLY_DISPATCHING
+  return anychart.ConsistencyState.ONLY_DISPATCHING;
 };
 
 
 /** @inheritDoc */
-anychart.core.utils.Space.prototype.check = function(flags) {
+anychart.core.utils.Space.prototype.getSignal = function(fieldName) {
+  // because all descriptors invalidates with NEEDS_REAPPLICATION signal
+  return anychart.Signal.NEEDS_REAPPLICATION;
+};
+
+
+/** @inheritDoc */
+anychart.core.utils.Space.prototype.isResolvable = function() {
   return true;
 };
+
+
 //endregion
-
-
 //region -- IResolvable implementation
 /** @inheritDoc */
 anychart.core.utils.Space.prototype.resolutionChainCache = function(opt_value) {
@@ -190,9 +174,9 @@ anychart.core.utils.Space.prototype.getHighPriorityResolutionChain = function() 
   }
   return sett;
 };
+
+
 //endregion
-
-
 //region -- Parental relations
 /**
  * Gets/sets new parent.
@@ -228,9 +212,9 @@ anychart.core.utils.Space.prototype.parentInvalidated_ = function(e) {
   this.resolutionChainCache_ = null;
   this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
 };
+
+
 //endregion
-
-
 /**
  * Normalizes space.
  * @param {...(Object|Array|string|number)} var_args - Arguments.
@@ -313,7 +297,7 @@ anychart.core.utils.Space.normalizeSpace = function(var_args) {
  * NOTE: set():
  *    all four spaces are 0
  *
- * @param {(string|number|Array.<number|string>|{top:(number|string),left:(number|string),bottom:(number|string),right:(number|string)})=} opt_spaceOrTopOrTopAndBottom Space object or top or top and bottom
+ * @param {(string|number|Array.<number|string>|{top:(number|string|undefined),left:(number|string|undefined),bottom:(number|string|undefined),right:(number|string|undefined)})=} opt_spaceOrTopOrTopAndBottom Space object or top or top and bottom
  *    space.
  * @param {(string|number)=} opt_rightOrRightAndLeft Right or right and left space.
  * @param {(string|number)=} opt_bottom Bottom space.
@@ -446,23 +430,16 @@ anychart.core.utils.Space.prototype.serialize = function() {
 
 
 /** @inheritDoc */
-anychart.core.utils.Space.prototype.setupSpecial = function(var_args) {
-  if (goog.isDef(arguments[0])) {
-    this.set.apply(this, arguments);
-    return false;
-  }
-  return anychart.core.utils.Space.base(this, 'setupSpecial', arguments);
-};
-
-
-/** @inheritDoc */
-anychart.core.utils.Space.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isArray(value) || goog.isString(value) || goog.isNumber(value)) {
-    if (opt_default) {
-      this.setThemeSettings(anychart.core.utils.Space.normalizeSpace(value));
-    } else {
-      this.set(value);
-    }
+anychart.core.utils.Space.prototype.setupSpecial = function(isDefault, var_args) {
+  if (goog.isDef(arguments[1])) {
+    var args = [];
+    for (var i = 1; i < arguments.length; i++)
+      args.push(arguments[i]);
+    var settings = anychart.core.utils.Space.normalizeSpace.apply(null, args);
+    if (isDefault)
+      this.setThemeSettings(settings);
+    else
+      this.set(settings);
     return true;
   }
   return false;

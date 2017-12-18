@@ -1,5 +1,5 @@
 goog.provide('anychart.scales.DateTimeTicks');
-goog.forwardDeclare('anychart.scales.StockOrdinalDateTime');
+goog.forwardDeclare('anychart.stockModule.scales.Ordinal');
 goog.require('anychart.core.Base');
 goog.require('goog.array');
 goog.require('goog.date.Interval');
@@ -9,7 +9,7 @@ goog.require('goog.date.UtcDateTime');
 
 /**
  * Scale ticks.
- * @param {!(anychart.scales.DateTime|anychart.scales.StockScatterDateTime)} scale Scale to ask for a setup.
+ * @param {!(anychart.scales.DateTime|anychart.stockModule.scales.Scatter)} scale Scale to ask for a setup.
  * @constructor
  * @extends {anychart.core.Base}
  */
@@ -18,7 +18,7 @@ anychart.scales.DateTimeTicks = function(scale) {
 
   /**
    * Scale reference to get setup from in emergency situations.
-   * @type {!(anychart.scales.DateTime|anychart.scales.StockScatterDateTime)}
+   * @type {!(anychart.scales.DateTime|anychart.stockModule.scales.Scatter)}
    * @protected
    */
   this.scale = scale;
@@ -555,13 +555,13 @@ anychart.scales.DateTimeTicks.prototype.serialize = function() {
 
 
 /** @inheritDoc */
-anychart.scales.DateTimeTicks.prototype.setupSpecial = function(var_args) {
-  var args = arguments;
-  if (goog.isArray(args[0])) {
-    this.set(args[0]);
+anychart.scales.DateTimeTicks.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg = arguments[1];
+  if (goog.isArray(arg)) {
+    this.set(arg);
     return true;
   }
-  return anychart.core.Base.prototype.setupSpecial.apply(this, args);
+  return anychart.core.Base.prototype.setupSpecial.apply(this, arguments);
 };
 
 

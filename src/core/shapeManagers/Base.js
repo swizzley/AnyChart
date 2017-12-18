@@ -1,5 +1,6 @@
 goog.provide('anychart.core.shapeManagers.Base');
 goog.require('acgraph');
+goog.require('anychart.color');
 goog.require('anychart.core.shapeManagers');
 goog.require('goog.Disposable');
 
@@ -7,34 +8,34 @@ goog.require('goog.Disposable');
 
 /**
  * Series paths manager.
- * @param {anychart.core.series.Base} series
+ * @param {anychart.core.IShapeManagerUser} series
  * @param {!Array.<anychart.core.shapeManagers.ShapeConfig>} config
  * @param {boolean} interactive
  * @param {?string=} opt_shapesFieldName
- * @param {?function(anychart.core.series.Base, Object.<string, acgraph.vector.Shape>, number)=} opt_postProcessor
+ * @param {?function(anychart.core.IShapeManagerUser, Object.<string, acgraph.vector.Shape>, number)=} opt_postProcessor
+ * @param {boolean=} opt_disableStrokeScaling
  * @constructor
  * @extends {goog.Disposable}
  */
-anychart.core.shapeManagers.Base = function(series, config, interactive, opt_shapesFieldName, opt_postProcessor) {
+anychart.core.shapeManagers.Base = function(series, config, interactive, opt_shapesFieldName, opt_postProcessor, opt_disableStrokeScaling) {
   anychart.core.shapeManagers.Base.base(this, 'constructor');
 
   /**
    * A name of a series meta field where the shape manager should write
    * @type {string}
-   * @protected
    */
   this.shapesFieldName = opt_shapesFieldName || 'shapes';
 
   /**
    * A post processor function to make complex coloring on shapes.
-   * @type {function(anychart.core.series.Base, Object.<string, acgraph.vector.Shape>, number)}
+   * @type {function(anychart.core.IShapeManagerUser, Object.<string, acgraph.vector.Shape>, number)}
    * @protected
    */
   this.postProcessor = opt_postProcessor || goog.nullFunction;
 
   /**
    * Series reference
-   * @type {anychart.core.series.Base}
+   * @type {anychart.core.IShapeManagerUser}
    * @protected
    */
   this.series = series;
@@ -77,11 +78,20 @@ anychart.core.shapeManagers.Base = function(series, config, interactive, opt_sha
    */
   this.defs = {};
 
+  /**
+   * Whether to disable stroke scaling.
+   * @type {boolean}
+   * @private
+   */
+  this.disableStrokeScaling_ = !!opt_disableStrokeScaling;
+
   for (var i = 0; i < config.length; i++) {
     var shapeConfig = config[i];
-    var fill = anychart.core.series.Base.getColorResolver(shapeConfig.fillNames,
-        shapeConfig.isHatchFill ? anychart.enums.ColorType.HATCH_FILL : anychart.enums.ColorType.FILL);
-    var stroke = anychart.core.series.Base.getColorResolver(shapeConfig.strokeNames, anychart.enums.ColorType.STROKE);
+    var fill = anychart.color.getColorResolver(shapeConfig.fillName,
+        shapeConfig.isHatchFill ? anychart.enums.ColorType.HATCH_FILL : anychart.enums.ColorType.FILL,
+        shapeConfig.canBeHoveredSelected, shapeConfig.scrollerSelected);
+    var stroke = anychart.color.getColorResolver(shapeConfig.strokeName,
+        anychart.enums.ColorType.STROKE, shapeConfig.canBeHoveredSelected, shapeConfig.scrollerSelected);
     var type = shapeConfig.shapeType;
     var val = String(type).toLowerCase();
     var cls;
@@ -123,8 +133,8 @@ goog.inherits(anychart.core.shapeManagers.Base, goog.Disposable);
 
 /**
  * @typedef {{
- *   fill: function(anychart.core.series.Base, number):acgraph.vector.AnyColor,
- *   stroke: function(anychart.core.series.Base, number):acgraph.vector.AnyColor,
+ *   fill: function(anychart.core.IShapeManagerUser, number):acgraph.vector.AnyColor,
+ *   stroke: function(anychart.core.IShapeManagerUser, number):acgraph.vector.AnyColor,
  *   zIndex: (number),
  *   isHatchFill: boolean,
  *   cls: function():acgraph.vector.Shape,
@@ -234,7 +244,7 @@ anychart.core.shapeManagers.Base.prototype.configureShape = function(name, state
 
   shape.fill(fill);
   shape.stroke(stroke);
-  shape.disableStrokeScaling(true);
+  shape.disableStrokeScaling(this.disableStrokeScaling_);
   shape.zIndex(descriptor.zIndex + baseZIndex);
 
   if (this.addInterctivityInfo) {
@@ -271,7 +281,7 @@ anychart.core.shapeManagers.Base.prototype.clearShapes = function() {
     for (i = 0; i < shapes.length; i++) {
       shape = shapes[i];
       shape.parent(null);
-      if (shape instanceof acgraph.vector.Path) {
+      if (anychart.utils.instanceOf(shape, acgraph.vector.Path)) {
         shape.clear();
         shape.setTransformationMatrix(1, 0, 0, 1, 0, 0);
       }
@@ -303,7 +313,7 @@ anychart.core.shapeManagers.Base.prototype.getShapesGroup = function(state, opt_
   for (var name in names) {
     var descriptor = names[name];
     if (descriptor.shapeType == anychart.enums.ShapeType.NONE && opt_shape) {
-      if (opt_shape instanceof acgraph.vector.Shape)
+      if (anychart.utils.instanceOf(opt_shape, acgraph.vector.Shape))
         res[name] = this.configureShape(name, state, indexOrGlobal, opt_baseZIndex || 0, opt_shape);
     } else {
       res[name] = this.createShape(name, state, indexOrGlobal, opt_baseZIndex || 0);
@@ -331,21 +341,15 @@ anychart.core.shapeManagers.Base.prototype.addShapesGroup = function(state, opt_
  * @param {(Object.<string, acgraph.vector.Shape>|Array.<Object.<string, acgraph.vector.Shape>>)=} opt_shapesGroup
  */
 anychart.core.shapeManagers.Base.prototype.updateZIndex = function(newBaseZIndex, opt_shapesGroup) {
-  if (opt_shapesGroup)
-    if (goog.isArray(opt_shapesGroup)) {
-      for (var i = 0; i < opt_shapesGroup.length; i++) {
-        var shGroup = opt_shapesGroup[i];
-        if (shGroup) {
-          for (var name in shGroup) {
-            shGroup[name].zIndex(this.defs[name].zIndex + newBaseZIndex);
-          }
-        }
-      }
-    } else {
-      for (var name in opt_shapesGroup) {
-        opt_shapesGroup[name].zIndex(this.defs[name].zIndex + newBaseZIndex);
-      }
+  if (goog.isArray(opt_shapesGroup)) {
+    for (var i = 0; i < opt_shapesGroup.length; i++) {
+      this.updateZIndex(newBaseZIndex, opt_shapesGroup[i]);
     }
+  } else if (opt_shapesGroup) {
+    for (var name in opt_shapesGroup) {
+      opt_shapesGroup[name].zIndex(this.defs[name].zIndex + newBaseZIndex);
+    }
+  }
 };
 
 
@@ -355,15 +359,12 @@ anychart.core.shapeManagers.Base.prototype.updateZIndex = function(newBaseZIndex
  * @param {(Object.<string, acgraph.vector.Shape>|Array.<Object.<string, acgraph.vector.Shape>>)=} opt_shapesGroup
  */
 anychart.core.shapeManagers.Base.prototype.updateColors = function(state, opt_shapesGroup) {
-  if (opt_shapesGroup) {
-    if (goog.isArray(opt_shapesGroup)) {
-      for (var i = 0; i < opt_shapesGroup.length; i++) {
-        if (opt_shapesGroup[i])
-          this.updateColors_(state, opt_shapesGroup[i]);
-      }
-    } else {
-      this.updateColors_(state, opt_shapesGroup);
+  if (goog.isArray(opt_shapesGroup)) {
+    for (var i = 0; i < opt_shapesGroup.length; i++) {
+      this.updateColors_(state, opt_shapesGroup[i]);
     }
+  } else if (opt_shapesGroup) {
+    this.updateColors_(state, opt_shapesGroup);
   }
 };
 

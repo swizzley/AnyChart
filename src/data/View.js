@@ -5,6 +5,7 @@
 goog.provide('anychart.data.View');
 
 goog.require('anychart.core.Base');
+goog.require('anychart.data.IDataSource');
 goog.require('anychart.data.IView');
 goog.require('anychart.data.Iterator');
 goog.require('anychart.enums');
@@ -20,6 +21,7 @@ goog.require('anychart.enums');
  * @implements {anychart.data.IView}
  * @name anychart.data.View
  * @extends {anychart.core.Base}
+ * @implements {anychart.data.IDataSource}
  */
 anychart.data.View = function(parentView) {
   anychart.data.View.base(this, 'constructor');
@@ -95,43 +97,6 @@ anychart.data.View.prototype.ensureConsistent = function() {
   this.mappingsCache = null;
   this.mask = this.buildMask();
   this.markConsistent(anychart.ConsistencyState.DATA_MASK);
-};
-
-
-/**
- * Creates prepared derived view. Internal method. Should not be published!
- * @param {string} fieldName The name of the field to look at.
- * @param {Array|boolean} categories Categories set to use in case of ordinal scale.
- * @return {!anychart.data.View} The new derived view.
- */
-anychart.data.View.prototype.prepare = function(fieldName, categories) {
-  var result = goog.isArray(categories) ?
-      new anychart.data.OrdinalView(this, fieldName, /** @type {!Array} */(categories)) :
-      new anychart.data.ScatterView(this, fieldName, !!categories);
-  this.registerDisposable(result);
-  return result;
-};
-
-
-/**
- * Creates a pie-ready view.
- * @param {string} fieldName A field name to make filter by.
- * @param {function(*):boolean=} opt_func A filter function that should accept a field value and return true if the row
- *    should be included into the resulting view as a and false otherwise.
- * @param {(function(R, T, number, Array) : R)=} opt_other The function to call for
- *     every value of other. This function
- *     takes 4 arguments (the function's previous result or the initial value,
- *     the value of the current array element, the current array index, and the
- *     array itself)
- *     function(previousValue, currentValue, index, array).
- * @param {(function():R)=} opt_otherInitialConstructor The function that constructs initial value for opt_other func.
- * @template T,S,R
- * @return {!anychart.data.View} The new derived view.
- */
-anychart.data.View.prototype.preparePie = function(fieldName, opt_func, opt_other, opt_otherInitialConstructor) {
-  var result = new anychart.data.PieView(this, fieldName, opt_func, opt_other, opt_otherInitialConstructor);
-  this.registerDisposable(result);
-  return result;
 };
 
 
@@ -296,7 +261,7 @@ anychart.data.View.prototype.sort = function(fieldName, opt_comparatorOrOrder) {
 anychart.data.View.prototype.concat = function(otherView) {
   if (goog.isArray(otherView))
     otherView = new anychart.data.Set(/** @type {!Array} */(otherView));
-  if (otherView instanceof anychart.data.Set)
+  if (anychart.utils.instanceOf(otherView, anychart.data.Set))
     otherView = (/** @type {!anychart.data.Set} */(otherView)).mapAs();
   var result = new anychart.data.ConcatView(this, /** @type {!anychart.data.IView} */(otherView));
   this.registerDisposable(result);
@@ -317,6 +282,16 @@ anychart.data.View.prototype.row = function(rowIndex, opt_value) {
     return this.parentView.row.apply(this.parentView, arguments);
   }
   return rowIndex; // undefined
+};
+
+
+/**
+ * Returns row by index.
+ * @param {number} rowIndex
+ * @return {*}
+ */
+anychart.data.View.prototype.getRow = function(rowIndex) {
+  return this.row(rowIndex);
 };
 
 
@@ -363,6 +338,16 @@ anychart.data.View.prototype.getRowMapping = function(rowIndex) {
  */
 anychart.data.View.prototype.getDataSets = function() {
   return this.parentView.getDataSets();
+};
+
+
+/** @inheritDoc */
+anychart.data.View.prototype.populateObjWithKnownFields = function(result, resultLength) {
+  var sets = this.getDataSets();
+  for (var i = 0; i < sets.length; i++) {
+    resultLength = sets[i].populateObjWithKnownFields(result, resultLength);
+  }
+  return resultLength;
 };
 
 
@@ -417,56 +402,45 @@ anychart.data.View.prototype.find = function(fieldName, fieldValue) {
 
 /**
  * Search on unsorted data by passed x field name [default 'x']. Returns array of indexes of found points.
- * @param {number} fieldValue Value to find.
- * @param {string=} opt_fieldName Field name.
- * @param {string=} opt_valueFieldName Value field name.
+ * @param {*} fieldValue Value to find.
+ * @param {boolean} isOrdinal
  * @return {Array.<number>} Point indexes.
  */
-anychart.data.View.prototype.findInUnsortedDataByX = function(fieldValue, opt_fieldName, opt_valueFieldName) {
+anychart.data.View.prototype.findClosestByX = function(fieldValue, isOrdinal) {
   this.ensureConsistent();
-
-  if (!this.cachedScatterValues) this.cachedScatterValues = {};
-  if (this.cachedScatterValues[fieldValue])
-    return /** @type {Array.<number>}*/(this.cachedScatterValues[fieldValue]);
-
   var indexes = [];
 
   if (goog.isDef(fieldValue)) {
     var iterator = this.getIterator();
     var index = -1;
     var length = Infinity;
-    var x, value, minValue, length_;
-
-    var lastNotNaNValueIndex = -1;
-    var lastNotNaNValueX = -Infinity;
-
-    var fieldName = opt_fieldName || 'x';
-    var valueFieldName = opt_valueFieldName || 'value';
+    var x, minValue, length_;
+    if (!isOrdinal)
+      fieldValue = anychart.utils.toNumber(fieldValue);
 
     iterator.reset();
     while (iterator.advance()) {
       index = iterator.getIndex();
-
-      x = /** @type {number}*/(iterator.get(fieldName));
-      value = iterator.get(valueFieldName);
-
-      if (!goog.isDef(this.cachedScatterValues.lastNotNaNValueIndex) && !isNaN(value) && x > lastNotNaNValueX)
-        lastNotNaNValueIndex = index;
-
-      length_ = Math.abs(x - fieldValue);
-      if (length_ < length && !isNaN(value)) {
-        length = length_;
-        minValue = x;
-        indexes.length = 0;
-      }
-      if (x == minValue) {
-        indexes.push(index);
+      x = iterator.get('x');
+      if (isOrdinal) {
+        if (x == fieldValue) {
+          indexes.push(index);
+        }
+      } else {
+        x = anychart.utils.toNumber(x);
+        if (!isNaN(x)) {
+          length_ = Math.abs(x - fieldValue);
+          if (length_ < length) {
+            length = length_;
+            minValue = x;
+            indexes.length = 0;
+          }
+          if (x == minValue) {
+            indexes.push(index);
+          }
+        }
       }
     }
-    if (!goog.isDef(this.cachedScatterValues.lastNotNaNValueIndex))
-      this.cachedScatterValues.lastNotNaNValueIndex = lastNotNaNValueIndex;
-
-    this.cachedScatterValues[minValue] = indexes;
   }
 
   return /** @type {Array.<number>}*/(indexes);
@@ -610,7 +584,6 @@ anychart.data.View.prototype.buildMask = function() {
  */
 anychart.data.View.prototype.parentViewChangedHandler = function(event) {
   this.cachedValues = null;
-  this.cachedScatterValues = null;
   this.cachedRanges = null;
   if (event.hasSignal(anychart.Signal.DATA_CHANGED))
     this.invalidate(anychart.ConsistencyState.DATA_MASK, anychart.Signal.DATA_CHANGED);
@@ -717,7 +690,7 @@ anychart.data.View.prototype.getMappings = function() {
  * @private
  */
 anychart.data.View.prototype.serializeValue_ = function(val) {
-  if (val instanceof Date)
+  if (anychart.utils.instanceOf(val, Date))
     val = val.getTime();
   if (!goog.isDef(val) || (goog.isNumber(val) && isNaN(val)))
     val = null;
@@ -737,19 +710,20 @@ anychart.data.View.prototype.serializeRow = function(index) {
   var key;
   var i;
   var val;
+  var m;
   row = this.row(index);
   // if row represented by array - convert it to object with help of array mapping.
   if (goog.isArray(row)) {
     // get array mapping for the row
     mapping = this.getRowMapping(index);
-    if (mapping.isArrayMappingCustom) {
+    if (mapping.isMappingCustom) {
       rowObject = {};
-      var arrayMapping = mapping.getArrayMapping();
-      for (key in arrayMapping) {
-        map = arrayMapping[key];
+      m = mapping.getMapping();
+      for (key in m) {
+        map = m[key];
         for (i = 0; i < map.length; i++) {
           if (map[i] in row) {
-            val = this.serializeValue_(row[map[i]]);
+            val = this.serializeValue_(row[/** @type {number} */ (map[i])]);
             rowObject[key] = val;
             break;
           }
@@ -762,15 +736,15 @@ anychart.data.View.prototype.serializeRow = function(index) {
     // if row is presented by object - normalize it to default mapping, because we cannot provide
     // mapping info to the resulting JSON now
     mapping = this.getRowMapping(index);
-    if (mapping.isObjectMappingCustom) {
+    if (mapping.isMappingCustom) {
       rowObject = {};
-      var objectMapping = mapping.getObjectMapping();
-      for (key in objectMapping) {
-        map = objectMapping[key];
+      m = mapping.getMapping();
+      for (key in m) {
+        map = m[key];
         for (i = 0; i < map.length; i++) {
           if (map[i] in row) {
             val = row[map[i]];
-            if (val instanceof Date)
+            if (anychart.utils.instanceOf(val, Date))
               val = val.getTime();
             if (!goog.isDef(val) || (goog.isNumber(val) && isNaN(val)))
               val = null;
@@ -780,7 +754,7 @@ anychart.data.View.prototype.serializeRow = function(index) {
         }
       }
       for (key in row) {
-        if (row.hasOwnProperty(key) && !(key in objectMapping && key in rowObject)) {
+        if (row.hasOwnProperty(key) && !(key in m && key in rowObject)) {
           val = this.serializeValue_(row[key]);
           rowObject[key] = val;
         }

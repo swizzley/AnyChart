@@ -95,19 +95,26 @@ anychart.core.ui.Paginator = function() {
 
   this.previousButton_ = new anychart.core.ui.PaginatorButton();
   this.previousButton_.padding(null);
+  this.previousButton_.enabled(true);
   this.previousButton_.setOnClickListener(goog.bind(anychart.core.ui.Paginator.onClick_, this));
   this.registerDisposable(this.previousButton_);
   this.previousButton_.listenSignals(anychart.core.ui.Paginator.buttonInvalidated_, this.previousButton_);
 
   this.nextButton_ = new anychart.core.ui.PaginatorButton();
   this.nextButton_.padding(null);
+  this.nextButton_.enabled(true);
   this.nextButton_.setOnClickListener(goog.bind(anychart.core.ui.Paginator.onClick_, this));
   this.registerDisposable(this.nextButton_);
   this.nextButton_.listenSignals(anychart.core.ui.Paginator.buttonInvalidated_, this.nextButton_);
 
   this.layout('horizontal');
+
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['text', anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
+  ]);
 };
 goog.inherits(anychart.core.ui.Paginator, anychart.core.Text);
+anychart.core.settings.populate(anychart.core.ui.Paginator, anychart.core.Text.TEXT_DESCRIPTORS);
 
 
 /**
@@ -460,7 +467,7 @@ anychart.core.ui.Paginator.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
     this.suspendSignalsDispatching();
-    this.textSettings('text', this.createTextString_());
+    this.setOption('text', this.createTextString_());
     this.resumeSignalsDispatching(false);
     this.applyTextSettings(this.text_, isInitial);
     this.invalidate(anychart.ConsistencyState.BOUNDS);
@@ -532,41 +539,21 @@ anychart.core.ui.Paginator.prototype.draw = function() {
 };
 
 
-/** @inheritDoc */
-anychart.core.ui.Paginator.prototype.applyTextSettings = function(textElement, isInitial) {
-  if (isInitial || 'text' in this.changedSettings || 'useHtml' in this.changedSettings) {
-    if (!!this.settingsObj['useHtml'])
-      textElement.htmlText(this.settingsObj['text']);
-    else
-      textElement.text(this.settingsObj['text']);
-  }
-  anychart.core.ui.Paginator.base(this, 'applyTextSettings', textElement, isInitial);
-  this.changedSettings = {};
-};
-
-
 /**
  * Measures maximum paginator height.
  * @private
- * @return {Array.<number, number>} Measured max width and height.
+ * @param {number=} opt_pageCount Pages count.
+ * @return {Array.<number>} Measured max width and height.
  */
-anychart.core.ui.Paginator.prototype.measureMaxDimensions_ = function() {
+anychart.core.ui.Paginator.prototype.measureMaxDimensions_ = function(opt_pageCount) {
   if (!this.boundsCache_) this.boundsCache_ = {};
-  var reCache = false;
-  for (var i in this.changedSettings) {
-    if (!(this.changedSettings[i] in this.notCauseBoundsChange)) {
-      reCache = true;
-      break;
-    }
-  }
-  var cacheIndex = this.pageCount_ + this.layout_.substr(0, 1);
-  if (reCache || !this.boundsCache_[cacheIndex]) {
+  var pageCount = goog.isDef(opt_pageCount) ? opt_pageCount : this.pageCount_;
+  var cacheIndex = pageCount + this.layout_.substr(0, 1);
+  if (!this.boundsCache_[cacheIndex]) {
     var measureText = acgraph.text();
     measureText.attr('aria-hidden', 'true');
-    var stngs = this.changedSettings;
     this.applyTextSettings(measureText, true);
-    this.changedSettings = stngs;
-    var textStr = this.pageCount_ + ' / ' + this.pageCount_;
+    var textStr = pageCount + ' / ' + pageCount;
     measureText.text(textStr);
     var bounds = measureText.getBounds();
     goog.dispose(measureText);
@@ -591,11 +578,9 @@ anychart.core.ui.Paginator.prototype.measureMaxDimensions_ = function() {
 /**
  * Calculates actual size of the paginator.
  * @private
+ * @param {number=} opt_pageCount
  */
-anychart.core.ui.Paginator.prototype.calculatePaginatorBounds_ = function() {
-  var container = /** @type {acgraph.vector.ILayer} */ (this.container());
-  var stage = container ? container.getStage() : null;
-
+anychart.core.ui.Paginator.prototype.calculatePaginatorBounds_ = function(opt_pageCount) {
   var padding = this.padding();
   var margin = this.margin();
 
@@ -607,7 +592,7 @@ anychart.core.ui.Paginator.prototype.calculatePaginatorBounds_ = function() {
   }
 
   var width, height;
-  var measure = this.measureMaxDimensions_();
+  var measure = this.measureMaxDimensions_(opt_pageCount);
   width = measure[0];
   height = measure[1];
 
@@ -665,8 +650,18 @@ anychart.core.ui.Paginator.prototype.calculatePaginatorBounds_ = function() {
  * @return {anychart.math.Rect} pixel bounds.
  */
 anychart.core.ui.Paginator.prototype.getPixelBounds = function() {
+  return this.getPixelBoundsInternal();
+};
+
+
+/**
+ * Calculates pixel bounds for paginator with predefined page count.
+ * @param {number=} opt_pageCount
+ * @return {anychart.math.Rect} pixel bounds.
+ */
+anychart.core.ui.Paginator.prototype.getPixelBoundsInternal = function(opt_pageCount) {
   if (!this.pixelBounds_ || this.hasInvalidationState(anychart.ConsistencyState.BOUNDS))
-    this.calculatePaginatorBounds_();
+    this.calculatePaginatorBounds_(opt_pageCount);
   return this.pixelBounds_;
 };
 

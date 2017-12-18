@@ -1,6 +1,7 @@
 goog.provide('anychart.data.Set');
 
 goog.require('anychart.core.Base');
+goog.require('anychart.data.IDataSource');
 goog.require('anychart.data.IView');
 goog.require('anychart.data.Mapping');
 goog.require('anychart.data.csv.Parser');
@@ -118,15 +119,16 @@ goog.require('goog.array');
  *     // 'close' is an element with the index of 3.
  *     // All elements with the index greater than 3 are ignored.
  * @param {(Array|string)=} opt_data Data set raw data can be set here.
- * @param {Object.<string, (string|boolean)>=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_settings If CSV string is passed, you can pass CSV parser settings
  *    here as a hash map.
  * @constructor
  * @implements {anychart.data.IView}
+ * @implements {anychart.data.IDataSource}
  * @extends {anychart.core.Base}
  */
-anychart.data.Set = function(opt_data, opt_csvSettings) {
+anychart.data.Set = function(opt_data, opt_settings) {
   anychart.data.Set.base(this, 'constructor');
-  this.data(opt_data || null, opt_csvSettings);
+  this.data(opt_data || null, opt_settings);
 };
 goog.inherits(anychart.data.Set, anychart.core.Base);
 
@@ -170,72 +172,56 @@ anychart.data.Set.prototype.simpleValuesSeen_ = false;
 
 
 /**
+ * Processes the data to get this.largestSeenRowLength_ and this.objectFieldsSeen_.
+ * @param {IArrayLike} val - Data value.
+ * @private
+ * @return {!Array} - Processed.
+ */
+anychart.data.Set.prototype.processData_ = function(val) {
+  var data = [];
+  for (var i = 0; i < val.length; i++) {
+    var row = val[i];
+    var dataRow;
+    if (goog.isArray(row)) {
+      var valuesLength = row.length;
+      if (this.largestSeenRowLength_ < valuesLength) {
+        this.largestSeenRowLength_ = valuesLength;
+      }
+      dataRow = goog.array.slice(row, 0);
+    } else if (goog.isObject(row)) { // we are sure that this is object in this case so we can avoid double checking
+      if (!this.objectFieldsSeen_) {
+        this.objectFieldsSeen_ = {};
+      }
+      dataRow = {};
+      for (var j in row) {
+        dataRow[j] = row[j];
+        this.objectFieldsSeen_[j] = true;
+      }
+    } else {
+      this.simpleValuesSeen_ = true;
+      dataRow = row;
+    }
+    data.push(dataRow);
+  }
+  return data;
+};
+
+
+/**
  * Getter/setter for data.
  * @param {(Array|string)=} opt_value .
- * @param {Object.<string, (string|boolean|undefined)>=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings
- *    here as a hash map.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_settings If CSV string is passed, you
+ *    can pass CSV parser settings here as a hash map.
  * @return {!(anychart.data.Set|Array)} .
  */
-anychart.data.Set.prototype.data = function(opt_value, opt_csvSettings) {
+anychart.data.Set.prototype.data = function(opt_value, opt_settings) {
   if (goog.isDef(opt_value)) {
     anychart.globalLock.lock();
-    if (goog.isString(opt_value)) {
-      try {
-        var parser = new anychart.data.csv.Parser();
-        if (goog.isObject(opt_csvSettings)) {
-          parser.rowsSeparator(/** @type {string|undefined} */(opt_csvSettings['rowsSeparator'])); // if it is undefined, it will not be set.
-          parser.columnsSeparator(/** @type {string|undefined} */(opt_csvSettings['columnsSeparator'])); // if it is undefined, it will not be set.
-          parser.ignoreTrailingSpaces(/** @type {boolean|undefined} */(opt_csvSettings['ignoreTrailingSpaces'])); // if it is undefined, it will not be set.
-          parser.ignoreFirstRow(/** @type {boolean|undefined} */(opt_csvSettings['ignoreFirstRow'])); // if it is undefined, it will not be set.
-        }
-        opt_value = parser.parse(opt_value);
-      } catch (e) {
-        if (e instanceof Error) {
-          try {
-            goog.global['console']['log'](e.message);
-          } catch (ignored) {
-          }
-        }
-        opt_value = null;
-      }
-    }
+    if (goog.isString(opt_value))
+      opt_value = anychart.data.parseText(opt_value, opt_settings);
+
     if (goog.isArrayLike(opt_value)) {
-      var data = [];
-      for (var i = 0; i < opt_value.length; i++) {
-        var row = opt_value[i];
-        var dataRow;
-        if (goog.isArray(row)) {
-          var valuesLength = row.length;
-          if (this.largestSeenRowLength_ < valuesLength) {
-            // if (this.objectFieldsSeen_) {
-            //   // if we have seen objects, than we have converted the largestSeenRowLength_ representation to the fields
-            //   // map already and now we should add fields to that representation
-            //   for (i = this.largestSeenRowLength_; i < valuesLength; i++) {
-            //     this.objectFieldsSeen_[i] = true;
-            //   }
-            // }
-            this.largestSeenRowLength_ = valuesLength;
-          }
-          dataRow = goog.array.slice(row, 0);
-        } else if (goog.isObject(row)) { // we are sure that this is object in this case so we can avoid double checking
-          if (!this.objectFieldsSeen_) {
-            this.objectFieldsSeen_ = {};
-            // for (i = 0; i < this.largestSeenRowLength_; i++) {
-            //   this.objectFieldsSeen_[i] = true;
-            // }
-          }
-          dataRow = {};
-          for (var j in row) {
-            dataRow[j] = row[j];
-            this.objectFieldsSeen_[j] = true;
-          }
-        } else {
-          this.simpleValuesSeen_ = true;
-          dataRow = row;
-        }
-        data.push(dataRow);
-      }
-      this.storage_ = data;
+      this.storage_ = this.processData_(opt_value);
       this.dispatchSignal(anychart.Signal.DATA_CHANGED);
     } else {
       if (this.storage_ && this.storage_.length > 0) {
@@ -255,83 +241,11 @@ anychart.data.Set.prototype.data = function(opt_value, opt_csvSettings) {
 /**
  * Defines data mapping.<br/>
  * You can define mappings for the different types of data (see samples).
- * Default mapping is shown in {@link anychart.data.Set} constructor samples.
- * @example <c>Custom data mapping.</c><t>listingOnly</t>
- * // Simple mapping
- *  dataSet.mapAs({
- *    'value': [0],
- *    'x': [1],
- *    'fill': [2]
- *  });
- *   // Raw data          Mapped as
- *   [
- *    [11, 1, 'red 0.5'],       {x: 1, value: 11, fill: 'red 0.5'}
- *    [21, 2, 'green 0.5'],     {x: 2, value: 21, fill: 'green 0.5'}
- *    [14, 3, 'blue 0.5'],      {x: 3, value: 14, fill: 'blue 0.5'}
- *    [11, 4, 'yellow 0.5']     {x: 4, value: 11, fill: 'yellow 0.5'}
- *   ]
- * // Combined mapping
- *  dataSet.mapAs({
- *    'value': [0],
- *    'x': [1],
- *    'fill': [2]
- *   },{
- *    'value': ['close', 'customY'],
- *    'fill': ['fill', 'color']
- *   }, null, ['close']
- *  );
- *  // Raw data          Mapped as
- *   [
- *    [11, 1, 'red 0.5'],       {x: 1, value: 11, fill: 'red 0.5'}
- *    [21, 2, 'green 0.5'],     {x: 2, value: 21, fill: 'green 0.5'}
- *    {
- *      value: 14,
- *      x: 3,                   {x: 3, value: 14, fill: 'blue 0.5'}
- *      fill: 'blue 0.5'
- *    },{
- *      customY: '71',
- *      x: 3,                   {x: 3, value: 71, fill: 'blue 0.5', size 14}
- *      color: 'blue 0.5',
- *      size: 14
- *    },
- *    11,                       {close: 4, value: 11}
- *    function(){ return 99;}   {close: 5, value: 99}
- *   ]
- * @example
- * var dataSet = anychart.data.set([
- *      [11, 18, 1, 'red 0.5', 'orange'],
- *      [21, 15, 2, 'green 0.5', 'blue'],
- *      [14, 16, 3, 'white', 'black'],
- *      {value: 17, x: 4, fill: 'yellow'}
- * ]);
- * var chart = anychart.bar();
- * chart.column(
- *      dataSet.mapAs({'value': [0], 'x': [2], 'fill': [3]})
- * );
- * chart.column(
- *      dataSet.mapAs({'value': [1], 'x': [2], 'fill': [4]})
- * );
- * chart.yScale().minimum(0);
- * chart.container(stage).draw();
- * @param {!(Object.<Array.<number>>)=} opt_arrayMapping [{
- *   'x': &#91;0&#93;,
- *   'value': &#91;1, 0&#93;,
- *   'size': &#91;2&#93;,
- *   'open': &#91;1&#93;,
- *   'high': &#91;2&#93;,
- *   'low': &#91;3, 1&#93;,
- *   'close': &#91;4&#93;
- * }] Column mapping for the rows which are arrays.
- * @param {!(Object.<Array.<string>>)=} opt_objectMapping [{'value': &#91;'value', 'y', 'close'&#93;}] Column mapping for the rows
- *  which are objects.
- * @param {!(Array.<string>)=} opt_defaultProps [&#91;'value', 'close'&#93;] The names of the fields to map to
- *  if a row is a string, number or a function. Does not work in cases when a row is an object.
- * @param {!(Array.<string>)=} opt_indexProps [&#91;'x'&#93;] The names of the fields to be mapped to the current index
- *  if other options failed.
+ * @param {!(Object.<Array.<number|string>>)=} opt_mapping - Column mapping for the rows.
  * @return {!anychart.data.Mapping} The instance of {@link anychart.data.Mapping} class for method chaining.
  */
-anychart.data.Set.prototype.mapAs = function(opt_arrayMapping, opt_objectMapping, opt_defaultProps, opt_indexProps) {
-  var res = new anychart.data.Mapping(this, opt_arrayMapping, opt_objectMapping, opt_defaultProps, opt_indexProps);
+anychart.data.Set.prototype.mapAs = function(opt_mapping) {
+  var res = new anychart.data.Mapping(this, opt_mapping);
   this.registerDisposable(res);
   return res;
 };
@@ -357,6 +271,16 @@ anychart.data.Set.prototype.row = function(rowIndex, opt_value) {
 
 
 /**
+ * Returns row by index.
+ * @param {number} rowIndex
+ * @return {*}
+ */
+anychart.data.Set.prototype.getRow = function(rowIndex) {
+  return this.row(rowIndex);
+};
+
+
+/**
  * Appends new rows to the set. Each argument is a row that will be appended to the Set.
  * @example
  * var chart = anychart.column();
@@ -378,7 +302,7 @@ anychart.data.Set.prototype.row = function(rowIndex, opt_value) {
  */
 anychart.data.Set.prototype.append = function(var_args) {
   anychart.globalLock.lock();
-  this.storage_.push.apply(this.storage_, arguments);
+  this.storage_.push.apply(this.storage_, this.processData_(arguments));
   this.dispatchSignal(anychart.Signal.DATA_CHANGED);
   anychart.globalLock.unlock();
   return this;
@@ -403,7 +327,7 @@ anychart.data.Set.prototype.append = function(var_args) {
  */
 anychart.data.Set.prototype.insert = function(row, opt_index) {
   anychart.globalLock.lock();
-  goog.array.insertAt(this.storage_, row, opt_index);
+  goog.array.insertAt(this.storage_, this.processData_([row])[0], opt_index);
   this.dispatchSignal(anychart.Signal.DATA_CHANGED);
   anychart.globalLock.unlock();
   return this;
@@ -479,12 +403,38 @@ anychart.data.Set.prototype.getMappings = function() {
 anychart.data.Set.prototype.checkFieldExist = function(nameOrColumn) {
   if (goog.isNumber(nameOrColumn))
     return this.largestSeenRowLength_ > nameOrColumn;
-  return !!(this.objectFieldsSeen_ && this.objectFieldsSeen_[nameOrColumn]);
+  return !!(this.objectFieldsSeen_ && this.objectFieldsSeen_[nameOrColumn.split('.')[0]]);
 };
 
 
 /**
- * Set field as seen.
+ * Populates passed object with field names known to the storage and returns the new number of fields in it.
+ * @param {Object} result
+ * @param {number} resultLength
+ * @return {number}
+ */
+anychart.data.Set.prototype.populateObjWithKnownFields = function(result, resultLength) {
+  var i;
+  for (i = 0; i < this.largestSeenRowLength_; i++) {
+    populate(i);
+  }
+  if (this.objectFieldsSeen_)
+    for (i in this.objectFieldsSeen_)
+      populate(i);
+  if (this.simpleValuesSeen_) {
+    populate('value');
+  }
+  return resultLength;
+
+  function populate(i) {
+    if (!(i in result))
+      result[i] = resultLength++;
+  }
+};
+
+
+/**
+ * Set field as seen. (Recursively in case of complex object)
  * @param {string} fieldName Field name.
  */
 anychart.data.Set.prototype.addSeenField = function(fieldName) {
@@ -535,12 +485,12 @@ anychart.data.Set.prototype.getDataSets = function() {
  * ]);
  * chart.line(data);
  * @param {(Array|string)=} opt_data Data set raw data can be set here.
- * @param {Object.<string, (string|boolean)>=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_settings If CSV string is passed, you can pass CSV parser settings
  *    here as a hash map.
  * @return {!anychart.data.Set} The instance of {@link anychart.data.Set} class for method chaining.
  */
-anychart.data.set = function(opt_data, opt_csvSettings) {
-  return new anychart.data.Set(opt_data, opt_csvSettings);
+anychart.data.set = function(opt_data, opt_settings) {
+  return new anychart.data.Set(opt_data, opt_settings);
 };
 
 

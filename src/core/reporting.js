@@ -54,7 +54,7 @@ anychart.core.reporting.getErrorDescription_ = function(code, opt_arguments) {
       return 'Table.contents() accepts only an Array of Arrays as it\'s first argument.';
 
     case anychart.enums.ErrorCode.NO_FEATURE_IN_MODULE:
-      return 'Feature "' + opt_arguments[0] + '" is not supported in this module. See modules list for details.';
+      return 'Feature "' + opt_arguments[0] + '" is not supported in this module. See modules list at https://docs.anychart.com/Quick_Start/Modules for details.';
 
     case anychart.enums.ErrorCode.INCORRECT_SCALE_TYPE:
       return opt_arguments[0] + ' should be only ' + opt_arguments[1] + ' type' + (opt_arguments[2] ? ' (' + opt_arguments[2] + ').' : '.');
@@ -63,7 +63,7 @@ anychart.core.reporting.getErrorDescription_ = function(code, opt_arguments) {
       return 'Empty config passed to anychart.fromJson() or anychart.fromXml() method.';
 
     case anychart.enums.ErrorCode.NO_LEGEND_IN_CHART:
-      return 'Bullet and Sparkline charts do not support Legend. Please use anychart.ui.Legend component for a group of charts instead.';
+      return 'Bullet and Sparkline charts do not support Legend. Please use anychart.standalones.Legend component for a group of charts instead.';
 
     case anychart.enums.ErrorCode.NO_LEGEND_IN_STOCK:
       return 'Stock chart itself doesn\'t support legend - stock plots do. So use stock.plot().legend() instead.';
@@ -234,6 +234,9 @@ anychart.core.reporting.getWarningDescription_ = function(code, opt_arguments) {
       return (opt_arguments[3] || 'Method') + ' ' + opt_arguments[0] + ' is deprecated. Use ' + opt_arguments[1] + ' instead' +
           (opt_arguments[2] ? (opt_arguments[2] + '.') : '.');
 
+    case anychart.enums.WarningCode.DEPRECATED_WITHOUT_REPLACEMENT:
+      return (opt_arguments[3] || 'Method') + ' ' + opt_arguments[0] + ' is deprecated.';
+
     case anychart.enums.WarningCode.MISSING_PROJ4:
       return 'The projection that used cannot work correctly without Proj4. Please include Proj4 binary (https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js) into your page, or use another projection';
 
@@ -248,9 +251,6 @@ anychart.core.reporting.getWarningDescription_ = function(code, opt_arguments) {
 
     case anychart.enums.WarningCode.STOCK_WRONG_MAPPING:
       return 'Wrong mapping passed to ' + opt_arguments[0] + ' series - required "' + opt_arguments[1] + "' field is missing.";
-
-    case anychart.enums.WarningCode.SCALE_TYPE_NOT_SUPPORTED:
-      return 'Scale type "' + opt_arguments[0] + '" is not supported - only ' + opt_arguments[1] + ' is.';
 
     case anychart.enums.WarningCode.PARSE_DATETIME:
       return 'Could not parse date time value "' + opt_arguments[0] + '".' + (!!opt_arguments[1] ?
@@ -273,6 +273,12 @@ anychart.core.reporting.getWarningDescription_ = function(code, opt_arguments) {
       var count = /** @type {number} */(opt_arguments[0]) / interval;
       return 'Current scale ticks settings resulted in too many ticks: trying to generate about ' + count + ' ticks with interval ' + interval;
 
+    case anychart.enums.WarningCode.OBJECT_KEY_COLLISION:
+      return 'Data item with ID=\'' + opt_arguments[0] + '\' already exists. You should use another key.';
+
+    case anychart.enums.WarningCode.VENN_AREA_NOT_REPRESENTED_ON_SCREEN:
+      return 'Area ' + opt_arguments[0] + ' not represented on screen.';
+
     default:
       return 'Unknown error. Please, contact support team at http://support.anychart.com/.\n' +
           'We will be very grateful for your report!';
@@ -287,7 +293,7 @@ anychart.core.reporting.getWarningDescription_ = function(code, opt_arguments) {
  * @private
  */
 anychart.core.reporting.callLog_ = function(name, message, opt_exception) {
-  var console = goog.global['console'];
+  var console = anychart.window['console'];
   if (console) {
     var log = console[name] || console['log'];
     if (typeof log != 'object') {

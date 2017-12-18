@@ -1,8 +1,9 @@
 {
   "name": "anychart",
-  "version": "7.13.1",
-  "description": "Robust JavaScript/HTML5 Chart library for any project",
+  "version": "8.0.2",
+  "description": "AnyChart is a lightweight and robust JavaScript charting solution with great API and documentation. The chart types and unique features are numerous, and the library works easily with any development stack.",
   "main": "index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

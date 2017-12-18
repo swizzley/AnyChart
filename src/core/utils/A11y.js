@@ -78,18 +78,6 @@ anychart.core.utils.A11y.prototype.enabled = function(opt_value) {
  * Function to format title text.
  * @param {(Function|string)=} opt_value - Function to format content text.
  * @return {Function|string|anychart.core.utils.A11y} Function to format content text or itself for method chaining.
- * @deprecated Since 7.13.1. Use 'titleFormat' instead.
- */
-anychart.core.utils.A11y.prototype.titleFormatter = function(opt_value) {
-  anychart.core.reporting.warning(anychart.enums.WarningCode.DEPRECATED, null, ['titleFormatter', 'titleFormat'], true);
-  return this.titleFormat(opt_value);
-};
-
-
-/**
- * Function to format title text.
- * @param {(Function|string)=} opt_value - Function to format content text.
- * @return {Function|string|anychart.core.utils.A11y} Function to format content text or itself for method chaining.
  */
 anychart.core.utils.A11y.prototype.titleFormat = function(opt_value) {
   if (goog.isDef(opt_value)) {
@@ -175,14 +163,9 @@ anychart.core.utils.A11y.prototype.serialize = function() {
 };
 
 
-/**
- * Special objects to setup current instance.
- * @param {...(Object|Array|number|string|undefined|boolean|null)} var_args
- * @return {boolean} If passed values were recognized as special setup values.
- * @protected
- */
-anychart.core.utils.A11y.prototype.setupSpecial = function(var_args) {
-  var arg0 = arguments[0];
+/** @inheritDoc */
+anychart.core.utils.A11y.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
   if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
     this.enabled(!!arg0);
     return true;
@@ -195,23 +178,15 @@ anychart.core.utils.A11y.prototype.setupSpecial = function(var_args) {
 };
 
 
-/**
- * @inheritDoc
- * @suppress {deprecated}
- */
+/** @inheritDoc */
 anychart.core.utils.A11y.prototype.setupByJSON = function(json, opt_default) {
   anychart.core.utils.A11y.base(this, 'setupByJSON', json, opt_default);
   this.enabled('enabled' in json ? json['enabled'] : true);
   this.titleFormat(json['titleFormat']);
-  if ('titleFormatter' in json)
-    this.titleFormatter(json['titleFormatter']);
 };
 
 
-/**
- * @inheritDoc
- * @suppress {deprecated}
- */
+/** @inheritDoc */
 anychart.core.utils.A11y.prototype.disposeInternal = function() {
   this.chart = null;
   if (this.parentA11y_) {
@@ -252,7 +227,7 @@ goog.inherits(anychart.core.utils.ChartA11y, anychart.core.utils.A11y);
 
 /** @inheritDoc */
 anychart.core.utils.ChartA11y.prototype.createTextInfo = function() {
-  return this.chart.createChartContextProvider();
+  return this.chart.createA11yContextProvider();
 };
 
 
@@ -345,7 +320,7 @@ anychart.core.utils.ChartA11y.prototype.disposeInternal = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Anychart series accessibility class.
- * @param {anychart.core.series.Base|anychart.core.SeriesBase} series - Related series instance.
+ * @param {anychart.core.series.Base} series - Related series instance.
  * @constructor
  * @extends {anychart.core.utils.A11y}
  */
@@ -354,7 +329,7 @@ anychart.core.utils.SeriesA11y = function(series) {
 
   /**
    * Series reference.
-   * @type {anychart.core.series.Base|anychart.core.SeriesBase}
+   * @type {anychart.core.series.Base}
    * @private
    */
   this.series_ = series;
@@ -412,19 +387,13 @@ anychart.core.utils.SeriesA11y.prototype.disposeInternal = function() {
 
 
 //exports
-/**
- * @suppress {deprecated}
- */
 (function() {
   var proto = anychart.core.utils.ChartA11y.prototype;
   proto['enabled'] = proto.enabled;
   proto['titleFormat'] = proto.titleFormat;
-  proto['titleFormatter'] = proto.titleFormatter;
   proto['mode'] = proto.mode;
-
   proto = anychart.core.utils.SeriesA11y.prototype;
   proto['enabled'] = proto.enabled;
   proto['titleFormat'] = proto.titleFormat;
-  proto['titleFormatter'] = proto.titleFormatter;
 })();
 

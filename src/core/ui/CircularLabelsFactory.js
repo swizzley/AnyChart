@@ -9,8 +9,6 @@ goog.require('anychart.math.Rect');
 
 /**
  * @constructor
- * @implements {anychart.core.settings.IObjectWithSettings}
- * @implements {anychart.core.settings.IResolvable}
  * @extends {anychart.core.ui.LabelsFactory}
  */
 anychart.core.ui.CircularLabelsFactory = function() {
@@ -18,6 +16,10 @@ anychart.core.ui.CircularLabelsFactory = function() {
 
   if (!goog.array.contains(this.settingsFieldsForMerge, 'autoRotate'))
     this.settingsFieldsForMerge.push('autoRotate');
+
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['autoRotate', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
+  ]);
 };
 goog.inherits(anychart.core.ui.CircularLabelsFactory, anychart.core.ui.LabelsFactory);
 
@@ -128,12 +130,11 @@ anychart.core.ui.CircularLabelsFactory.prototype.SIMPLE_PROPS_DESCRIPTORS = (fun
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = goog.object.clone(anychart.core.ui.LabelsFactory.prototype.SIMPLE_PROPS_DESCRIPTORS);
 
-  map['autoRotate'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'autoRotate',
-      anychart.core.settings.booleanNormalizer,
-      anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+      anychart.core.settings.booleanNormalizer);
 
   return map;
 })();
@@ -223,7 +224,7 @@ anychart.core.ui.CircularLabelsFactory.prototype.measureWithoutAutoRotate = func
  */
 anychart.core.ui.CircularLabelsFactory.prototype.measureWithTransform = function(formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex) {
   var rotation, anchor, angle;
-  if (formatProviderOrLabel instanceof anychart.core.ui.CircularLabelsFactory.Label) {
+  if (anychart.utils.instanceOf(formatProviderOrLabel, anychart.core.ui.CircularLabelsFactory.Label)) {
     angle = (formatProviderOrLabel.positionProvider() ? formatProviderOrLabel.positionProvider()['value']['angle'] : 0) || 0;
     rotation = formatProviderOrLabel.getRotation(angle);
     anchor = formatProviderOrLabel.getFinalSettings('anchor');
@@ -272,12 +273,14 @@ anychart.core.ui.CircularLabelsFactory.prototype.createLabel = function() {
 
 /**
  * @constructor
- * @implements {anychart.core.settings.IObjectWithSettings}
- * @implements {anychart.core.settings.IResolvable}
  * @extends {anychart.core.ui.LabelsFactory.Label}
  */
 anychart.core.ui.CircularLabelsFactory.Label = function() {
   anychart.core.ui.CircularLabelsFactory.Label.base(this, 'constructor');
+
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['autoRotate', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
+  ]);
 };
 goog.inherits(anychart.core.ui.CircularLabelsFactory.Label, anychart.core.ui.LabelsFactory.Label);
 
@@ -287,12 +290,11 @@ goog.inherits(anychart.core.ui.CircularLabelsFactory.Label, anychart.core.ui.Lab
 anychart.core.ui.CircularLabelsFactory.Label.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = goog.object.clone(anychart.core.ui.LabelsFactory.Label.prototype.SIMPLE_PROPS_DESCRIPTORS);
-  map['autoRotate'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'autoRotate',
-      anychart.core.settings.booleanNormalizer,
-      anychart.ConsistencyState.APPEARANCE,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+      anychart.core.settings.booleanNormalizer);
 
   return map;
 })();
@@ -323,7 +325,7 @@ anychart.core.ui.CircularLabelsFactory.Label.prototype.getRotation = function(an
 /** @inheritDoc */
 anychart.core.ui.CircularLabelsFactory.Label.prototype.drawLabel = function(bounds, parentBounds) {
   var positionFormatter = this.mergedSettings['positionFormatter'];
-  var anchor = this.mergedSettings['anchor'];
+  var anchor = anychart.core.ui.LabelsFactory.anchorNoAutoNormalizer(this.mergedSettings['anchor']) || anychart.enums.Anchor.LEFT_TOP;
   var offsetX = this.mergedSettings['offsetX'] || 0;
   var offsetY = this.mergedSettings['offsetY'] || 0;
 

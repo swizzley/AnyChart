@@ -3,6 +3,7 @@ goog.provide('anychart.core.CartesianBase');
 goog.require('anychart'); // otherwise we can't use anychart.chartTypesMap object.
 goog.require('anychart.core.ChartWithAxes');
 goog.require('anychart.core.series.Cartesian');
+goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.ChartScroller');
 goog.require('anychart.core.utils.IZoomableChart');
 goog.require('anychart.core.utils.OrdinalZoom');
@@ -12,12 +13,13 @@ goog.require('anychart.enums');
 
 /**
  * CartesianBase chart class.
+ * @param {boolean=} opt_categorizeData
  * @extends {anychart.core.ChartWithAxes}
  * @implements {anychart.core.utils.IZoomableChart}
  * @constructor
  */
-anychart.core.CartesianBase = function() {
-  anychart.core.CartesianBase.base(this, 'constructor', true);
+anychart.core.CartesianBase = function(opt_categorizeData) {
+  anychart.core.CartesianBase.base(this, 'constructor', goog.isDef(opt_categorizeData) ? opt_categorizeData : true);
 
   /**
    * Zoom settings.
@@ -26,38 +28,12 @@ anychart.core.CartesianBase = function() {
    */
   this.xZoom_ = new anychart.core.utils.OrdinalZoom(this, true);
 
-  /**
-   * @type {number|string}
-   * @protected
-   */
-  this.zAspectInternal = 0;
-
-  /**
-   * @type {number}
-   * @protected
-   */
-  this.zAngleInternal = 0;
-
-  /**
-   * @type {?number}
-   * @protected
-   */
-  this.zDepthInternal = null;
-
-  /**
-   * @type {boolean}
-   * @protected
-   */
-  this.zDistributionInternal = false;
-
-  /**
-   * @type {number}
-   * @protected
-   */
-  this.zPaddingInternal = 0;
-
-  this.defaultSeriesType(anychart.enums.CartesianSeriesType.LINE);
-  this.setType(anychart.enums.ChartTypes.CARTESIAN);
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['zAngle', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['zAspect', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['zDistribution', anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['zPadding', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
+  ]);
 };
 goog.inherits(anychart.core.CartesianBase, anychart.core.ChartWithAxes);
 
@@ -69,106 +45,47 @@ goog.inherits(anychart.core.CartesianBase, anychart.core.ChartWithAxes);
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Getter/setter for zAngle.
- * From 0 to 90.
- * @param {number=} opt_value
- * @return {number|anychart.core.CartesianBase}
+ * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
-anychart.core.CartesianBase.prototype.zAngle = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    if (this.zAngleInternal != opt_value) {
-      this.zAngleInternal = goog.math.clamp(anychart.utils.toNumber(opt_value), 0, 90);
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  } else {
-    return this.zAngleInternal;
+anychart.core.CartesianBase.PROPERTY_DESCRIPTORS = (function() {
+  /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
+  var map = {};
+
+  function zAngleNormalizer(opt_value) {
+    return goog.math.clamp(anychart.utils.toNumber(opt_value), 0, 90);
   }
-};
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.SINGLE_ARG,
+      'zAngle',
+      zAngleNormalizer);
 
-
-/**
- * Getter/setter for zAspect.
- * @param {(number|string)=} opt_value
- * @return {number|string|anychart.core.CartesianBase}
- */
-anychart.core.CartesianBase.prototype.zAspect = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    if (this.zAspectInternal != opt_value) {
-      this.zAspectInternal = goog.isNumber(opt_value) ? Math.max(opt_value, 0) : opt_value;
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  } else {
-    return this.zAspectInternal;
+  function zAspectNormalizer(opt_value) {
+    return goog.isNumber(opt_value) ? Math.max(opt_value, 0) : opt_value;
   }
-};
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.SINGLE_ARG,
+      'zAspect',
+      zAspectNormalizer);
 
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.SINGLE_ARG,
+      'zDistribution',
+      anychart.core.settings.booleanNormalizer);
 
-/**
- * Getter/setter for zDepth.
- * @param {?(number)=} opt_value
- * @return {number|null|anychart.core.CartesianBase}
- * @deprecated Since 7.10.0. Use chart.zAspect instead.
- */
-anychart.core.CartesianBase.prototype.zDepth = function(opt_value) {
-  anychart.core.reporting.warning(anychart.enums.WarningCode.DEPRECATED, null, ['chart.zDepth', 'chart.zAspect with chart.zPadding'], true);
-  if (goog.isDef(opt_value)) {
-    if (this.zDepthInternal != opt_value) {
-      this.zDepthInternal = goog.isNull(opt_value) ? opt_value : anychart.utils.toNumber(opt_value);
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  } else {
-    return this.zDepthInternal;
+  function zPaddingNormalizer(opt_value) {
+    return Math.max(anychart.utils.toNumber(opt_value), 0) || 0;
   }
-};
-
-
-/**
- * Getter/setter for distributing series on the z-axis.
- * @param {boolean=} opt_value
- * @return {boolean|anychart.core.CartesianBase}
- */
-anychart.core.CartesianBase.prototype.zDistribution = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    opt_value = !!opt_value;
-    if (this.zDistributionInternal != opt_value) {
-      this.zDistributionInternal = opt_value;
-      this.invalidate(
-          anychart.ConsistencyState.BOUNDS |
-          anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  } else {
-    return this.zDistributionInternal;
-  }
-};
-
-
-/**
- * Getter/setter for zPadding.
- * Value must be more than zero.
- * @param {(number)=} opt_value
- * @return {number|anychart.core.CartesianBase}
- */
-anychart.core.CartesianBase.prototype.zPadding = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    opt_value = anychart.utils.toNumber(opt_value);
-    if (this.zPaddingInternal !== opt_value) {
-      this.zPaddingInternal = Math.max(opt_value, 0);
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  } else {
-    return this.zPaddingInternal;
-  }
-};
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.SINGLE_ARG,
+      'zPadding',
+      zPaddingNormalizer);
+  return map;
+})();
+anychart.core.settings.populate(anychart.core.CartesianBase, anychart.core.CartesianBase.PROPERTY_DESCRIPTORS);
 
 
 //endregion
@@ -186,25 +103,6 @@ anychart.core.CartesianBase.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.core.ChartWithAxes.prototype.SUPPORTED_CONSISTENCY_STATES |
     anychart.ConsistencyState.CARTESIAN_X_SCROLLER |
     anychart.ConsistencyState.CARTESIAN_ZOOM;
-
-
-/**
- * Sets chart type. Needed for proper serialization.
- * @param {anychart.enums.ChartTypes} value
- */
-anychart.core.CartesianBase.prototype.setType = function(value) {
-  /**
-   * @type {anychart.enums.ChartTypes}
-   * @private
-   */
-  this.type_ = value;
-};
-
-
-/** @inheritDoc */
-anychart.core.CartesianBase.prototype.getType = function() {
-  return this.type_;
-};
 
 
 //endregion
@@ -272,8 +170,8 @@ anychart.core.CartesianBase.prototype.xScroller = function(opt_value) {
     this.xScroller_ = new anychart.core.ui.ChartScroller();
     this.xScroller_.setParentEventTarget(this);
     this.xScroller_.listenSignals(this.scrollerInvalidated_, this);
-    this.eventsHandler.listen(this.xScroller_, anychart.enums.EventType.SCROLLER_CHANGE, this.scrollerChangeHandler_);
-    this.eventsHandler.listen(this.xScroller_, anychart.enums.EventType.SCROLLER_CHANGE_FINISH, this.scrollerChangeHandler_);
+    this.eventsHandler.listen(this.xScroller_, anychart.enums.EventType.SCROLLER_CHANGE, this.scrollerChangeHandler);
+    this.eventsHandler.listen(this.xScroller_, anychart.enums.EventType.SCROLLER_CHANGE_FINISH, this.scrollerChangeHandler);
     this.invalidate(
         anychart.ConsistencyState.CARTESIAN_X_SCROLLER |
         anychart.ConsistencyState.BOUNDS,
@@ -308,9 +206,9 @@ anychart.core.CartesianBase.prototype.scrollerInvalidated_ = function(e) {
 /**
  * Scroller change start event handler.
  * @param {anychart.core.ui.Scroller.ScrollerChangeEvent} e
- * @private
+ * @protected
  */
-anychart.core.CartesianBase.prototype.scrollerChangeHandler_ = function(e) {
+anychart.core.CartesianBase.prototype.scrollerChangeHandler = function(e) {
   if (this.xZoom_.continuous() ^ e.type == anychart.enums.EventType.SCROLLER_CHANGE_FINISH) {
     e.preventDefault();
     this.suspendSignalsDispatching();
@@ -348,12 +246,31 @@ anychart.core.CartesianBase.prototype.normalizeSeriesType = function(type) {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.core.CartesianBase.prototype.getBoundsWithoutAxes = function(contentAreaBounds, opt_scrollerSize) {
-  var scroller = this.xScroller();
+  var scroller = /** @type {anychart.core.ui.ChartScroller} */(this.xScroller());
+  var res = this.resetScrollerPosition(scroller, contentAreaBounds);
+  return anychart.core.CartesianBase.base(this, 'getBoundsWithoutAxes', res.contentAreaBounds, res.scrollerSize);
+};
+
+
+/** @inheritDoc */
+anychart.core.CartesianBase.prototype.applyScrollerOffset = function(offsets, scrollerSize) {
+  return this.applyScrollerOffsetInternal(offsets, /** @type {anychart.core.ui.ChartScroller} */(this.xScroller()), scrollerSize);
+};
+
+
+/**
+ * Resets scroller position and returns new contentAreaBounds and scrollerSize if nessesary.
+ * @param {anychart.core.ui.ChartScroller} scroller
+ * @param {anychart.math.Rect} contentAreaBounds
+ * @return {{contentAreaBounds: anychart.math.Rect, scrollerSize: number}}
+ * @protected
+ */
+anychart.core.CartesianBase.prototype.resetScrollerPosition = function(scroller, contentAreaBounds) {
   var scrollerBeforeAxes = scroller.position() == anychart.enums.ChartScrollerPosition.BEFORE_AXES;
   scroller.padding(0);
   scroller.parentBounds(contentAreaBounds);
   var scrollerHorizontal = scroller.isHorizontal();
-  var scrollerSize = opt_scrollerSize;
+  var scrollerSize = NaN;
   if (scrollerBeforeAxes) {
     if (scrollerHorizontal) {
       scrollerSize = contentAreaBounds.height - scroller.getRemainingBounds().height;
@@ -363,13 +280,19 @@ anychart.core.CartesianBase.prototype.getBoundsWithoutAxes = function(contentAre
   } else {
     contentAreaBounds = scroller.getRemainingBounds();
   }
-  return anychart.core.CartesianBase.base(this, 'getBoundsWithoutAxes', contentAreaBounds, scrollerSize);
+  return {contentAreaBounds: contentAreaBounds, scrollerSize: scrollerSize};
 };
 
 
-/** @inheritDoc */
-anychart.core.CartesianBase.prototype.applyScrollerOffset = function(offsets, scrollerSize) {
-  var scroller = /** @type {anychart.core.ui.ChartScroller} */(this.xScroller());
+/**
+ *
+ * @param {Array.<number>} offsets
+ * @param {anychart.core.ui.ChartScroller} scroller
+ * @param {number} scrollerSize
+ * @return {Array.<number>}
+ * @protected
+ */
+anychart.core.CartesianBase.prototype.applyScrollerOffsetInternal = function(offsets, scroller, scrollerSize) {
   if (scroller.position() == anychart.enums.ChartScrollerPosition.BEFORE_AXES) {
     switch (scroller.orientation()) {
       case anychart.enums.Orientation.TOP:
@@ -458,13 +381,40 @@ anychart.core.CartesianBase.prototype.getBoundsChangedSignal = function() {
 
 /** @inheritDoc */
 anychart.core.CartesianBase.prototype.drawElements = function() {
+  anychart.core.CartesianBase.base(this, 'drawElements');
   if (this.hasInvalidationState(anychart.ConsistencyState.CARTESIAN_X_SCROLLER)) {
     this.xScroller().container(this.rootElement);
     this.xScroller().draw();
     this.markConsistent(anychart.ConsistencyState.CARTESIAN_X_SCROLLER);
   }
+};
 
-  anychart.core.CartesianBase.base(this, 'drawElements');
+
+//endregion
+//region --- CSV
+//------------------------------------------------------------------------------
+//
+//  CSV
+//
+//------------------------------------------------------------------------------
+/** @inheritDoc */
+anychart.core.CartesianBase.prototype.shouldAddCsvRow = function(mode, series, x) {
+  var xScale = this.getCsvSourceXScale(series);
+  var left = xScale.transform(x, 0);
+  var right = xScale.transform(x, 1);
+  return mode != anychart.enums.ChartDataExportMode.SELECTED ||
+      (Math.min(left, right) <= 1 && Math.max(left, right) >= 0);
+};
+
+
+
+/**
+ * @param {*} series
+ * @return {anychart.scales.IXScale}
+ * @protected
+ */
+anychart.core.CartesianBase.prototype.getCsvSourceXScale = function(series) {
+  return (/** @type {anychart.core.series.Base} */(series)).getXScale();
 };
 
 
@@ -479,8 +429,7 @@ anychart.core.CartesianBase.prototype.drawElements = function() {
 anychart.core.CartesianBase.prototype.setupByJSONWithScales = function(config, scalesInstances, opt_default) {
   anychart.core.CartesianBase.base(this, 'setupByJSONWithScales', config, scalesInstances, opt_default);
 
-  this.barGroupsPadding(config['barGroupsPadding']);
-  this.barsPadding(config['barsPadding']);
+  anychart.core.settings.deserialize(this, anychart.core.CartesianBase.PROPERTY_DESCRIPTORS, config);
   this.xScroller(config['xScroller']);
 
   var xZoom = config['xZoom'];
@@ -500,9 +449,8 @@ anychart.core.CartesianBase.prototype.setupByJSONWithScales = function(config, s
  */
 anychart.core.CartesianBase.prototype.serialize = function() {
   var json = anychart.core.CartesianBase.base(this, 'serialize');
-  json['type'] = this.type_;
-  json['barGroupsPadding'] = this.barGroupsPadding();
-  json['barsPadding'] = this.barsPadding();
+  anychart.core.settings.serialize(this, anychart.core.CartesianBase.PROPERTY_DESCRIPTORS, json);
+  json['type'] = this.getType();
   json['xScroller'] = this.xScroller().serialize();
   json['xZoom'] = this.xZoom().serialize();
   return {'chart': json};
