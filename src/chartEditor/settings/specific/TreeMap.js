@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.specific.TreeMap');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.checkbox.AdjustFontSize');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
@@ -65,7 +66,7 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
   this.hintOpacity_ = new anychart.chartEditorModule.controls.LabeledControl(hintOpacity, 'Hint Opacity');
   this.addChild(this.hintOpacity_, true);
 
-  var adjustFontSize = new anychart.chartEditorModule.checkbox.Base();
+  var adjustFontSize = new anychart.chartEditorModule.checkbox.AdjustFontSize();
   adjustFontSize.setCaption('Adjust Labels Font Size');
   this.adjustFontSize_ = adjustFontSize;
   this.addChild(this.adjustFontSize_, true);
