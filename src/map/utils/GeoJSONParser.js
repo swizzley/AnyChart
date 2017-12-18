@@ -129,8 +129,8 @@ anychart.mapModule.utils.GeoJSONParser.prototype.parseGeometry_ = function(geojs
 
   var id = properties[this.idField];
   var projectionSrc = this.projection[id] || this.projection['default'] || anychart.charts.Map.DEFAULT_TX['default'];
-  var projection = anychart.core.map.projections.getProjection(projectionSrc.crs);
-  // var projection = new anychart.core.map.projections.Bonne();
+  var projection = anychart.mapModule.projections.getProjection(projectionSrc.crs);
+  // var projection = new anychart.mapModule.projections.Bonne();
   var scale = goog.isDef(projectionSrc.scale) ? projectionSrc.scale : 1;
   // var scale = 1;
   var xoffset = (projectionSrc.xoffset || 0);
@@ -348,13 +348,13 @@ anychart.mapModule.utils.GeoJSONParser.prototype.exportToGeoJSON = function(gdom
 /**
  *
  * @param {Array.<number>} coord .
- * @param {anychart.core.map.projections.Base} projection .
+ * @param {anychart.mapModule.projections.Base} projection .
  * @param {number} scale .
  * @param {number} xoffset .
  * @param {number} yoffset .
  * @return {Array.<number>} .
  */
-anychart.core.utils.GeoJSONParser.prototype.applyProjection = function(coord, projection, scale, xoffset, yoffset) {
+anychart.mapModule.utils.GeoJSONParser.prototype.applyProjection = function(coord, projection, scale, xoffset, yoffset) {
   var x = coord[0] / this.ratio;
   var y = coord[1] / this.ratio;
 

@@ -1,10 +1,10 @@
-goog.provide('anychart.core.map.projections');
+goog.provide('anychart.mapModule.projections');
 
 goog.require('anychart.mapModule.projections.Aitoff');
 goog.require('anychart.mapModule.projections.August');
 goog.require('anychart.mapModule.projections.Base');
 goog.require('anychart.mapModule.projections.Bonne');
-goog.require('anychart.core.map.projections.Composite');
+goog.require('anychart.mapModule.projections.Composite');
 goog.require('anychart.mapModule.projections.Eckert1');
 goog.require('anychart.mapModule.projections.Eckert3');
 goog.require('anychart.mapModule.projections.Equirectangular');
@@ -19,7 +19,7 @@ goog.require('anychart.mapModule.projections.Wagner6');
 
 /**
  @namespace
- @name anychart.core.map.projections
+ @name anychart.mapModule.projections
  */
 
 
@@ -78,13 +78,13 @@ anychart.mapModule.projections.getProjection = function(projection) {
         };
       }
     } else {
-      projection_ = new anychart.core.map.projections.Composite(projection);
+      projection_ = new anychart.mapModule.projections.Composite(projection);
     }
-    return /** @type {anychart.core.map.projections.Base} */(projection_);
+    return /** @type {anychart.mapModule.projections.Base} */(projection_);
   }
 
-  if (anychart.core.map.projections.isBaseProjection(projection))
-    return new anychart.core.map.projections.Base();
+  if (anychart.mapModule.projections.isBaseProjection(projection))
+    return new anychart.mapModule.projections.Base();
 
   switch (projection) {
     case anychart.enums.MapProjections.BONNE:
@@ -131,7 +131,7 @@ anychart.mapModule.projections.getProjection = function(projection) {
         if (anychart.window['proj4']) {
           projection_ = window['proj4'] ?
             new anychart.mapModule.projections.Proj4Wrapper(/** @type {string} */(projection)) :
-            new anychart.core.map.projections.Base();
+            new anychart.mapModule.projections.Base();
         } else {
           projection_ = new anychart.mapModule.projections.Base();
 

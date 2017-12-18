@@ -11,7 +11,7 @@ goog.require('anychart.core.ChartWithSeries');
 goog.require('anychart.core.IChart');
 goog.require('anychart.core.IPlot');
 // goog.require('anychart.mapModule.elements.Axis');
-goog.require('anychart.core.map.projections');
+goog.require('anychart.mapModule.projections');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.utils.Animation');

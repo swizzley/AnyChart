@@ -934,7 +934,7 @@ anychart.mapModule.scales.Geo.prototype.extendFullDataRangeInternal = function(v
  * @param {...*} var_args Values that are supposed to extend the input domain.
  * @return {!anychart.scales.Geo} {@link anychart.scales.Geo} instance for method chaining.
  */
-anychart.scales.Geo.prototype.extendMainDataRangeInternal = function(var_args) {
+anychart.mapModule.scales.Geo.prototype.extendMainDataRangeInternal = function(var_args) {
   var coords = arguments;
 
   for (var i = 0; i < coords.length - 1; i = i + 2) {
@@ -1336,7 +1336,7 @@ anychart.mapModule.scales.Geo.prototype.determineScaleMinMax = function() {
  * @param {number} y Y value to transform in input scope.
  * @return {Array.<number>} Transformed value adjust bounds.
  */
-anychart.scales.Geo.prototype.scaleToPxF = function(x, y) {
+anychart.mapModule.scales.Geo.prototype.scaleToPxF = function(x, y) {
   x = anychart.utils.toNumber(x);
   y = anychart.utils.toNumber(y);
 
