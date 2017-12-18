@@ -1326,6 +1326,7 @@ anychart.vennModule.Chart.prototype.drawContent = function(bounds) {
 
     if (this.hasInvalidationState(anychart.ConsistencyState.VENN_MARKERS)) {
       var markers = this.normal().markers();
+      markers.suspendSignalsDispatching();
       markers.container(this.rootElement);
       markers.clear();
 
@@ -1345,7 +1346,7 @@ anychart.vennModule.Chart.prototype.drawContent = function(bounds) {
         iterator.meta('marker', marker);
         this.drawMarker_(this.state.getPointStateByIndex(iteratorIndex), iterator);
       }
-
+      markers.resumeSignalsDispatching(false);
       markers.draw();
       this.intersections().markMarkersConsistent();
       this.markConsistent(anychart.ConsistencyState.VENN_MARKERS);
