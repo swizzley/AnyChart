@@ -278,10 +278,8 @@ anychart.pieModule.Center.prototype.serialize = function() {
 
   anychart.core.settings.serialize(this, this.SIMPLE_PROPS_DESCRIPTORS, json, 'Map axes props');
 
-  if (this.realContent)
-    json['content'] = anychart.utils.instanceOf(this.realContent, anychart.core.Chart) ?
-        (/** @type {anychart.core.Chart} */(this.realContent)).toJson() :
-        (/** @type {anychart.core.VisualBase} */(this.realContent)).serialize();
+  if (this.realContent && anychart.utils.instanceOf(this.realContent, anychart.core.Chart))
+    json['content'] = (/** @type {anychart.core.Chart} */(this.realContent)).toJson();
 
   return json;
 };

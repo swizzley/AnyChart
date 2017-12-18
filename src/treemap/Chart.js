@@ -1903,8 +1903,14 @@ anychart.treemapModule.Chart.prototype.drawLabel_ = function(pointState) {
 
     if (label) {
       if (displayMode != anychart.enums.LabelsDisplayMode.ALWAYS_SHOW) {
+        label['width'](pointBounds.width);
+        label['height'](pointBounds.height);
         label['clip'](pointBounds);
       } else {
+        if (!isHeader) {
+          label['width'](null);
+          label['height'](null);
+        }
         label['clip'](null);
       }
 
