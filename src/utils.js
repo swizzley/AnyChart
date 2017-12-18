@@ -564,7 +564,8 @@ anychart.utils.isRightAnchor = function(anchor) {
 anychart.utils.alignLeft = function(value, interval, opt_base, opt_precision) {
   opt_base = opt_base || 0;
   var times = Math.floor((value - opt_base) / interval);
-  return anychart.math.round(interval * times + opt_base, opt_precision);
+  var precision = opt_precision >= 7 ? opt_precision : 7;
+  return anychart.math.round(interval * times + opt_base, precision);
 };
 
 
@@ -579,7 +580,8 @@ anychart.utils.alignLeft = function(value, interval, opt_base, opt_precision) {
 anychart.utils.alignRight = function(value, interval, opt_base, opt_precision) {
   opt_base = opt_base || 0;
   var times = Math.ceil((value - opt_base) / interval);
-  return anychart.math.round(interval * times + opt_base, opt_precision);
+  var precision = opt_precision >= 7 ? opt_precision : 7;
+  return anychart.math.round(interval * times + opt_base, precision);
 };
 
 
