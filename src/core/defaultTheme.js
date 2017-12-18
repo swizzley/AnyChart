@@ -2176,7 +2176,6 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'baseBarPosition': 'left-center',
     'baseBarOffset': 0,
     'baseBarHeight': '70%',
-    'parentBarHeight': '40%',
     'progressBarHeight': '100%',
     'progressBarPosition': 'left-center',
     'progressBarAnchor': 'left-center',
