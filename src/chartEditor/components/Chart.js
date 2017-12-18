@@ -93,22 +93,41 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
     // Create data set
     var dsCtor = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['dataSetCtor'];
-    var opt_keyColumnIndex = dsCtor == 'table' ? settings['dataSettings']['field'] : void 0;
-    var dataSet = this.anychart['data'][dsCtor](opt_keyColumnIndex);
+    var dsCtorArgs = [];
+    var plotMapping;
+    var seriesMapping;
+    var mappingObj;
 
-    if (dsCtor == 'table')
+    if (dsCtor === 'table') {
+      dsCtorArgs = [settings['dataSettings']['field']];
+
+    } else if (dsCtor === 'tree') {
+      mappingObj = settings['dataSettings']['mappings'][0][0]['mapping'];
+      mappingObj['id'] = settings['dataSettings']['field'];
+      dsCtorArgs = [void 0, void 0, void 0, mappingObj];
+    }
+
+    var dataSet = this.anychart['data'][dsCtor].apply(this.anychart['data'], dsCtorArgs);
+
+    // Add data
+    if (dsCtor === 'table')
       dataSet['addData'](rawData);
-    else if (dsCtor == 'tree')
+    else if (dsCtor === 'tree')
       dataSet['addData'](rawData, 'as-table');
     else
       dataSet['data'](rawData);
 
-    // create mapping and series
+    // Create mapping and series
     for (var i = 0; i < settings['dataSettings']['mappings'].length; i++) {
-      var plotMapping = settings['dataSettings']['mappings'][i];
+      plotMapping = settings['dataSettings']['mappings'][i];
       for (var j = 0; j < plotMapping.length; j++) {
-        var seriesMapping = plotMapping[j]['mapping'];
-        var mappingObj = {'x': settings['dataSettings']['field']};
+        seriesMapping = plotMapping[j]['mapping'];
+        
+        mappingObj = dsCtor === 'table' ? {} :
+            dsCtor === 'tree' ?
+                {'id': settings['dataSettings']['field']} :
+                {'x': settings['dataSettings']['field']};
+        
         for (var k in seriesMapping) {
           if (seriesMapping.hasOwnProperty(k))
             mappingObj[k] = seriesMapping[k];

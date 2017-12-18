@@ -101,7 +101,7 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
     // X Values select
     this.activeAndFieldSelect_ = new anychart.chartEditorModule.controls.select.DataField({
       caption: 'Select field',
-      label: 'X Values'
+      label: chartType === 'treeMap' ? 'ID Values' : 'X Values'
     });
 
     this.activeAndFieldSelect_.getSelect().init(model, [['dataSettings'], 'field'], 'setActiveAndField');

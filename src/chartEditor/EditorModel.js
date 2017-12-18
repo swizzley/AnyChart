@@ -558,9 +558,8 @@ anychart.chartEditorModule.EditorModel.Series = {
   },
   'treeMap': {
     'fields': [
-      {'field': 'id', 'name': 'ID'},
-      {'field': 'parent', 'name': 'Parent'},
-      {'field': 'name', 'name': 'Name'},
+      {'field': 'parent', 'name': 'Parent', 'type': 'string'},
+      {'field': 'name', 'name': 'Name', 'type': 'string'},
       {'field': 'value', 'name': 'Value'}
     ]
   }
@@ -1187,6 +1186,7 @@ anychart.chartEditorModule.EditorModel.prototype.setActiveAndField = function(in
 
   if (active != this.model_['dataSettings']['active']) {
     this.model_['chart']['type'] = null;
+
     this.chooseActiveAndField(active, field);
     this.chooseDefaultChartType();
     this.chooseDefaultSeriesType();
@@ -1196,6 +1196,7 @@ anychart.chartEditorModule.EditorModel.prototype.setActiveAndField = function(in
 
   } else if (field != this.model_['dataSettings']['field']) {
     this.model_['dataSettings']['field'] = field;
+
     this.dispatchUpdate();
   }
 
@@ -1934,7 +1935,6 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
   // Create data set
   var rawData = this.getRawData();
   var dsCtor = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['dataSetCtor'];
-  var isTableData = dsCtor == 'table';
   var dataSet = anychartGlobal['data'][dsCtor]();
 
   result.push('// Setting up data');
@@ -1942,22 +1942,27 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
   var str = 'var rawData' + eq + (addData ? this.printValue_(printer, rawData) : '[/*Add your data here*/]') + ';';
   result.push(str);
 
-  result.push('var data' + eq + 'anychart.data.' + dsCtor +
-      (isTableData ?
-          '(' + this.printValue_(printer, settings['dataSettings']['field']) + ');' :
-          '();')
-  );
-
   if (dsCtor == 'table') {
+    result.push('var data' + eq + 'anychart.data.' + dsCtor + '(' + this.printValue_(printer, settings['dataSettings']['field']) + ');');
+
     dataSet['addData'](rawData);
     result.push('data.addData(rawData);');
+
   } else if (dsCtor == 'tree') {
+    var mappingObj1 = settings['dataSettings']['mappings'][0][0]['mapping'];
+    mappingObj1['id'] = settings['dataSettings']['field'];
+    result.push('var data' + eq + 'anychart.data.' + dsCtor + '(void 0, void 0, void 0, ' + this.printValue_(printer, mappingObj1) + ');');
+
     dataSet['addData'](rawData, 'as-table');
     result.push('data.addData(rawData, "as-table");');
+
   } else {
+    result.push('var data' + eq + 'anychart.data.' + dsCtor + '();');
+
     dataSet['data'](rawData);
     result.push('data.data(rawData);');
   }
+
   result.push('');
 
   // create mapping and series
@@ -1971,7 +1976,11 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     plotMapping = settings['dataSettings']['mappings'][i];
     for (j = 0; j < plotMapping.length; j++) {
       var seriesMapping = plotMapping[j]['mapping'];
-      var mappingObj = isTableData ? {} : {'x': settings['dataSettings']['field']};
+      var mappingObj = dsCtor === 'table' ? {} :
+          dsCtor === 'tree' ?
+              {'id': settings['dataSettings']['field']} :
+              {'x': settings['dataSettings']['field']};
+
       for (var k in seriesMapping) {
         if (seriesMapping.hasOwnProperty(k))
           mappingObj[k] = seriesMapping[k];
