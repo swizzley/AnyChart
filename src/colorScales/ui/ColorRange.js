@@ -237,12 +237,12 @@ anychart.colorScalesModule.ui.ColorRange.prototype.getLabelsFormatProvider = fun
   var labelText, labelValue, labelType;
   var values = {};
   if (anychart.utils.instanceOf(scale, anychart.colorScalesModule.Linear)) {
-    labelText = parseFloat(value);
     labelValue = parseFloat(value);
+    labelText = scale.roundToTicksPrecision(labelValue);
     labelType = anychart.enums.TokenType.NUMBER;
   } else if (anychart.utils.instanceOf(scale, anychart.colorScalesModule.Ordinal)) {
-    labelText = scale.ticks().names()[index];
     labelValue = value;
+    labelText = scale.ticks().names()[index];
     labelType = anychart.enums.TokenType.STRING;
 
     var range = scale.getRangeByValue(/** @type {number} */(value));

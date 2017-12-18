@@ -1466,19 +1466,19 @@ anychart.core.series.Cartesian.prototype.getPoint = function(index) {
 
   if (goog.isNumber(chart.statistics(anychart.enums.Statistics.DATA_PLOT_X_SUM))) {
     v = val / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_X_SUM));
-    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_TOTAL, v * 100);
+    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
   }
 
   if (goog.isNumber(this.statistics(anychart.enums.Statistics.SERIES_X_SUM))) {
     v = val / /** @type {number} */ (this.statistics(anychart.enums.Statistics.SERIES_X_SUM));
-    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_SERIES, v * 100);
+    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_SERIES, anychart.math.round(v * 100, 2));
   }
 
   if (goog.isNumber(this.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_SUM))) {
     v = size / /** @type {number} */ (this.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_SUM));
-    point.statistics(anychart.enums.Statistics.BUBBLE_SIZE_PERCENT_OF_SERIES, v * 100);
+    point.statistics(anychart.enums.Statistics.BUBBLE_SIZE_PERCENT_OF_SERIES, anychart.math.round(v * 100, 2));
     v = size / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_SUM));
-    point.statistics(anychart.enums.Statistics.BUBBLE_SIZE_PERCENT_OF_TOTAL, v * 100);
+    point.statistics(anychart.enums.Statistics.BUBBLE_SIZE_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
     point.statistics(anychart.enums.Statistics.BUBBLE_SIZE, size);
   }
 
@@ -1493,13 +1493,13 @@ anychart.core.series.Cartesian.prototype.getPoint = function(index) {
 
     if (isRangeSeries) {
       v = val / /** @type {number} */ (this.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_SUM));
-      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_SERIES, v * 100);
+      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_SERIES, anychart.math.round(v * 100, 2));
       v = val / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_Y_SUM));
-      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_TOTAL, v * 100);
+      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
       v = val / catSum;
-      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_CATEGORY, v * 100);
+      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_CATEGORY, anychart.math.round(v * 100, 2));
       v = catSum / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_Y_SUM));
-      point.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_PERCENT_OF_TOTAL, v * 100);
+      point.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_SUM, catSum);
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_MAX, this.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_MAX_ARR_)[index]);
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_MIN, this.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_MIN_ARR_)[index]);
@@ -1508,13 +1508,13 @@ anychart.core.series.Cartesian.prototype.getPoint = function(index) {
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_MODE, this.statistics(anychart.enums.Statistics.CATEGORY_Y_RANGE_MODE_ARR_)[index]);
     } else {
       v = val / /** @type {number} */ (this.statistics(anychart.enums.Statistics.SERIES_Y_SUM));
-      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_SERIES, v * 100);
+      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_SERIES, anychart.math.round(v * 100, 2));
       v = val / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_Y_SUM));
-      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_TOTAL, v * 100);
+      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
       v = val / catSum;
-      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_CATEGORY, v * 100);
+      point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_CATEGORY, anychart.math.round(v * 100, 2));
       v = catSum / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_Y_SUM));
-      point.statistics(anychart.enums.Statistics.CATEGORY_Y_PERCENT_OF_TOTAL, v * 100);
+      point.statistics(anychart.enums.Statistics.CATEGORY_Y_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_SUM, catSum);
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_MAX, this.statistics(anychart.enums.Statistics.CATEGORY_Y_MAX_ARR_)[index]);
       point.statistics(anychart.enums.Statistics.CATEGORY_Y_MIN, this.statistics(anychart.enums.Statistics.CATEGORY_Y_MIN_ARR_)[index]);
@@ -1524,13 +1524,13 @@ anychart.core.series.Cartesian.prototype.getPoint = function(index) {
     }
   } else {
     v = x / /** @type {number} */ (this.statistics(anychart.enums.Statistics.SERIES_X_SUM));
-    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_SERIES, v * 100);
+    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_SERIES, anychart.math.round(v * 100, 2));
     v = val / /** @type {number} */ (this.statistics(anychart.enums.Statistics.SERIES_Y_SUM));
-    point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_SERIES, v * 100);
+    point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_SERIES, anychart.math.round(v * 100, 2));
     v = x / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_X_SUM));
-    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_TOTAL, v * 100);
+    point.statistics(anychart.enums.Statistics.X_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
     v = val / /** @type {number} */ (chart.statistics(anychart.enums.Statistics.DATA_PLOT_Y_SUM));
-    point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_TOTAL, v * 100);
+    point.statistics(anychart.enums.Statistics.Y_PERCENT_OF_TOTAL, anychart.math.round(v * 100, 2));
 
   }
 
