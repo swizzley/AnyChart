@@ -1402,6 +1402,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
         }
 
         var avg = pointsCount ? seriesYSum / pointsCount : 0;
+        avg = anychart.math.round(avg, anychart.math.getPrecision(seriesYSum));
         ser.statistics(anychart.enums.Statistics.SERIES_SUM, seriesYSum);
         ser.statistics(anychart.enums.Statistics.SERIES_MIN, seriesYMin);
         ser.statistics(anychart.enums.Statistics.SERIES_MAX, seriesYMax);
@@ -1420,16 +1421,18 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
           ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_MIN, seriesRangeMin);
           ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_SUM, seriesYSum);
           ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_AVERAGE, avg);
-          ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_MODE, anychart.math.mode(seriesValues));
-          ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_MEDIAN, anychart.math.median(seriesValues));
+          ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_MODE, anychart.math.round(anychart.math.mode(seriesValues), anychart.math.getPrecision(seriesYSum)));
+          ser.statistics(anychart.enums.Statistics.SERIES_Y_RANGE_MEDIAN, anychart.math.round(anychart.math.median(seriesValues), anychart.math.getPrecision(seriesYSum)));
         } else {
           if (isBubbleSeries) {
+            var seriesSizeAvg = pointsCount ? seriesSizeSum / pointsCount : 0;
+            seriesSizeAvg = anychart.math.round(seriesSizeAvg, anychart.math.getPrecision(seriesSizeSum));
             ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_MAX_SIZE, seriesSizeMax);
             ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_MIN_SIZE, seriesSizeMin);
             ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_SUM, seriesSizeSum);
-            ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_AVERAGE, pointsCount ? seriesSizeSum / pointsCount : 0);
-            ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_MODE, anychart.math.mode(seriesSizes));
-            ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_MEDIAN, anychart.math.median(seriesSizes));
+            ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_AVERAGE, seriesSizeAvg);
+            ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_MODE, anychart.math.round(anychart.math.mode(seriesSizes), anychart.math.getPrecision(seriesSizeSum)));
+            ser.statistics(anychart.enums.Statistics.SERIES_BUBBLE_SIZE_MEDIAN, anychart.math.round(anychart.math.median(seriesSizes), anychart.math.getPrecision(seriesSizeSum)));
             totalSizeSum += seriesSizeSum;
             totalSizeMax = Math.max(totalSizeMax, seriesSizeMax);
             totalSizeMin = Math.min(totalSizeMin, seriesSizeMin);
@@ -1440,19 +1443,21 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
           ser.statistics(anychart.enums.Statistics.SERIES_FIRST_Y_VALUE, seriesValues[0]);
           ser.statistics(anychart.enums.Statistics.SERIES_LAST_Y_VALUE, seriesValues[seriesValues.length - 1]);
           ser.statistics(anychart.enums.Statistics.SERIES_Y_AVERAGE, avg);
-          ser.statistics(anychart.enums.Statistics.SERIES_Y_MODE, anychart.math.mode(seriesValues));
-          ser.statistics(anychart.enums.Statistics.SERIES_Y_MEDIAN, anychart.math.median(seriesValues));
+          ser.statistics(anychart.enums.Statistics.SERIES_Y_MODE, anychart.math.round(anychart.math.mode(seriesValues), anychart.math.getPrecision(seriesYSum)));
+          ser.statistics(anychart.enums.Statistics.SERIES_Y_MEDIAN, anychart.math.round(anychart.math.median(seriesValues), anychart.math.getPrecision(seriesYSum)));
         }
 
         if (!this.categorizeData) {
+          var seriesXAvg = pointsCount ? seriesXSum / pointsCount : 0;
+          seriesXAvg = anychart.math.round(seriesXAvg, anychart.math.getPrecision(seriesSizeSum));
           ser.statistics(anychart.enums.Statistics.SERIES_X_MAX, seriesXMax);
           ser.statistics(anychart.enums.Statistics.SERIES_X_MIN, seriesXMin);
           ser.statistics(anychart.enums.Statistics.SERIES_X_SUM, seriesXSum);
           ser.statistics(anychart.enums.Statistics.SERIES_FIRST_X_VALUE, seriesXes[0]);
           ser.statistics(anychart.enums.Statistics.SERIES_LAST_X_VALUE, seriesXes[seriesValues.length - 1]);
-          ser.statistics(anychart.enums.Statistics.SERIES_X_AVERAGE, pointsCount ? seriesXSum / pointsCount : 0);
-          ser.statistics(anychart.enums.Statistics.SERIES_X_MODE, anychart.math.mode(seriesXes));
-          ser.statistics(anychart.enums.Statistics.SERIES_X_MEDIAN, anychart.math.median(seriesXes));
+          ser.statistics(anychart.enums.Statistics.SERIES_X_AVERAGE, seriesXAvg);
+          ser.statistics(anychart.enums.Statistics.SERIES_X_MODE, anychart.math.round(anychart.math.mode(seriesXes), anychart.math.getPrecision(seriesXSum)));
+          ser.statistics(anychart.enums.Statistics.SERIES_X_MEDIAN, anychart.math.round(anychart.math.median(seriesXes), anychart.math.getPrecision(seriesXSum)));
         }
       }
 
@@ -1479,12 +1484,13 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
             catYMax = Math.max(catYMax, temp);
           }
 
+          var prec = anychart.math.getPrecision(catYSum);
           catSumArr[d] = catYSum;
           catYMinArr[d] = catYMin;
           catYMaxArr[d] = catYMax;
-          catYAvgArr[d] = catYSum / catValues.length;
-          catYMedArr[d] = anychart.math.median(catValues);
-          catYModArr[d] = anychart.math.mode(catValues);
+          catYAvgArr[d] = anychart.math.round(catValues.length ? catYSum / catValues.length : 0, prec);
+          catYMedArr[d] = anychart.math.round(anychart.math.mode(catValues), prec);
+          catYModArr[d] = anychart.math.round(anychart.math.median(catValues), prec);
         }
 
         for (j = 0; j < plans.length; j++) {
@@ -1519,7 +1525,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
     this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_RANGE_MAX, totalYMax);
     this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_MIN, totalYMin);
     this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_RANGE_MIN, totalYMin);
-    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_AVERAGE, totalPointsCount ? totalYSum / totalPointsCount : 0);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_AVERAGE, anychart.math.round(totalPointsCount ? totalYSum / totalPointsCount : 0, anychart.math.getPrecision(totalYSum)));
     this.statistics(anychart.enums.Statistics.DATA_PLOT_SERIES_COUNT, this.drawingPlans.length);
     this.statistics(anychart.enums.Statistics.DATA_PLOT_POINT_COUNT, totalPointsCount);
     this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_Y_VALUE_POINT_SERIES_NAME, maxYSeriesName);
@@ -1530,13 +1536,13 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
       this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_SUM, totalSizeSum);
       this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_MIN_SIZE, totalSizeMin);
       this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_MAX_SIZE, totalSizeMax);
-      this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_AVERAGE, totalPointsCount ? totalSizeSum / totalPointsCount : 0);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_AVERAGE, anychart.math.round(totalPointsCount ? totalSizeSum / totalPointsCount : 0, anychart.math.getPrecision(totalSizeSum)));
     }
     if (!this.categorizeData) {
       this.statistics(anychart.enums.Statistics.DATA_PLOT_X_SUM, totalXSum);
       this.statistics(anychart.enums.Statistics.DATA_PLOT_X_MAX, totalXMax);
       this.statistics(anychart.enums.Statistics.DATA_PLOT_X_MIN, totalXMin);
-      this.statistics(anychart.enums.Statistics.DATA_PLOT_X_AVERAGE, totalPointsCount ? totalXSum / totalPointsCount : 0);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_X_AVERAGE, anychart.math.round(totalPointsCount ? totalXSum / totalPointsCount : 0, anychart.math.getPrecision(totalXSum)));
       this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_X_VALUE_POINT_SERIES_NAME, maxXSeriesName);
       this.statistics(anychart.enums.Statistics.DATA_PLOT_MIN_X_VALUE_POINT_SERIES_NAME, minXSeriesName);
       this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_X_SUM_SERIES_NAME, maxXSumSeriesName);
