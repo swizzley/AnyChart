@@ -838,7 +838,7 @@ anychart.colorScalesModule.ui.ColorRange.prototype.handleMouseClick = function(e
   if (this.target_) {
     var scale = this.scale();
     var target = /** @type {anychart.mapModule.Series|anychart.treemapModule.Chart|anychart.tagCloudModule.Chart} */(this.target_);
-    var targetScale = target.colorScale() || (target.getColorScale ? target.getColorScale() : void 0);
+    var targetScale = target && (target.colorScale() || (target.getColorScale ? target.getColorScale() : void 0));
 
     if (this.enabled() && scale && target.enabled() && targetScale == scale) {
       var lineBounds = this.line.getBounds();

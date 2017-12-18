@@ -1554,20 +1554,21 @@ anychart.pyramidFunnelModule.Chart.prototype.unselect = function(opt_indexOrInde
 //  Apply appearance.
 //
 //----------------------------------------------------------------------------------------------------------------------
-/**
- * Apply appearance to point.
- * @param {anychart.PointState|number} pointState
- */
-anychart.pyramidFunnelModule.Chart.prototype.applyAppearanceToPoint = function(pointState) {
+/** @inheritDoc */
+anychart.pyramidFunnelModule.Chart.prototype.applyAppearanceToPoint = function(pointState, opt_value) {
   this.colorizePoint_(pointState);
   this.applyHatchFill(pointState);
   this.drawMarker(pointState);
+
+  return opt_value;
 };
 
 
-/**
- * Finalization point appearance. For drawing labels and markers.
- */
+/** @inheritDoc */
+anychart.pyramidFunnelModule.Chart.prototype.getStartValueForAppearanceReduction = goog.nullFunction;
+
+
+/** @inheritDoc */
 anychart.pyramidFunnelModule.Chart.prototype.finalizePointAppearance = goog.nullFunction;
 
 
