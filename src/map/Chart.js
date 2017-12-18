@@ -795,7 +795,7 @@ anychart.mapModule.Chart.prototype.controlsInteractivity_ = function() {
 
 
     this.mapClickHandler_ = function(e) {
-      if (!this.container())
+      if (!this.container() || !this.container().getStage())
         return;
 
       var containerPosition = this.container().getStage().getClientPosition();
