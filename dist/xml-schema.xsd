@@ -1418,7 +1418,7 @@
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill" />
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="center" type="Anychart" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="content" type="Anychart" />
         </xsd:all>
         <xsd:attribute name="fill" type="xsd:string" />
         <xsd:attribute name="stroke" type="xsd:string" />
