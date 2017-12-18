@@ -235,8 +235,13 @@ fi
 # ---- Drop CDN cache for uploaded files (for all builds) --------------------------------------------------------------
 echo Dropping CDN cache
 if [ ${IS_PREVIEW_BUILD} = "true" ]; then
+    # drop cache for /releases/develop/*
+    python ./bin/drop_cdn_cache.py ${TRAVIS_BRANCH} ${CDN_ALIASE} ${CDN_CONSUMER_KEY} ${CDN_CONSUMER_SECRET} ${CDN_ZONE_ID}
+elif [ "${VERSION}" != "${TRAVIS_BRANCH}" ]; then
+    # CAT legacy structure
     python ./bin/drop_cdn_cache.py ${TRAVIS_BRANCH} ${CDN_ALIASE} ${CDN_CONSUMER_KEY} ${CDN_CONSUMER_SECRET} ${CDN_ZONE_ID}
 else
+    # drop cache for /releases/X.X.X/*
     python ./bin/drop_cdn_cache.py ${VERSION} ${CDN_ALIASE} ${CDN_CONSUMER_KEY} ${CDN_CONSUMER_SECRET} ${CDN_ZONE_ID}
 fi
 # ---- Drop CDN cache for uploaded files (for all builds) --------------------------------------------------------------
