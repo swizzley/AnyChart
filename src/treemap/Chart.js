@@ -1907,8 +1907,10 @@ anychart.treemapModule.Chart.prototype.drawLabel_ = function(pointState) {
         label['height'](pointBounds.height);
         label['clip'](pointBounds);
       } else {
-        label['width'](null);
-        label['height'](null);
+        if (!isHeader) {
+          label['width'](null);
+          label['height'](null);
+        }
         label['clip'](null);
       }
 
