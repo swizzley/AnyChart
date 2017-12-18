@@ -362,7 +362,7 @@ anychart.annotationsModule.FibonacciBase.prototype.createFormatProvider = functi
       type: anychart.enums.TokenType.NUMBER
     },
     'levelValue': {
-      value: this.yScale().roundToTicksPrecision(levelValue),
+      value: isX ? levelValue : this.yScale().roundToTicksPrecision(levelValue, 2),
       type: isX ? anychart.enums.TokenType.DATE_TIME : anychart.enums.TokenType.NUMBER
     },
     'rawLevelValue': {
