@@ -2199,6 +2199,7 @@
     </xsd:complexType>
 
     <xsd:complexType name="OrdinalColorRange">
+        <xsd:attribute name="equal" type="xsd:string"/>
         <xsd:attribute name="less" type="xsd:unsignedInt"/>
         <xsd:attribute name="greater" type="xsd:unsignedInt"/>
         <xsd:attribute name="from" type="xsd:unsignedInt"/>
