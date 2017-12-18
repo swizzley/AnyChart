@@ -4354,16 +4354,12 @@ anychart.pieModule.Chart.prototype.hoverPoint = function(index, opt_event) {
         this.state.removePointState(anychart.PointState.HOVER, hoveredPoints[i]);
       }
     }
-    this.state.addPointState(anychart.PointState.HOVER, index);
-    if (goog.isDef(opt_event))
-      this.showTooltip(opt_event);
-
-  } else if (goog.isNumber(index)) {
-    this.unhover();
-    this.state.addPointState(anychart.PointState.HOVER, index);
-    if (goog.isDef(opt_event))
-      this.showTooltip(opt_event);
   }
+
+  this.state.addPointState(anychart.PointState.HOVER, index);
+  if (goog.isDef(opt_event))
+    this.showTooltip(opt_event);
+
   return this;
 };
 
@@ -4491,6 +4487,10 @@ anychart.pieModule.Chart.prototype.applyAppearanceToPoint = function(pointState,
     this.drawSlice_(pointState, true);
   }
 
+  if (!this.isOutsideLabels()) {
+    this.drawLabel_(pointState);
+  }
+
   return opt_value || (currentPointExplode != this.getExplode(pointState));
 };
 
@@ -4521,8 +4521,6 @@ anychart.pieModule.Chart.prototype.finalizePointAppearance = function(opt_value)
       iterator.select(currIndex);
     }
   } else {
-    var pointState = this.state.getPointStateByIndex(currIndex);
-    this.drawLabel_(pointState);
     this.labels().draw();
   }
 };
