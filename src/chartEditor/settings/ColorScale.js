@@ -78,7 +78,8 @@ anychart.chartEditorModule.settings.ColorScale.prototype.enterDocument = functio
   anychart.chartEditorModule.settings.ColorScale.base(this, 'enterDocument');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (model.getValue([['chart'], ['settings'], ['colorScale()', 'type']]))
+  var scale = model.getValue(this.getKey());
+  if (scale && scale.type)
     this.updateSpecific(true);
   else {
     this.ranges_.exclude(true);
@@ -92,7 +93,8 @@ anychart.chartEditorModule.settings.ColorScale.prototype.onModelChange = functio
   anychart.chartEditorModule.settings.ColorScale.base(this, 'onModelChange', evt);
   if (!this.isExcluded()) {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    var scaleType = model.getValue([['chart'], ['settings'], ['colorScale()', 'type']]);
+    var scale = model.getValue(this.getKey());
+    var scaleType = scale ? scale.type : void 0;
     if (this.scaleTypeField_ && scaleType) {
       this.scaleTypeField_.setValue(scaleType, true);
     }
