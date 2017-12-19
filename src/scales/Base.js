@@ -345,9 +345,10 @@ anychart.scales.Base.prototype.getType = goog.abstractMethod;
 /**
  * Rounds to ticks precision if available.
  * @param {*} value
+ * @param {number=} opt_addPrec
  * @return {number}
  */
-anychart.scales.Base.prototype.roundToTicksPrecision = function(value) {
+anychart.scales.Base.prototype.roundToTicksPrecision = function(value, opt_addPrec) {
   return Number(value);
 };
 
