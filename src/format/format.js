@@ -227,7 +227,7 @@ goog.exportSymbol('anychart.format.locales.default.dateTimeLocale', {
   }
 });
 goog.exportSymbol('anychart.format.locales.default.numberLocale', {
-  'decimalsCount': 10,
+  'decimalsCount': 2,
   'decimalPoint': '.',
   'groupsSeparator': '',
   'scale': false,
