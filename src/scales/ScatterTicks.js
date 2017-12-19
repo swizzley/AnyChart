@@ -367,7 +367,7 @@ anychart.scales.ScatterTicks.prototype.setupLinear_ = function(min, max, opt_can
       for (var q = minCount; q <= maxCount; q++) {
         var count = q - 1; // it should be valid here
         var range = max - min;
-        currentInterval = range / count;
+        currentInterval = anychart.math.specialRound(range / count);
         //console.log(currentInterval);
         // Here we can add other interval rounding options and choose the best
         // For example, with fractional values powers of 2 give better result because they divide interval in 2, 4, 8,
@@ -472,7 +472,7 @@ anychart.scales.ScatterTicks.prototype.setupLogarithmic_ = function(min, max, lo
         // calculating the interval here
         var count = q - 1; // it should be valid here
         var range = max - min;
-        currentInterval = range / count;
+        currentInterval = anychart.math.specialRound(range / count);
         // Here we can add other interval rounding options and choose the best
         // All interval aligners are rounded, because we cannot show pretty intervals with non-round powers of logBase
         // Because of that, this algorithm produces from 2 to count+1 ticks here:(
