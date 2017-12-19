@@ -78,7 +78,7 @@ anychart.scales.Linear.prototype.getType = function() {
 anychart.scales.Linear.prototype.roundToTicksPrecision = function(value, opt_addPrec) {
   var ticks = this.ticks().getInternal();
   var prec = anychart.math.getPrecision(anychart.math.specialRound(ticks[1] - ticks[0]));
-  return anychart.math.round(Number(value), Math.max(prec, 0) + (isNaN(opt_addPrec) ? 2 : Number(opt_addPrec)));
+  return anychart.math.round(Number(value), Math.max(prec, 0) + (isNaN(opt_addPrec) ? 0 : Number(opt_addPrec)));
 };
 
 
