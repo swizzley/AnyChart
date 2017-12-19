@@ -1101,14 +1101,16 @@ anychart.mapModule.scales.Geo.prototype.calculate = function() {
   this.fullCenterOffsetX = (this.fullBounds_.width - this.fullRangeX * this.fullRatio) / 2;
   this.fullCenterOffsetY = (this.fullBounds_.height - this.fullRangeY * this.fullRatio) / 2;
 
-  var leftTopCorner = this.scaleToPxF(this.dataRangeMinX, this.dataRangeMaxY);
-  var rightBottomCorner = this.scaleToPxF(this.dataRangeMaxX, this.dataRangeMinY);
+  var rightBottomCorner = this.scaleToPxF(this.dataRangeMinX, this.dataRangeMaxY);
+  var leftTopCorner = this.scaleToPxF(this.dataRangeMaxX, this.dataRangeMinY);
 
   this.mainBounds_ = new anychart.math.Rect(
       leftTopCorner[0],
       leftTopCorner[1],
       rightBottomCorner[0] - leftTopCorner[0],
       rightBottomCorner[1] - leftTopCorner[1]);
+
+  console.log(this.mainBounds_, this.fullBounds_);
 
   var minPoint = [this.minLong, this.minLat];
   var maxPoint = [this.maxLong, this.maxLat];

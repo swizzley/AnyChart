@@ -543,7 +543,7 @@ anychart.mapModule.Chart.prototype.fullZoom = 1;
  *    heatZone: Object.<{left: number, top: number, width: number, height: number}>
  *    }>>}
  */
-anychart.mapModule.Chart.prototype.projectionMap = null;
+ anychart.mapModule.Chart.prototype.projectionMap = null;
 
 
 /**
@@ -3314,7 +3314,7 @@ anychart.mapModule.Chart.prototype.drawContent = function(bounds) {
 
 
       //todo (blackart) this is harcode! remove this shit when we to kill world map
-      if (this.mapLayer_ && this.mapTX &&!this.projectionMap['default'].xoffset) {
+      if (this.mapLayer_ && this.projectionMap &&!this.projectionMap['default'].xoffset) {
         //this.mapLayer_.clip(scale.getViewSpace());
 
     }
@@ -3328,7 +3328,7 @@ anychart.mapModule.Chart.prototype.drawContent = function(bounds) {
       this.svgRootLayer_.scale(scale.ratio, scale.ratio, 0, 0);
 
       var xy = scale.scaleToPx(0, 0);
-      defaultProjection = new goog.math.AffineTransform(1, 0, 0, 1, xy[0], xy[1]);
+      var defaultProjection = new goog.math.AffineTransform(1, 0, 0, 1, xy[0], xy[1]);
 
       defaultProjection.concatenate(this.svgRootLayer_.getSelfTransformation());
       this.svgRootLayer_.setTransformationMatrix(defaultProjection.getScaleX(), defaultProjection.getShearY(), defaultProjection.getShearX(), defaultProjection.getScaleY(), defaultProjection.getTranslateX(), defaultProjection.getTranslateY());
