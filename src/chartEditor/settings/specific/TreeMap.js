@@ -40,36 +40,40 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  this.sort_ = new anychart.chartEditorModule.controls.select.DataField({label: 'Sort'});
-  this.sort_.getSelect().setOptions([
+  var sort = new anychart.chartEditorModule.controls.select.DataField({label: 'Sort'});
+  sort.getSelect().setOptions([
     {value: 'asc', caption: 'Ascending'},
     {value: 'desc', caption: 'Descending'},
     {value: 'none', caption: 'No sorting'}
   ]);
-  this.addChild(this.sort_, true);
+  sort.init(model, this.genKey('sort()'));
+  this.addChildControl(sort);
 
   var maxDepth = new anychart.chartEditorModule.comboBox.Base();
   maxDepth.setOptions([1, 2, 3, 4, 5]);
   maxDepth.setRange(1, 10);
-  this.maxDepth_ = new anychart.chartEditorModule.controls.LabeledControl(maxDepth, 'Max Depth');
-  this.addChild(this.maxDepth_, true);
+  var maxDepthLC = new anychart.chartEditorModule.controls.LabeledControl(maxDepth, 'Max Depth');
+  maxDepthLC.init(model, this.genKey('maxDepth()'));
+  this.addChildControl(maxDepthLC);
 
   var hintDepth = new anychart.chartEditorModule.comboBox.Base();
   hintDepth.setOptions([0, 1, 2, 3, 4]);
   hintDepth.setRange(0, 10);
-  this.hintDepth_ = new anychart.chartEditorModule.controls.LabeledControl(hintDepth, 'Hint Depth');
-  this.addChild(this.hintDepth_, true);
+  var hintDepthLC = new anychart.chartEditorModule.controls.LabeledControl(hintDepth, 'Hint Depth');
+  hintDepthLC.init(model, this.genKey('hintDepth()'));
+  this.addChildControl(hintDepthLC);
 
   var hintOpacity = new anychart.chartEditorModule.comboBox.Base();
   hintOpacity.setOptions([0, 0.2, 0.5, 0.7, 1]);
   hintOpacity.setRange(0, 1);
-  this.hintOpacity_ = new anychart.chartEditorModule.controls.LabeledControl(hintOpacity, 'Hint Opacity');
-  this.addChild(this.hintOpacity_, true);
+  var hintOpacityLC = new anychart.chartEditorModule.controls.LabeledControl(hintOpacity, 'Hint Opacity');
+  hintOpacityLC.init(model, this.genKey('hintOpacity()'));
+  this.addChildControl(hintOpacityLC);
 
   var adjustFontSize = new anychart.chartEditorModule.checkbox.AdjustFontSize();
   adjustFontSize.setCaption('Adjust Labels Font Size');
-  this.adjustFontSize_ = adjustFontSize;
-  this.addChild(this.adjustFontSize_, true);
+  adjustFontSize.init(model, this.genKey('labels().adjustFontSize()'));
+  this.addChildControl(adjustFontSize);
 
   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
@@ -78,59 +82,4 @@ anychart.chartEditorModule.settings.specific.TreeMap.prototype.createDom = funct
   var headers = new anychart.chartEditorModule.settings.TreemapHeaders(model);
   headers.allowEnabled(true);
   this.addChild(headers, true);
-
-  this.headers_ = headers;
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.TreeMap.prototype.updateKeys = function() {
-  if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    if (this.sort_) this.sort_.init(model, this.genKey('sort()'));
-    if (this.maxDepth_) this.maxDepth_.init(model, this.genKey('maxDepth()'));
-    if (this.hintDepth_) this.hintDepth_.init(model, this.genKey('hintDepth()'));
-    if (this.hintOpacity_) this.hintOpacity_.init(model, this.genKey('hintOpacity()'));
-    if (this.adjustFontSize_) this.adjustFontSize_.init(model, this.genKey('labels().adjustFontSize()'));
-  }
-
-  anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'updateKeys');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.specific.TreeMap.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'onChartDraw', evt);
-  if (!this.isExcluded()) {
-    var target = evt.chart;
-    if (this.sort_) this.sort_.setValueByTarget(target);
-    if (this.maxDepth_) this.maxDepth_.setValueByTarget(target);
-    if (this.hintDepth_) this.hintDepth_.setValueByTarget(target);
-    if (this.hintOpacity_) this.hintOpacity_.setValueByTarget(target);
-    if (this.adjustFontSize_) this.adjustFontSize_.setValueByTarget(target);
-  }
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.specific.TreeMap.prototype.disposeInternal = function() {
-  goog.dispose(this.sort_);
-  this.sort_ = null;
-
-  goog.dispose(this.maxDepth_);
-  this.maxDepth_ = null;
-
-  goog.dispose(this.hintDepth_);
-  this.hintDepth_ = null;
-
-  goog.dispose(this.hintOpacity_);
-  this.hintOpacity_ = null;
-
-  goog.dispose(this.adjustFontSize_);
-  this.adjustFontSize_ = null;
-
-  goog.dispose(this.headers_);
-  this.headers_ = null;
-
-  anychart.chartEditorModule.settings.specific.TreeMap.base(this, 'disposeInternal');
 };

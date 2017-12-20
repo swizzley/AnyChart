@@ -36,7 +36,7 @@ anychart.chartEditorModule.settings.TreemapHeaders.prototype.createDom = functio
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.TreemapHeaders.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var settings = new anychart.chartEditorModule.settings.Title(model);
+  var settings = new anychart.chartEditorModule.settings.Title(model, null);
   settings.allowEnabled(false);
   settings.allowEditPosition(false);
   settings.allowEditAlign(false);
