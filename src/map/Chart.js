@@ -2315,161 +2315,192 @@ anychart.mapModule.Chart.prototype.postProcessGeoData = function(geoData, callba
 
 
 /**
- * Draw geometry.
  * @param {Object} geometry .
  * @param {acgraph.vector.ILayer} parent .
  * @param {Function=} opt_transform .
  * @private
  */
-anychart.mapModule.Chart.prototype.drawGeometry_ = function(geometry, parent, opt_transform) {
-  if (!geometry) return;
+anychart.mapModule.Chart.prototype.drawSVGGeoData_ = function(geometry, parent, opt_transform) {
+  var geomsLen, j, tx, features;
 
-  var domElement, j, geomsLen, tx, features;
+  if (goog.object.containsKey(geometry, 'type')) {
+    if (geometry['type'] == 'group') {
+      //region --- Group
+      if (!geometry.domElement)
+        geometry.domElement = this.createMapLayer(parent);
 
-  if (this.isSvgGeoData()) {
-    if (goog.object.containsKey(geometry, 'type')) {
-      if (geometry['type'] == 'group') {
-        if (!geometry.domElement)
-          geometry.domElement = this.createMapLayer(parent);
+      features = geometry['features'];
+      geomsLen = features.length;
+      for (j = 0; j < geomsLen; j++) {
+        this.drawSVGGeoData_(features[j], geometry.domElement, opt_transform);
+      }
 
-        features = geometry['features'];
-        geomsLen = features.length;
-        for (j = 0; j < geomsLen; j++) {
-          this.drawGeometry_(features[j], geometry.domElement, opt_transform);
+      goog.object.forEach(geometry['attrs'], function(value, key) {
+        if (key == 'id') {
+          geometry.domElement.id(value);
+        } else if (key == 'clip-path') {
+          value.domElement = this.parser.createPathByCommands(value['commands'], value.domElement);
+          geometry.domElement.clip(value.domElement);
+        } else {
+          geometry.domElement.attr(key, value);
         }
+      }, this);
+      //endregion
+    } else if (geometry['type'] == 'image') {
+      //region --- Image
+      if (!geometry.domElement)
+        geometry.domElement = parent.image();
+      var bounds = geometry['bounds'];
 
-        goog.object.forEach(geometry['attrs'], function(value, key) {
-          if (key == 'id') {
-            geometry.domElement.id(value);
-          } else if (key == 'clip-path') {
-            value.domElement = this.parser.createPathByCommands(value['commands'], value.domElement);
-            geometry.domElement.clip(value.domElement);
-          } else {
-            geometry.domElement.attr(key, value);
-          }
-        }, this);
-      } else if (geometry['type'] == 'image') {
-        if (!geometry.domElement)
-          geometry.domElement = parent.image();
-        var bounds = geometry['bounds'];
+      geometry.domElement.x(bounds.left);
+      geometry.domElement.y(bounds.top);
+      geometry.domElement.width(bounds.width);
+      geometry.domElement.height(bounds.height);
 
-        geometry.domElement.x(bounds.left);
-        geometry.domElement.y(bounds.top);
-        geometry.domElement.width(bounds.width);
-        geometry.domElement.height(bounds.height);
+      geometry.domElement.src(geometry['attrs']['xlink:href']);
+      //endregion
+    } else if (geometry['type'] == 'path') {
+      //region --- Path
+      if (!geometry.domElement)
+        geometry.domElement = this.createPath_(parent);
+      this.parser.createPathByCommands(geometry['commands'], geometry.domElement);
 
-        geometry.domElement.src(geometry['attrs']['xlink:href']);
-      } else if (geometry['type'] == 'path') {
-        if (!geometry.domElement)
-          geometry.domElement = this.createPath_(parent);
-        this.parser.createPathByCommands(geometry['commands'], geometry.domElement);
+      goog.object.forEach(geometry['attrs'], function(value, key) {
+        if (key == 'id') {
+          geometry.domElement.id(value);
+        } else if (key == 'clip-path') {
+          value.domElement = this.parser.createPathByCommands(value['commands'], value.domElement);
+          geometry.domElement.clip(value.domElement);
+        } else {
+          var bounds;
+          if (key == 'fill') {
+            var fill;
+            if (goog.isObject(value)) {
+              if (value['type'] && value['type'] == 'pattern') {
+                bounds = value['bounds'];
+                if (!value.domElement) {
+                  value.domElement = acgraph.patternFill(bounds);
 
-        goog.object.forEach(geometry['attrs'], function(value, key) {
-          if (key == 'id') {
-            geometry.domElement.id(value);
-          } else if (key == 'clip-path') {
-            value.domElement = this.parser.createPathByCommands(value['commands'], value.domElement);
-            geometry.domElement.clip(value.domElement);
-          } else {
-            var bounds;
-            if (key == 'fill') {
-              var fill;
-              if (goog.isObject(value)) {
-                if (value['type'] && value['type'] == 'pattern') {
-                  bounds = value['bounds'];
-                  if (!value.domElement) {
-                    value.domElement = acgraph.patternFill(bounds);
+                  value.domElement.parent(parent);
+                  value.domElement.setTransformationMatrix(1, 0, 0, 1, 0, 0);
 
-                    value.domElement.parent(parent);
-                    value.domElement.setTransformationMatrix(1, 0, 0, 1, 0, 0);
-
-                    features = value['features'];
-                    geomsLen = features.length;
-                    for (j = 0; j < geomsLen; j++) {
-                      this.drawGeometry_(features[j], value.domElement, null);
-                    }
+                  features = value['features'];
+                  geomsLen = features.length;
+                  for (j = 0; j < geomsLen; j++) {
+                    this.drawGeometry_(features[j], value.domElement, null);
                   }
-                  fill = value.domElement;
-                } else {
-                  fill = value;
                 }
+                fill = value.domElement;
               } else {
                 fill = value;
               }
-              geometry.domElement.fill(fill);
-            } else if (key == 'stroke') {
-              var stroke;
-              if (goog.isObject(value)) {
-                if (value['type'] && value['type'] == 'pattern') {
-                  bounds = value['bounds'];
-                  if (!value.domElement) {
-                    value.domElement = acgraph.patternFill(bounds);
+            } else {
+              fill = value;
+            }
+            geometry.domElement.fill(fill);
+          } else if (key == 'stroke') {
+            var stroke;
+            if (goog.isObject(value)) {
+              if (value['type'] && value['type'] == 'pattern') {
+                bounds = value['bounds'];
+                if (!value.domElement) {
+                  value.domElement = acgraph.patternFill(bounds);
 
-                    value.domElement.parent(parent);
-                    value.domElement.setTransformationMatrix(1, 0, 0, 1, 0, 0);
+                  value.domElement.parent(parent);
+                  value.domElement.setTransformationMatrix(1, 0, 0, 1, 0, 0);
 
-                    features = value['features'];
-                    geomsLen = features.length;
-                    for (j = 0; j < geomsLen; j++) {
-                      this.drawGeometry_(features[j], value.domElement, null);
-                    }
+                  features = value['features'];
+                  geomsLen = features.length;
+                  for (j = 0; j < geomsLen; j++) {
+                    this.drawGeometry_(features[j], value.domElement, null);
                   }
-                  stroke = value.domElement;
-                } else {
-                  stroke = value;
                 }
+                stroke = value.domElement;
               } else {
                 stroke = value;
               }
-              geometry.domElement.stroke(stroke);
             } else {
-              geometry.domElement.attr(key, value);
+              stroke = value;
             }
+            geometry.domElement.stroke(stroke);
+          } else {
+            geometry.domElement.attr(key, value);
           }
-        }, this);
-      } else if (geometry['type'] == 'text') {
-        if (!geometry.domElement) {
-          geometry.domElement = new acgraph.vector.UnmanagedLayer();
         }
-
-        var content = geometry['cloneNode'].cloneNode(true);
-        content.removeAttribute('transform');
-
-        geometry.domElement.content(content);
+      }, this);
+      //endregion
+    } else if (geometry['type'] == 'text') {
+      //region --- Text
+      if (!geometry.domElement) {
+        geometry.domElement = new acgraph.vector.UnmanagedLayer();
       }
+
+      var content = geometry['cloneNode'].cloneNode(true);
+      content.removeAttribute('transform');
+
+      geometry.domElement.content(content);
+      //endregion
     }
-    if (geometry.domElement) {
-      tx = geometry['tx'] ? geometry['tx'].self : null;
-      if (tx) {
-        geometry.domElement.setTransformationMatrix(
-            tx.getScaleX(),
-            tx.getShearY(),
-            tx.getShearX(),
-            tx.getScaleY(),
-            tx.getTranslateX(),
-            tx.getTranslateY()
-        );
-      }
+  }
 
-      geometry.domElement.parent(parent);
-      if (geometry['type'] != 'group') {
-        this.mapPaths.push(geometry.domElement);
-      }
+  if (geometry.domElement) {
+    tx = geometry['tx'] ? geometry['tx'].self : null;
+    if (tx) {
+      geometry.domElement.setTransformationMatrix(
+          tx.getScaleX(),
+          tx.getShearY(),
+          tx.getShearX(),
+          tx.getScaleY(),
+          tx.getTranslateX(),
+          tx.getTranslateY()
+      );
+    }
+
+    geometry.domElement.parent(parent);
+    if (geometry['type'] != 'group') {
+      this.mapPaths.push(geometry.domElement);
+    }
+  }
+};
+
+
+/**
+ *
+ * @param {Object} geometry .
+ * @param {acgraph.vector.ILayer} parent .
+ */
+anychart.mapModule.Chart.prototype.drawMapsGeoData_ = function(geometry, parent) {
+  var domElement, j, geomsLen;
+
+  domElement = parent.genNextChild();
+  geometry.domElement = domElement;
+  this.mapPaths.push(domElement);
+
+  if (goog.object.containsKey(geometry, 'geometries')) {
+    var geometries = geometry['geometries'];
+    geomsLen = geometries.length;
+    for (j = 0; j < geomsLen; j++) {
+      this.iterateGeometry_(geometries[j], this.drawGeom_);
     }
   } else {
-    domElement = parent.genNextChild();
-    geometry.domElement = domElement;
-    this.mapPaths.push(domElement);
+    this.iterateGeometry_(/** @type {Object} */(geometry), this.drawGeom_);
+  }
+};
 
-    if (goog.object.containsKey(geometry, 'geometries')) {
-      var geometries = geometry['geometries'];
-      geomsLen = geometries.length;
-      for (j = 0; j < geomsLen; j++) {
-        this.iterateGeometry_(geometries[j], this.drawGeom_);
-      }
-    } else {
-      this.iterateGeometry_(/** @type {Object} */(geometry), this.drawGeom_);
-    }
+
+/**
+ * Draw geometry.
+ * @param {Object} geometry .
+ * @param {acgraph.vector.ILayer} parent .
+ * @private
+ */
+anychart.mapModule.Chart.prototype.drawGeometry_ = function(geometry, parent) {
+  if (!geometry) return;
+
+  if (this.isSvgGeoData()) {
+    this.drawSVGGeoData_(geometry, parent);
+  } else {
+    this.drawMapsGeoData_(geometry, parent);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.MAP_GEO_DATA)) {
