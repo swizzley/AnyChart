@@ -1110,8 +1110,6 @@ anychart.mapModule.scales.Geo.prototype.calculate = function() {
       rightBottomCorner[0] - leftTopCorner[0],
       rightBottomCorner[1] - leftTopCorner[1]);
 
-  console.log(this.mainBounds_, this.fullBounds_);
-
   var minPoint = [this.minLong, this.minLat];
   var maxPoint = [this.maxLong, this.maxLat];
 
