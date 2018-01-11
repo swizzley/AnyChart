@@ -50,7 +50,7 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
   this.getKey();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
-  if (!model.isChartSingleSeries()) {
+  if (chartType !== 'gauges.circular' && !model.isChartSingleSeries()) {
     var mappings = model.getValue([['dataSettings'], ['mappings', this.plotIndex_]]);
     var keyStr = chartType === 'stock' ? 'plot(' + this.plotIndex_ + ').' : '';
     var id = goog.isDef(mappings[this.index_]['id']) ? mappings[this.index_]['id'] : this.index_;
@@ -61,8 +61,6 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
     this.addChild(input, true);
     input.init(model, key, void 0, true, true);
     this.nameInput_ = input;
-
-    //TODO: rework this hack
     goog.dom.classlist.add(input.getElement(), 'anychart-plot-panel-series-name');
   }
 

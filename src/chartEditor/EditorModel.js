@@ -428,6 +428,17 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'panelsExcludes': ['series', 'grids', 'axes'],
     'settingsExcludes': ['palette()', 'animation().enabled()'],
     'filters': ['common']
+  },
+  'gauges.circular': {
+    'value': 'gauges.circular',
+    'name': 'Circular Gauge',
+    'icon': 'circular-gauge.svg',
+    'series': ['gauges.bar', 'gauges.marker', 'needle'/*, 'knob', 'cap', 'range'*/],
+    'dataSetCtor': 'set',
+    // 'singleSeries': true,
+    // 'panelsExcludes': ['series', 'grids', 'axes'],
+    // 'settingsExcludes': ['palette()', 'animation().enabled()'],
+    'filters': ['common']
   }
 };
 
@@ -508,12 +519,14 @@ anychart.chartEditorModule.EditorModel.Series = {
   },
   // map series
   'marker-by-id': {
+    'ctor': 'marker',
     'name': 'Marker (by geo Id)',
     'fields': [
       {'field': 'id', 'name': 'Id'}
     ]
   },
   'marker-by-coordinates': {
+    'ctor': 'marker',
     'name': 'Marker (by coordinates)',
     'fields': [
       {'field': 'lat', 'name': 'Latitude'},
@@ -521,6 +534,7 @@ anychart.chartEditorModule.EditorModel.Series = {
     ]
   },
   'bubble-by-id': {
+    'ctor': 'bubble',
     'name': 'Bubble (by geo Id)',
     'fields': [
       {'field': 'id', 'name': 'Id'},
@@ -528,6 +542,7 @@ anychart.chartEditorModule.EditorModel.Series = {
     ]
   },
   'bubble-by-coordinates': {
+    'ctor': 'bubble',
     'name': 'Bubble (by coordinates)',
     'fields': [
       {'field': 'lat', 'name': 'Latitude'},
@@ -562,6 +577,19 @@ anychart.chartEditorModule.EditorModel.Series = {
       {'field': 'name', 'name': 'Name', 'type': 'string'},
       {'field': 'value', 'name': 'Value'}
     ]
+  },
+  'gauges.bar': {
+    'ctor': 'bar',
+    'name': 'Bar',
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'gauges.marker': {
+    'ctor': 'marker',
+    'name': 'Marker',
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'needle': {
+    'fields': [{'field': 'value', 'name': 'Value'}]
   }
 };
 // endregion
@@ -887,7 +915,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
       var chartType = this.model_['chart']['type'];
       var singleSeries = this.isChartSingleSeries();
 
-      if (!singleSeries && chartType != 'stock' && fields.length == 1) {
+      if (!singleSeries && chartType != 'stock' && chartType != 'gauges.circular' && fields.length == 1) {
         var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
         var fieldName = numbers[numberIndex];
         var seriesName = data.fieldNames && data.fieldNames[fieldName] || fieldName;
@@ -2013,9 +2041,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
           series = plot[seriesCtor](mappingInstancesList[i][j]);
           result.push('series' + eq + 'chart.plot(' + i + ').' + seriesCtor + mappingPostfix);
         } else {
-          if (settings['chart']['type'] == 'map') {
-            seriesCtor = seriesCtor.split('-')[0];
-          }
+          seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
           series = chart[seriesCtor](mappingInstancesList[i][j]);
           result.push('series' + eq + 'chart.' + seriesCtor + mappingPostfix);
         }

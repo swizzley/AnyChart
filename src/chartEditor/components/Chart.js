@@ -79,7 +79,10 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       this.chart_ = null;
     }
 
-    this.chart_ = this.anychart[chartType]();
+    if (chartType.indexOf('.') !== -1) {
+      this.chart_ = anychart.bindingModule.exec(this.anychart, chartType + '()');
+    } else
+      this.chart_ = this.anychart[chartType]();
 
     if (chartType == 'map') {
       var geoData = model.getRawData(true);
@@ -117,6 +120,12 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
     else
       dataSet['data'](rawData);
 
+    // todo: debug
+    if (chartType === 'gauges.circular') {
+      var axis = this.chart_['axis']();
+      axis.scale().minimum(0).maximum(100);
+    }
+
     // Create mapping and series
     for (var i = 0; i < settings['dataSettings']['mappings'].length; i++) {
       plotMapping = settings['dataSettings']['mappings'][i];
@@ -140,19 +149,29 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
           this.chart_['data'](mappingInstance);
 
         } else {
+          // todo: debug
+          if (chartType === 'gauges.circular' && i == 0 && j == 0) {
+            this.chart_['data'](mappingInstance);
+          }
+
           var seriesCtor = plotMapping[j]['ctor'];
+          seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
+
           var series;
           if (chartType == 'stock') {
             var plot = this.chart_['plot'](i);
             series = plot[seriesCtor](mappingInstance);
+
+          } else if (chartType === 'gauges.circular') {
+            // todo: debug
+            series = this.chart_[seriesCtor](j/*, mappingInstance*/);
+            series.dataIndex(0);
+
           } else {
-            if (chartType == 'map') {
-              seriesCtor = seriesCtor.split('-')[0];
-            }
             series = this.chart_[seriesCtor](mappingInstance);
           }
 
-          series['id'](plotMapping[j]['id']);
+          if (series['id']) series['id'](plotMapping[j]['id']);
         }
       }
     }
@@ -179,7 +198,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   }
 
   // todo: debug
-  //window['chart'] = this.chart_;
+  window['chart'] = this.chart_;
 };
 
 
