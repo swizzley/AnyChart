@@ -79,14 +79,12 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
 
   this.chartTypeSelect_.setValueByModel({stackMode: stackMode});
 
-  if (this.activeAndFieldSelect_) {
-    this.activeAndFieldSelect_.dispose();
-    this.activeAndFieldSelect_ = null;
-  }
+  this.geoDataInputs_.exclude(chartType !== 'map');
 
-  if (chartType === 'map') {
-    this.geoDataInputs_.exclude(false);
+  goog.dispose(this.activeAndFieldSelect_);
+  this.activeAndFieldSelect_ = null;
 
+  if (chartType === 'map' || chartType === 'gauges.circular') {
     // Data Set select
     this.activeAndFieldSelect_ = new anychart.chartEditorModule.controls.select.DataField({
       caption: 'Select data set',
@@ -96,8 +94,6 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
     this.createDataSetsOptions_();
 
   } else {
-    this.geoDataInputs_.exclude(true);
-
     // X Values select
     this.activeAndFieldSelect_ = new anychart.chartEditorModule.controls.select.DataField({
       caption: 'Select field',
@@ -107,6 +103,7 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
     this.activeAndFieldSelect_.getSelect().init(model, [['dataSettings'], 'field'], 'setActiveAndField');
     this.createActiveAndFieldOptions_();
   }
+
   this.coreFieldsContainer_.addChild(this.activeAndFieldSelect_, true);
   this.activeAndFieldSelect_.addClassName('anychart-select-with-content');
   this.activeAndFieldSelect_.getSelect().setValueByModel({active: model.getActive()});
@@ -122,7 +119,6 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
     this.addChild(plot, true);
   }
 
-  // TODO: зачем нужно удалять и потом создавать кнопку?
   goog.dispose(this.addPlotBtn_);
   this.addPlotBtn_ = null;
 

@@ -79,10 +79,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       this.chart_ = null;
     }
 
-    if (chartType.indexOf('.') !== -1) {
-      this.chart_ = anychart.bindingModule.exec(this.anychart, chartType + '()');
-    } else
-      this.chart_ = this.anychart[chartType]();
+    this.chart_ = anychart.bindingModule.exec(this.anychart, chartType + '()');
 
     if (chartType == 'map') {
       var geoData = model.getRawData(true);
@@ -132,7 +129,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       for (var j = 0; j < plotMapping.length; j++) {
         seriesMapping = plotMapping[j]['mapping'];
         
-        mappingObj = dsCtor === 'table' ? {} :
+        mappingObj = dsCtor === 'table' || chartType === 'gauges.circular' ? {} :
             dsCtor === 'tree' ?
                 {'id': settings['dataSettings']['field']} :
                 {'x': settings['dataSettings']['field']};

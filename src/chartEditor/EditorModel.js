@@ -329,7 +329,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'stock-chart.svg',
     'series': ['ohlc', 'candlestick', 'line', 'spline', 'column', 'area', 'splineArea'],
     'dataSetCtor': 'table',
-    'panelsExcludes': ['data-labels', 'axes', 'colorScale', 'colorRange'],
+    'panelsExcludes': ['dataLabels', 'axes', 'colorScale', 'colorRange'],
     'settingsExcludes': ['palette()', 'legend().enabled()', 'animation().enabled()'],
     'filters': ['common']
   },
@@ -433,11 +433,11 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'value': 'gauges.circular',
     'name': 'Circular Gauge',
     'icon': 'circular-gauge.svg',
-    'series': ['gauges.bar', 'gauges.marker', 'needle'/*, 'knob', 'cap', 'range'*/],
+    'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
     'dataSetCtor': 'set',
     // 'singleSeries': true,
-    // 'panelsExcludes': ['series', 'grids', 'axes'],
-    // 'settingsExcludes': ['palette()', 'animation().enabled()'],
+    'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
+    'settingsExcludes': ['palette()'],
     'filters': ['common']
   }
 };
@@ -589,6 +589,9 @@ anychart.chartEditorModule.EditorModel.Series = {
     'fields': [{'field': 'value', 'name': 'Value'}]
   },
   'needle': {
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'knob': {
     'fields': [{'field': 'value', 'name': 'Value'}]
   }
 };
@@ -1895,8 +1898,8 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
   var settings = this.getModel();
   var outputSettings = settings['outputSettings'] ? settings['outputSettings'] : {};
   if (goog.isObject(opt_options))
-    for (var k in opt_options) {
-      outputSettings[k] = opt_options[k];
+    for (var k1 in opt_options) {
+      outputSettings[k1] = opt_options[k1];
     }
 
   var chartType = settings['chart']['type'];
@@ -1935,7 +1938,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     result.push('');
   }
 
-  var chart = anychartGlobal[chartType]();
+  var chart = anychart.bindingModule.exec(anychartGlobal, chartType + '()');
   result.push('// Creating chart', 'var chart' + eq + 'anychart.' + chartType + '();', '');
 
   if (chartType == 'map') {
@@ -2004,7 +2007,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     plotMapping = settings['dataSettings']['mappings'][i];
     for (j = 0; j < plotMapping.length; j++) {
       var seriesMapping = plotMapping[j]['mapping'];
-      var mappingObj = dsCtor === 'table' ? {} :
+      var mappingObj = dsCtor === 'table' || chartType === 'gauges.circular' ? {} :
           dsCtor === 'tree' ?
               {'id': settings['dataSettings']['field']} :
               {'x': settings['dataSettings']['field']};
@@ -2034,19 +2037,22 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
       plotMapping = settings['dataSettings']['mappings'][i];
       for (j = 0; j < plotMapping.length; j++) {
         var seriesCtor = plotMapping[j]['ctor'];
+        seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
         var series;
         var mappingPostfix = '(mapping' + (isSingleSeries ? '' : ((isSinglePlot ? '' : '_' + i) + '_' + j)) + ');';
         if (chartType == 'stock') {
           var plot = chart['plot'](i);
           series = plot[seriesCtor](mappingInstancesList[i][j]);
           result.push('series' + eq + 'chart.plot(' + i + ').' + seriesCtor + mappingPostfix);
+
         } else {
-          seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
           series = chart[seriesCtor](mappingInstancesList[i][j]);
           result.push('series' + eq + 'chart.' + seriesCtor + mappingPostfix);
         }
-        series['id'](plotMapping[j]['id']);
-        result.push('series.id(' + this.printValue_(printer, plotMapping[j]['id']) + ');');
+        if (series['id']) {
+          series['id'](plotMapping[j]['id']);
+          result.push('series.id(' + this.printValue_(printer, plotMapping[j]['id']) + ');');
+        }
       }
     }
   }

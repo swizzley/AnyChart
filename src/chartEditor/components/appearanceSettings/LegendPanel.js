@@ -14,6 +14,8 @@ goog.require('anychart.chartEditorModule.settings.Legend');
 anychart.chartEditorModule.LegendPanel = function(model, opt_domHelper) {
   anychart.chartEditorModule.LegendPanel.base(this, 'constructor', model, 'Legend', opt_domHelper);
 
+  this.stringId = 'legend';
+
   this.legends_ = [];
 };
 goog.inherits(anychart.chartEditorModule.LegendPanel, anychart.chartEditorModule.SettingsPanel);
