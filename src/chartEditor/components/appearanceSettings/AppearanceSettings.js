@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.AppearanceSettings');
 
 goog.require('anychart.chartEditorModule.ChartTitlePanel');
+goog.require('anychart.chartEditorModule.CircularGaugeAxesPanel');
 goog.require('anychart.chartEditorModule.ColorRangePanel');
 goog.require('anychart.chartEditorModule.ColorScalePanel');
 goog.require('anychart.chartEditorModule.Component');
@@ -80,6 +81,12 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       name: 'YAxes',
       enabled: true,
       classFunc: anychart.chartEditorModule.YAxesPanel,
+      instance: null
+    },
+    {
+      name: 'Axes',
+      enabled: true,
+      classFunc: anychart.chartEditorModule.CircularGaugeAxesPanel,
       instance: null
     },
     {

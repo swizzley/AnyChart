@@ -74,10 +74,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
   // Chart creation
   if (rebuild) {
-    if (this.chart_ && typeof this.chart_['dispose'] == 'function') {
-      this.chart_['dispose']();
-      this.chart_ = null;
-    }
+    goog.dispose(this.chart_);
 
     this.chart_ = /** @type {anychart.core.Chart} */(anychart.bindingModule.exec(this.anychart, chartType + '()'));
 

@@ -19,7 +19,7 @@ anychart.chartEditorModule.AxesPanelBase = function(model, opt_domHelper) {
   this.axes_ = [];
 
   /**
-   * Axis prefix. Should be overriden.
+   * Axis prefix. Should be overridden.
    * @type {string}
    * @protected
    */
@@ -91,7 +91,7 @@ anychart.chartEditorModule.AxesPanelBase.prototype.onRemoveAxis_ = function(evt)
   var axisIndex = (/** @type {anychart.chartEditorModule.settings.Axis} */(evt.currentTarget)).getIndex();
   goog.dispose(this.axes_[axisIndex]);
   this.axes_[axisIndex] = null;
-  model.dropAxis(this.xOrY, axisIndex);
+  model.dropAxis(axisIndex, this.xOrY);
 };
 
 

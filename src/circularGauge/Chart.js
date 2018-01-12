@@ -708,6 +708,14 @@ anychart.circularGaugeModule.Chart.prototype.axis = function(opt_indexOrValue, o
 
 
 /**
+ * @return {number} Number of series.
+ */
+anychart.circularGaugeModule.Chart.prototype.getAxesCount = function() {
+  return this.axes_.length;
+};
+
+
+/**
  * Listener for axes invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
  * @private
@@ -1389,6 +1397,7 @@ anychart.circularGaugeModule.Chart.prototype.getDefaultThemeObj = function() {
 
   proto['cap'] = proto.cap;
   proto['axis'] = proto.axis;
+  proto['getAxesCount'] = proto.getAxesCount;
 
   proto['bar'] = proto.bar;
   proto['marker'] = proto.marker;
