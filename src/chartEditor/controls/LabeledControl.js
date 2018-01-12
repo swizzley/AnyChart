@@ -4,7 +4,7 @@ goog.require('anychart.chartEditorModule.Component');
 
 
 /**
- * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base)} control
+ * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base|anychart.chartEditorModule.colorPicker.Base)} control
  * @param {string=} opt_label
  * @param {goog.dom.DomHelper=} opt_domHelper
  * @constructor
@@ -38,7 +38,7 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.createDom = functio
 
 
 /**
- * @return {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base)}
+ * @return {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base|anychart.chartEditorModule.colorPicker.Base)}
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.getControl = function() {
   return this.control_;
@@ -46,7 +46,7 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.getControl = functi
 
 
 /**
- * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base)} control
+ * @param {(anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.input.Base|anychart.chartEditorModule.colorPicker.Base)} control
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.setControl = function(control) {
   this.control_ = control;

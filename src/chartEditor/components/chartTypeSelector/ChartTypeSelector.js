@@ -108,6 +108,8 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
   this.activeAndFieldSelect_.addClassName('anychart-select-with-content');
   this.activeAndFieldSelect_.getSelect().setValueByModel({active: model.getActive()});
 
+  goog.dom.classlist.enable(this.activeAndFieldSelect_.getElement(), 'anychart-hidden', this.activeAndFieldSelect_.getSelect().getItemCount() <= 1);
+
   // Plots
   this.removeAllPlots_();
 

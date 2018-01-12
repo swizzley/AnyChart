@@ -151,6 +151,7 @@ anychart.chartEditorModule.settings.Stroke.prototype.setValueByTarget = function
 
 /** @override */
 anychart.chartEditorModule.settings.Stroke.prototype.disposeInternal = function() {
+  goog.disposeAll([this.color_, this.thickness_, this.dash_]);
   this.color_ = null;
   this.thickness_ = null;
   this.dash_ = null;

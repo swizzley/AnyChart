@@ -79,7 +79,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       this.chart_ = null;
     }
 
-    this.chart_ = anychart.bindingModule.exec(this.anychart, chartType + '()');
+    this.chart_ = /** @type {anychart.core.Chart} */(anychart.bindingModule.exec(this.anychart, chartType + '()'));
 
     if (chartType == 'map') {
       var geoData = model.getRawData(true);

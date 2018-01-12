@@ -51,6 +51,8 @@ anychart.chartEditorModule.colorPicker.Base = function(opt_content, opt_menu, op
    * @protected
    */
   this.noDispatch = false;
+
+  this.excluded = false;
 };
 goog.inherits(anychart.chartEditorModule.colorPicker.Base, goog.ui.ColorMenuButton);
 
@@ -153,7 +155,9 @@ anychart.chartEditorModule.colorPicker.Base.prototype.setKey = function(value) {
 /** @override */
 anychart.chartEditorModule.colorPicker.Base.prototype.enterDocument = function() {
   anychart.chartEditorModule.colorPicker.Base.base(this, 'enterDocument');
-  this.getHandler().listen(this, goog.ui.Component.EventType.ACTION, this.onChange_, false);
+  goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', this.excluded);
+  if (!this.excluded)
+    this.getHandler().listen(this, goog.ui.Component.EventType.ACTION, this.onChange_, false);
 };
 
 
@@ -170,6 +174,7 @@ anychart.chartEditorModule.colorPicker.Base.prototype.exitDocument = function() 
  */
 anychart.chartEditorModule.colorPicker.Base.prototype.onChange_ = function(evt) {
   evt.stopPropagation();
+  if (this.excluded) return;
 
   if (!this.noDispatch && this.editorModel) {
     var value = this.getSelectedColor();
@@ -203,6 +208,8 @@ anychart.chartEditorModule.colorPicker.Base.prototype.init = function(model, key
   this.callback = opt_callback;
 
   this.noRebuild = !!opt_noRebuild;
+
+  this.updateExclusion();
 };
 
 
@@ -212,6 +219,8 @@ anychart.chartEditorModule.colorPicker.Base.prototype.init = function(model, key
  * @param {?Object} target Object, who's property corresponds to control's key. Used to get value of this control.
  */
 anychart.chartEditorModule.colorPicker.Base.prototype.setValueByTarget = function(target) {
+  if (this.excluded) return;
+
   this.target = target;
 
   var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
@@ -222,4 +231,39 @@ anychart.chartEditorModule.colorPicker.Base.prototype.setValueByTarget = functio
   this.noDispatch = true;
   this.setSelectedColor(value);
   this.noDispatch = false;
+};
+
+
+/**
+ * Hide or show control by assigning 'hidden' class
+ * @param {boolean} value True if excluded.
+ */
+anychart.chartEditorModule.colorPicker.Base.prototype.exclude = function(value) {
+  var dirty = this.excluded != value;
+  this.excluded = value;
+
+  if (this.isInDocument())
+    goog.dom.classlist.enable(this.getElement(), 'anychart-hidden', this.excluded);
+
+  if (dirty && this.excluded && this.editorModel)
+    this.editorModel.removeByKey(this.key, true);
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.chartEditorModule.colorPicker.Base.prototype.isExcluded = function() {
+  return this.excluded;
+};
+
+
+/**
+ * @public
+ */
+anychart.chartEditorModule.colorPicker.Base.prototype.updateExclusion = function() {
+  if (!this.key || !this.key.length || !this.editorModel) return;
+
+  var stringKey = this.editorModel.getStringKey(this.key);
+  this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
 };

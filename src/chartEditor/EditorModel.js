@@ -852,7 +852,7 @@ anychart.chartEditorModule.EditorModel.prototype.createPlotMapping = function() 
   var plotIndex = this.model_['dataSettings']['mappings'].length;
   var numSeries;
   var fieldIndex;
-  if (singleSeries || chartType == 'map' || chartType == 'box' ||
+  if (singleSeries || chartType == 'map' || chartType == 'box' || chartType == 'gauges.circular' ||
       (chartType == 'stock' && seriesType == 'column' && plotIndex == 1))
     numSeries = 1;
   else
@@ -1938,7 +1938,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     result.push('');
   }
 
-  var chart = anychart.bindingModule.exec(anychartGlobal, chartType + '()');
+  var chart = /** @type {anychart.core.Chart} */(anychart.bindingModule.exec(anychartGlobal, chartType + '()'));
   result.push('// Creating chart', 'var chart' + eq + 'anychart.' + chartType + '();', '');
 
   if (chartType == 'map') {

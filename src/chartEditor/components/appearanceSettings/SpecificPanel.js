@@ -2,6 +2,7 @@ goog.provide('anychart.chartEditorModule.SpecificPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.settings.specific.Cartesian');
+goog.require('anychart.chartEditorModule.settings.specific.GaugeCircular');
 goog.require('anychart.chartEditorModule.settings.specific.Mekko');
 goog.require('anychart.chartEditorModule.settings.specific.Pie');
 goog.require('anychart.chartEditorModule.settings.specific.Polar');
@@ -39,6 +40,10 @@ anychart.chartEditorModule.SpecificPanel = function(model, opt_domHelper) {
     {
       chartType: 'treeMap',
       classFunc: anychart.chartEditorModule.settings.specific.TreeMap
+    },
+    {
+      chartType: 'gauges.circular',
+      classFunc: anychart.chartEditorModule.settings.specific.GaugeCircular
     },
     {
       chartType: ['mosaic', 'mekko'],
