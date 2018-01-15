@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.Ticks');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
@@ -41,6 +42,21 @@ anychart.chartEditorModule.settings.Ticks.prototype.allowEditPosition = function
 };
 
 
+/**
+ * @type {boolean}
+ * @private
+ */
+anychart.chartEditorModule.settings.Ticks.prototype.allowEditFill_ = false;
+
+
+/**
+ * @param {boolean} value
+ */
+anychart.chartEditorModule.settings.Ticks.prototype.allowEditFill = function(value) {
+  this.allowEditFill_ = value;
+};
+
+
 /** @inheritDoc */
 anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Ticks.base(this, 'createDom');
@@ -68,6 +84,14 @@ anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
   var lengthLC = new anychart.chartEditorModule.controls.LabeledControl(length, 'Length');
   lengthLC.init(model, this.genKey('length()'));
   this.addChildControl(lengthLC);
+
+  // Fill
+  if (this.allowEditFill_) {
+    var fill = new anychart.chartEditorModule.colorPicker.Base();
+    var fillLC = new anychart.chartEditorModule.controls.LabeledControl(fill, 'Fill');
+    fillLC.init(model, this.genKey('fill()'));
+    this.addChildControl(fillLC);
+  }
 
   // Stroke
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);

@@ -99,6 +99,75 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   fillLC.init(model, this.genKey('fill()'));
   wrapper.addChildControl(fillLC);
 
+  // Overlap mode
+  var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
+  overlapMode.getControl().setOptions([
+    {value: 'allow-overlap', caption: 'Overlap'},
+    {value: 'no-overlap', caption: 'No overlap'}
+  ]);
+  overlapMode.init(model, this.genKey('overlapMode()'));
+  wrapper.addChildControl(overlapMode);
+
+  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  //region Labels
+  var labels = new anychart.chartEditorModule.settings.Labels(model);
+  labels.allowEnabled(true);
+  labels.allowEditPosition(false);
+  labels.allowEditAnchor(false);
+  labels.setKey(this.genKey('labels()'));
+  wrapper.addChildControl(labels);
+
+  var drawFirstLabel = new anychart.chartEditorModule.checkbox.Base();
+  drawFirstLabel.setCaption('Draw First Label');
+  drawFirstLabel.init(model, this.genKey('drawFirstLabel()'));
+  labels.addChildControl(drawFirstLabel);
+
+  var drawLastLabel = new anychart.chartEditorModule.checkbox.Base();
+  drawLastLabel.setCaption('Draw Last Label');
+  drawLastLabel.init(model, this.genKey('drawLastLabel()'));
+  labels.addChildControl(drawLastLabel);
+
+  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  // Ticks
+  var ticks = new anychart.chartEditorModule.settings.Ticks(model);
+  ticks.allowEnabled(true);
+  ticks.allowEditFill(true);
+  ticks.setKey(this.genKey('ticks()'));
+  wrapper.addChildControl(ticks);
+  //endregion
+
+  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  //region Minor Labels
+  var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
+  minorlabels.setName('Minor Labels');
+  minorlabels.allowEnabled(true);
+  minorlabels.allowEditPosition(false);
+  minorlabels.allowEditAnchor(false);
+  minorlabels.setKey(this.genKey('minorLabels()'));
+  wrapper.addChildControl(minorlabels);
+
+  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  // Minor Ticks
+  var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
+  minorTicks.setName('Minor Ticks');
+  minorTicks.allowEnabled(true);
+  minorTicks.allowEditFill(true);
+  minorTicks.setKey(this.genKey('minorTicks()'));
+  wrapper.addChildControl(minorTicks);
+  //endregion
+
   // if (!this.isRadarPolarAxis) {
   //   // Overlap mode
   //   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
@@ -108,58 +177,6 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   //   ]);
   //   overlapMode.init(model, this.genKey('overlapMode()'));
   //   wrapper.addChildControl(overlapMode);
-  // }
-
-  // //region Labels
-  // var labels = new anychart.chartEditorModule.settings.Labels(model);
-  // labels.allowEnabled(true);
-  // labels.allowEditPosition(false);
-  // labels.allowEditAnchor(false);
-  // labels.setKey(this.genKey('labels()'));
-  // this.addChildControl(labels);
-  // this.labels_ = labels;
-  //
-  // goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-  //     goog.dom.TagName.DIV,
-  //     goog.getCssName('anychart-chart-editor-settings-item-separator')));
-  //
-  // // Ticks
-  // var ticks = new anychart.chartEditorModule.settings.Ticks(model);
-  // ticks.allowEnabled(true);
-  // ticks.allowEditPosition(!this.isRadarPolarAxis);
-  // ticks.setKey(this.genKey('ticks()'));
-  // this.addChildControl(ticks);
-  // this.ticks_ = ticks;
-  // //endregion
-  //
-  // if (!(this.chartType === 'radar' && this.xOrY == 'x')) {
-  //   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-  //       goog.dom.TagName.DIV,
-  //       goog.getCssName('anychart-chart-editor-settings-item-separator')));
-  //
-  //   //region Minor Labels
-  //   var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
-  //   minorlabels.setName('Minor Labels');
-  //   minorlabels.allowEnabled(true);
-  //   minorlabels.allowEditPosition(false);
-  //   minorlabels.allowEditAnchor(false);
-  //   minorlabels.setKey(this.genKey('minorLabels()'));
-  //   this.addChildControl(minorlabels);
-  //   this.minorLabels_ = minorlabels;
-  //
-  //   goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-  //       goog.dom.TagName.DIV,
-  //       goog.getCssName('anychart-chart-editor-settings-item-separator')));
-  //
-  //   // Minor Ticks
-  //   var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
-  //   minorTicks.setName('Minor Ticks');
-  //   minorTicks.allowEnabled(true);
-  //   minorTicks.allowEditPosition(!this.isRadarPolarAxis);
-  //   minorTicks.setKey(this.genKey('minorTicks()'));
-  //   this.addChildControl(minorTicks);
-  //   this.minorTicks_ = minorTicks;
-  //   //endregion
   // }
 };
 
