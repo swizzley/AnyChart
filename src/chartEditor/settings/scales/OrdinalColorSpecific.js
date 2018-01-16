@@ -1,22 +1,21 @@
-goog.provide('anychart.chartEditorModule.settings.ColorScaleRanges');
 goog.provide('anychart.chartEditorModule.settings.ColorScaleSingleRange');
+goog.provide('anychart.chartEditorModule.settings.scales.OrdinalColorSpecific');
 
-goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.input.Base');
+goog.require('anychart.chartEditorModule.settings.scales.SpecificBase');
 goog.require('goog.ui.Button');
-
 
 
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.settings.scales.SpecificBase}
  */
-anychart.chartEditorModule.settings.ColorScaleRanges = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'constructor', model, null, opt_domHelper);
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific = function(model, opt_domHelper) {
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'constructor', model, opt_domHelper);
 
   /**
    * @type {Array.<anychart.chartEditorModule.settings.ColorScaleSingleRange>}
@@ -24,25 +23,28 @@ anychart.chartEditorModule.settings.ColorScaleRanges = function(model, opt_domHe
    */
   this.ranges_ = [];
 };
-goog.inherits(anychart.chartEditorModule.settings.ColorScaleRanges, anychart.chartEditorModule.SettingsPanel);
+goog.inherits(anychart.chartEditorModule.settings.scales.OrdinalColorSpecific, anychart.chartEditorModule.settings.scales.SpecificBase);
 
 
 /**
  * Default CSS class.
  * @type {string}
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.CSS_CLASS = goog.getCssName('anychart-settings-color-scale-ranges');
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.CSS_CLASS = goog.getCssName('anychart-settings-panel-scale-ordinal-color');
 
 
 /** @override */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.createDom = function() {
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'createDom');
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.createDom = function() {
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'createDom');
 
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.ColorScaleRanges.CSS_CLASS);
+  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.CSS_CLASS);
 
-  this.rangesWrapper_ = new anychart.chartEditorModule.Component();
-  this.addChild(this.rangesWrapper_, true);
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
+  this.rangesComponent_ = new anychart.chartEditorModule.SettingsPanel(model, null);
+  this.rangesComponent_.allowEnabled(false);
+  this.rangesComponent_.setKey(this.genKey('ranges', true));
+  this.addChild(this.rangesComponent_, true);
 
   var addRangeBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
       goog.ui.ButtonRenderer,
@@ -53,8 +55,8 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.createDom = funct
 
 
 /** @override */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.enterDocument = function() {
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'enterDocument');
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.enterDocument = function() {
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'enterDocument');
 
   if (this.addRangeBtn_)
     this.getHandler().listen(this.addRangeBtn_, goog.ui.Component.EventType.ACTION, this.onAddRange_);
@@ -62,12 +64,12 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.enterDocument = f
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'onChartDraw', evt);
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.onChartDraw = function(evt) {
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'onChartDraw', evt);
 
-  if (this.isExcluded()) return;
-
-  this.createAllRanges(evt.chart);
+  if (!this.isExcluded()) {
+    this.createAllRanges(evt.chart);
+  }
 };
 
 
@@ -75,7 +77,7 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onChartDraw = fun
  * Add range button handler.
  * @private
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onAddRange_ = function() {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.onAddRange_ = function() {
   this.addRange(this.ranges_.length);
 };
 
@@ -84,11 +86,11 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onAddRange_ = fun
  * @param {Object} evt
  * @private
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onRemoveRange_ = function(evt) {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.onRemoveRange_ = function(evt) {
   var index = /** @type {anychart.chartEditorModule.settings.ColorScaleSingleRange} */(evt.target).index();
 
   var removedRange = goog.array.splice(this.ranges_, index, 1);
-  this.rangesWrapper_.removeChild(removedRange[0], true);
+  this.rangesComponent_.removeChild(removedRange[0], true);
 
   for (var i = 0; i < this.ranges_.length; i++) {
     /** @type {anychart.chartEditorModule.settings.ColorScaleSingleRange} */(this.ranges_[i]).index(i);
@@ -102,7 +104,7 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onRemoveRange_ = 
  * Change range event handler.
  * @private
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onChangeRange_ = function() {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.onChangeRange_ = function() {
   var rangesValue = [];
   for (var i = 0; i < this.ranges_.length; i++) {
     if (this.ranges_[i]) {
@@ -112,43 +114,43 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.onChangeRange_ = 
   }
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  model.setValue(this.key, rangesValue, false);
+  model.setValue(this.rangesComponent_.getKey(), rangesValue, false);
 };
 
 
 /**
  * @param {number} index
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.addRange = function(index) {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.addRange = function(index) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var range = new anychart.chartEditorModule.settings.ColorScaleSingleRange(model, index);
   range.allowRemove(true);
   this.getHandler().listen(range, anychart.chartEditorModule.events.EventType.PANEL_CLOSE, this.onRemoveRange_);
   this.getHandler().listen(range, goog.ui.Component.EventType.CHANGE, this.onChangeRange_);
 
-  this.rangesWrapper_.addChild(range, true);
+  this.rangesComponent_.addChild(range, true);
   this.ranges_.push(range);
 };
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.exclude = function(value) {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.exclude = function(value) {
   if (value) this.removeAllRanges();
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'exclude', value);
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'exclude', value);
 };
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.exitDocument = function() {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.exitDocument = function() {
   this.removeAllRanges();
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'exitDocument');
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'exitDocument');
 };
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.disposeInternal = function() {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.disposeInternal = function() {
   this.removeAllRanges();
-  anychart.chartEditorModule.settings.ColorScaleRanges.base(this, 'disposeInternal');
+  anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'disposeInternal');
 };
 
 
@@ -156,9 +158,9 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.disposeInternal =
  * Create ranges components if need
  * @param {Object} chart
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.createAllRanges = function(chart) {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.createAllRanges = function(chart) {
   if (!this.ranges_.length) {
-    var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
+    var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.rangesComponent_.getKey());
     var rangesValue = /** @type {?Array} */(anychart.bindingModule.exec(chart, stringKey));
     if (rangesValue && rangesValue.length) {
       for (var i = 0; i < rangesValue.length; i++) {
@@ -173,9 +175,9 @@ anychart.chartEditorModule.settings.ColorScaleRanges.prototype.createAllRanges =
 /**
  * Removes ranges components.
  */
-anychart.chartEditorModule.settings.ColorScaleRanges.prototype.removeAllRanges = function() {
+anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.removeAllRanges = function() {
   for (var i = 0; i < this.ranges_.length; i++) {
-    this.rangesWrapper_.removeChild(this.ranges_[i], true);
+    this.rangesComponent_.removeChild(this.ranges_[i], true);
   }
   goog.disposeAll(this.ranges_);
   this.ranges_.length = 0;
@@ -320,3 +322,4 @@ anychart.chartEditorModule.settings.ColorScaleSingleRange.prototype.index = func
   }
   return this.index_;
 };
+

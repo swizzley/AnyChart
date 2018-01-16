@@ -108,10 +108,8 @@ anychart.chartEditorModule.SpecificPanel.prototype.enterDocument = function() {
 
 /** @override */
 anychart.chartEditorModule.SpecificPanel.prototype.disposeInternal = function() {
-  if (this.specificComponent_) {
-    goog.dispose(this.specificComponent_);
-    this.specificComponent_ = null;
-  }
+  goog.dispose(this.specificComponent_);
+  this.specificComponent_ = null;
 
   anychart.chartEditorModule.SpecificPanel.base(this, 'disposeInternal');
 };

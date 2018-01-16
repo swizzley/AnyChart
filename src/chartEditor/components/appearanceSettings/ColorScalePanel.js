@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.ColorScalePanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.settings.ColorScale');
+goog.require('anychart.chartEditorModule.settings.scales.Base');
 
 
 
@@ -26,7 +26,7 @@ anychart.chartEditorModule.ColorScalePanel.prototype.createDom = function() {
   goog.dom.classlist.add(element, 'settings-panel-color-scale');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartColorScale = new anychart.chartEditorModule.settings.ColorScale(model);
+  var chartColorScale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear-color', 'ordinal-color']);
   chartColorScale.setName(null);
   chartColorScale.setKey([['chart'], ['settings'], 'colorScale()']);
   this.addChild(chartColorScale, true);

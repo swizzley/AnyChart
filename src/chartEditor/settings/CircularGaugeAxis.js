@@ -10,7 +10,8 @@ goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Stagger');
 goog.require('anychart.chartEditorModule.settings.Ticks');
-goog.require('anychart.chartEditorModule.settings.Title');
+goog.require('anychart.chartEditorModule.settings.scales.Base');
+
 
 
 /**
@@ -61,6 +62,11 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   wrapper.addClassName('anychart-settings-panel');
   wrapper.addClassName('anychart-settings-panel-wrapper');
   this.addChild(wrapper, true);
+
+  var scale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear', 'log']);
+  scale.setKey(this.genKey('scale()'));
+  wrapper.addChild(scale, true);
+  //this.scale_ = scale;
 
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([-90, 0, 90, 180, 270]);
@@ -167,17 +173,6 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   minorTicks.setKey(this.genKey('minorTicks()'));
   wrapper.addChildControl(minorTicks);
   //endregion
-
-  // if (!this.isRadarPolarAxis) {
-  //   // Overlap mode
-  //   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
-  //   overlapMode.getControl().setOptions([
-  //     {value: 'allow-overlap', caption: 'Overlap'},
-  //     {value: 'no-overlap', caption: 'No overlap'}
-  //   ]);
-  //   overlapMode.init(model, this.genKey('overlapMode()'));
-  //   wrapper.addChildControl(overlapMode);
-  // }
 };
 
 

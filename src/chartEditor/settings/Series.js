@@ -4,11 +4,11 @@ goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.input.Base');
-goog.require('anychart.chartEditorModule.settings.ColorScale');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Markers');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 goog.require('anychart.chartEditorModule.settings.Title');
+goog.require('anychart.chartEditorModule.settings.scales.Base');
 goog.require('goog.ui.AnimatedZippy');
 
 
@@ -126,7 +126,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   // Color Scale
   if (this.seriesType_ === 'choropleth') {
-    var colorScale = new anychart.chartEditorModule.settings.ColorScale(model);
+    var colorScale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear-color', 'ordinal-color']);
     colorScale.setKey(this.genKey('colorScale()'));
     innerContent.addChild(colorScale, true);
     this.colorScale_ = colorScale;
