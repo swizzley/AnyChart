@@ -10303,191 +10303,6 @@ goog.exportSymbol("acgraph.vector.Circle", acgraph.vector.Circle);
   var proto = acgraph.vector.Circle.prototype;
   proto["radius"] = proto.radius;
 })();
-goog.provide("acgraph.vector.Clip");
-goog.require("acgraph.vector.ILayer");
-goog.require("goog.Disposable");
-goog.require("goog.array");
-goog.require("goog.math.Rect");
-acgraph.vector.Clip = function(stage, opt_leftOrShape, opt_top, opt_width, opt_height) {
-  acgraph.vector.Clip.base(this, "constructor");
-  this.stage_ = stage;
-  this.dirty_ = false;
-  this.elements = [];
-  this.id_ = null;
-  this.shape_ = null;
-  this.shape.apply(this, goog.array.slice(arguments, 1));
-};
-goog.inherits(acgraph.vector.Clip, goog.Disposable);
-acgraph.vector.Clip.prototype.stage = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.stage_ = opt_value;
-    if (this.dirty_) {
-      this.stage_.addClipForRender(this);
-    }
-    return this;
-  }
-  return this.stage_;
-};
-acgraph.vector.Clip.shapesHelper_ = {"rect":acgraph.vector.Rect, "circle":acgraph.vector.Circle, "ellipse":acgraph.vector.Ellipse, "path":acgraph.vector.Path};
-acgraph.vector.Clip.prototype.shape = function(opt_leftOrShape, opt_top, opt_width, opt_height) {
-  if (arguments.length) {
-    if (acgraph.utils.instanceOf(opt_leftOrShape, acgraph.vector.Shape)) {
-      if (this.shape_) {
-        var sameType = false;
-        for (var i in acgraph.vector.Clip.shapesHelper_) {
-          var t = acgraph.vector.Clip.shapesHelper_[i];
-          if (acgraph.utils.instanceOf(this.shape_, t) && acgraph.utils.instanceOf(opt_leftOrShape, t)) {
-            sameType = true;
-            break;
-          }
-        }
-        if (sameType) {
-          this.shape_.deserialize(opt_leftOrShape.serialize());
-        } else {
-          this.shape_.parent(null);
-          this.shape_ = (opt_leftOrShape);
-          this.shape_.parent(this);
-        }
-      } else {
-        this.shape_ = (opt_leftOrShape);
-        this.shape_.parent(this);
-      }
-    } else {
-      var left, top, width, height;
-      if (acgraph.utils.instanceOf(opt_leftOrShape, goog.math.Rect)) {
-        left = opt_leftOrShape.left;
-        top = opt_leftOrShape.top;
-        width = opt_leftOrShape.width;
-        height = opt_leftOrShape.height;
-      } else {
-        if (goog.isArray(opt_leftOrShape)) {
-          left = goog.isDefAndNotNull(opt_leftOrShape[0]) ? opt_leftOrShape[0] : 0;
-          top = goog.isDefAndNotNull(opt_leftOrShape[1]) ? opt_leftOrShape[1] : 0;
-          width = goog.isDefAndNotNull(opt_leftOrShape[2]) ? opt_leftOrShape[2] : 0;
-          height = goog.isDefAndNotNull(opt_leftOrShape[3]) ? opt_leftOrShape[3] : 0;
-        } else {
-          if (goog.isObject(opt_leftOrShape)) {
-            left = goog.isDefAndNotNull(opt_leftOrShape["left"]) ? opt_leftOrShape["left"] : 0;
-            top = goog.isDefAndNotNull(opt_leftOrShape["top"]) ? opt_leftOrShape["top"] : 0;
-            width = goog.isDefAndNotNull(opt_leftOrShape["width"]) ? opt_leftOrShape["width"] : 0;
-            height = goog.isDefAndNotNull(opt_leftOrShape["height"]) ? opt_leftOrShape["height"] : 0;
-          } else {
-            left = goog.isDefAndNotNull(opt_leftOrShape) ? opt_leftOrShape : 0;
-            top = goog.isDefAndNotNull(opt_top) ? opt_top : 0;
-            width = goog.isDefAndNotNull(opt_width) ? opt_width : 0;
-            height = goog.isDefAndNotNull(opt_height) ? opt_height : 0;
-          }
-        }
-      }
-      if (this.shape_) {
-        if (acgraph.utils.instanceOf(this.shape_, acgraph.vector.Rect)) {
-          this.shape_.setX(left).setY(top).setWidth(width).setHeight(height);
-        } else {
-          this.shape_.parent(null);
-          this.shape_ = acgraph.rect(left, top, width, height);
-          this.shape_.parent(this);
-        }
-      } else {
-        this.shape_ = acgraph.rect(left, top, width, height);
-        this.shape_.parent(this);
-      }
-    }
-    return this;
-  }
-  return this.shape_;
-};
-acgraph.vector.Clip.prototype.isDirty = function() {
-  return this.dirty_;
-};
-acgraph.vector.Clip.prototype.needUpdateClip_ = function() {
-  if (!this.dirty_) {
-    this.dirty_ = true;
-    if (this.stage_) {
-      this.stage_.addClipForRender(this);
-    }
-  }
-};
-acgraph.vector.Clip.prototype.id = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.id_ = opt_value;
-    return this;
-  }
-  return this.id_;
-};
-acgraph.vector.Clip.prototype.render = function() {
-  this.dirty_ = false;
-  if (!this.id_) {
-    return;
-  }
-  acgraph.getRenderer().updateClip(this);
-};
-acgraph.vector.Clip.prototype.addElement = function(element) {
-  goog.array.insert(this.elements, element);
-};
-acgraph.vector.Clip.prototype.removeElement = function(element) {
-  goog.array.remove(this.elements, element);
-};
-acgraph.vector.Clip.prototype.getElements = function() {
-  return this.elements;
-};
-acgraph.vector.Clip.prototype.serialize = function() {
-  return this.shape_.serialize();
-};
-acgraph.vector.Clip.prototype.deserialize = function(data) {
-  var type = acgraph.vector.Clip.shapesHelper_[data["type"]];
-  if (type) {
-    var primitive = new type;
-    primitive.deserialize(data);
-    this.shape(primitive);
-  }
-};
-acgraph.vector.Clip.prototype.addChild = function(child) {
-  child.remove();
-  child.setParent(this);
-  this.needUpdateClip_();
-  return this;
-};
-acgraph.vector.Clip.prototype.removeChild = function(element) {
-  element.setParent(null);
-  var dom = element.domElement();
-  if (dom) {
-    goog.dom.removeNode(dom);
-  }
-  this.needUpdateClip_();
-  return element;
-};
-acgraph.vector.Clip.prototype.getFullTransformation = function() {
-  return null;
-};
-acgraph.vector.Clip.prototype.notifyRemoved = function(child) {
-};
-acgraph.vector.Clip.prototype.getStage = function() {
-  return (this.stage());
-};
-acgraph.vector.Clip.prototype.setDirtyState = function(value) {
-  this.needUpdateClip_();
-};
-acgraph.vector.Clip.prototype.dispose = function() {
-  acgraph.vector.Clip.base(this, "dispose");
-};
-acgraph.vector.Clip.prototype.disposeInternal = function() {
-  if (this.stage_) {
-    this.stage_.removeClipFromRender(this);
-  }
-  acgraph.getRenderer().disposeClip(this);
-  this.shape_.dispose();
-  delete this.stage_;
-  delete this.id_;
-  delete this.elements;
-  delete this.dirty_;
-  delete this.shape_;
-  acgraph.vector.Clip.base(this, "disposeInternal");
-};
-(function() {
-  var proto = acgraph.vector.Clip.prototype;
-  proto["shape"] = proto.shape;
-  proto["dispose"] = proto.dispose;
-})();
 goog.provide("acgraph.vector.PathBase");
 goog.require("acgraph.error");
 goog.require("acgraph.math");
@@ -11043,6 +10858,408 @@ acgraph.vector.Path.prototype.getCurrentPoint = function() {
   proto["clear"] = proto.clear;
   proto["getCurrentPoint"] = proto.getCurrentPoint;
   proto["getLength"] = proto.getLength;
+})();
+goog.provide("acgraph.vector.Rect");
+goog.require("acgraph.utils.IdGenerator");
+goog.require("acgraph.vector.PathBase");
+goog.require("goog.math.Rect");
+acgraph.vector.Rect = function(opt_x, opt_y, opt_width, opt_height) {
+  this.rect_ = new goog.math.Rect(opt_x || 0, opt_y || 0, opt_width || 0, opt_height || 0);
+  this.cornerTypes_ = [];
+  this.cornerSizes_ = [0, 0, 0, 0];
+  goog.base(this);
+  this.drawRect_();
+};
+goog.inherits(acgraph.vector.Rect, acgraph.vector.PathBase);
+acgraph.vector.Rect.prototype.SUPPORTED_DIRTY_STATES = acgraph.vector.Shape.prototype.SUPPORTED_DIRTY_STATES | acgraph.vector.Element.DirtyState.DATA;
+acgraph.vector.Rect.prototype.getElementTypePrefix = function() {
+  return acgraph.utils.IdGenerator.ElementTypePrefix.RECT;
+};
+acgraph.vector.Rect.prototype.setX = function(value) {
+  if (value != this.rect_.left) {
+    this.rect_.left = value;
+    this.drawRect_();
+  }
+  return this;
+};
+acgraph.vector.Rect.prototype.setY = function(value) {
+  if (value != this.rect_.top) {
+    this.rect_.top = value;
+    this.drawRect_();
+  }
+  return this;
+};
+acgraph.vector.Rect.prototype.setWidth = function(value) {
+  if (this.rect_.width != value) {
+    this.rect_.width = value;
+    this.drawRect_();
+  }
+  return this;
+};
+acgraph.vector.Rect.prototype.setHeight = function(value) {
+  if (this.rect_.height != value) {
+    this.rect_.height = value;
+    this.drawRect_();
+  }
+  return this;
+};
+acgraph.vector.Rect.prototype.setBounds = function(value) {
+  if (!goog.math.Rect.equals(this.rect_, value)) {
+    this.rect_.left = value.left;
+    this.rect_.top = value.top;
+    this.rect_.width = value.width;
+    this.rect_.height = value.height;
+    this.drawRect_();
+  }
+  return this;
+};
+acgraph.vector.Rect.CornerType = {ROUND:"round", CUT:"cut", ROUND_INNER:"round-inner"};
+acgraph.vector.Rect.prototype.setCornerSettings_ = function(type, var_args) {
+  var topLeft, topRight, bottomRight, bottomLeft, radiusArr;
+  var args = goog.array.slice(arguments, 1);
+  var arg1 = args[0];
+  if (goog.isString(arg1)) {
+    radiusArr = goog.string.splitLimit(arg1, " ", 4);
+  } else {
+    radiusArr = args;
+  }
+  if (radiusArr.length < 4) {
+    bottomLeft = bottomRight = topRight = topLeft = parseFloat(radiusArr[0]);
+  } else {
+    topLeft = parseFloat(radiusArr[0]);
+    topRight = parseFloat(radiusArr[1]);
+    bottomRight = parseFloat(radiusArr[2]);
+    bottomLeft = parseFloat(radiusArr[3]);
+  }
+  this.cornerSizes_[0] = topLeft ? topLeft : 0;
+  this.cornerTypes_[0] = topLeft ? type : undefined;
+  this.cornerSizes_[1] = topRight ? topRight : 0;
+  this.cornerTypes_[1] = topRight ? type : undefined;
+  this.cornerSizes_[2] = bottomRight ? bottomRight : 0;
+  this.cornerTypes_[2] = bottomRight ? type : undefined;
+  this.cornerSizes_[3] = bottomLeft ? bottomLeft : 0;
+  this.cornerTypes_[3] = bottomLeft ? type : undefined;
+};
+acgraph.vector.Rect.prototype.drawRect_ = function() {
+  var stageSuspended = !this.getStage() || this.getStage().isSuspended();
+  if (!stageSuspended) {
+    this.getStage().suspend();
+  }
+  this.clearInternal();
+  var size = this.cornerSizes_[0];
+  this.moveToInternal(this.rect_.left + size, this.rect_.top);
+  size = this.cornerSizes_[1];
+  this.lineToInternal(this.rect_.left + this.rect_.width - this.cornerSizes_[1], this.rect_.top);
+  if (this.cornerTypes_[1]) {
+    switch(this.cornerTypes_[1]) {
+      case acgraph.vector.Rect.CornerType.ROUND:
+        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width, this.rect_.top + size, size, size, false, true);
+        break;
+      case acgraph.vector.Rect.CornerType.ROUND_INNER:
+        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width, this.rect_.top + size, size, size, false, false);
+        break;
+      case acgraph.vector.Rect.CornerType.CUT:
+        this.lineToInternal(this.rect_.left + this.rect_.width, this.rect_.top + size);
+        break;
+    }
+  }
+  size = this.cornerSizes_[2];
+  this.lineToInternal(this.rect_.left + this.rect_.width, this.rect_.top + this.rect_.height - size);
+  if (this.cornerTypes_[2]) {
+    switch(this.cornerTypes_[2]) {
+      case acgraph.vector.Rect.CornerType.ROUND:
+        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width - size, this.rect_.top + this.rect_.height, size, size, false, true);
+        break;
+      case acgraph.vector.Rect.CornerType.ROUND_INNER:
+        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width - size, this.rect_.top + this.rect_.height, size, size, false, false);
+        break;
+      case acgraph.vector.Rect.CornerType.CUT:
+        this.lineToInternal(this.rect_.left + this.rect_.width - size, this.rect_.top + this.rect_.height);
+        break;
+    }
+  }
+  size = this.cornerSizes_[3];
+  this.lineToInternal(this.rect_.left + size, this.rect_.top + this.rect_.height);
+  if (this.cornerTypes_[3]) {
+    switch(this.cornerTypes_[3]) {
+      case acgraph.vector.Rect.CornerType.ROUND:
+        this.arcToByEndPointInternal(this.rect_.left, this.rect_.top + this.rect_.height - size, size, size, false, true);
+        break;
+      case acgraph.vector.Rect.CornerType.ROUND_INNER:
+        this.arcToByEndPointInternal(this.rect_.left, this.rect_.top + this.rect_.height - size, size, size, false, false);
+        break;
+      case acgraph.vector.Rect.CornerType.CUT:
+        this.lineToInternal(this.rect_.left, this.rect_.top + this.rect_.height - size);
+        break;
+    }
+  }
+  size = this.cornerSizes_[0];
+  this.lineToInternal(this.rect_.left, this.rect_.top + size);
+  if (this.cornerTypes_[0]) {
+    switch(this.cornerTypes_[0]) {
+      case acgraph.vector.Rect.CornerType.ROUND:
+        this.arcToByEndPointInternal(this.rect_.left + size, this.rect_.top, size, size, false, true);
+        break;
+      case acgraph.vector.Rect.CornerType.ROUND_INNER:
+        this.arcToByEndPointInternal(this.rect_.left + size, this.rect_.top, size, size, false, false);
+        break;
+    }
+  }
+  this.closeInternal();
+  if (!stageSuspended) {
+    this.getStage().resume();
+  }
+};
+acgraph.vector.Rect.prototype.round = function(radiusAllOrLeftTop, opt_radiusRightTop, opt_radiusRightBottom, opt_radiusLeftBottom) {
+  goog.array.splice(arguments, 0, 0, acgraph.vector.Rect.CornerType.ROUND);
+  this.setCornerSettings_.apply(this, arguments);
+  this.drawRect_();
+  return this;
+};
+acgraph.vector.Rect.prototype.roundInner = function(radiusAllOrLeftTop, opt_radiusRightTop, opt_radiusRightBottom, opt_radiusLeftBottom) {
+  goog.array.splice(arguments, 0, 0, acgraph.vector.Rect.CornerType.ROUND_INNER);
+  this.setCornerSettings_.apply(this, arguments);
+  this.drawRect_();
+  return this;
+};
+acgraph.vector.Rect.prototype.cut = function(radiusAllOrLeftTop, opt_radiusRightTop, opt_radiusRightBottom, opt_radiusLeftBottom) {
+  goog.array.splice(arguments, 0, 0, acgraph.vector.Rect.CornerType.CUT);
+  this.setCornerSettings_.apply(this, arguments);
+  this.drawRect_();
+  return this;
+};
+acgraph.vector.Rect.prototype.deserialize = function(data) {
+  goog.base(this, "deserialize", data);
+  this.setX(data["x"]).setY(data["y"]).setWidth(data["width"]).setHeight(data["height"]);
+  if (data["cornerTypes"]) {
+    this.cornerTypes_ = (goog.string.splitLimit(data["cornerTypes"], " ", 4));
+    var sizes = goog.string.splitLimit(data["cornerSizes"], " ", 4);
+    goog.array.forEach(sizes, function(value, i, arr) {
+      arr[i] = parseFloat(value);
+    });
+    this.cornerSizes_ = (sizes);
+    this.drawRect_();
+  }
+};
+acgraph.vector.Rect.prototype.serialize = function() {
+  var data = goog.base(this, "serialize");
+  data["type"] = "rect";
+  data["x"] = this.rect_.left;
+  data["y"] = this.rect_.top;
+  data["width"] = this.rect_.width;
+  data["height"] = this.rect_.height;
+  data["cornerTypes"] = this.cornerTypes_.join(" ");
+  data["cornerSizes"] = this.cornerSizes_.join(" ");
+  return data;
+};
+acgraph.vector.Rect.prototype.disposeInternal = function() {
+  this.cornerSizes_ = null;
+  this.cornerTypes_ = null;
+  this.rect_ = null;
+  this.dropBoundsCache();
+  goog.base(this, "disposeInternal");
+};
+(function() {
+  var proto = acgraph.vector.Rect.prototype;
+  goog.exportSymbol("acgraph.vector.Rect", acgraph.vector.Rect);
+  proto["setX"] = proto.setX;
+  proto["setY"] = proto.setY;
+  proto["setWidth"] = proto.setWidth;
+  proto["setHeight"] = proto.setHeight;
+  proto["setBounds"] = proto.setBounds;
+  proto["cut"] = proto.cut;
+  proto["round"] = proto.round;
+  proto["roundInner"] = proto.roundInner;
+})();
+goog.provide("acgraph.vector.Clip");
+goog.require("acgraph.vector.Circle");
+goog.require("acgraph.vector.ILayer");
+goog.require("acgraph.vector.Path");
+goog.require("acgraph.vector.Rect");
+goog.require("goog.Disposable");
+goog.require("goog.array");
+goog.require("goog.math.Rect");
+acgraph.vector.Clip = function(stage, opt_leftOrShape, opt_top, opt_width, opt_height) {
+  acgraph.vector.Clip.base(this, "constructor");
+  this.stage_ = stage;
+  this.dirty_ = false;
+  this.elements = [];
+  this.id_ = null;
+  this.shape_ = null;
+  this.shape.apply(this, goog.array.slice(arguments, 1));
+};
+goog.inherits(acgraph.vector.Clip, goog.Disposable);
+acgraph.vector.Clip.prototype.stage = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.stage_ = opt_value;
+    if (this.dirty_) {
+      this.stage_.addClipForRender(this);
+    }
+    return this;
+  }
+  return this.stage_;
+};
+acgraph.vector.Clip.shapesHelper_ = {"rect":acgraph.vector.Rect, "circle":acgraph.vector.Circle, "ellipse":acgraph.vector.Ellipse, "path":acgraph.vector.Path};
+acgraph.vector.Clip.prototype.shape = function(opt_leftOrShape, opt_top, opt_width, opt_height) {
+  if (arguments.length) {
+    if (acgraph.utils.instanceOf(opt_leftOrShape, acgraph.vector.Shape)) {
+      if (this.shape_) {
+        var sameType = false;
+        for (var i in acgraph.vector.Clip.shapesHelper_) {
+          var t = acgraph.vector.Clip.shapesHelper_[i];
+          if (acgraph.utils.instanceOf(this.shape_, t) && acgraph.utils.instanceOf(opt_leftOrShape, t)) {
+            sameType = true;
+            break;
+          }
+        }
+        if (sameType) {
+          this.shape_.deserialize(opt_leftOrShape.serialize());
+        } else {
+          this.shape_.parent(null);
+          this.shape_ = (opt_leftOrShape);
+          this.shape_.parent(this);
+        }
+      } else {
+        this.shape_ = (opt_leftOrShape);
+        this.shape_.parent(this);
+      }
+    } else {
+      var left, top, width, height;
+      if (acgraph.utils.instanceOf(opt_leftOrShape, goog.math.Rect)) {
+        left = opt_leftOrShape.left;
+        top = opt_leftOrShape.top;
+        width = opt_leftOrShape.width;
+        height = opt_leftOrShape.height;
+      } else {
+        if (goog.isArray(opt_leftOrShape)) {
+          left = goog.isDefAndNotNull(opt_leftOrShape[0]) ? opt_leftOrShape[0] : 0;
+          top = goog.isDefAndNotNull(opt_leftOrShape[1]) ? opt_leftOrShape[1] : 0;
+          width = goog.isDefAndNotNull(opt_leftOrShape[2]) ? opt_leftOrShape[2] : 0;
+          height = goog.isDefAndNotNull(opt_leftOrShape[3]) ? opt_leftOrShape[3] : 0;
+        } else {
+          if (goog.isObject(opt_leftOrShape)) {
+            left = goog.isDefAndNotNull(opt_leftOrShape["left"]) ? opt_leftOrShape["left"] : 0;
+            top = goog.isDefAndNotNull(opt_leftOrShape["top"]) ? opt_leftOrShape["top"] : 0;
+            width = goog.isDefAndNotNull(opt_leftOrShape["width"]) ? opt_leftOrShape["width"] : 0;
+            height = goog.isDefAndNotNull(opt_leftOrShape["height"]) ? opt_leftOrShape["height"] : 0;
+          } else {
+            left = goog.isDefAndNotNull(opt_leftOrShape) ? opt_leftOrShape : 0;
+            top = goog.isDefAndNotNull(opt_top) ? opt_top : 0;
+            width = goog.isDefAndNotNull(opt_width) ? opt_width : 0;
+            height = goog.isDefAndNotNull(opt_height) ? opt_height : 0;
+          }
+        }
+      }
+      if (this.shape_) {
+        if (acgraph.utils.instanceOf(this.shape_, acgraph.vector.Rect)) {
+          this.shape_.setX(left).setY(top).setWidth(width).setHeight(height);
+        } else {
+          this.shape_.parent(null);
+          this.shape_ = acgraph.rect(left, top, width, height);
+          this.shape_.parent(this);
+        }
+      } else {
+        this.shape_ = acgraph.rect(left, top, width, height);
+        this.shape_.parent(this);
+      }
+    }
+    return this;
+  }
+  return this.shape_;
+};
+acgraph.vector.Clip.prototype.isDirty = function() {
+  return this.dirty_;
+};
+acgraph.vector.Clip.prototype.needUpdateClip_ = function() {
+  if (!this.dirty_) {
+    this.dirty_ = true;
+    if (this.stage_) {
+      this.stage_.addClipForRender(this);
+    }
+  }
+};
+acgraph.vector.Clip.prototype.id = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.id_ = opt_value;
+    return this;
+  }
+  return this.id_;
+};
+acgraph.vector.Clip.prototype.render = function() {
+  this.dirty_ = false;
+  if (!this.id_) {
+    return;
+  }
+  acgraph.getRenderer().updateClip(this);
+};
+acgraph.vector.Clip.prototype.addElement = function(element) {
+  goog.array.insert(this.elements, element);
+};
+acgraph.vector.Clip.prototype.removeElement = function(element) {
+  goog.array.remove(this.elements, element);
+};
+acgraph.vector.Clip.prototype.getElements = function() {
+  return this.elements;
+};
+acgraph.vector.Clip.prototype.serialize = function() {
+  return this.shape_.serialize();
+};
+acgraph.vector.Clip.prototype.deserialize = function(data) {
+  var type = acgraph.vector.Clip.shapesHelper_[data["type"]];
+  if (type) {
+    var primitive = new type;
+    primitive.deserialize(data);
+    this.shape(primitive);
+  }
+};
+acgraph.vector.Clip.prototype.addChild = function(child) {
+  child.remove();
+  child.setParent(this);
+  this.needUpdateClip_();
+  child.notifyPrevParent(true);
+  return this;
+};
+acgraph.vector.Clip.prototype.removeChild = function(element) {
+  element.setParent(null);
+  var dom = element.domElement();
+  if (dom) {
+    goog.dom.removeNode(dom);
+  }
+  this.needUpdateClip_();
+  element.notifyPrevParent(false);
+  return element;
+};
+acgraph.vector.Clip.prototype.getFullTransformation = function() {
+  return null;
+};
+acgraph.vector.Clip.prototype.notifyRemoved = function(child) {
+};
+acgraph.vector.Clip.prototype.getStage = function() {
+  return (this.stage());
+};
+acgraph.vector.Clip.prototype.setDirtyState = function(value) {
+  this.needUpdateClip_();
+};
+acgraph.vector.Clip.prototype.dispose = function() {
+  acgraph.vector.Clip.base(this, "dispose");
+};
+acgraph.vector.Clip.prototype.disposeInternal = function() {
+  if (this.stage_) {
+    this.stage_.removeClipFromRender(this);
+  }
+  acgraph.getRenderer().disposeClip(this);
+  this.shape_.dispose();
+  delete this.stage_;
+  delete this.id_;
+  delete this.elements;
+  delete this.dirty_;
+  delete this.shape_;
+  acgraph.vector.Clip.base(this, "disposeInternal");
+};
+(function() {
+  var proto = acgraph.vector.Clip.prototype;
+  proto["shape"] = proto.shape;
+  proto["dispose"] = proto.dispose;
 })();
 goog.provide("acgraph.vector.Layer");
 goog.require("acgraph.error");
@@ -11836,7 +12053,8 @@ acgraph.vector.HatchFill.prototype.rectHelper_ = function(w, h, opt_l, opt_t) {
   this.rect(opt_l || 0, opt_t || 0, w, h).fill(this.color).stroke("none");
 };
 acgraph.vector.HatchFill.prototype.pathHelper_ = function(opt_filled) {
-  return (opt_filled ? this.path().fill(this.color).stroke("none") : this.path().fill("none").stroke(this.color, this.thickness));
+  var path = (opt_filled ? this.path().fill(this.color).stroke("none") : this.path().fill("none").stroke(this.color, this.thickness));
+  return (path);
 };
 acgraph.vector.HatchFill.prototype.onePixelRects_ = function(positions, opt_color) {
   var path = this.path().fill(opt_color || this.color).stroke("none");
@@ -11860,10 +12078,10 @@ acgraph.vector.HatchFill.prototype.getElementTypePrefix = function() {
   return acgraph.utils.IdGenerator.ElementTypePrefix.HATCH_FILL;
 };
 acgraph.vector.HatchFill.prototype.disposeInternal = function() {
-  goog.base(this, "disposeInternal");
   if (this.getStage()) {
     this.getStage().getDefs().removeHatchFill(this);
   }
+  goog.base(this, "disposeInternal");
 };
 (function() {
   var proto = acgraph.vector.HatchFill.prototype;
@@ -12025,218 +12243,6 @@ acgraph.vector.Image.prototype.disposeInternal = function() {
   proto["width"] = proto.width;
   proto["height"] = proto.height;
   proto["src"] = proto.src;
-})();
-goog.provide("acgraph.vector.Rect");
-goog.require("acgraph.utils.IdGenerator");
-goog.require("acgraph.vector.PathBase");
-goog.require("goog.math.Rect");
-acgraph.vector.Rect = function(opt_x, opt_y, opt_width, opt_height) {
-  this.rect_ = new goog.math.Rect(opt_x || 0, opt_y || 0, opt_width || 0, opt_height || 0);
-  this.cornerTypes_ = [];
-  this.cornerSizes_ = [0, 0, 0, 0];
-  goog.base(this);
-  this.drawRect_();
-};
-goog.inherits(acgraph.vector.Rect, acgraph.vector.PathBase);
-acgraph.vector.Rect.prototype.SUPPORTED_DIRTY_STATES = acgraph.vector.Shape.prototype.SUPPORTED_DIRTY_STATES | acgraph.vector.Element.DirtyState.DATA;
-acgraph.vector.Rect.prototype.getElementTypePrefix = function() {
-  return acgraph.utils.IdGenerator.ElementTypePrefix.RECT;
-};
-acgraph.vector.Rect.prototype.setX = function(value) {
-  if (value != this.rect_.left) {
-    this.rect_.left = value;
-    this.drawRect_();
-  }
-  return this;
-};
-acgraph.vector.Rect.prototype.setY = function(value) {
-  if (value != this.rect_.top) {
-    this.rect_.top = value;
-    this.drawRect_();
-  }
-  return this;
-};
-acgraph.vector.Rect.prototype.setWidth = function(value) {
-  if (this.rect_.width != value) {
-    this.rect_.width = value;
-    this.drawRect_();
-  }
-  return this;
-};
-acgraph.vector.Rect.prototype.setHeight = function(value) {
-  if (this.rect_.height != value) {
-    this.rect_.height = value;
-    this.drawRect_();
-  }
-  return this;
-};
-acgraph.vector.Rect.prototype.setBounds = function(value) {
-  if (!goog.math.Rect.equals(this.rect_, value)) {
-    this.rect_.left = value.left;
-    this.rect_.top = value.top;
-    this.rect_.width = value.width;
-    this.rect_.height = value.height;
-    this.drawRect_();
-  }
-  return this;
-};
-acgraph.vector.Rect.CornerType = {ROUND:"round", CUT:"cut", ROUND_INNER:"round-inner"};
-acgraph.vector.Rect.prototype.setCornerSettings_ = function(type, var_args) {
-  var topLeft, topRight, bottomRight, bottomLeft, radiusArr;
-  var args = goog.array.slice(arguments, 1);
-  var arg1 = args[0];
-  if (goog.isString(arg1)) {
-    radiusArr = goog.string.splitLimit(arg1, " ", 4);
-  } else {
-    radiusArr = args;
-  }
-  if (radiusArr.length < 4) {
-    bottomLeft = bottomRight = topRight = topLeft = parseFloat(radiusArr[0]);
-  } else {
-    topLeft = parseFloat(radiusArr[0]);
-    topRight = parseFloat(radiusArr[1]);
-    bottomRight = parseFloat(radiusArr[2]);
-    bottomLeft = parseFloat(radiusArr[3]);
-  }
-  this.cornerSizes_[0] = topLeft ? topLeft : 0;
-  this.cornerTypes_[0] = topLeft ? type : undefined;
-  this.cornerSizes_[1] = topRight ? topRight : 0;
-  this.cornerTypes_[1] = topRight ? type : undefined;
-  this.cornerSizes_[2] = bottomRight ? bottomRight : 0;
-  this.cornerTypes_[2] = bottomRight ? type : undefined;
-  this.cornerSizes_[3] = bottomLeft ? bottomLeft : 0;
-  this.cornerTypes_[3] = bottomLeft ? type : undefined;
-};
-acgraph.vector.Rect.prototype.drawRect_ = function() {
-  var stageSuspended = !this.getStage() || this.getStage().isSuspended();
-  if (!stageSuspended) {
-    this.getStage().suspend();
-  }
-  this.clearInternal();
-  var size = this.cornerSizes_[0];
-  this.moveToInternal(this.rect_.left + size, this.rect_.top);
-  size = this.cornerSizes_[1];
-  this.lineToInternal(this.rect_.left + this.rect_.width - this.cornerSizes_[1], this.rect_.top);
-  if (this.cornerTypes_[1]) {
-    switch(this.cornerTypes_[1]) {
-      case acgraph.vector.Rect.CornerType.ROUND:
-        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width, this.rect_.top + size, size, size, false, true);
-        break;
-      case acgraph.vector.Rect.CornerType.ROUND_INNER:
-        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width, this.rect_.top + size, size, size, false, false);
-        break;
-      case acgraph.vector.Rect.CornerType.CUT:
-        this.lineToInternal(this.rect_.left + this.rect_.width, this.rect_.top + size);
-        break;
-    }
-  }
-  size = this.cornerSizes_[2];
-  this.lineToInternal(this.rect_.left + this.rect_.width, this.rect_.top + this.rect_.height - size);
-  if (this.cornerTypes_[2]) {
-    switch(this.cornerTypes_[2]) {
-      case acgraph.vector.Rect.CornerType.ROUND:
-        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width - size, this.rect_.top + this.rect_.height, size, size, false, true);
-        break;
-      case acgraph.vector.Rect.CornerType.ROUND_INNER:
-        this.arcToByEndPointInternal(this.rect_.left + this.rect_.width - size, this.rect_.top + this.rect_.height, size, size, false, false);
-        break;
-      case acgraph.vector.Rect.CornerType.CUT:
-        this.lineToInternal(this.rect_.left + this.rect_.width - size, this.rect_.top + this.rect_.height);
-        break;
-    }
-  }
-  size = this.cornerSizes_[3];
-  this.lineToInternal(this.rect_.left + size, this.rect_.top + this.rect_.height);
-  if (this.cornerTypes_[3]) {
-    switch(this.cornerTypes_[3]) {
-      case acgraph.vector.Rect.CornerType.ROUND:
-        this.arcToByEndPointInternal(this.rect_.left, this.rect_.top + this.rect_.height - size, size, size, false, true);
-        break;
-      case acgraph.vector.Rect.CornerType.ROUND_INNER:
-        this.arcToByEndPointInternal(this.rect_.left, this.rect_.top + this.rect_.height - size, size, size, false, false);
-        break;
-      case acgraph.vector.Rect.CornerType.CUT:
-        this.lineToInternal(this.rect_.left, this.rect_.top + this.rect_.height - size);
-        break;
-    }
-  }
-  size = this.cornerSizes_[0];
-  this.lineToInternal(this.rect_.left, this.rect_.top + size);
-  if (this.cornerTypes_[0]) {
-    switch(this.cornerTypes_[0]) {
-      case acgraph.vector.Rect.CornerType.ROUND:
-        this.arcToByEndPointInternal(this.rect_.left + size, this.rect_.top, size, size, false, true);
-        break;
-      case acgraph.vector.Rect.CornerType.ROUND_INNER:
-        this.arcToByEndPointInternal(this.rect_.left + size, this.rect_.top, size, size, false, false);
-        break;
-    }
-  }
-  this.closeInternal();
-  if (!stageSuspended) {
-    this.getStage().resume();
-  }
-};
-acgraph.vector.Rect.prototype.round = function(radiusAllOrLeftTop, opt_radiusRightTop, opt_radiusRightBottom, opt_radiusLeftBottom) {
-  goog.array.splice(arguments, 0, 0, acgraph.vector.Rect.CornerType.ROUND);
-  this.setCornerSettings_.apply(this, arguments);
-  this.drawRect_();
-  return this;
-};
-acgraph.vector.Rect.prototype.roundInner = function(radiusAllOrLeftTop, opt_radiusRightTop, opt_radiusRightBottom, opt_radiusLeftBottom) {
-  goog.array.splice(arguments, 0, 0, acgraph.vector.Rect.CornerType.ROUND_INNER);
-  this.setCornerSettings_.apply(this, arguments);
-  this.drawRect_();
-  return this;
-};
-acgraph.vector.Rect.prototype.cut = function(radiusAllOrLeftTop, opt_radiusRightTop, opt_radiusRightBottom, opt_radiusLeftBottom) {
-  goog.array.splice(arguments, 0, 0, acgraph.vector.Rect.CornerType.CUT);
-  this.setCornerSettings_.apply(this, arguments);
-  this.drawRect_();
-  return this;
-};
-acgraph.vector.Rect.prototype.deserialize = function(data) {
-  goog.base(this, "deserialize", data);
-  this.setX(data["x"]).setY(data["y"]).setWidth(data["width"]).setHeight(data["height"]);
-  if (data["cornerTypes"]) {
-    this.cornerTypes_ = (goog.string.splitLimit(data["cornerTypes"], " ", 4));
-    var sizes = goog.string.splitLimit(data["cornerSizes"], " ", 4);
-    goog.array.forEach(sizes, function(value, i, arr) {
-      arr[i] = parseFloat(value);
-    });
-    this.cornerSizes_ = (sizes);
-    this.drawRect_();
-  }
-};
-acgraph.vector.Rect.prototype.serialize = function() {
-  var data = goog.base(this, "serialize");
-  data["type"] = "rect";
-  data["x"] = this.rect_.left;
-  data["y"] = this.rect_.top;
-  data["width"] = this.rect_.width;
-  data["height"] = this.rect_.height;
-  data["cornerTypes"] = this.cornerTypes_.join(" ");
-  data["cornerSizes"] = this.cornerSizes_.join(" ");
-  return data;
-};
-acgraph.vector.Rect.prototype.disposeInternal = function() {
-  this.cornerSizes_ = null;
-  this.cornerTypes_ = null;
-  this.rect_ = null;
-  this.dropBoundsCache();
-  goog.base(this, "disposeInternal");
-};
-(function() {
-  var proto = acgraph.vector.Rect.prototype;
-  goog.exportSymbol("acgraph.vector.Rect", acgraph.vector.Rect);
-  proto["setX"] = proto.setX;
-  proto["setY"] = proto.setY;
-  proto["setWidth"] = proto.setWidth;
-  proto["setHeight"] = proto.setHeight;
-  proto["setBounds"] = proto.setBounds;
-  proto["cut"] = proto.cut;
-  proto["round"] = proto.round;
-  proto["roundInner"] = proto.roundInner;
 })();
 goog.provide("goog.net.EventType");
 goog.net.EventType = {COMPLETE:"complete", SUCCESS:"success", ERROR:"error", ABORT:"abort", READY:"ready", READY_STATE_CHANGE:"readystatechange", TIMEOUT:"timeout", INCREMENTAL_DATA:"incrementaldata", PROGRESS:"progress", DOWNLOAD_PROGRESS:"downloadprogress", UPLOAD_PROGRESS:"uploadprogress"};
@@ -12542,10 +12548,13 @@ acgraph.vector.Renderer.prototype.isImageLoading = function() {
   return false;
 };
 acgraph.vector.Renderer.prototype.getImageLoader = function() {
-  if (!this.imageLoader_) {
+  if (!this.imageLoader_ || this.imageLoader_.isDisposed()) {
     this.imageLoader_ = new goog.net.ImageLoader((goog.global["document"]["body"]));
   }
   return this.imageLoader_;
+};
+acgraph.vector.Renderer.prototype.isImageLoader = function() {
+  return !!(this.imageLoader_ && !this.imageLoader_.isDisposed());
 };
 acgraph.vector.Renderer.prototype.setTransformation = goog.abstractMethod;
 acgraph.vector.Renderer.prototype.setPathTransformation = goog.abstractMethod;
@@ -13542,6 +13551,7 @@ acgraph.vector.Text.prototype.htmlText = function(opt_value) {
 };
 acgraph.vector.Text.prototype.init_ = function() {
   if (this.segments_.length != 0) {
+    goog.disposeAll(this.segments_, this.textLines_);
     this.textLines_ = [];
     this.segments_ = [];
   }
@@ -14200,7 +14210,6 @@ acgraph.vector.Text.prototype.disposeInternal = function() {
   delete this.segments_;
   delete this.textLines_;
   delete this.bounds;
-  delete this.bounds;
   goog.base(this, "disposeInternal");
 };
 (function() {
@@ -14209,6 +14218,7 @@ acgraph.vector.Text.prototype.disposeInternal = function() {
   proto["text"] = proto.text;
   proto["style"] = proto.style;
   proto["htmlText"] = proto.htmlText;
+  proto["path"] = proto.path;
   proto["x"] = proto.x;
   proto["y"] = proto.y;
   proto["fontSize"] = proto.fontSize;
@@ -15232,20 +15242,23 @@ acgraph.vector.svg.Renderer.prototype.applyFill = function(element) {
   var fill = (element.fill());
   var defs = element.getStage().getDefs();
   var pathPrefix = "url(" + acgraph.getReference() + "#";
+  if (fill && fill["opacity"] && fill["opacity"] <= 1E-4 && goog.userAgent.IE && goog.userAgent.isVersionOrHigher("9")) {
+    fill["opacity"] = 1E-4;
+  }
   if (goog.isString(fill)) {
     this.setAttr(element.domElement(), "fill", (fill));
     this.removeAttr(element.domElement(), "fill-opacity");
   } else {
     if (goog.isArray(fill["keys"]) && fill["cx"] && fill["cy"]) {
       this.setAttr(element.domElement(), "fill", pathPrefix + this.renderRadialGradient((fill), defs) + ")");
-      this.removeAttr(element.domElement(), "fill-opacity");
+      this.setAttr(element.domElement(), "fill-opacity", goog.isDef(fill["opacity"]) ? fill["opacity"] : 1);
     } else {
       if (goog.isArray(fill["keys"])) {
         if (!element.getBounds()) {
           return;
         }
         this.setAttr(element.domElement(), "fill", pathPrefix + this.renderLinearGradient((fill), defs, element.getBounds()) + ")");
-        this.removeAttr(element.domElement(), "fill-opacity");
+        this.setAttr(element.domElement(), "fill-opacity", goog.isDef(fill["opacity"]) ? fill["opacity"] : 1);
       } else {
         if (fill["src"]) {
           var b = element.getBoundsWithoutTransform();
@@ -15285,9 +15298,6 @@ acgraph.vector.svg.Renderer.prototype.applyFill = function(element) {
               pattern.parent(element.getStage()).render();
               this.setAttr(element.domElement(), "fill", pathPrefix + pattern.id() + ")");
             } else {
-              if (fill["opacity"] <= 1E-4 && goog.userAgent.IE && goog.userAgent.isVersionOrHigher("9")) {
-                fill["opacity"] = 1E-4;
-              }
               this.setAttrs(element.domElement(), {"fill":(fill)["color"], "fill-opacity":(fill)["opacity"]});
             }
           }
@@ -15442,7 +15452,8 @@ acgraph.vector.svg.Renderer.prototype.setPathProperties = function(path) {
   }
 };
 acgraph.vector.svg.Renderer.prototype.createClip_ = function(element, clipElement) {
-  var defs = (element.getStage().getDefs());
+  var stage = element.getStage();
+  var defs = (stage.getDefs());
   var clipDomElement = defs.getClipPathElement(clipElement);
   var id = acgraph.utils.IdGenerator.getInstance().identify(clipDomElement, acgraph.utils.IdGenerator.ElementTypePrefix.CLIP);
   var clipShapeElement;
@@ -17060,9 +17071,22 @@ acgraph.vector.Defs.prototype.setDirtyState = goog.nullFunction;
 acgraph.vector.Defs.prototype.disposeInternal = function() {
   goog.dom.removeNode(this.domElement_);
   this.domElement_ = null;
-  goog.disposeAll(this.linearGradients_);
-  goog.disposeAll(this.radialGradients_);
-  goog.disposeAll(this.imageFills_);
+  goog.object.forEach(this.linearGradients_, function(v) {
+    goog.dispose(v);
+  });
+  goog.object.forEach(this.radialGradients_, function(v) {
+    goog.dispose(v);
+  });
+  goog.object.forEach(this.imageFills_, function(v) {
+    goog.dispose(v);
+  });
+  goog.object.forEach(this.hatchFills_, function(v) {
+    goog.dispose(v);
+  });
+  this.linearGradients_ = null;
+  this.radialGradients_ = null;
+  this.imageFills_ = null;
+  this.hatchFills_ = null;
   delete this.stage;
 };
 goog.provide("goog.dom.classlist");
@@ -17595,7 +17619,7 @@ acgraph.vector.Stage.prototype.checkSize = function(opt_directCall, opt_silent) 
       this.dispatchEvent(acgraph.vector.Stage.EventType.STAGE_RESIZE);
     }
   }
-  if (this.container_ && isDynamicSize && !goog.global["isNodeJS"]) {
+  if (this.container_ && isDynamicSize && !goog.global["acgraph"]["isNodeJS"]) {
     this.checkSizeTimer_ = setTimeout(this.checkSize, this.maxResizeDelay_);
   }
 };
@@ -17747,8 +17771,9 @@ acgraph.vector.Stage.prototype.finishRendering_ = function() {
   var isImageLoading = acgraph.getRenderer().isImageLoading();
   if (imageLoader && isImageLoading) {
     if (!this.imageLoadingListener_) {
-      this.imageLoadingListener_ = goog.events.listenOnce(imageLoader, goog.net.EventType.COMPLETE, function(e) {
-        this.imageLoadingListener_ = null;
+      this.imageLoadingListener_ = true;
+      goog.events.listenOnce(imageLoader, goog.net.EventType.COMPLETE, function(e) {
+        this.imageLoadingListener_ = false;
         if (!this.isRendering_) {
           this.dispatchEvent(acgraph.vector.Stage.EventType.STAGE_RENDERED);
         }
@@ -17965,13 +17990,20 @@ acgraph.vector.Stage.prototype.dispose = function() {
 };
 acgraph.vector.Stage.prototype.disposeInternal = function() {
   acgraph.vector.Stage.base(this, "disposeInternal");
+  goog.object.forEach(this.charts, function(value, key, arr) {
+    value.remove();
+    delete arr[value];
+  });
   goog.dispose(this.eventHandler_);
   this.eventHandler_ = null;
-  goog.dispose(this.rootLayer_);
-  this.renderInternal();
-  delete this.rootLayer_;
   goog.dispose(this.defs_);
   delete this.defs_;
+  goog.dispose(this.rootLayer_);
+  this.renderInternal();
+  this.rootLayer_.finalizeDisposing();
+  delete this.rootLayer_;
+  var id = acgraph.utils.IdGenerator.getInstance().identify(this, acgraph.utils.IdGenerator.ElementTypePrefix.STAGE);
+  delete goog.global["acgraph"].stages[id];
   acgraph.unregister(this);
   goog.dom.removeNode(this.internalContainer_);
   this.container_ = null;
