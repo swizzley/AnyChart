@@ -31,8 +31,12 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.createDom = functio
   goog.dom.appendChild(element, this.label_);
 
   this.addChild(this.control_, true);
+  goog.dom.classlist.add(this.control_.getElement(), 'anychart-chart-editor-settings-control');
   goog.dom.classlist.add(this.control_.getElement(), 'anychart-chart-editor-settings-control-right');
 
+  // var clearBoth = new anychart.chartEditorModule.Component();
+  // clearBoth.addClassName('anychart-clearboth');
+  // this.addChild(clearBoth, true);
   goog.dom.appendChild(this.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 };
 
