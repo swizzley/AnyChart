@@ -73,9 +73,7 @@ anychart.chartEditorModule.settings.scales.Base.prototype.createDom = function()
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.Base.CSS_CLASS);
 
-  //var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-
   var type = new anychart.chartEditorModule.controls.select.ScaleType({
     label: 'Scale Type',
     caption: 'Choose scale type'
@@ -104,6 +102,7 @@ anychart.chartEditorModule.settings.scales.Base.prototype.enterDocument = functi
 /** @inheritDoc */
 anychart.chartEditorModule.settings.scales.Base.prototype.onModelChange = function(evt) {
   anychart.chartEditorModule.settings.scales.Base.base(this, 'onModelChange', evt);
+
   if (!this.isExcluded()) {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var scale = model.getValue(this.getKey());
@@ -127,7 +126,8 @@ anychart.chartEditorModule.settings.scales.Base.prototype.onChartDraw = function
     if (this.scale_ && this.scaleTypeField_) {
       var type = this.scale_.getType();
       this.scaleTypeField_.setValue(type, true);
-      this.updateSpecific();
+      if (this.updateSpecific())
+        this.specificComponent_.onChartDraw(evt);
     }
   }
 };
@@ -136,6 +136,7 @@ anychart.chartEditorModule.settings.scales.Base.prototype.onChartDraw = function
 /**
  * Creates dom for specific section.
  * @param {boolean=} opt_force
+ * @return {boolean}
  */
 anychart.chartEditorModule.settings.scales.Base.prototype.updateSpecific = function(opt_force) {
   var newScaleType = this.scaleTypeField_.getValue().value;
@@ -154,7 +155,11 @@ anychart.chartEditorModule.settings.scales.Base.prototype.updateSpecific = funct
     this.specificComponent_.allowEnabled(false);
 
     this.addChild(this.specificComponent_, true);
+
+    return true;
   }
+
+  return false;
 };
 
 

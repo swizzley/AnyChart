@@ -5,7 +5,6 @@ goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.controls.select.DataFieldSelect');
 
 
-
 /**
  * DataField component for palettes property.
  *
@@ -62,7 +61,10 @@ anychart.chartEditorModule.controls.select.ScaleTypeDataFieldSelect.prototype.ha
 
   if (!this.noDispatch && this.editorModel) {
     var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
-    stringKey = stringKey.split('.')[0];
+    var tmp = stringKey.split('.');
+    var lastKey = tmp[tmp.length - 1];
+    stringKey = stringKey.replace('.' + lastKey, '');
+
     this.editorModel.dropChartSettings(stringKey);
   }
 
