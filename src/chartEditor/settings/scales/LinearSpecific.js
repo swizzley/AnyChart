@@ -6,7 +6,7 @@ goog.require('anychart.chartEditorModule.comboBox.Percentage');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.LabeledControlTwins');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
-goog.require('anychart.chartEditorModule.input.Base');
+goog.require('anychart.chartEditorModule.input.Numbers');
 goog.require('anychart.chartEditorModule.settings.scales.SpecificBase');
 
 
@@ -60,13 +60,13 @@ anychart.chartEditorModule.settings.scales.LinearSpecific.prototype.createDom = 
   this.addChildControl(stackDirection);
 
 
-  var minimum = new anychart.chartEditorModule.input.Base();
+  var minimum = new anychart.chartEditorModule.input.Numbers();
   var minimumLC = new anychart.chartEditorModule.controls.LabeledControlTwins(minimum, 'Minimum');
   minimumLC.init(model, this.genKey('minimum()'));
   minimumLC.setKey2(this.genKey('softMinimum()'));
   this.addChildControl(minimumLC);
 
-  var maximum = new anychart.chartEditorModule.input.Base();
+  var maximum = new anychart.chartEditorModule.input.Numbers();
   var maximumLC = new anychart.chartEditorModule.controls.LabeledControlTwins(maximum, 'Maximum');
   maximumLC.init(model, this.genKey('maximum()'));
   maximumLC.setKey2(this.genKey('softMaximum()'));

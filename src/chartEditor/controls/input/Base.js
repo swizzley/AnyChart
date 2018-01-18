@@ -104,24 +104,12 @@ anychart.chartEditorModule.input.Base.prototype.createDom = function() {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.input.Base.prototype.disposeInternal = function() {
-  if (this.inputHandler_) {
-    goog.events.removeAll(this.inputHandler_);
-    this.inputHandler_.dispose();
-    this.inputHandler_ = null;
-  }
-  anychart.chartEditorModule.input.Base.base(this, 'disposeInternal');
-};
-
-
-/** @inheritDoc */
 anychart.chartEditorModule.input.Base.prototype.enterDocument = function() {
   anychart.chartEditorModule.input.Base.base(this, 'enterDocument');
   goog.style.setElementShown(this.getElement(), !this.excluded);
 
   this.inputHandler_ = new goog.events.InputHandler(this.getElement());
-  goog.events.listen(
-      this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
+  goog.events.listen(this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
       this.onChange, false, this);
 };
 
@@ -131,15 +119,22 @@ anychart.chartEditorModule.input.Base.prototype.onChange = function() {
   if (this.excluded) return;
 
   var value = this.getValue();
+
   if (!this.noDispatch && value != this.lastValue && this.editorModel) {
-    var caretPosition = goog.dom.selection.getStart(this.getElement());
+    if (this.validateFunction_(value)) {
+      var caretPosition = goog.dom.selection.getStart(this.getElement());
 
-    if (this.callback)
-      this.editorModel.callbackByString(this.callback, this);
-    else
-      this.editorModel.setValue(this.key, value, false, this.noRebuild, this.noRebuildMapping);
+      if (this.callback)
+        this.editorModel.callbackByString(this.callback, this);
+      else
+        this.editorModel.setValue(this.key, value, false, this.noRebuild, this.noRebuildMapping);
 
-    goog.dom.selection.setCursorPosition(this.getElement(), caretPosition);
+      goog.dom.selection.setCursorPosition(this.getElement(), caretPosition);
+    } else {
+      // Input is not valid
+      this.setValue(this.lastValue);
+      value = this.lastValue;
+    }
   }
 
   this.lastValue = value;
@@ -174,6 +169,15 @@ anychart.chartEditorModule.input.Base.prototype.init = function(model, key, opt_
 };
 
 
+/** @inheritDoc */
+anychart.chartEditorModule.input.Base.prototype.setValue = function(s) {
+  if (this.validateFunction_(s)) {
+    s = this.formatterFunction_(s);
+    anychart.chartEditorModule.input.Base.base(this, 'setValue', s);
+  }
+};
+
+
 /**
  * Sets value of this control to target's value.
  * Updates model state.
@@ -182,7 +186,6 @@ anychart.chartEditorModule.input.Base.prototype.init = function(model, key, opt_
  */
 anychart.chartEditorModule.input.Base.prototype.setValueByTarget = function(target, opt_force) {
   if (this.excluded) return;
-
   if (!opt_force && this.revisionCount1 - this.revisionCount2 > 1) return;
   this.revisionCount2 = this.revisionCount1;
 
@@ -190,10 +193,7 @@ anychart.chartEditorModule.input.Base.prototype.setValueByTarget = function(targ
 
   var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
   var value = /** @type {string} */(anychart.bindingModule.exec(this.target, stringKey));
-  if (typeof value == 'function')
-    value = '-- value is a function --';
-  else if (!goog.isDef(value))
-    value = '';
+  value = this.formatterFunction_(value);
 
   this.lastValue = value;
 
@@ -237,3 +237,57 @@ anychart.chartEditorModule.input.Base.prototype.updateExclusion = function() {
   var stringKey = this.editorModel.getStringKey(this.key);
   this.exclude(this.editorModel.checkSettingForExclusion(stringKey));
 };
+
+
+/**
+ * The validate function to be used for set value.
+ * @param {string} value The value to check.
+ * @return {boolean}
+ * @private
+ */
+anychart.chartEditorModule.input.Base.prototype.validateFunction_ = function(value) {
+  return true;
+};
+
+
+/**
+ * Formatter for set value.
+ * @param {string} value
+ * @return {string}
+ * @private
+ */
+anychart.chartEditorModule.input.Base.prototype.formatterFunction_ = function(value) {
+  if (typeof value == 'function')
+    value = '-- value is a function --';
+
+  return String(value);
+};
+
+
+/**
+ * Set validate function.
+ * @param {function(string):boolean} validateFunction
+ */
+anychart.chartEditorModule.input.Base.prototype.setValidateFunction = function(validateFunction) {
+  this.validateFunction_ = validateFunction;
+};
+
+
+/**
+ * Set formatter function.
+ * @param {function(string):string} formatterFunction
+ */
+anychart.chartEditorModule.input.Base.prototype.setFormatterFunction = function(formatterFunction) {
+  this.formatterFunction_ = formatterFunction;
+};
+
+/** @inheritDoc */
+anychart.chartEditorModule.input.Base.prototype.disposeInternal = function() {
+  if (this.inputHandler_) {
+    goog.events.removeAll(this.inputHandler_);
+    this.inputHandler_.dispose();
+    this.inputHandler_ = null;
+  }
+  anychart.chartEditorModule.input.Base.base(this, 'disposeInternal');
+};
+

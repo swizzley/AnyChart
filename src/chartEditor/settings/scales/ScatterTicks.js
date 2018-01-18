@@ -1,9 +1,8 @@
 goog.provide('anychart.chartEditorModule.settings.scales.ScatterTicks');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
-goog.require('anychart.chartEditorModule.controls.select.DataField');
+goog.require('anychart.chartEditorModule.input.Numbers');
 
 
 /**
@@ -32,13 +31,18 @@ anychart.chartEditorModule.settings.scales.ScatterTicks.prototype.createDom = fu
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.ScatterTicks.CSS_CLASS);
 
-  //var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  // var mode = new anychart.chartEditorModule.controls.select.DataField({label: 'Mode'});
-  // mode.getSelect().setOptions([
-  //   {value: 'linear', caption: 'Linear'},
-  //   {value: 'logarithmic', caption: 'Logarithmic'}
-  // ]);
-  // mode.init(model, this.genKey('mode()'));
-  // this.addChildControl(mode);
+  var count = new anychart.chartEditorModule.input.Numbers();
+  count.setFormatterFunction(function(value){
+    return String(goog.isArray(value) ? Number(value[0]) : Number(value));
+  });
+  var countLC = new anychart.chartEditorModule.controls.LabeledControl(count, 'Count');
+  countLC.init(model, this.genKey('count()'));
+  this.addChildControl(countLC);
+
+  var interval = new anychart.chartEditorModule.input.Numbers();
+  var intervalLC = new anychart.chartEditorModule.controls.LabeledControl(interval, 'Interval');
+  intervalLC.init(model, this.genKey('interval()'));
+  this.addChildControl(intervalLC);
 };
