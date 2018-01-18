@@ -42,6 +42,24 @@ anychart.chartEditorModule.settings.scales.LinearSpecific.prototype.createDom = 
   inverted.init(model, this.genKey('inverted()'));
   this.addChildControl(inverted);
 
+  var stackMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Stack Mode'});
+  stackMode.getSelect().setOptions([
+    {value: 'none', caption: 'None'},
+    {value: 'percent', caption: 'Percent'},
+    {value: 'value', caption: 'Value'}
+  ]);
+  stackMode.init(model, this.genKey('stackMode()'));
+  this.addChildControl(stackMode);
+
+  var stackDirection = new anychart.chartEditorModule.controls.select.DataField({label: 'Stack Direction'});
+  stackDirection.getSelect().setOptions([
+    {value: 'direct', caption: 'Direct'},
+    {value: 'reverse', caption: 'Reverse'}
+  ]);
+  stackDirection.init(model, this.genKey('stackDirection()'));
+  this.addChildControl(stackDirection);
+
+
   var minimum = new anychart.chartEditorModule.input.Base();
   var minimumLC = new anychart.chartEditorModule.controls.LabeledControlTwins(minimum, 'Minimum');
   minimumLC.init(model, this.genKey('minimum()'));

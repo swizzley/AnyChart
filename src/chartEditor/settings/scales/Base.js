@@ -6,6 +6,7 @@ goog.require('anychart.chartEditorModule.settings.scales.LinearColorSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.LinearSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.LogarithmicSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.OrdinalColorSpecific');
+goog.require('anychart.chartEditorModule.settings.scales.ScatterTicks');
 
 
 /**
@@ -82,6 +83,20 @@ anychart.chartEditorModule.settings.scales.Base.prototype.createDom = function()
   type.init(model, this.genKey('type', true));
   this.addChild(type, true);
   this.scaleTypeField_ = type;
+
+  var specificWrapper = new anychart.ui.Component();
+  this.addChild(specificWrapper, true);
+  this.specificWrapper_ = specificWrapper;
+
+  var ticks = new anychart.chartEditorModule.settings.scales.ScatterTicks(model, 'Scale Ticks');
+  ticks.allowEnabled(false);
+  ticks.setKey(this.genKey('ticks()'));
+  this.addChild(ticks, true);
+
+  var minorTicks = new anychart.chartEditorModule.settings.scales.ScatterTicks(model, 'Scale Minor Ticks');
+  minorTicks.allowEnabled(false);
+  minorTicks.setKey(this.genKey('minorTicks()'));
+  this.addChild(minorTicks, true);
 };
 
 
@@ -141,20 +156,21 @@ anychart.chartEditorModule.settings.scales.Base.prototype.onChartDraw = function
 anychart.chartEditorModule.settings.scales.Base.prototype.updateSpecific = function(opt_force) {
   var newScaleType = this.scaleTypeField_.getValue().value;
 
-  if (newScaleType && (opt_force || newScaleType != this.scaleType_)) {
+  if (newScaleType && (opt_force || newScaleType !== this.scaleType_)) {
     this.scaleType_ = newScaleType;
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
     if (this.specificComponent_) {
-      this.removeChild(this.specificComponent_, true);
+      this.specificWrapper_.removeChild(this.specificComponent_, true);
       goog.dispose(this.specificComponent_);
     }
 
     this.specificComponent_ = new this.descriptors_[this.scaleType_].classFunc(model);
     this.specificComponent_.setKey(this.getKey());
     this.specificComponent_.allowEnabled(false);
+    this.specificComponent_.skipSettings(this.skippedSettings);
 
-    this.addChild(this.specificComponent_, true);
+    this.specificWrapper_.addChild(this.specificComponent_, true);
 
     return true;
   }

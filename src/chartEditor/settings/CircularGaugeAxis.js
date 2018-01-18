@@ -65,6 +65,7 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
 
   var scale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear', 'log']);
   scale.setKey(this.genKey('scale()'));
+  scale.skipSettings(['stackMode()', 'stackDirection()']);
   wrapper.addChild(scale, true);
   //this.scale_ = scale;
 

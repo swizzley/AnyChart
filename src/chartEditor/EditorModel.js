@@ -1651,9 +1651,10 @@ anychart.chartEditorModule.EditorModel.prototype.resumeDispatch = function() {
 /**
  * Converts string to valid model key.
  * @param {anychart.chartEditorModule.EditorModel.Key} key
+ * @param {boolean=} opt_lastKey
  * @return {string} key as a string
  */
-anychart.chartEditorModule.EditorModel.getStringKey = function(key) {
+anychart.chartEditorModule.EditorModel.getStringKey = function(key, opt_lastKey) {
   var result;
   if (goog.isArray(key)) {
     key = /** @type {Array} */(key);
@@ -1664,6 +1665,11 @@ anychart.chartEditorModule.EditorModel.getStringKey = function(key) {
   }
   else
     result = String(key);
+
+  if (opt_lastKey) {
+    var tmp = result.split('.');
+    result = tmp[tmp.length - 1];
+  }
 
   return result;
 };

@@ -28,6 +28,9 @@ anychart.chartEditorModule.settings.scales.LogarithmicSpecific.prototype.createD
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.LogarithmicSpecific.CSS_CLASS);
 
-  //var content = this.getContentElement();
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  // var logBase = new anychart.chartEditorModule.input.Base();
+  // var logBaseLC = new anychart.chartEditorModule.controls.LabeledControl(logBase, 'Log Base');
+  // logBaseLC.init(model, this.genKey('logBase()'));
+  // this.addChildControl(logBaseLC);
 };

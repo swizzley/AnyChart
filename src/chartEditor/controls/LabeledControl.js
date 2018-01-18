@@ -101,6 +101,14 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.getValue = function
 
 
 /**
+ * @return {?anychart.chartEditorModule.EditorModel.Key}
+ */
+anychart.chartEditorModule.controls.LabeledControl.prototype.getKey = function() {
+  return this.control_ ? this.control_.getKey() : null;
+};
+
+
+/**
  * @param {boolean} enabled
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.setEnabled = function(enabled) {

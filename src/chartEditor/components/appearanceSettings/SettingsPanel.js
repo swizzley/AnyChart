@@ -52,6 +52,14 @@ anychart.chartEditorModule.SettingsPanel = function(model, opt_name, opt_domHelp
    */
   this.childControls_ = [];
 
+
+  /**
+   * List of keys of child controls to hide.
+   * @type {Array.<string>}
+   * @protected
+   */
+  this.skippedSettings = [];
+
   /**
    * @type {Array.<Element>}
    * @protected
@@ -356,8 +364,28 @@ anychart.chartEditorModule.SettingsPanel.prototype.registerLabel = function(labe
  * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField} control
  */
 anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(control) {
-  this.childControls_.push(control);
-  this.addChild(control, true);
+  var addControl = !this.skippedSettings.length;
+  
+  if (this.skippedSettings.length) {
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    var controlKey = model.getStringKey(control.getKey(), true);
+    addControl = goog.array.indexOf(this.skippedSettings, controlKey) === -1;
+  }
+  
+  if (addControl) {
+    this.childControls_.push(control);
+    this.addChild(control, true);
+  }
+};
+
+
+/**
+ * Add control keys that should be skipped.
+ * @param {string|Array.<string>} value Keys to skip.
+ */
+anychart.chartEditorModule.SettingsPanel.prototype.skipSettings = function(value) {
+  value = goog.isArray(value) ? value : [value];
+  this.skippedSettings = goog.array.concat(this.skippedSettings, value);
 };
 
 
