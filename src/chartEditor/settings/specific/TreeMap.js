@@ -4,7 +4,7 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.checkbox.AdjustFontSize');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');

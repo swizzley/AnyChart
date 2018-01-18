@@ -4,7 +4,7 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
@@ -63,12 +63,6 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   wrapper.addClassName('anychart-settings-panel-wrapper');
   this.addChild(wrapper, true);
 
-  var scale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear', 'log']);
-  scale.setKey(this.genKey('scale()'));
-  scale.skipSettings(['stackMode()', 'stackDirection()']);
-  wrapper.addChild(scale, true);
-  //this.scale_ = scale;
-
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([-90, 0, 90, 180, 270]);
   startAngle.setRange(-360, 360);
@@ -83,19 +77,19 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   sweepAngleLC.init(model, this.genKey('sweepAngle()'));
   wrapper.addChildControl(sweepAngleLC);
 
-  var radius = new anychart.chartEditorModule.comboBox.Percentage();
+  var radius = new anychart.chartEditorModule.comboBox.Percent();
   radius.setOptions([10, 30, 50, 70, 90]);
   var radiusLC = new anychart.chartEditorModule.controls.LabeledControl(radius, 'Radius');
   radiusLC.init(model, this.genKey('radius()'));
   wrapper.addChildControl(radiusLC);
 
-  var width = new anychart.chartEditorModule.comboBox.Percentage();
+  var width = new anychart.chartEditorModule.comboBox.Percent();
   width.setOptions([0, 1, 3, 5, 10]);
   var widthLC = new anychart.chartEditorModule.controls.LabeledControl(width, 'Width');
   widthLC.init(model, this.genKey('width()'));
   wrapper.addChildControl(widthLC);
 
-  var cornersRounding = new anychart.chartEditorModule.comboBox.Percentage();
+  var cornersRounding = new anychart.chartEditorModule.comboBox.Percent();
   cornersRounding.setOptions([0, 20, 50, 70, 100]);
   var cornersRoundingLC = new anychart.chartEditorModule.controls.LabeledControl(cornersRounding, 'Corners Rounding');
   cornersRoundingLC.init(model, this.genKey('cornersRounding()'));
@@ -174,6 +168,17 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   minorTicks.setKey(this.genKey('minorTicks()'));
   wrapper.addChildControl(minorTicks);
   //endregion
+
+  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  var scale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear', 'log']);
+  scale.setKey(this.genKey('scale()'));
+  scale.setName('Scale');
+  scale.skipSettings(['stackMode()', 'stackDirection()']);
+  wrapper.addChild(scale, true);
+  //this.scale_ = scale;
 };
 
 

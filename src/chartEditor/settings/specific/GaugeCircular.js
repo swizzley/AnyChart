@@ -4,7 +4,7 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 
@@ -61,7 +61,7 @@ anychart.chartEditorModule.settings.specific.GaugeCircular.prototype.createDom =
   sweepAngleLC.init(model, this.genKey('sweepAngle()'));
   this.addChildControl(sweepAngleLC);
 
-  var circularPadding = new anychart.chartEditorModule.comboBox.Percentage();
+  var circularPadding = new anychart.chartEditorModule.comboBox.Percent();
   circularPadding.setOptions([0, 5, 10, 20, 30, 40]);
   var circularPaddingLC = new anychart.chartEditorModule.controls.LabeledControl(circularPadding, 'Circular Padding');
   circularPaddingLC.init(model, this.genKey('circularPadding()'));

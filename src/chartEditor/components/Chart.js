@@ -118,7 +118,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
     if (chartType === 'gauges.circular') {
       /*var axis = */this.chart_['axis']();
       //axis.scale().minimum(0).maximum(100);
-      //axis.scale().inverted(true);
+      //axis.scale().maximumGap(0.44);
     }
 
     // Create mapping and series

@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.specific.Cartesian');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 
 
@@ -35,19 +35,19 @@ anychart.chartEditorModule.settings.specific.Cartesian.prototype.createDom = fun
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var pointWidth = new anychart.chartEditorModule.comboBox.Percentage();
+  var pointWidth = new anychart.chartEditorModule.comboBox.Percent();
   pointWidth.setOptions([10, 30, 50, 70, 90]);
   var pointWidthLC = new anychart.chartEditorModule.controls.LabeledControl(pointWidth, 'Point Width');
   pointWidthLC.init(model, this.genKey('pointWidth()'));
   this.addChildControl(pointWidthLC);
 
-  var maxPointWidth = new anychart.chartEditorModule.comboBox.Percentage();
+  var maxPointWidth = new anychart.chartEditorModule.comboBox.Percent();
   maxPointWidth.setOptions([10, 30, 50, 70, 90, 100]);
   var maxPointWidthLC = new anychart.chartEditorModule.controls.LabeledControl(maxPointWidth, 'Max Point Width');
   maxPointWidthLC.init(model, this.genKey('maxPointWidth()'));
   this.addChildControl(maxPointWidthLC);
 
-  var minPointLength = new anychart.chartEditorModule.comboBox.Percentage();
+  var minPointLength = new anychart.chartEditorModule.comboBox.Percent();
   minPointLength.setOptions([0, 2, 5, 10]);
   var minPointLengthLC = new anychart.chartEditorModule.controls.LabeledControl(minPointLength, 'Min Point Length');
   minPointLengthLC.init(model, this.genKey('minPointLength()'));

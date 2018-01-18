@@ -2,7 +2,6 @@ goog.provide('anychart.chartEditorModule.settings.scales.LinearSpecific');
 
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.LabeledControlTwins');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
@@ -60,6 +59,11 @@ anychart.chartEditorModule.settings.scales.LinearSpecific.prototype.createDom = 
   this.addChildControl(stackDirection);
 
 
+  var stickToZero = new anychart.chartEditorModule.checkbox.Base();
+  stickToZero.setCaption('Stick To Zero');
+  stickToZero.init(model, this.genKey('stickToZero()'));
+  this.addChildControl(stickToZero);
+
   var minimum = new anychart.chartEditorModule.input.Numbers();
   var minimumLC = new anychart.chartEditorModule.controls.LabeledControlTwins(minimum, 'Minimum');
   minimumLC.init(model, this.genKey('minimum()'));
@@ -71,4 +75,18 @@ anychart.chartEditorModule.settings.scales.LinearSpecific.prototype.createDom = 
   maximumLC.init(model, this.genKey('maximum()'));
   maximumLC.setKey2(this.genKey('softMaximum()'));
   this.addChildControl(maximumLC);
+
+  var minimumGap = new anychart.chartEditorModule.comboBox.Base();
+  minimumGap.setOptions([0, .1, .3, .5, .7, .9]);
+  minimumGap.setRange(0, 1);
+  var minimumGapLC = new anychart.chartEditorModule.controls.LabeledControl(minimumGap, 'Minimum Gap');
+  minimumGapLC.init(model, this.genKey('minimumGap()'));
+  this.addChildControl(minimumGapLC);
+
+  var maximumGap = new anychart.chartEditorModule.comboBox.Base();
+  maximumGap.setOptions([0, .1, .3, .5, .7, .9]);
+  maximumGap.setRange(0, 1);
+  var maximumGapLC = new anychart.chartEditorModule.controls.LabeledControl(maximumGap, 'Maximum Gap');
+  maximumGapLC.init(model, this.genKey('maximumGap()'));
+  this.addChildControl(maximumGapLC);
 };

@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.specific.Pie');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
@@ -36,7 +36,7 @@ anychart.chartEditorModule.settings.specific.Pie.prototype.createDom = function(
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
+  var innerRadius = new anychart.chartEditorModule.comboBox.Percent();
   innerRadius.setOptions([5, 10, 20, 30, 40]);
   var innerRadiusLC = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner Radius');
   innerRadiusLC.init(model, this.genKey('innerRadius()'));

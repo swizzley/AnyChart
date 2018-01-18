@@ -1,4 +1,4 @@
-goog.provide('anychart.chartEditorModule.comboBox.Percentage');
+goog.provide('anychart.chartEditorModule.comboBox.Percent');
 
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('goog.ui.ComboBox');
@@ -15,8 +15,8 @@ goog.require('goog.ui.ComboBox');
  * @extends {anychart.chartEditorModule.comboBox.Base}
  * @suppress {visibility}
  */
-anychart.chartEditorModule.comboBox.Percentage = function(opt_domHelper, opt_menu, opt_labelInput) {
-  anychart.chartEditorModule.comboBox.Percentage.base(this, 'constructor', opt_domHelper, opt_menu, opt_labelInput);
+anychart.chartEditorModule.comboBox.Percent = function(opt_domHelper, opt_menu, opt_labelInput) {
+  anychart.chartEditorModule.comboBox.Percent.base(this, 'constructor', opt_domHelper, opt_menu, opt_labelInput);
 
   this.setValidateFunction(function(value) {
     return /^\d{1,3}%?$/.test(value);
@@ -29,12 +29,12 @@ anychart.chartEditorModule.comboBox.Percentage = function(opt_domHelper, opt_men
 
   this.setOptions([10, 30, 50, 70, 90]);
 };
-goog.inherits(anychart.chartEditorModule.comboBox.Percentage, anychart.chartEditorModule.comboBox.Base);
+goog.inherits(anychart.chartEditorModule.comboBox.Percent, anychart.chartEditorModule.comboBox.Base);
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.comboBox.Percentage.prototype.setOptions = function(value) {
-  anychart.chartEditorModule.comboBox.Percentage.base(this, 'setOptions', value);
+anychart.chartEditorModule.comboBox.Percent.prototype.setOptions = function(value) {
+  anychart.chartEditorModule.comboBox.Percent.base(this, 'setOptions', value);
   var self = this;
   self.captions.length = 0;
   goog.array.forEach(self.options, function(item){

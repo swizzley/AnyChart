@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditorModule.settings.specific.Polar');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
-goog.require('anychart.chartEditorModule.comboBox.Percentage');
+goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 
 
@@ -62,7 +62,7 @@ anychart.chartEditorModule.settings.specific.Polar.prototype.createDom = functio
   maxPointWidthLC.init(model, this.genKey('maxPointWidth()'));
   this.addChildControl(maxPointWidthLC);
 
-  var innerRadius = new anychart.chartEditorModule.comboBox.Percentage();
+  var innerRadius = new anychart.chartEditorModule.comboBox.Percent();
   innerRadius.setOptions([5, 10, 20, 30, 40]);
   var innerRadiusLC = new anychart.chartEditorModule.controls.LabeledControl(innerRadius, 'Inner Radius');
   innerRadiusLC.init(model, this.genKey('innerRadius()'));
