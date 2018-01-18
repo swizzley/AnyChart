@@ -7,6 +7,7 @@ goog.require('anychart.chartEditorModule.settings.scales.LinearSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.LogarithmicSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.OrdinalColorSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.ScatterTicks');
+goog.require('anychart.ui.Component');
 
 
 /**

@@ -116,7 +116,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
     // todo: debug
     if (chartType === 'gauges.circular') {
-      var axis = this.chart_['axis']();
+      /*var axis = */this.chart_['axis']();
       //axis.scale().minimum(0).maximum(100);
       //axis.scale().inverted(true);
     }

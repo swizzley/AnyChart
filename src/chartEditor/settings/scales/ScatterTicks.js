@@ -32,7 +32,7 @@ anychart.chartEditorModule.settings.scales.ScatterTicks.prototype.createDom = fu
 
   goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.ScatterTicks.CSS_CLASS);
 
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  //var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
   // var mode = new anychart.chartEditorModule.controls.select.DataField({label: 'Mode'});
   // mode.getSelect().setOptions([

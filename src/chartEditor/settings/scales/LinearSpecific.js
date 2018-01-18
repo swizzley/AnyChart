@@ -1,13 +1,13 @@
 goog.provide('anychart.chartEditorModule.settings.scales.LinearSpecific');
 
-goog.require('anychart.chartEditorModule.settings.scales.SpecificBase');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Percentage');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
-goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.controls.LabeledControlTwins');
+goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.input.Base');
+goog.require('anychart.chartEditorModule.settings.scales.SpecificBase');
 
 
 /**
@@ -17,7 +17,7 @@ goog.require('anychart.chartEditorModule.input.Base');
  * @extends {anychart.chartEditorModule.settings.scales.SpecificBase}
  */
 anychart.chartEditorModule.settings.scales.LinearSpecific = function(model, opt_domHelper) {
-  anychart.chartEditorModule.settings.scales.LinearSpecific.base(this, 'constructor', model, null, opt_domHelper);
+  anychart.chartEditorModule.settings.scales.LinearSpecific.base(this, 'constructor', model, opt_domHelper);
 };
 goog.inherits(anychart.chartEditorModule.settings.scales.LinearSpecific, anychart.chartEditorModule.settings.scales.SpecificBase);
 

@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.scales.LogarithmicSpecific');
 
 goog.require('anychart.chartEditorModule.checkbox.Base');
+goog.require('anychart.chartEditorModule.settings.scales.LinearSpecific');
 
 
 /**

@@ -1,5 +1,6 @@
 goog.provide('anychart.chartEditorModule.controls.LabeledControlTwins');
 
+goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 
 
@@ -14,13 +15,13 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
 anychart.chartEditorModule.controls.LabeledControlTwins = function(control, opt_label, opt_domHelper) {
   anychart.chartEditorModule.controls.LabeledControlTwins.base(this, 'constructor', control, opt_label, opt_domHelper);
 
-  this.addClassName('anychart-settings-labeled-control-twins')
+  this.addClassName('anychart-settings-labeled-control-twins');
 };
 goog.inherits(anychart.chartEditorModule.controls.LabeledControlTwins, anychart.chartEditorModule.controls.LabeledControl);
 
 
 /**
- * @type {boolean}
+ * @type {string}
  * @private
  */
 anychart.chartEditorModule.controls.LabeledControlTwins.prototype.checkboxCaption_ = 'Soft';
@@ -46,6 +47,7 @@ anychart.chartEditorModule.controls.LabeledControlTwins.prototype.createDom = fu
 };
 
 
+/** @inheritDoc */
 anychart.chartEditorModule.controls.LabeledControlTwins.prototype.enterDocument = function() {
   anychart.chartEditorModule.controls.LabeledControlTwins.base(this, 'enterDocument');
 
@@ -71,6 +73,9 @@ anychart.chartEditorModule.controls.LabeledControlTwins.prototype.setKey2 = func
 };
 
 
+/**
+ * @param {Object} evt
+ */
 anychart.chartEditorModule.controls.LabeledControlTwins.prototype.onChangeKey = function(evt) {
   var mode2 = evt.target.getChecked();
 
