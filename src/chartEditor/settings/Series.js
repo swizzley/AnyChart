@@ -61,7 +61,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   // region == Header element ==
   var zippyHeader = new anychart.chartEditorModule.Component();
-  zippyHeader.addClassName('series-title');
+  zippyHeader.addClassName('zippy-title');
   this.addChild(zippyHeader, true);
 
   var nameInput = new anychart.chartEditorModule.input.Base('Series name');

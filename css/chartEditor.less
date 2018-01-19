@@ -645,7 +645,8 @@
 
   text-align: center;
   color: white;
-  font-size: 21px;
+  font-size: 22px;
+  line-height: 20px;
   font-weight: bold;
 
   &:hover {
@@ -653,7 +654,6 @@
   }
   &:after {
     position: relative;
-    top: -4px;
     content: "+";
   }
 }
@@ -664,9 +664,14 @@
   }
 }
 
-.anychart-chart-editor-series-name-input {
+.anychart-chart-editor-series-name-input,
+.anychart-chart-editor-pointer-name {
   width: 50%;
+}
+.anychart-chart-editor-pointer-name {
   font-size: 17px;
+  padding: 6px 0;
+  display: inline-block;
 }
 
 .anychart-chart-editor-input {
@@ -826,6 +831,7 @@
 
 .anychart-settings-panel-legend,
 .anychart-settings-panel-seriessettings,
+.anychart-settings-panel-pointers,
 .anychart-settings-panel-axes,
 .anychart-settings-panel-grids {
   > .content {
@@ -839,6 +845,7 @@
 
 .anychart-settings-panel-legend-single,
 .anychart-settings-panel-series-single,
+.anychart-settings-panel-pointer-single,
 .anychart-settings-panel-axis-single,
 .anychart-settings-panel-plot-grids {
   .box-shadow(@shadow-1);
@@ -879,8 +886,9 @@
   }
 }
 
-.anychart-settings-panel-series-single {
-  .series-title {
+.anychart-settings-panel-series-single,
+.anychart-settings-panel-pointer-single {
+  .zippy-title {
     padding: 15px;
     font-size: 17px;
     outline: none;
@@ -892,7 +900,7 @@
   .anychart-zippy-expanded {
     .anychart-plus-minus:after {
       content: "-";
-      top: -6px;
+      top: -2px;
     }
   }
   .anychart-settings-panel {
@@ -1653,6 +1661,7 @@
   }
   .anychart-settings-panel-legend-single,
   .anychart-settings-panel-series-single,
+  .anychart-settings-panel-pointer-single,
   .anychart-settings-panel-axis-single,
   .anychart-settings-panel-plot-grids {
     border: none;

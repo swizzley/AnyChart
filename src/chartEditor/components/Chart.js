@@ -78,7 +78,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
     this.chart_ = /** @type {anychart.core.Chart} */(anychart.bindingModule.exec(this.anychart, chartType + '()'));
 
-    if (chartType == 'map') {
+    if (chartType === 'map') {
       var geoData = model.getRawData(true);
       if (geoData) {
         this.chart_['geoData'](geoData);
@@ -145,7 +145,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
         } else {
           // todo: debug
-          if (chartType === 'gauges.circular' && i == 0 && j == 0) {
+          if (chartType === 'gauges.circular' && i === 0 && j === 0) {
             this.chart_['data'](mappingInstance);
           }
 
@@ -153,7 +153,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
           seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
 
           var series;
-          if (chartType == 'stock') {
+          if (chartType === 'stock') {
             var plot = this.chart_['plot'](i);
             series = plot[seriesCtor](mappingInstance);
 
@@ -161,6 +161,8 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
             // todo: debug
             series = this.chart_[seriesCtor](j/*, mappingInstance*/);
             series.dataIndex(0);
+            // series.fill('red');
+            // series.stroke({'color': 'green', 'thickness': 3});
 
           } else {
             series = this.chart_[seriesCtor](mappingInstance);
@@ -177,7 +179,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   // console.log(settings['chart']['settings']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
-    if (key == 'palette()') {
+    if (key === 'palette()') {
       value = self.anychart['palettes'][value];
     }
     anychart.bindingModule.exec(self.chart_, key, value);
@@ -199,7 +201,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
 /** @inheritDoc */
 anychart.chartEditorModule.Chart.prototype.dispose = function() {
-  if (this.chart_ && typeof this.chart_['dispose'] == 'function') {
+  if (this.chart_ && typeof this.chart_['dispose'] === 'function') {
     this.chart_['dispose']();
     this.chart_ = null;
   }
