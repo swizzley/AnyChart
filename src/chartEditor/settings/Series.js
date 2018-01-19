@@ -91,7 +91,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
 
   // Tooltip
   var tooltip = new anychart.chartEditorModule.settings.Title(model, 'Tooltip');
@@ -104,7 +104,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
 
   // Data labels
   var dataLabels = new anychart.chartEditorModule.settings.Labels(model);
@@ -115,7 +115,7 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
 
   // Data markers
   var dataMarkers = new anychart.chartEditorModule.settings.Markers(model);

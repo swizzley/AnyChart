@@ -3,6 +3,7 @@ goog.provide('anychart.chartEditorModule.settings.pointers.Base');
 goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
+goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 goog.require('goog.ui.AnimatedZippy');
 
@@ -20,7 +21,8 @@ anychart.chartEditorModule.settings.pointers.Base = function(model, type, pointe
   anychart.chartEditorModule.settings.pointers.Base.base(this, 'constructor', model, null, opt_domHelper);
 
   this.index_ = pointerIndex;
-  this.pointerd_ = String(pointerId);
+  this.pointerId_ = String(pointerId);
+  this.pointerType_ = type;
 
   // todo: debug
   var tmp = type.split('.');
@@ -28,7 +30,6 @@ anychart.chartEditorModule.settings.pointers.Base = function(model, type, pointe
   var stringKey = ctor + '(' + pointerIndex + ')';
   //var stringKey = 'getPointer(\'' + this.pointerId_ + '\')';
 
-  this.pointerType_ = type;
   this.key = [['chart'], ['settings'], stringKey];
 
   this.allowEnabled(false);
@@ -86,7 +87,14 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.createDom = function
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  //debugger
+  var axisIndex = new anychart.chartEditorModule.controls.select.DataField({label: 'Axis Index'});
+  axisIndex.getSelect().setOptions([{value: '0'}]);
+  axisIndex.init(model, this.genKey('axisIndex()'));
+  innerContent.addChild(axisIndex, true);
+  this.axisIndex_ = axisIndex;
 
   goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
@@ -112,7 +120,16 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.onChartDraw = functi
   anychart.chartEditorModule.settings.pointers.Base.base(this, 'onChartDraw', evt);
   if (!this.isExcluded()) {
     var target = evt.chart;
+
     this.fill_.setValueByTarget(target);
+
+    var count = target.getAxesCount();
+    var options = [];
+    for (var i = 0; i < count; i++) {
+        options.push({'value': String(i)});
+    }
+    this.axisIndex_.getSelect().setOptions(options);
+    this.axisIndex_.setValueByTarget(target);
   }
 };
 
@@ -120,10 +137,11 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.onChartDraw = functi
 /** @override */
 anychart.chartEditorModule.settings.pointers.Base.prototype.disposeInternal = function() {
   goog.disposeAll([
-    this.fill_
+    this.fill_,
+    this.axisIndex_
   ]);
-
   this.fill_ = null;
+  this.axisIndex_ = null;
 
   anychart.chartEditorModule.settings.pointers.Base.base(this, 'disposeInternal');
 };
