@@ -122,6 +122,9 @@ anychart.treeDataModule.Tree.fromJson = function(config) {
   var tree = new anychart.treeDataModule.Tree();
   tree.suspendSignalsDispatching();
 
+  if ('rootMapping' in config)
+    tree.mapping_ = config['rootMapping'];
+
   if ('index' in config) {
     var indexData = config['index'];
 
@@ -940,19 +943,7 @@ anychart.treeDataModule.Tree.prototype.removeChildren = function() {
  * @inheritDoc
  */
 anychart.treeDataModule.Tree.prototype.serialize = function() {
-  var json = anychart.treeDataModule.Tree.base(this, 'serialize');
-  json['children'] = [];
-  for (var i = 0; i < this.numChildren(); i++) {
-    var root = this.getChildAt(i);
-    json['children'].push(root.serialize([]));
-  }
-
-  json['index'] = [];
-  for (var key in this.index_) {
-    json['index'].push(key);
-  }
-
-  return json;
+  return this.serializeWithoutMeta([]);
 };
 
 
@@ -965,14 +956,15 @@ anychart.treeDataModule.Tree.prototype.serialize = function() {
  * @return {!Object} Serialized JSON object.
  */
 anychart.treeDataModule.Tree.prototype.serializeWithoutMeta = function(opt_exceptions) {
-  var json = {};
-  json['children'] = [];
+  var json = {
+    'rootMapping': this.mapping_,
+    'children': [],
+    'index': []
+  };
   for (var i = 0; i < this.numChildren(); i++) {
     var root = this.getChildAt(i);
     json['children'].push(root.serialize(opt_exceptions));
   }
-
-  json['index'] = [];
   for (var key in this.index_) {
     json['index'].push(key);
   }
@@ -1082,8 +1074,8 @@ anychart.treeDataModule.Tree.DataItem.fromSerializedItem = function(tree, config
     }
   }
 
-  if ('children' in config) {
-    var children = config['children'];
+  var children = config[tree.mapping_[anychart.enums.GanttDataFields.CHILDREN] || anychart.enums.GanttDataFields.CHILDREN];
+  if (goog.isArray(children)) {
     for (var i = 0; i < children.length; i++) {
       var child = anychart.treeDataModule.Tree.DataItem.fromSerializedItem(tree, children[i]);
       item.addChild(child);
@@ -1941,10 +1933,13 @@ anychart.treeDataModule.Tree.DataItem.prototype.serialize = function(opt_excepti
     result['treeDataItemMeta'] = meta;
   }
 
-  for (var i = 0, len = this.numChildren(); i < len; i++) {
-    var child = this.getChildAt(i);
-    if (!result.children) result.children = [];
-    result.children.push(child.serialize(opt_exceptions));
+  var len = this.numChildren();
+  if (len) {
+    result['children'] = [];
+    for (var i = 0; i < len; i++) {
+      var child = this.getChildAt(i);
+      result['children'].push(child.serialize(opt_exceptions));
+    }
   }
 
   return result;

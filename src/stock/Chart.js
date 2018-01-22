@@ -632,6 +632,17 @@ anychart.stockModule.Chart.prototype.plotInternal = function(opt_indexOrValue, o
 
 
 /**
+ * Plot remove endpoint.
+ * @param {anychart.stockModule.Plot} plot
+ */
+anychart.stockModule.Chart.prototype.removePlotInternal = function(plot) {
+  if (goog.array.remove(this.plots_, plot))
+    this.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.STOCK_PLOTS_APPEARANCE,
+        anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+};
+
+
+/**
  * Scroller getter-setter.
  * @param {(Object|boolean|null)=} opt_value
  * @return {anychart.stockModule.Scroller|anychart.stockModule.Chart}
@@ -670,11 +681,34 @@ anychart.stockModule.Chart.prototype.scroller = function(opt_value) {
 anychart.stockModule.Chart.prototype.selectRange = function(typeOrUnitOrStart, opt_endOrCountOrDispatchEvent, opt_anchorOrDispatchEvent, opt_dispatchEvent) {
   var type, unit;
   var offset, year, month;
+  var count, anchor, direction;
 
   var baseKey = this.dataController_.getLastKey(), baseDate;
   var newKey = NaN, newDate;
+  type = anychart.enums.normalizeStockRangeType(typeOrUnitOrStart, null);
 
-  if (type = anychart.enums.normalizeStockRangeType(typeOrUnitOrStart, null)) {
+  if (type == anychart.enums.StockRangeType.POINTS) {
+    count = Math.max(+opt_endOrCountOrDispatchEvent || 0, 10);
+    anchor = anychart.enums.normalizeStockRangeAnchor(opt_anchorOrDispatchEvent);
+    direction = -1;
+    var baseIndex;
+    if (anchor == anychart.enums.StockRangeAnchor.LAST_VISIBLE_DATE) {
+      baseIndex = this.dataController_.getMainIndexByKey(this.dataController_.getLastVisibleKey());
+    } else if (anchor == anychart.enums.StockRangeAnchor.FIRST_VISIBLE_DATE) {
+      baseIndex = this.dataController_.getMainIndexByKey(this.dataController_.getFirstVisibleKey());
+      direction = 1;
+    } else if (anchor == anychart.enums.StockRangeAnchor.FIRST_DATE) {
+      baseIndex = this.dataController_.getFirstMainIndex();
+      direction = 1;
+    } else {
+      baseIndex = this.dataController_.getLastMainIndex();
+    }
+    var newIndex = baseIndex + direction * (count - 1);
+    baseIndex -= direction / 2;
+    newIndex += direction / 2;
+    baseKey = this.dataController_.getKeyByMainIndex(baseIndex);
+    newKey = this.dataController_.getKeyByMainIndex(goog.math.clamp(newIndex, this.dataController_.getFirstMainIndex(), this.dataController_.getLastMainIndex()));
+  } else if (type && (type != anychart.enums.StockRangeType.UNIT)) {
     baseDate = new Date(baseKey);
     switch (type) {
       case anychart.enums.StockRangeType.YTD:
@@ -692,16 +726,9 @@ anychart.stockModule.Chart.prototype.selectRange = function(typeOrUnitOrStart, o
         break;
     }
   } else if (unit = anychart.enums.normalizeInterval(typeOrUnitOrStart, null)) {
-    var count = opt_endOrCountOrDispatchEvent || 1;
-    var anchor = anychart.enums.normalizeStockRangeAnchor(opt_anchorOrDispatchEvent);
-    /**
-     * Anchor determines the direction of offset.
-     * Direction determines a sign of an operation.
-     * 1 - forward (FIRST_DATE|FIRST_VISIBLE_DATE)
-     * -1 - backward (LAST_DATE|LAST_VISIBLE_DATE)
-     * @type {number}
-     */
-    var direction = -1;
+    count = opt_endOrCountOrDispatchEvent || 1;
+    anchor = anychart.enums.normalizeStockRangeAnchor(opt_anchorOrDispatchEvent);
+    direction = -1;
     if (anchor == anychart.enums.StockRangeAnchor.LAST_VISIBLE_DATE) {
       baseKey = this.dataController_.getLastVisibleKey();
     } else if (anchor == anychart.enums.StockRangeAnchor.FIRST_VISIBLE_DATE) {
