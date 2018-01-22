@@ -70,7 +70,7 @@ anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
     var position = new anychart.chartEditorModule.controls.select.DataField({label: 'Position'});
     var positionValues = goog.object.getValues(anychart.enums.SidePosition);
     positionValues = goog.array.filter(positionValues, function(i) {
-      return goog.typeOf(i) == 'string';
+      return goog.typeOf(i) === 'string';
     });
     position.getControl().setOptions(positionValues);
     position.init(model, this.genKey('position()'));
@@ -96,5 +96,5 @@ anychart.chartEditorModule.settings.Ticks.prototype.createDom = function() {
   // Stroke
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
   stroke.setKey(this.genKey('stroke()'));
-  this.addChildControl(stroke);
+  this.addChild(stroke, true);
 };

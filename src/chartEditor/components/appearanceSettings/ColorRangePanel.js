@@ -84,7 +84,7 @@ anychart.chartEditorModule.ColorRangePanel.prototype.createDom = function() {
   // Stroke
   var stroke = new anychart.chartEditorModule.settings.Stroke(model, 'Stroke');
   stroke.setKey(this.genKey('stroke()'));
-  this.addChildControl(stroke);
+  this.addChild(stroke, true);
 
   // Overlap mode
   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});

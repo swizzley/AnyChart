@@ -72,7 +72,7 @@ anychart.chartEditorModule.controls.select.Base.prototype.setOptions = function(
     var val = option.value;
     if (goog.isDef(val)) {
       if (!goog.isDef(option.caption)) {
-        option.caption = val.charAt(0).toUpperCase() + val.slice(1);
+        option.caption = goog.string.capitalize(val);
       }
 
       this.addItem(new anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem(option));

@@ -45,7 +45,7 @@ anychart.chartEditorModule.settings.specific.GaugeCircular.prototype.createDom =
 
   var stroke = new anychart.chartEditorModule.settings.Stroke(model, 'Stroke');
   stroke.setKey(this.genKey('stroke()'));
-  this.addChildControl(stroke);
+  this.addChild(stroke, true);
 
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([-90, 0, 90, 180, 270]);

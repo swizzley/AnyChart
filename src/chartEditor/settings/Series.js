@@ -126,6 +126,10 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
 
   // Color Scale
   if (this.seriesType_ === 'choropleth') {
+    goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
     var colorScale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear-color', 'ordinal-color']);
     colorScale.setKey(this.genKey('colorScale()'));
     innerContent.addChild(colorScale, true);

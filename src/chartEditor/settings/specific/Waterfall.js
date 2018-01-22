@@ -47,7 +47,7 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.createDom = fun
 
   var connectorStroke = new anychart.chartEditorModule.settings.Stroke(model, 'Connectors');
   connectorStroke.setKey(this.genKey('connectorStroke()'));
-  this.addChildControl(connectorStroke);
+  this.addChild(connectorStroke, true);
 
   var itemsSourceMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Legend Items Source Mode'});
   itemsSourceMode.getSelect().setOptions([

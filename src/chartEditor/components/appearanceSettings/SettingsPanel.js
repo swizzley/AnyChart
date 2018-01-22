@@ -47,7 +47,7 @@ anychart.chartEditorModule.SettingsPanel = function(model, opt_name, opt_domHelp
   this.allowRemove_ = false;
 
   /**
-   * @type {Array.<anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField>}
+   * @type {Array.<anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.colorPicker.Base>}
    * @private
    */
   this.childControls_ = [];
@@ -361,7 +361,7 @@ anychart.chartEditorModule.SettingsPanel.prototype.registerLabel = function(labe
 
 
 /**
- * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField} control
+ * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.colorPicker.Base} control
  * @return {boolean} true if control was added.
  */
 anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(control) {

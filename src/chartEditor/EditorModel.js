@@ -317,9 +317,9 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'value': 'map',
     'name': 'Map',
     'icon': 'choropleth-map.svg',
-    'series': ['marker-by-id', 'marker-by-coordinates', 'bubble-by-id', 'bubble-by-coordinates', 'choropleth', 'pointers'],
+    'series': ['marker-by-id', 'marker-by-coordinates', 'bubble-by-id', 'bubble-by-coordinates', 'choropleth'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['grids', 'axes', 'colorScale', 'circularGaugeAxes'],
+    'panelsExcludes': ['grids', 'axes', 'colorScale', 'circularGaugeAxes', 'pointers'],
     'settingsExcludes': ['animation().enabled()'],
     'filters': ['common']
   },

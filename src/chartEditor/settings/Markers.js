@@ -38,23 +38,22 @@ anychart.chartEditorModule.settings.Markers.prototype.createDom = function() {
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var typeSelect = new anychart.chartEditorModule.controls.select.DataFieldSelect('Type');
-  typeSelect.setOptions(goog.object.getValues(anychart.enums.MarkerType));
-  this.addChild(typeSelect, true);
-  goog.dom.classlist.add(typeSelect.getElement(), goog.getCssName('markers-type'));
-  this.typeSelect_ = typeSelect;
+  var type = new anychart.chartEditorModule.controls.select.DataFieldSelect('Type');
+  type.setOptions(goog.object.getValues(anychart.enums.MarkerType));
+  type.init(model, this.genKey('type()'));
+  type.addClassName(goog.getCssName('markers-type'));
+  this.addChildControl(type);
 
-  var sizeSelect = new anychart.chartEditorModule.comboBox.Base();
-  sizeSelect.setOptions([6, 10, 12, 15]);
-  this.addChild(sizeSelect, true);
-  goog.dom.classlist.add(sizeSelect.getElement(), goog.getCssName('markers-size'));
-  this.sizeSelect_ = sizeSelect;
+  var size = new anychart.chartEditorModule.comboBox.Base();
+  size.setOptions([6, 10, 12, 15]);
+  size.init(model, this.genKey('size()'));
+  this.addChildControl(size);
+  goog.dom.classlist.add(size.getElement(), goog.getCssName('markers-size'));
 
-  var fillSelect = new anychart.chartEditorModule.colorPicker.Base();
-  fillSelect.addClassName(goog.getCssName('marker-fill'));
-  this.addChild(fillSelect, true);
-  goog.dom.classlist.add(fillSelect.getElement(), goog.getCssName('markers-fill'));
-  this.fillSelect_ = fillSelect;
+  var fill = new anychart.chartEditorModule.colorPicker.Base();
+  fill.init(model, this.genKey('fill()'));
+  this.addChildControl(fill);
+  goog.dom.classlist.add(fill.getElement(), goog.getCssName('markers-fill'));
 
   goog.dom.appendChild(content, goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 
@@ -64,42 +63,5 @@ anychart.chartEditorModule.settings.Markers.prototype.createDom = function() {
 
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
   stroke.setKey(this.genKey('stroke()'));
-  this.addChildControl(stroke);
-};
-
-
-/**
- * Update model keys.
- */
-anychart.chartEditorModule.settings.Markers.prototype.updateKeys = function() {
-  anychart.chartEditorModule.settings.Markers.base(this, 'updateKeys');
-
-  if (this.isExcluded()) return;
-
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (this.typeSelect_) this.typeSelect_.init(model, this.genKey('type()'));
-  if (this.fillSelect_) this.fillSelect_.init(model, this.genKey('fill()'));
-  if (this.sizeSelect_) this.sizeSelect_.init(model, this.genKey('size()'));
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.Markers.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.Markers.base(this, 'onChartDraw', evt);
-
-  var target = evt.chart;
-  this.typeSelect_.setValueByTarget(target);
-  this.fillSelect_.setValueByTarget(target);
-  this.sizeSelect_.setValueByTarget(target);
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.Markers.prototype.disposeInternal = function() {
-  goog.disposeAll([this.typeSelect_, this.fillSelect_, this.sizeSelect_]);
-  this.typeSelect_ = null;
-  this.fillSelect_ = null;
-  this.sizeSelect_ = null;
-
-  anychart.chartEditorModule.settings.Markers.base(this, 'disposeInternal');
+  this.addChild(stroke, true);
 };

@@ -6,6 +6,7 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.LabeledControlTwins');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.input.Numbers');
+goog.require('anychart.chartEditorModule.settings.scales.ScatterTicks');
 goog.require('anychart.chartEditorModule.settings.scales.SpecificBase');
 
 
@@ -89,4 +90,22 @@ anychart.chartEditorModule.settings.scales.LinearSpecific.prototype.createDom = 
   var maximumGapLC = new anychart.chartEditorModule.controls.LabeledControl(maximumGap, 'Maximum Gap');
   maximumGapLC.init(model, this.genKey('maximumGap()'));
   this.addChildControl(maximumGapLC);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  var ticks = new anychart.chartEditorModule.settings.scales.ScatterTicks(model, 'Scale Ticks');
+  ticks.allowEnabled(false);
+  ticks.setKey(this.genKey('ticks()'));
+  this.addChild(ticks, true);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  var minorTicks = new anychart.chartEditorModule.settings.scales.ScatterTicks(model, 'Scale Minor Ticks');
+  minorTicks.allowEnabled(false);
+  minorTicks.setKey(this.genKey('minorTicks()'));
+  this.addChild(minorTicks, true);
 };

@@ -6,7 +6,6 @@ goog.require('anychart.chartEditorModule.settings.scales.LinearColorSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.LinearSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.LogarithmicSpecific');
 goog.require('anychart.chartEditorModule.settings.scales.OrdinalColorSpecific');
-goog.require('anychart.chartEditorModule.settings.scales.ScatterTicks');
 goog.require('anychart.ui.Component');
 
 
@@ -89,23 +88,7 @@ anychart.chartEditorModule.settings.scales.Base.prototype.createDom = function()
   this.addChild(specificWrapper, true);
   this.specificWrapper_ = specificWrapper;
 
-  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
-
-  var ticks = new anychart.chartEditorModule.settings.scales.ScatterTicks(model, 'Scale Ticks');
-  ticks.allowEnabled(false);
-  ticks.setKey(this.genKey('ticks()'));
-  this.addChild(ticks, true);
-
-  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
-
-  var minorTicks = new anychart.chartEditorModule.settings.scales.ScatterTicks(model, 'Scale Minor Ticks');
-  minorTicks.allowEnabled(false);
-  minorTicks.setKey(this.genKey('minorTicks()'));
-  this.addChild(minorTicks, true);
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
 };
 
 

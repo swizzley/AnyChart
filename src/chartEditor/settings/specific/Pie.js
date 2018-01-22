@@ -44,5 +44,5 @@ anychart.chartEditorModule.settings.specific.Pie.prototype.createDom = function(
 
   var connectorstroke = new anychart.chartEditorModule.settings.Stroke(model, 'Connectors');
   connectorstroke.setKey(this.genKey('connectorStroke()'));
-  this.addChildControl(connectorstroke);
+  this.addChild(connectorstroke, true);
 };
