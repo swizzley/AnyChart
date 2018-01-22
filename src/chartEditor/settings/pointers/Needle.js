@@ -1,9 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.pointers.Needle');
 
-goog.require('anychart.chartEditorModule.Component');
 goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
-goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.pointers.Base');
 
 

@@ -67,7 +67,7 @@ anychart.chartEditorModule.controls.select.Base.prototype.setOptions = function(
   for (var i = 0; i < options.length; i++) {
     var option = options[i];
     if (goog.isString(option))
-      option = {value: option, caption: option};
+      option = {value: option};
 
     var val = option.value;
     if (goog.isDef(val)) {
