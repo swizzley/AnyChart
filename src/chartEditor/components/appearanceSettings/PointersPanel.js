@@ -1,7 +1,9 @@
 goog.provide('anychart.chartEditorModule.PointersPanel');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.settings.pointers.Bar');
 goog.require('anychart.chartEditorModule.settings.pointers.Base');
+goog.require('anychart.chartEditorModule.settings.pointers.Needle');
 
 
 
@@ -49,7 +51,18 @@ anychart.chartEditorModule.PointersPanel.prototype.createPointers = function() {
   for (var j = 0; j < mappings[0].length; j++) {
     id = mappings[0][j]['id'] ? mappings[0][j]['id'] : j;
     type = mappings[0][j]['ctor'];
-    pointer = new anychart.chartEditorModule.settings.pointers.Base(model, type, id, j);
+    switch (type) {
+      case 'gauges.bar':
+        pointer = new anychart.chartEditorModule.settings.pointers.Bar(model, type, id, j);
+        break;
+      case 'needle':
+        pointer = new anychart.chartEditorModule.settings.pointers.Needle(model, type, id, j);
+        break;
+      default:
+        pointer = new anychart.chartEditorModule.settings.pointers.Base(model, type, id, j);
+        break;
+    }
+
     this.pointers_.push(pointer);
     this.addChild(pointer, true);
   }

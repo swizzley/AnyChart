@@ -362,6 +362,7 @@ anychart.chartEditorModule.SettingsPanel.prototype.registerLabel = function(labe
 
 /**
  * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.DataField} control
+ * @return {boolean} true if control was added.
  */
 anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(control) {
   var addControl = !this.skippedSettings.length;
@@ -376,6 +377,8 @@ anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(co
     this.childControls_.push(control);
     this.addChild(control, true);
   }
+
+  return addControl;
 };
 
 

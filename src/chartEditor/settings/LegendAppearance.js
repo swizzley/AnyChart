@@ -35,8 +35,8 @@ anychart.chartEditorModule.settings.LegendAppearance.prototype.createDom = funct
 
   var layoutField = new anychart.chartEditorModule.controls.select.DataField({label: 'Layout'});
   layoutField.getSelect().setOptions([
-    {value: 'horizontal', caption: 'Horizontal'},
-    {value: 'vertical', caption: 'Vertical'}
+    {value: 'horizontal'},
+    {value: 'vertical'}
   ]);
   this.addChild(layoutField, true);
 

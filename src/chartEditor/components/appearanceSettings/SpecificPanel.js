@@ -66,11 +66,11 @@ anychart.chartEditorModule.SpecificPanel.prototype.actualize = function() {
   var self = this;
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var currentChartType = model.getModel()['chart']['type'];
-  if (currentChartType != this.chartType_) {
+  if (currentChartType !== this.chartType_) {
     self.chartType_ = currentChartType;
 
     var descriptor = goog.array.filter(this.descriptors_, function(item) {
-      return goog.isString(item.chartType) ? item.chartType == self.chartType_ : goog.array.indexOf(item.chartType, self.chartType_) !== -1;
+      return goog.isString(item.chartType) ? item.chartType === self.chartType_ : goog.array.indexOf(item.chartType, self.chartType_) !== -1;
     });
 
     if (descriptor.length && descriptor[0].classFunc) {

@@ -40,7 +40,7 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.createDom = fun
   var dataMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Data Mode'});
   dataMode.getSelect().setOptions([
     {value: 'diff', caption: 'Difference'},
-    {value: 'absolute', caption: 'Absolute'}
+    {value: 'absolute'}
   ]);
   dataMode.init(model, this.genKey('dataMode()'));
   this.addChildControl(dataMode);
@@ -51,8 +51,8 @@ anychart.chartEditorModule.settings.specific.Waterfall.prototype.createDom = fun
 
   var itemsSourceMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Legend Items Source Mode'});
   itemsSourceMode.getSelect().setOptions([
-    {value: 'default', caption: 'Default'},
-    {value: 'categories', caption: 'Categories'}
+    {value: 'default'},
+    {value: 'categories'}
   ]);
   itemsSourceMode.init(model, this.genKey('legend().itemsSourceMode()'));
   this.addChildControl(itemsSourceMode);

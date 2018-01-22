@@ -80,6 +80,7 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.createDom = function
   var innerContent = new anychart.chartEditorModule.Component();
   zippyContent.addClassName('inner-content');
   zippyContent.addChild(innerContent, true);
+  this.innerContent_ = innerContent;
 
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
   stroke.setKey(this.genKey('stroke()'));
@@ -89,7 +90,6 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.createDom = function
       goog.dom.TagName.DIV,
       goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
 
-  //debugger
   var axisIndex = new anychart.chartEditorModule.controls.select.DataField({label: 'Axis Index'});
   axisIndex.getSelect().setOptions([{value: '0'}]);
   axisIndex.init(model, this.genKey('axisIndex()'));
@@ -112,6 +112,19 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.createDom = function
  */
 anychart.chartEditorModule.settings.pointers.Base.prototype.expand = function() {
   if (this.zippy_) this.zippy_.expand();
+};
+
+
+/** @override */
+anychart.chartEditorModule.settings.pointers.Base.prototype.addChildControl = function(control) {
+  var added = anychart.chartEditorModule.settings.pointers.Base.base(this, 'addChildControl', control);
+
+  if (added) {
+    this.removeChild(control, true);
+    this.innerContent_.addChild(control, true);
+  }
+
+  return added;
 };
 
 

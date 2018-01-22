@@ -43,17 +43,17 @@ anychart.chartEditorModule.settings.scales.LinearSpecific.prototype.createDom = 
 
   var stackMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Stack Mode'});
   stackMode.getSelect().setOptions([
-    {value: 'none', caption: 'None'},
-    {value: 'percent', caption: 'Percent'},
-    {value: 'value', caption: 'Value'}
+    {value: 'none'},
+    {value: 'percent'},
+    {value: 'value'}
   ]);
   stackMode.init(model, this.genKey('stackMode()'));
   this.addChildControl(stackMode);
 
   var stackDirection = new anychart.chartEditorModule.controls.select.DataField({label: 'Stack Direction'});
   stackDirection.getSelect().setOptions([
-    {value: 'direct', caption: 'Direct'},
-    {value: 'reverse', caption: 'Reverse'}
+    {value: 'direct'},
+    {value: 'reverse'}
   ]);
   stackDirection.init(model, this.genKey('stackDirection()'));
   this.addChildControl(stackDirection);

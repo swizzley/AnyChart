@@ -35,7 +35,7 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
 
   this.setModel(model);
 
-  this.panels_ = [
+  this.descriptors_ = [
     {
       name: 'GeneralTheming',
       enabled: true,
@@ -164,13 +164,13 @@ anychart.chartEditorModule.AppearanceSettings.prototype.createDom = function() {
   this.buttonsWrapper_ = goog.dom.createDom(goog.dom.TagName.DIV, 'anychart-buttons-wrapper');
   goog.dom.appendChild(this.tabs_.getElement(), this.buttonsWrapper_);
 
-  for (var i = 0; i < this.panels_.length; i++) {
-    var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
-    var classFunc = this.panels_[i].classFunc;
-    panel = this.panels_[i].instance = new classFunc(model);
+  for (var i = 0; i < this.descriptors_.length; i++) {
+    var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.descriptors_[i].instance);
+    var classFunc = this.descriptors_[i].classFunc;
+    panel = this.descriptors_[i].instance = new classFunc(model);
 
     this.tabContent_.addChild(panel, true);
-    goog.dom.classlist.add(panel.getElement(), 'anychart-settings-panel-' + this.panels_[i].name.toLowerCase());
+    goog.dom.classlist.add(panel.getElement(), 'anychart-settings-panel-' + this.descriptors_[i].name.toLowerCase());
     goog.dom.classlist.add(panel.getTopElement(), 'anychart-chart-editor-section-caption');
 
     var button = dom.createDom(goog.dom.TagName.DIV, 'button', panel.getName());
@@ -186,10 +186,10 @@ anychart.chartEditorModule.AppearanceSettings.prototype.enterDocument = function
   anychart.chartEditorModule.AppearanceSettings.base(this, 'enterDocument');
 
   for (var j = 0; j < this.buttons_.length; j++) {
-    var panel = this.panels_[j].instance;
+    var panel = this.descriptors_[j].instance;
     var button = this.buttons_[j];
 
-    goog.dom.classlist.enable(button, 'active', this.currentPanel_ == j);
+    goog.dom.classlist.enable(button, 'active', this.currentPanel_ === j);
     goog.dom.classlist.enable(button, 'anychart-hidden', panel.isExcluded());
     goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ !== j || panel.isExcluded());
 
@@ -207,18 +207,18 @@ anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = funct
   var chartType = model.getModel()['chart']['type'];
   var panelsExcludes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['panelsExcludes'];
 
-  for (var i = 0; i < this.panels_.length; i++) {
-    var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.panels_[i].instance);
+  for (var i = 0; i < this.descriptors_.length; i++) {
+    var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.descriptors_[i].instance);
     var excluded;
 
-    if (this.panels_[i].name == 'Specific') {
+    if (this.descriptors_[i].name === 'Specific') {
       panel.actualize();
       excluded = panel.isExcluded();
       if (!excluded)
         this.getDomHelper().setTextContent(this.buttons_[i], /** @type {string} */(panel.getName()));
 
     } else {
-      excluded = !this.panels_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
+      excluded = !this.descriptors_[i].enabled || panelsExcludes && goog.array.indexOf(panelsExcludes, panel.getStringId()) !== -1;
       panel.exclude(excluded);
     }
 
@@ -235,13 +235,13 @@ anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = funct
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.onClickCategoryButton_ = function(evt) {
   var index = Number(evt.currentTarget.getAttribute('data-index'));
-  if (this.currentPanel_ != index) {
+  if (this.currentPanel_ !== index) {
     this.currentPanel_ = index;
 
-    for (var i = 0; i < this.panels_.length; i++) {
-      var panel = this.panels_[i].instance;
-      goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ != i);
-      goog.dom.classlist.enable(this.buttons_[i], 'active', this.currentPanel_ == i);
+    for (var i = 0; i < this.descriptors_.length; i++) {
+      var panel = this.descriptors_[i].instance;
+      goog.dom.classlist.enable(panel.getElement(), 'anychart-hidden', this.currentPanel_ !== i);
+      goog.dom.classlist.enable(this.buttons_[i], 'active', this.currentPanel_ === i);
     }
   }
 };
@@ -252,9 +252,9 @@ anychart.chartEditorModule.AppearanceSettings.prototype.onClickCategoryButton_ =
  * @param {Object} values
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.updateDescriptors = function(values) {
-  for (var i = 0; i < this.panels_.length; i++) {
-    if (values[this.panels_[i].name]) {
-      this.panels_[i].enabled = values[this.panels_[i].name].enabled;
+  for (var i = 0; i < this.descriptors_.length; i++) {
+    if (values[this.descriptors_[i].name]) {
+      this.descriptors_[i].enabled = values[this.descriptors_[i].name].enabled;
     }
   }
 };
@@ -266,9 +266,9 @@ anychart.chartEditorModule.AppearanceSettings.prototype.updateDescriptors = func
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.getDescriptorByName_ = function(name) {
   var descriptor = null;
-  for (var i = 0; i < this.panels_.length; i++) {
-    if (this.panels_[i].name == name) {
-      descriptor = this.panels_[i];
+  for (var i = 0; i < this.descriptors_.length; i++) {
+    if (this.descriptors_[i].name === name) {
+      descriptor = this.descriptors_[i];
       break;
     }
   }
@@ -282,7 +282,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.getDescriptorByName_ = f
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.enablePanelByName = function(name, enabled) {
   var descriptor = this.getDescriptorByName_(name);
-  if (descriptor && descriptor.enabled != enabled) {
+  if (descriptor && descriptor.enabled !== enabled) {
     descriptor.enabled = enabled;
     this.updateExclusions();
   }
@@ -291,7 +291,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.enablePanelByName = func
 
 /** @inheritDoc */
 anychart.chartEditorModule.AppearanceSettings.prototype.disposeInternal = function() {
-  this.panels_.length = 0;
+  this.descriptors_.length = 0;
   this.buttons_.length = 0;
   this.tabs_ = null;
   this.tabContent_ = null;
