@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.CircularGaugeAxis');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.SettingsPanelIndexed');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
@@ -8,7 +9,6 @@ goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
-goog.require('anychart.chartEditorModule.settings.Stagger');
 goog.require('anychart.chartEditorModule.settings.Ticks');
 goog.require('anychart.chartEditorModule.settings.scales.Base');
 
@@ -19,18 +19,16 @@ goog.require('anychart.chartEditorModule.settings.scales.Base');
  * @param {number} index
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
  */
 anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, opt_domHelper) {
-  anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'constructor', model, null, opt_domHelper);
+  anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'constructor', model, index, null, opt_domHelper);
 
   this.axisExists = false;
-
-  this.index_ = index;
   this.name = 'Axis(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], 'axis(' + this.index_ + ')'];
 };
-goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanel);
+goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanelIndexed);
 
 
 /**
@@ -40,19 +38,12 @@ goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.ch
 anychart.chartEditorModule.settings.CircularGaugeAxis.CSS_CLASS = goog.getCssName('anychart-settings-panel-axis-single');
 
 
-/** @return {number} */
-anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.getIndex = function() {
-  return this.index_;
-};
-
-
 /** @override */
 anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = function() {
   anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'createDom');
 
   var element = this.getElement();
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.CircularGaugeAxis.CSS_CLASS);
-  goog.dom.classlist.add(element, this.index_ % 2 ? 'even' : 'odd');
 
   //var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
