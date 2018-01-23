@@ -3,6 +3,7 @@ goog.provide('anychart.chartEditorModule.PointersPanel');
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.settings.pointers.Bar');
 goog.require('anychart.chartEditorModule.settings.pointers.Base');
+goog.require('anychart.chartEditorModule.settings.pointers.Knob');
 goog.require('anychart.chartEditorModule.settings.pointers.Marker');
 goog.require('anychart.chartEditorModule.settings.pointers.Needle');
 
@@ -61,6 +62,9 @@ anychart.chartEditorModule.PointersPanel.prototype.createPointers = function() {
         break;
       case 'needle':
         pointer = new anychart.chartEditorModule.settings.pointers.Needle(model, type, id, j);
+        break;
+      case 'knob':
+        pointer = new anychart.chartEditorModule.settings.pointers.Knob(model, type, id, j);
         break;
       default:
         pointer = new anychart.chartEditorModule.settings.pointers.Base(model, type, id, j);
