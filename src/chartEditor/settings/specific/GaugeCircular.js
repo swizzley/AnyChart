@@ -6,6 +6,7 @@ goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
+goog.require('anychart.chartEditorModule.settings.Cap');
 goog.require('anychart.chartEditorModule.settings.Stroke');
 
 
@@ -71,4 +72,12 @@ anychart.chartEditorModule.settings.specific.GaugeCircular.prototype.createDom =
   encloseWithStraightLine.setCaption('Enclose With Straight Line');
   encloseWithStraightLine.init(model, [['chart'], ['settings'], 'encloseWithStraightLine()']);
   this.addChildControl(encloseWithStraightLine);
+
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+
+  var cap = new anychart.chartEditorModule.settings.Cap(model);
+  cap.setKey(this.genKey('cap()'));
+  this.addChild(cap, true);
 };

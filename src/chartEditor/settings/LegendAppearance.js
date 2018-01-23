@@ -33,29 +33,32 @@ anychart.chartEditorModule.settings.LegendAppearance.prototype.createDom = funct
 
   goog.dom.classlist.add(element, anychart.chartEditorModule.settings.LegendAppearance.CSS_CLASS);
 
-  var layoutField = new anychart.chartEditorModule.controls.select.DataField({label: 'Layout'});
-  layoutField.getSelect().setOptions([
+  var layout = new anychart.chartEditorModule.controls.select.DataField({label: 'Layout'});
+  layout.getSelect().setOptions([
     {value: 'horizontal'},
     {value: 'vertical'}
   ]);
-  this.addChild(layoutField, true);
+  layout.init(model, this.genKey('itemsLayout()'));
+  this.addChildControl(layout);
 
-  var orientationField = new anychart.chartEditorModule.controls.select.DataField({label: 'Orientation'});
-  orientationField.getSelect().setOptions([
+  var position = new anychart.chartEditorModule.controls.select.DataField({label: 'Orientation'});
+  position.getSelect().setOptions([
     {value: 'left', icon: 'ac ac-position-left'},
     {value: 'right', icon: 'ac ac-position-right'},
     {value: 'top', icon: 'ac ac-position-top'},
     {value: 'bottom', icon: 'ac ac-position-bottom'}
   ]);
-  this.addChild(orientationField, true);
+  position.init(model, this.genKey('position()'));
+  this.addChildControl(position);
 
-  var alignField = new anychart.chartEditorModule.controls.select.DataField({label: 'Align'});
-  alignField.getSelect().setOptions([
+  var align = new anychart.chartEditorModule.controls.select.DataField({label: 'Align'});
+  align.getSelect().setOptions([
     {value: 'left', icon: 'ac ac-position-left'},
     {value: 'center', icon: 'ac ac-position-center'},
     {value: 'right', icon: 'ac ac-position-right'}
   ]);
-  this.addChild(alignField, true);
+  align.init(model, this.genKey('align()'));
+  this.addChildControl(align);
 
   var items = new anychart.chartEditorModule.settings.Title(model, null);
   items.allowEnabled(false);
@@ -63,54 +66,6 @@ anychart.chartEditorModule.settings.LegendAppearance.prototype.createDom = funct
   items.allowEditPosition(false);
   items.allowEditAlign(false);
   items.allowEditColor(false);
-  items.setKey(this.key);
+  items.setKey(this.getKey());
   this.addChild(items, true);
-
-  this.layoutField_ = layoutField;
-  this.orientationField_ = orientationField;
-  this.alignField_ = alignField;
-  this.items_ = items;
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.LegendAppearance.prototype.updateKeys = function() {
-  if (!this.isExcluded()) {
-    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    if (this.layoutField_) this.layoutField_.init(model, this.genKey('itemsLayout()'));
-    if (this.orientationField_) this.orientationField_.init(model, this.genKey('position()'));
-    if (this.alignField_) this.alignField_.init(model, this.genKey('align()'));
-    if (this.items_) this.items_.setKey(this.key);
-  }
-
-  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'updateKeys');
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.LegendAppearance.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'onChartDraw', evt);
-
-  var target = evt.chart;
-  if (this.layoutField_) this.layoutField_.getSelect().setValueByTarget(target);
-  if (this.orientationField_) this.orientationField_.getSelect().setValueByTarget(target);
-  if (this.alignField_) this.alignField_.getSelect().setValueByTarget(target);
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.LegendAppearance.prototype.disposeInternal = function() {
-  goog.dispose(this.layoutField_);
-  this.layoutField_ = null;
-
-  goog.dispose(this.orientationField_);
-  this.orientationField_ = null;
-
-  goog.dispose(this.alignField_);
-  this.alignField_ = null;
-
-  goog.dispose(this.items_);
-  this.items_ = null;
-
-  anychart.chartEditorModule.settings.LegendAppearance.base(this, 'disposeInternal');
 };
