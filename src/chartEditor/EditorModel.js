@@ -2182,7 +2182,12 @@ anychart.chartEditorModule.EditorModel.prototype.printKey_ = function(printer, p
     var valueString = opt_forceRawValue ?
         quote + String(value) + quote:
         this.printValue_(printer, value);
-    key = key.replace(/\)$/, valueString + ');');
+
+    var replaceValue = valueString + ');';
+    if (key.search(/[^(]\)$/) !== -1)
+      replaceValue = ', ' + replaceValue;
+
+    key = key.replace(/\)$/, replaceValue);
   }
   return prefix + '.' + key;
 };

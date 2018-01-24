@@ -88,7 +88,7 @@ anychart.chartEditorModule.settings.CircularRange.prototype.createDom = function
 
   var fill = new anychart.chartEditorModule.colorPicker.Base();
   var fillLC = new anychart.chartEditorModule.controls.LabeledControl(fill, 'Range Fill');
-  fillLC.init(model, this.genKey('fill()'));
+  fillLC.init(model, this.genKey('fill', true));
   wrapper.addChildControl(fillLC);
 };
 
