@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.Axis');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.SettingsPanelIndexed');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
@@ -15,10 +16,10 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @param {number} index
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
  */
 anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domHelper) {
-  anychart.chartEditorModule.settings.Axis.base(this, 'constructor', model, null, opt_domHelper);
+  anychart.chartEditorModule.settings.Axis.base(this, 'constructor', model, index, null, opt_domHelper);
 
   var chartType = model.getModel()['chart']['type'];
   this.chartType = chartType;
@@ -27,33 +28,17 @@ anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domH
   this.axisExists = this.isSingleAxis;
 
   this.xOrY = xOrY;
-  this.index_ = index;
   this.name = this.xOrY + 'Axis(' + (this.isSingleAxis ? '' : this.index_) + ')';
   this.key = [['chart'], ['settings'], this.xOrY + 'Axis(' + (this.isSingleAxis ? '' : this.index_) + ')'];
+
+  this.addClassName(goog.getCssName('anychart-settings-panel-axis-single'));
 };
-goog.inherits(anychart.chartEditorModule.settings.Axis, anychart.chartEditorModule.SettingsPanel);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.Axis.CSS_CLASS = goog.getCssName('anychart-settings-panel-axis-single');
-
-
-/** @return {number} */
-anychart.chartEditorModule.settings.Axis.prototype.getIndex = function() {
-  return this.index_;
-};
+goog.inherits(anychart.chartEditorModule.settings.Axis, anychart.chartEditorModule.SettingsPanelIndexed);
 
 
 /** @override */
 anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Axis.base(this, 'createDom');
-
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.Axis.CSS_CLASS);
-  goog.dom.classlist.add(element, this.index_ % 2 ? 'even' : 'odd');
 
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -103,7 +88,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
     wrapper.addChildControl(overlapMode);
 
     var title = new anychart.chartEditorModule.settings.Title(model, 'Title');
-    title.allowEditPosition(false, this.xOrY == 'x' ? 'bottom' : 'left');
+    title.allowEditPosition(false, this.xOrY === 'x' ? 'bottom' : 'left');
     title.setKey(this.genKey('title()')); // This is for enabled working sake!
     this.addChild(title, true);
     this.title_ = title;
@@ -187,7 +172,7 @@ anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
 
   var chart = evt.chart;
   if (!this.isSingleAxis && !this.axisExists) {
-    this.axisExists = (this.xOrY == 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
+    this.axisExists = (this.xOrY === 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
     this.title_.exclude(!this.axisExists);
 
     this.labels_.exclude(!this.axisExists);

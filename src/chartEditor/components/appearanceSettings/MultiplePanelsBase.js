@@ -19,10 +19,23 @@ anychart.chartEditorModule.MultiplePanelsBase = function(model, opt_name, opt_do
   this.stringId = '';
 
   this.panels_ = [];
-  
+
   this.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-multiple'));
 };
 goog.inherits(anychart.chartEditorModule.MultiplePanelsBase, anychart.chartEditorModule.SettingsPanel);
+
+
+/**
+ * @type {boolean}
+ * @private
+ */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.allowAddPanels_ = true;
+
+
+/** @param {boolean} value */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.allowAddPanels = function(value) {
+  this.allowAddPanels_ = value;
+};
 
 
 /**
@@ -45,11 +58,14 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.createDom = function() {
   this.panelsContainer_ = new anychart.chartEditorModule.Component();
   this.addChild(this.panelsContainer_, true);
 
-  var addPanelBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
-      goog.ui.ButtonRenderer,
-      'anychart-axes-panel-add-axis-btn'));
-  this.addPanelBtn_ = new goog.ui.Button(this.buttonLabel_, addPanelBtnRenderer);
-  this.addChild(this.addPanelBtn_, true);
+  if (this.allowAddPanels_) {
+    var addPanelBtnRenderer = /** @type {goog.ui.ButtonRenderer} */(goog.ui.ControlRenderer.getCustomRenderer(
+        goog.ui.ButtonRenderer,
+        'anychart-axes-panel-add-axis-btn'));
+
+    this.addPanelBtn_ = new goog.ui.Button(this.buttonLabel_, addPanelBtnRenderer);
+    this.addChild(this.addPanelBtn_, true);
+  }
 };
 
 
@@ -57,10 +73,14 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.createDom = function() {
 anychart.chartEditorModule.MultiplePanelsBase.prototype.enterDocument = function() {
   anychart.chartEditorModule.MultiplePanelsBase.base(this, 'enterDocument');
 
-  goog.style.setElementShown(this.addPanelBtn_.getElement(), true);
-  this.getHandler().listen(this.addPanelBtn_, goog.ui.Component.EventType.ACTION, this.onAddPanel);
+  if (this.allowAddPanels_ && this.addPanelBtn_) {
+    goog.style.setElementShown(this.addPanelBtn_.getElement(), true);
+    this.getHandler().listen(this.addPanelBtn_, goog.ui.Component.EventType.ACTION, this.onAddPanel);
+  }
 
   this.createPanels();
+
+  if (this.panels_.length === 1 && goog.isFunction(this.panels_[0].expand)) this.panels_[0].expand();
 };
 
 
@@ -131,17 +151,18 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanel = function(pane
   // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   // var axis = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
   // axis.allowEnabled(true);
-  // this.addPanelInstance(axis, 1);
+  // this.addPanelInstance(axis, true, 1);
 };
 
 
 /**
  * @param {anychart.chartEditorModule.SettingsPanelIndexed} panelInstance
+ * @param {boolean=} opt_allowRemove Should be panels removable or not
  * @param {number=} opt_removeFromIndex
  */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = function(panelInstance, opt_removeFromIndex) {
+anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = function(panelInstance, opt_allowRemove, opt_removeFromIndex) {
   var panelIndex = panelInstance.getIndex();
-  if (!goog.isDef(opt_removeFromIndex) || panelIndex >= opt_removeFromIndex) {
+  if (opt_allowRemove && !goog.isDef(opt_removeFromIndex) || panelIndex >= opt_removeFromIndex) {
     panelInstance.allowRemove(true);
     this.getHandler().listen(panelInstance, anychart.chartEditorModule.events.EventType.PANEL_CLOSE, this.onRemovePanel);
   }

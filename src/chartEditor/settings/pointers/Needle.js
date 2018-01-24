@@ -82,5 +82,4 @@ anychart.chartEditorModule.settings.pointers.Needle.prototype.createDom = functi
   var endWidthLC = new anychart.chartEditorModule.controls.LabeledControl(endWidth, 'End Width');
   endWidthLC.init(model, this.genKey('endWidth()'));
   this.addChildControl(endWidthLC);
-
 };

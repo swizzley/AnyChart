@@ -1,11 +1,9 @@
 goog.provide('anychart.chartEditorModule.settings.pointers.Base');
 
-goog.require('anychart.chartEditorModule.Component');
-goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.SettingsPanelZippy');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Stroke');
-goog.require('goog.ui.AnimatedZippy');
 
 
 /**
@@ -15,12 +13,11 @@ goog.require('goog.ui.AnimatedZippy');
  * @param {number} pointerIndex
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.SettingsPanelZippy}
  */
 anychart.chartEditorModule.settings.pointers.Base = function(model, type, pointerId, pointerIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.pointers.Base.base(this, 'constructor', model, null, opt_domHelper);
+  anychart.chartEditorModule.settings.pointers.Base.base(this, 'constructor', model, pointerIndex, null, opt_domHelper);
 
-  this.index_ = pointerIndex;
   this.pointerId_ = String(pointerId);
   this.pointerType_ = type;
 
@@ -33,98 +30,38 @@ anychart.chartEditorModule.settings.pointers.Base = function(model, type, pointe
   this.key = [['chart'], ['settings'], stringKey];
 
   this.allowEnabled(false);
+  this.addClassName(goog.getCssName('anychart-settings-panel-pointer-single'));
 };
-goog.inherits(anychart.chartEditorModule.settings.pointers.Base, anychart.chartEditorModule.SettingsPanel);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.pointers.Base.CSS_CLASS = goog.getCssName('anychart-settings-panel-pointer-single');
+goog.inherits(anychart.chartEditorModule.settings.pointers.Base, anychart.chartEditorModule.SettingsPanelZippy);
 
 
 /** @override */
 anychart.chartEditorModule.settings.pointers.Base.prototype.createDom = function() {
   anychart.chartEditorModule.settings.pointers.Base.base(this, 'createDom');
 
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.pointers.Base.CSS_CLASS);
-  goog.dom.classlist.add(element, this.index_ % 2 ? 'even' : 'odd');
-
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  // region == Header element ==
-  var zippyHeader = new anychart.chartEditorModule.Component();
-  zippyHeader.addClassName('zippy-title');
-  this.addChild(zippyHeader, true);
-
+  // region ==== Header
   var nameEl = goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-chart-editor-pointer-name'), this.key[2]);
-  zippyHeader.getElement().appendChild(nameEl);
-
-  var plusMinus = goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-plus-minus'));
-  zippyHeader.getElement().appendChild(plusMinus);
+  this.zippyHeader.getElement().appendChild(nameEl);
 
   var fill = new anychart.chartEditorModule.colorPicker.Base();
   fill.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
   fill.init(model, this.genKey('fill()'));
-  zippyHeader.addChild(fill, true);
-  this.fill_ = fill;
+  this.addHeaderChildControl(fill);
   // endregion
-
-  // region == zippyContent element ==
-  var zippyContent = new anychart.chartEditorModule.Component();
-  zippyContent.addClassName('series-content');
-  this.addChild(zippyContent, true);
-
-  var innerContent = new anychart.chartEditorModule.Component();
-  zippyContent.addClassName('inner-content');
-  zippyContent.addChild(innerContent, true);
-  this.innerContent_ = innerContent;
 
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
   stroke.setKey(this.genKey('stroke()'));
-  innerContent.addChild(stroke, true);
+  this.addChildControl(stroke);
 
-  goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+  this.addContentSeparator();
 
   var axisIndex = new anychart.chartEditorModule.controls.select.DataField({label: 'Axis Index'});
   axisIndex.getSelect().setOptions([{value: '0'}]);
   axisIndex.init(model, this.genKey('axisIndex()'));
-  innerContent.addChild(axisIndex, true);
+  this.zippyContent.addChild(axisIndex, true);
   this.axisIndex_ = axisIndex;
-
-  goog.dom.appendChild(innerContent.getElement(), goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-clearboth')));
-
-  this.zippy_ = new goog.ui.AnimatedZippy(zippyHeader.getElement(), zippyContent.getElement());
-  this.zippy_.setHandleKeyboardEvents(false);
-  this.zippy_.setHandleMouseEvents(false);
-  this.getHandler().listen(plusMinus, goog.events.EventType.CLICK, function() {
-    this.zippy_.toggle();
-  });
-};
-
-
-/**
- * Expands panel.
- */
-anychart.chartEditorModule.settings.pointers.Base.prototype.expand = function() {
-  if (this.zippy_) this.zippy_.expand();
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.pointers.Base.prototype.addChildControl = function(control) {
-  var added = anychart.chartEditorModule.settings.pointers.Base.base(this, 'addChildControl', control);
-
-  if (added) {
-    this.removeChild(control, true);
-    this.innerContent_.addChild(control, true);
-  }
-
-  return added;
 };
 
 
@@ -134,26 +71,26 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.onChartDraw = functi
   if (!this.isExcluded()) {
     var target = evt.chart;
 
-    this.fill_.setValueByTarget(target);
-
     var count = target.getAxesCount();
-    var options = [];
-    for (var i = 0; i < count; i++) {
+    if (count === 1) {
+      this.axisIndex_.hide();
+
+    } else {
+      this.axisIndex_.show();
+      var options = [];
+      for (var i = 0; i < count; i++) {
         options.push({'value': String(i)});
+      }
+      this.axisIndex_.getSelect().setOptions(options);
+      this.axisIndex_.setValueByTarget(target);
     }
-    this.axisIndex_.getSelect().setOptions(options);
-    this.axisIndex_.setValueByTarget(target);
   }
 };
 
 
 /** @override */
 anychart.chartEditorModule.settings.pointers.Base.prototype.disposeInternal = function() {
-  goog.disposeAll([
-    this.fill_,
-    this.axisIndex_
-  ]);
-  this.fill_ = null;
+  goog.dispose(this.axisIndex_);
   this.axisIndex_ = null;
 
   anychart.chartEditorModule.settings.pointers.Base.base(this, 'disposeInternal');

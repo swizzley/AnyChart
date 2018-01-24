@@ -2,7 +2,6 @@ goog.provide('anychart.chartEditorModule.CircularGaugeAxesPanel');
 
 goog.require('anychart.chartEditorModule.MultiplePanelsBase');
 goog.require('anychart.chartEditorModule.settings.CircularGaugeAxis');
-goog.require('goog.ui.Button');
 
 
 /**
@@ -45,7 +44,7 @@ anychart.chartEditorModule.CircularGaugeAxesPanel.prototype.addPanel = function(
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var axis = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
   axis.allowEnabled(true);
-  this.addPanelInstance(axis, 1);
+  this.addPanelInstance(axis, true, 1);
 };
 
 

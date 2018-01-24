@@ -2,7 +2,6 @@ goog.provide('anychart.chartEditorModule.CircularRangesPanel');
 
 goog.require('anychart.chartEditorModule.MultiplePanelsBase');
 goog.require('anychart.chartEditorModule.settings.CircularRange');
-goog.require('goog.ui.Button');
 
 
 /**
@@ -45,7 +44,7 @@ anychart.chartEditorModule.CircularRangesPanel.prototype.addPanel = function(pan
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var range = new anychart.chartEditorModule.settings.CircularRange(model, panelIndex);
   range.allowEnabled(true);
-  this.addPanelInstance(range);
+  this.addPanelInstance(range, true);
 };
 
 

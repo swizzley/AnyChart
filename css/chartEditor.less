@@ -853,8 +853,6 @@
 }
 
 .anychart-settings-panel-legend-single,
-.anychart-settings-panel-series-single,
-.anychart-settings-panel-pointer-single,
 .anychart-settings-panel-plot-grids {
   .box-shadow(@shadow-1);
   border: 1px solid @color-border;
@@ -894,9 +892,8 @@
   }
 }
 
-.anychart-settings-panel-series-single,
-.anychart-settings-panel-pointer-single {
-  .zippy-title {
+.anychart-chart-editor-settings-panel-zippy {
+  .zippy-header {
     padding: 15px;
     font-size: 17px;
     outline: none;
@@ -911,7 +908,7 @@
       top: -2px;
     }
   }
-  .inner-content {
+  .zippy-content {
     padding: 15px 15px 0 15px;
   }
   .anychart-chart-editor-settings-markers {
@@ -1671,9 +1668,8 @@
   .anychart-connected-data-sets-item-menuBtn {
     display: none;
   }
+  .anychart-chart-editor-settings-panel-zippy,
   .anychart-settings-panel-legend-single,
-  .anychart-settings-panel-series-single,
-  .anychart-settings-panel-pointer-single,
   .anychart-settings-panel-axis-single,
   .anychart-settings-panel-range-single,
   .anychart-settings-panel-plot-grids {

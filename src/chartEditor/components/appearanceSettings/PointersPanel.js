@@ -1,6 +1,6 @@
 goog.provide('anychart.chartEditorModule.PointersPanel');
 
-goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.MultiplePanelsBase');
 goog.require('anychart.chartEditorModule.settings.pointers.Bar');
 goog.require('anychart.chartEditorModule.settings.pointers.Base');
 goog.require('anychart.chartEditorModule.settings.pointers.Knob');
@@ -13,37 +13,20 @@ goog.require('anychart.chartEditorModule.settings.pointers.Needle');
  * @param {anychart.chartEditorModule.EditorModel} model
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.MultiplePanelsBase}
  */
 anychart.chartEditorModule.PointersPanel = function(model, opt_domHelper) {
   anychart.chartEditorModule.PointersPanel.base(this, 'constructor', model, 'Pointers', opt_domHelper);
 
   this.stringId = 'pointers';
 
-  this.pointers_ = [];
+  this.allowAddPanels(false);
 };
-goog.inherits(anychart.chartEditorModule.PointersPanel, anychart.chartEditorModule.SettingsPanel);
+goog.inherits(anychart.chartEditorModule.PointersPanel, anychart.chartEditorModule.MultiplePanelsBase);
 
 
-/** @inheritDoc */
-anychart.chartEditorModule.PointersPanel.prototype.enterDocument = function() {
-  anychart.chartEditorModule.PointersPanel.base(this, 'enterDocument');
-  this.createPointers();
-  if (this.pointers_.length === 1) this.pointers_[0].expand();
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.PointersPanel.prototype.exitDocument = function() {
-  this.removeAllPointers();
-  anychart.chartEditorModule.PointersPanel.base(this, 'exitDocument');
-};
-
-
-/**
- * Create series settings panels.
- */
-anychart.chartEditorModule.PointersPanel.prototype.createPointers = function() {
+/** @override */
+anychart.chartEditorModule.PointersPanel.prototype.createPanels = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var mappings = model.getValue([['dataSettings'], 'mappings']);
   var id;
@@ -71,27 +54,6 @@ anychart.chartEditorModule.PointersPanel.prototype.createPointers = function() {
         break;
     }
 
-    this.pointers_.push(pointer);
-    this.addChild(pointer, true);
+    this.addPanelInstance(pointer);
   }
-};
-
-
-/**
- * Removes all series panels elements from panel.
- * @private
- */
-anychart.chartEditorModule.PointersPanel.prototype.removeAllPointers = function() {
-  for (var i = 0; i < this.pointers_.length; i++) {
-    this.removeChild(this.pointers_[i], true);
-    this.pointers_[i].dispose();
-  }
-  this.pointers_.length = 0;
-};
-
-
-/** @override */
-anychart.chartEditorModule.PointersPanel.prototype.disposeInternal = function() {
-  this.removeAllPointers();
-  anychart.chartEditorModule.PointersPanel.base(this, 'disposeInternal');
 };
