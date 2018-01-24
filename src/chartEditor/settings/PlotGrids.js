@@ -1,8 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.PlotGrids');
 
-goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.SettingsPanelIndexed');
 goog.require('anychart.chartEditorModule.settings.Grid');
-
 
 
 /**
@@ -10,17 +9,22 @@ goog.require('anychart.chartEditorModule.settings.Grid');
  * @param {number=} opt_plotIndex
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
  */
 anychart.chartEditorModule.settings.PlotGrids = function(model, opt_plotIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.PlotGrids.base(this, 'constructor', model, null, opt_domHelper);
   this.plotIndex_ = opt_plotIndex;
+  var index = goog.isDef(opt_plotIndex) ? opt_plotIndex : 0;
+
+  anychart.chartEditorModule.settings.PlotGrids.base(this, 'constructor', model, index, null, opt_domHelper);
+
   this.name = goog.isDef(this.plotIndex_) ? 'Grids (plot ' + this.plotIndex_ + ')': 'Grids';
   this.key = [['chart'], ['settings']];
   if (goog.isDef(this.plotIndex_))
     this.key.push('plot(' + this.plotIndex_ + ')');
+
+  this.allowEnabled(false);
 };
-goog.inherits(anychart.chartEditorModule.settings.PlotGrids, anychart.chartEditorModule.SettingsPanel);
+goog.inherits(anychart.chartEditorModule.settings.PlotGrids, anychart.chartEditorModule.SettingsPanelIndexed);
 
 
 /**

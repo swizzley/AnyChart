@@ -1,6 +1,6 @@
 goog.provide('anychart.chartEditorModule.settings.Legend');
 
-goog.require('anychart.chartEditorModule.SettingsPanel');
+goog.require('anychart.chartEditorModule.SettingsPanelIndexed');
 goog.require('anychart.chartEditorModule.settings.LegendAppearance');
 goog.require('anychart.chartEditorModule.settings.Title');
 
@@ -11,30 +11,31 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @param {number=} opt_plotIndex
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanel}
+ * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
  */
 anychart.chartEditorModule.settings.Legend = function(model, opt_plotIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.Legend.base(this, 'constructor', model, null, opt_domHelper);
   this.plotIndex_ = opt_plotIndex;
+  var index = goog.isDef(opt_plotIndex) ? opt_plotIndex : 0;
+
+  anychart.chartEditorModule.settings.Legend.base(this, 'constructor', model, index, null, opt_domHelper);
+
   this.name = goog.isDef(this.plotIndex_) ? 'Legend (plot ' + this.plotIndex_ + ')': 'Chart Legend';
-  this.key = [['chart'], ['settings'], 'legend()'];
+
+  var stringKey = 'legend()';
+  if (goog.isDef(this.plotIndex_))
+    stringKey = 'plot(' + this.plotIndex_ + ').' + stringKey;
+  this.key = [['chart'], ['settings'], stringKey];
+
+  this.allowEnabled(true);
+  this.addClassName(goog.getCssName('anychart-settings-panel-legend-single'));
 };
-goog.inherits(anychart.chartEditorModule.settings.Legend, anychart.chartEditorModule.SettingsPanel);
+goog.inherits(anychart.chartEditorModule.settings.Legend,anychart.chartEditorModule.SettingsPanelIndexed);
 
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.Legend.CSS_CLASS = goog.getCssName('anychart-settings-panel-legend-single');
 
 
 /** @override */
 anychart.chartEditorModule.settings.Legend.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Legend.base(this, 'createDom');
-
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.Legend.CSS_CLASS);
 
   var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -73,7 +74,6 @@ anychart.chartEditorModule.settings.Legend.prototype.updateKeys = function() {
     var stringKey = 'legend()';
     if (goog.isDef(this.plotIndex_))
       stringKey = 'plot(' + this.plotIndex_ + ').' + stringKey;
-
     this.key = [['chart'], ['settings'], stringKey];
 
     // Update keys of children
