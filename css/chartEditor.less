@@ -829,10 +829,10 @@
   }
 }
 
+.anychart-chart-editor-settings-panel-multiple,
 .anychart-settings-panel-legend,
 .anychart-settings-panel-seriessettings,
 .anychart-settings-panel-pointers,
-.anychart-settings-panel-axes,
 .anychart-settings-panel-grids {
   > .content {
     background: none !important;
@@ -843,10 +843,18 @@
   }
 }
 
+.anychart-chart-editor-settings-panel-multiple {
+  .anychart-chart-editor-settings-panel-single {
+    .box-shadow(@shadow-1);
+    border: 1px solid @color-border;
+    margin-bottom: 15px;
+    background: white;
+  }
+}
+
 .anychart-settings-panel-legend-single,
 .anychart-settings-panel-series-single,
 .anychart-settings-panel-pointer-single,
-.anychart-settings-panel-axis-single,
 .anychart-settings-panel-plot-grids {
   .box-shadow(@shadow-1);
   border: 1px solid @color-border;
@@ -926,6 +934,7 @@
 }
 
 .anychart-settings-panel-axis-single,
+.anychart-settings-panel-range-single,
 .anychart-settings-panel-plot-grids {
   > .top {
     padding: 15px 15px 0 15px;
@@ -960,7 +969,8 @@
     padding: 0;
   }
 }
-.anychart-settings-panel-axis-single {
+.anychart-settings-panel-axis-single,
+.anychart-settings-panel-range-single {
   .anychart-settings-panel-wrapper {
     .anychart-settings-panel {
       padding: 0;
@@ -1665,6 +1675,7 @@
   .anychart-settings-panel-series-single,
   .anychart-settings-panel-pointer-single,
   .anychart-settings-panel-axis-single,
+  .anychart-settings-panel-range-single,
   .anychart-settings-panel-plot-grids {
     border: none;
   }

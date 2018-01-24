@@ -27,30 +27,20 @@ anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, o
   this.axisExists = false;
   this.name = 'Axis(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], 'axis(' + this.index_ + ')'];
+
+  this.addClassName(goog.getCssName('anychart-settings-panel-axis-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanelIndexed);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.CircularGaugeAxis.CSS_CLASS = goog.getCssName('anychart-settings-panel-axis-single');
 
 
 /** @override */
 anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = function() {
   anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'createDom');
 
-  var element = this.getElement();
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.CircularGaugeAxis.CSS_CLASS);
-
-  //var content = this.getContentElement();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
   var wrapper = new anychart.chartEditorModule.SettingsPanel(model);
   wrapper.setName(null);
-  wrapper.addClassName('anychart-settings-panel');
   wrapper.addClassName('anychart-settings-panel-wrapper');
   this.addChild(wrapper, true);
 

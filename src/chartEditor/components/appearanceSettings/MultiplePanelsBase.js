@@ -20,7 +20,7 @@ anychart.chartEditorModule.MultiplePanelsBase = function(model, opt_name, opt_do
 
   this.panels_ = [];
   
-  this.addClassName(goog.getCssName('anychart-settings-panel-axes'));
+  this.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-multiple'));
 };
 goog.inherits(anychart.chartEditorModule.MultiplePanelsBase, anychart.chartEditorModule.SettingsPanel);
 
@@ -150,6 +150,7 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = funct
   else
     this.panels_.push(panelInstance);
 
+  panelInstance.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-single'));
   this.panelsContainer_.addChild(panelInstance, true);
 };
 
