@@ -19,6 +19,8 @@ anychart.chartEditorModule.SettingsPanelIndexed = function(model, index, opt_nam
 
   /** @type {number} */
   this.index_ = index;
+
+  this.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-indexed'));
 };
 goog.inherits(anychart.chartEditorModule.SettingsPanelIndexed, anychart.chartEditorModule.SettingsPanel);
 

@@ -153,9 +153,11 @@ anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
         this.minorTicks_.exclude(!this.axisExists);
     }
 
-    if (this.axisExists)
+    if (this.axisExists) {
+      this.getHandler().unlisten(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
       anychart.chartEditorModule.settings.Axis.base(this, 'onChartDraw', evt);
-    else
+
+    } else
       this.setContentEnabled(false);
   }
 };

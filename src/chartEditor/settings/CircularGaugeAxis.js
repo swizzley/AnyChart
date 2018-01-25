@@ -149,6 +149,7 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.onChartDraw = function(evt) {
+  console.log("onChartDraw");
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   this.getHandler().listenOnce(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
 
@@ -156,9 +157,11 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.onChartDraw = fu
     var chart = evt.chart;
     this.axisExists = chart.getAxesCount() > this.index_;
 
-    if (this.axisExists)
+    if (this.axisExists) {
+      this.getHandler().unlisten(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
       anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'onChartDraw', evt);
-    else
+
+    } else
       this.setContentEnabled(false);
   }
 };

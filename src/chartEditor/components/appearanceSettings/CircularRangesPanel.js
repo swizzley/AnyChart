@@ -15,9 +15,9 @@ anychart.chartEditorModule.CircularRangesPanel = function(model, opt_domHelper) 
 
   this.stringId = 'CircularRanges';
 
-  this.addClassName(goog.getCssName('anychart-settings-panel-gauge-ranges'));
-
   this.setButtonLabel('+ Add range');
+
+  this.addClassName(goog.getCssName('anychart-settings-panel-gauge-ranges'));
 };
 goog.inherits(anychart.chartEditorModule.CircularRangesPanel, anychart.chartEditorModule.MultiplePanelsBase);
 
@@ -61,8 +61,7 @@ anychart.chartEditorModule.CircularRangesPanel.prototype.createPanels = function
       var match = key.match(regExp);
       if (match) {
         var rangeIndex = Number(match[1]);
-        if (rangeIndex > 0)
-          this.addPanel(rangeIndex);
+        this.addPanel(rangeIndex);
       }
     }
   }

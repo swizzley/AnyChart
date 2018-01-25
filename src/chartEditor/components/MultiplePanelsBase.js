@@ -123,10 +123,15 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = funct
 
   if (this.panels_[panelPlotIndex].length > panelIndex)
     this.panels_[panelPlotIndex][panelIndex] = panelInstance;
-  else
+  else {
+    if (this.panels_[panelPlotIndex].length < panelIndex) {
+      for (var i = this.panels_[panelPlotIndex].length; i < panelIndex; i++) {
+        this.panels_[panelPlotIndex].push(null);
+      }
+    }
     this.panels_[panelPlotIndex].push(panelInstance);
+  }
 
-  panelInstance.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-single'));
   this.panelsContainer_.addChild(panelInstance, true);
 };
 
