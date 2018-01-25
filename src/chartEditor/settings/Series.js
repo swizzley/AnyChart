@@ -30,9 +30,7 @@ anychart.chartEditorModule.settings.Series = function(model, seriesId, seriesInd
     stringKey = 'plot(' + this.plotIndex_ + ').' + stringKey;
   }
 
-  var plotIndex = goog.isDef(opt_plotIndex) ? opt_plotIndex : 0;
-
-  this.seriesType_ = model.getValue([['dataSettings'], ['mappings', plotIndex], [this.index_, 'ctor']]);
+  this.seriesType_ = model.getValue([['dataSettings'], ['mappings', this.getPlotIndex()], [this.index_, 'ctor']]);
   this.key = [['chart'], ['settings'], stringKey];
 
   this.allowEnabled(false);

@@ -34,6 +34,7 @@ anychart.chartEditorModule.SeriesSettingsPanel.prototype.createPanels = function
     var seriesId;
     var plotIndex;
     var series;
+
     for (var i = 0; i < mappings.length; i++) {
       for (var j = 0; j < mappings[i].length; j++) {
         seriesId = mappings[i][j]['id'] ? mappings[i][j]['id'] : j;
@@ -44,3 +45,8 @@ anychart.chartEditorModule.SeriesSettingsPanel.prototype.createPanels = function
     }
   }
 };
+
+// anychart.chartEditorModule.SeriesSettingsPanel.prototype.removeAllPanels = function() {
+//   debugger
+//   anychart.chartEditorModule.SeriesSettingsPanel.base(this, 'removeAllPanels');
+// }

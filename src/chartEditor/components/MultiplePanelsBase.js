@@ -80,7 +80,51 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.enterDocument = function
 
   this.createPanels();
 
-  if (this.panels_.length === 1 && goog.isFunction(this.panels_[0].expand)) this.panels_[0].expand();
+  if (this.panels_.length === 1 && this.panels_[0].length === 0 && goog.isFunction(this.panels_[0][0].expand)) this.panels_[0][0].expand();
+};
+
+
+/**
+ * @param {number} panelIndex
+ * @protected
+ */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanel = function(panelIndex) {
+  // Should be overridden
+
+  // Create panel and configure instance
+  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  // var axis = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
+  // axis.allowEnabled(true);
+
+  // Add instance to panels list
+  // this.addPanelInstance(axis, true, 1);
+};
+
+
+/**
+ * @param {anychart.chartEditorModule.SettingsPanelIndexed} panelInstance
+ * @param {boolean=} opt_allowRemove Should be panels removable or not
+ * @param {number=} opt_removeFromIndex
+ */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = function(panelInstance, opt_allowRemove, opt_removeFromIndex) {
+  var panelIndex = panelInstance.getIndex();
+  var panelPlotIndex = panelInstance.getPlotIndex();
+
+  if (opt_allowRemove && (!goog.isDef(opt_removeFromIndex) || panelIndex >= opt_removeFromIndex)) {
+    panelInstance.allowRemove(true);
+    this.getHandler().listen(panelInstance, anychart.chartEditorModule.events.EventType.PANEL_CLOSE, this.onRemovePanel);
+  }
+
+  if (this.panels_.length <= panelPlotIndex)
+    this.panels_.push([]);
+
+  if (this.panels_[panelPlotIndex].length > panelIndex)
+    this.panels_[panelPlotIndex][panelIndex] = panelInstance;
+  else
+    this.panels_[panelPlotIndex].push(panelInstance);
+
+  panelInstance.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-single'));
+  this.panelsContainer_.addChild(panelInstance, true);
 };
 
 
@@ -100,15 +144,19 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.onAddPanel = function() 
  * @protected
  */
 anychart.chartEditorModule.MultiplePanelsBase.prototype.onRemovePanel = function(evt) {
-  var panelIndex = (/** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(evt.currentTarget)).getIndex();
-  goog.dispose(this.panels_[panelIndex]);
-  this.panels_[panelIndex] = null;
+  var panelInstance = /** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(evt.currentTarget);
+  var panelIndex = panelInstance.getIndex();
+  var panelPlotIndex = panelInstance.getPlotIndex();
+
+  goog.dispose(this.panels_[panelPlotIndex][panelIndex]);
+  this.panels_[panelPlotIndex][panelIndex] = null;
 
   // Should do something like this
   //
   // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   // model.dropAxis(axisIndex);
 
+  // For now we are not thinking about plots. Forget it, bro...
   return panelIndex;
 };
 
@@ -142,49 +190,16 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.createPanels = function(
 
 
 /**
- * @param {number} panelIndex
- * @protected
- */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanel = function(panelIndex) {
-  // Should be overridden
-  //
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  // var axis = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
-  // axis.allowEnabled(true);
-  // this.addPanelInstance(axis, true, 1);
-};
-
-
-/**
- * @param {anychart.chartEditorModule.SettingsPanelIndexed} panelInstance
- * @param {boolean=} opt_allowRemove Should be panels removable or not
- * @param {number=} opt_removeFromIndex
- */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = function(panelInstance, opt_allowRemove, opt_removeFromIndex) {
-  var panelIndex = panelInstance.getIndex();
-  if (opt_allowRemove && !goog.isDef(opt_removeFromIndex) || panelIndex >= opt_removeFromIndex) {
-    panelInstance.allowRemove(true);
-    this.getHandler().listen(panelInstance, anychart.chartEditorModule.events.EventType.PANEL_CLOSE, this.onRemovePanel);
-  }
-  if (this.panels_.length > panelIndex)
-    this.panels_[panelIndex] = panelInstance;
-  else
-    this.panels_.push(panelInstance);
-
-  panelInstance.addClassName(goog.getCssName('anychart-chart-editor-settings-panel-single'));
-  this.panelsContainer_.addChild(panelInstance, true);
-};
-
-
-/**
  * Removes all panels elements from panel.
  * @private
  */
 anychart.chartEditorModule.MultiplePanelsBase.prototype.removeAllPanels = function() {
   for (var i = 0; i < this.panels_.length; i++) {
-    if (this.panels_[i]) {
-      this.panelsContainer_.removeChild(this.panels_[i], true);
-      goog.dispose(this.panels_[i]);
+    for (var j = 0; j < this.panels_[i].length; j++) {
+      if (this.panels_[i][j]) {
+        this.panelsContainer_.removeChild(this.panels_[i][j], true);
+        goog.dispose(this.panels_[i][j]);
+      }
     }
   }
   this.panels_.length = 0;

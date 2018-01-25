@@ -5,7 +5,6 @@ goog.require('anychart.chartEditorModule.settings.LegendAppearance');
 goog.require('anychart.chartEditorModule.settings.Title');
 
 
-
 /**
  * @param {anychart.chartEditorModule.EditorModel} model
  * @param {number=} opt_plotIndex
@@ -14,23 +13,31 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
  */
 anychart.chartEditorModule.settings.Legend = function(model, opt_plotIndex, opt_domHelper) {
+  anychart.chartEditorModule.settings.Legend.base(
+      this,
+      'constructor',
+      model,
+      goog.isDef(opt_plotIndex) ? opt_plotIndex : 0,
+      null,
+      opt_domHelper);
+
   this.plotIndex_ = opt_plotIndex;
-  var index = goog.isDef(opt_plotIndex) ? opt_plotIndex : 0;
-
-  anychart.chartEditorModule.settings.Legend.base(this, 'constructor', model, index, null, opt_domHelper);
-
-  this.name = goog.isDef(this.plotIndex_) ? 'Legend (plot ' + this.plotIndex_ + ')': 'Chart Legend';
 
   var stringKey = 'legend()';
-  if (goog.isDef(this.plotIndex_))
+  if (goog.isDef(this.plotIndex_)) {
     stringKey = 'plot(' + this.plotIndex_ + ').' + stringKey;
+    this.name = 'Legend (plot ' + this.plotIndex_ + ')';
+
+  } else {
+    this.name = 'Chart Legend';
+  }
+
   this.key = [['chart'], ['settings'], stringKey];
 
   this.allowEnabled(true);
   this.addClassName(goog.getCssName('anychart-settings-panel-legend-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.Legend,anychart.chartEditorModule.SettingsPanelIndexed);
-
 
 
 /** @override */
@@ -59,15 +66,6 @@ anychart.chartEditorModule.settings.Legend.prototype.createDom = function() {
 };
 
 
-/** @override */
-anychart.chartEditorModule.settings.Legend.prototype.disposeInternal = function() {
-  this.appearance_.dispose();
-  this.appearance_ = null;
-  this.title_ = null;
-  anychart.chartEditorModule.settings.Legend.base(this, 'disposeInternal');
-};
-
-
 /** @inheritDoc */
 anychart.chartEditorModule.settings.Legend.prototype.updateKeys = function() {
   if (!this.isExcluded()) {
@@ -83,4 +81,13 @@ anychart.chartEditorModule.settings.Legend.prototype.updateKeys = function() {
 
   // Update key of enabled checkbox
   anychart.chartEditorModule.settings.Legend.base(this, 'updateKeys');
+};
+
+
+/** @override */
+anychart.chartEditorModule.settings.Legend.prototype.disposeInternal = function() {
+  this.appearance_.dispose();
+  this.appearance_ = null;
+  this.title_ = null;
+  anychart.chartEditorModule.settings.Legend.base(this, 'disposeInternal');
 };

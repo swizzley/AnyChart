@@ -13,7 +13,11 @@ goog.require('anychart.chartEditorModule.SettingsPanel');
  */
 anychart.chartEditorModule.SettingsPanelIndexed = function(model, index, opt_name, opt_domHelper) {
   anychart.chartEditorModule.SettingsPanelIndexed.base(this, 'constructor', model, opt_name, opt_domHelper);
-  
+
+  /** @type {number|undefined} */
+  this.plotIndex_ = void 0;
+
+  /** @type {number} */
   this.index_ = index;
 };
 goog.inherits(anychart.chartEditorModule.SettingsPanelIndexed, anychart.chartEditorModule.SettingsPanel);
@@ -22,6 +26,12 @@ goog.inherits(anychart.chartEditorModule.SettingsPanelIndexed, anychart.chartEdi
 /** @return {number} */
 anychart.chartEditorModule.SettingsPanelIndexed.prototype.getIndex = function() {
   return this.index_;
+};
+
+
+/** @return {number} */
+anychart.chartEditorModule.SettingsPanelIndexed.prototype.getPlotIndex = function() {
+  return goog.isNumber(this.plotIndex_) ? this.plotIndex_ : 0;
 };
 
 
