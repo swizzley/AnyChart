@@ -35,6 +35,9 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.allowAddPanels_ = true;
 /** @param {boolean} value */
 anychart.chartEditorModule.MultiplePanelsBase.prototype.allowAddPanels = function(value) {
   this.allowAddPanels_ = value;
+
+  if (this.addPanelBtn_)
+    goog.style.setElementShown(this.addPanelBtn_.getElement(), this.allowAddPanels_);
 };
 
 
@@ -79,8 +82,8 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.enterDocument = function
   }
 
   this.createPanels();
-
-  if (this.panels_.length === 1 && this.panels_[0].length === 0 && goog.isFunction(this.panels_[0][0].expand)) this.panels_[0][0].expand();
+  if (this.panels_.length === 1 && this.panels_[0].length === 1 && goog.isFunction(this.panels_[0][0].expand))
+    this.panels_[0][0].expand();
 };
 
 

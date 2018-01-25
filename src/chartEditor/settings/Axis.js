@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.Axis');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.SettingsPanelIndexed');
+goog.require('anychart.chartEditorModule.SettingsPanelZippy');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
@@ -16,7 +16,7 @@ goog.require('anychart.chartEditorModule.settings.Title');
  * @param {number} index
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
+ * @extends {anychart.chartEditorModule.SettingsPanelZippy}
  */
 anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domHelper) {
   anychart.chartEditorModule.settings.Axis.base(this, 'constructor', model, index, null, opt_domHelper);
@@ -33,26 +33,19 @@ anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domH
 
   this.addClassName(goog.getCssName('anychart-settings-panel-axis-single'));
 };
-goog.inherits(anychart.chartEditorModule.settings.Axis, anychart.chartEditorModule.SettingsPanelIndexed);
+goog.inherits(anychart.chartEditorModule.settings.Axis, anychart.chartEditorModule.SettingsPanelZippy);
 
 
 /** @override */
 anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Axis.base(this, 'createDom');
 
-  var content = this.getContentElement();
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var wrapper = new anychart.chartEditorModule.SettingsPanel(model);
-  wrapper.setName(null);
-  wrapper.addClassName('anychart-settings-panel');
-  wrapper.addClassName('anychart-settings-panel-wrapper');
-  this.addChild(wrapper, true);
-
-  var invertedCheckbox = new anychart.chartEditorModule.checkbox.Base();
+   var invertedCheckbox = new anychart.chartEditorModule.checkbox.Base();
   invertedCheckbox.setCaption('Inverted');
-  wrapper.addChild(invertedCheckbox, true);
-  this.inverted_ = invertedCheckbox;
+  invertedCheckbox.init(model, [['chart'], ['settings'], this.xOrY + 'Scale().inverted()']);
+  this.addChildControl(invertedCheckbox);
 
   if (!this.isRadarPolarAxis) {
     var orientation = new anychart.chartEditorModule.controls.select.DataField({label: 'Orientation'});
@@ -62,21 +55,17 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
       {value: 'top', icon: 'ac ac-position-top'},
       {value: 'bottom', icon: 'ac ac-position-bottom'}
     ]);
-    wrapper.addChild(orientation, true);
-    this.orientation_ = orientation;
+    orientation.init(model, this.genKey('orientation()'));
+    this.addChildControl(orientation);
 
-    goog.dom.appendChild(content, goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-separator')));
+    this.addContentSeparator();
 
     // Stagger settings
     var staggerSettings = new anychart.chartEditorModule.settings.Stagger(model);
     staggerSettings.setKey(this.getKey());
-    wrapper.addChildControl(staggerSettings);
+    this.addChildControl(staggerSettings);
 
-    goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-separator')));
+    this.addContentSeparator();
 
     // Overlap mode
     var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
@@ -85,17 +74,15 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
       {value: 'no-overlap', caption: 'No overlap'}
     ]);
     overlapMode.init(model, this.genKey('overlapMode()'));
-    wrapper.addChildControl(overlapMode);
+    staggerSettings.addChildControl(overlapMode);
 
     var title = new anychart.chartEditorModule.settings.Title(model, 'Title');
     title.allowEditPosition(false, this.xOrY === 'x' ? 'bottom' : 'left');
-    title.setKey(this.genKey('title()')); // This is for enabled working sake!
-    this.addChild(title, true);
+    title.setKey(this.genKey('title()'));
+    this.addChildControl(title);
     this.title_ = title;
 
-    goog.dom.appendChild(content, goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-separator')));
+    this.addContentSeparator();
   }
 
   //region Labels
@@ -107,9 +94,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   this.addChildControl(labels);
   this.labels_ = labels;
 
-  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator')));
+  this.addContentSeparator();
 
   // Ticks
   var ticks = new anychart.chartEditorModule.settings.Ticks(model);
@@ -120,10 +105,8 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
   this.ticks_ = ticks;
   //endregion
 
-  if (!(this.chartType === 'radar' && this.xOrY == 'x')) {
-    goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-separator')));
+  if (!(this.chartType === 'radar' && this.xOrY === 'x')) {
+    this.addContentSeparator();
 
     //region Minor Labels
     var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
@@ -135,9 +118,7 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
     this.addChildControl(minorlabels);
     this.minorLabels_ = minorlabels;
 
-    goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName('anychart-chart-editor-settings-item-separator')));
+    this.addContentSeparator();
 
     // Minor Ticks
     var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
@@ -153,56 +134,28 @@ anychart.chartEditorModule.settings.Axis.prototype.createDom = function() {
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.Axis.prototype.updateKeys = function() {
-  anychart.chartEditorModule.settings.Axis.base(this, 'updateKeys');
-  if (this.isExcluded()) return;
-
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (this.orientation_) this.orientation_.init(model, this.genKey('orientation()'));
-  if (this.inverted_) this.inverted_.init(model, [['chart'], ['settings'], this.xOrY + 'Scale().inverted()']);
-  if (this.title_) this.title_.setKey(this.genKey('title()'));
-};
-
-
-/** @inheritDoc */
 anychart.chartEditorModule.settings.Axis.prototype.onChartDraw = function(evt) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   this.getHandler().listenOnce(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
-  if (this.isExcluded()) return;
+  if (!this.isExcluded()) {
+    var chart = evt.chart;
+    if (!this.isSingleAxis && !this.axisExists) {
+      this.axisExists = (this.xOrY === 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
 
-  var chart = evt.chart;
-  if (!this.isSingleAxis && !this.axisExists) {
-    this.axisExists = (this.xOrY === 'x' ? chart.getXAxesCount() : chart.getYAxesCount()) > this.index_;
-    this.title_.exclude(!this.axisExists);
+      this.title_.exclude(!this.axisExists);
+      this.labels_.exclude(!this.axisExists);
+      this.ticks_.exclude(!this.axisExists);
 
-    this.labels_.exclude(!this.axisExists);
-    this.ticks_.exclude(!this.axisExists);
+      if (this.minorLabels_)
+        this.minorLabels_.exclude(!this.axisExists);
 
-    if (this.minorLabels_)
-      this.minorLabels_.exclude(!this.axisExists);
+      if (this.minorTicks_)
+        this.minorTicks_.exclude(!this.axisExists);
+    }
 
-    if (this.minorTicks_)
-      this.minorTicks_.exclude(!this.axisExists);
+    if (this.axisExists)
+      anychart.chartEditorModule.settings.Axis.base(this, 'onChartDraw', evt);
+    else
+      this.setContentEnabled(false);
   }
-
-  if (evt.rebuild && this.axisExists) {
-    this.enableContentCheckbox.setValueByTarget(chart);
-    this.setContentEnabled(this.enableContentCheckbox.isChecked());
-
-    if (this.orientation_) this.orientation_.getSelect().setValueByTarget(chart);
-    if (this.inverted_) this.inverted_.setValueByTarget(chart);
-  } else {
-    this.setContentEnabled(false);
-  }
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.Axis.prototype.disposeInternal = function() {
-  goog.disposeAll([this.inverted_, this.orientation_, this.title_]);
-  this.orientation_ = null;
-  this.inverted_ = null;
-  this.title_ = null;
-
-  anychart.chartEditorModule.settings.Axis.base(this, 'disposeInternal');
 };

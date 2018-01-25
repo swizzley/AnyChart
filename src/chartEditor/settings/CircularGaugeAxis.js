@@ -1,7 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.CircularGaugeAxis');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
-goog.require('anychart.chartEditorModule.SettingsPanelIndexed');
+goog.require('anychart.chartEditorModule.SettingsPanelZippy');
 goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
 goog.require('anychart.chartEditorModule.comboBox.Base');
@@ -19,7 +19,7 @@ goog.require('anychart.chartEditorModule.settings.scales.Base');
  * @param {number} index
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.SettingsPanelIndexed}
+ * @extends {anychart.chartEditorModule.SettingsPanelZippy}
  */
 anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, opt_domHelper) {
   anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'constructor', model, index, null, opt_domHelper);
@@ -28,9 +28,9 @@ anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, o
   this.name = 'Axis(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], 'axis(' + this.index_ + ')'];
 
-  this.addClassName(goog.getCssName('anychart-settings-panel-axis-single'));
+  this.addClassName(goog.getCssName('anychart-settings-panel-gauge-axis-single'));
 };
-goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanelIndexed);
+goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanelZippy);
 
 
 /** @override */
@@ -39,47 +39,42 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  var wrapper = new anychart.chartEditorModule.SettingsPanel(model);
-  wrapper.setName(null);
-  wrapper.addClassName('anychart-settings-panel-wrapper');
-  this.addChild(wrapper, true);
-
   var startAngle = new anychart.chartEditorModule.comboBox.Base();
   startAngle.setOptions([-90, 0, 90, 180, 270]);
   startAngle.setRange(-360, 360);
   var startAngleLC = new anychart.chartEditorModule.controls.LabeledControl(startAngle, 'Start Angle');
   startAngleLC.init(model, this.genKey('startAngle()'));
-  wrapper.addChildControl(startAngleLC);
+  this.addChildControl(startAngleLC);
 
   var sweepAngle = new anychart.chartEditorModule.comboBox.Base();
   sweepAngle.setOptions([-180, -90, 0, 90, 180, 270]);
   sweepAngle.setRange(-360, 360);
   var sweepAngleLC = new anychart.chartEditorModule.controls.LabeledControl(sweepAngle, 'Sweep Angle');
   sweepAngleLC.init(model, this.genKey('sweepAngle()'));
-  wrapper.addChildControl(sweepAngleLC);
+  this.addChildControl(sweepAngleLC);
 
   var radius = new anychart.chartEditorModule.comboBox.Percent();
   radius.setOptions([10, 30, 50, 70, 90]);
   var radiusLC = new anychart.chartEditorModule.controls.LabeledControl(radius, 'Radius');
   radiusLC.init(model, this.genKey('radius()'));
-  wrapper.addChildControl(radiusLC);
+  this.addChildControl(radiusLC);
 
   var width = new anychart.chartEditorModule.comboBox.Percent();
   width.setOptions([0, 1, 3, 5, 10]);
   var widthLC = new anychart.chartEditorModule.controls.LabeledControl(width, 'Width');
   widthLC.init(model, this.genKey('width()'));
-  wrapper.addChildControl(widthLC);
+  this.addChildControl(widthLC);
 
   var cornersRounding = new anychart.chartEditorModule.comboBox.Percent();
   cornersRounding.setOptions([0, 20, 50, 70, 100]);
   var cornersRoundingLC = new anychart.chartEditorModule.controls.LabeledControl(cornersRounding, 'Corners Rounding');
   cornersRoundingLC.init(model, this.genKey('cornersRounding()'));
-  wrapper.addChildControl(cornersRoundingLC);
+  this.addChildControl(cornersRoundingLC);
 
   var fill = new anychart.chartEditorModule.colorPicker.Base();
   var fillLC = new anychart.chartEditorModule.controls.LabeledControl(fill, 'Axis Fill');
   fillLC.init(model, this.genKey('fill()'));
-  wrapper.addChildControl(fillLC);
+  this.addChildControl(fillLC);
 
   // Overlap mode
   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
@@ -88,11 +83,9 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
     {value: 'no-overlap', caption: 'No overlap'}
   ]);
   overlapMode.init(model, this.genKey('overlapMode()'));
-  wrapper.addChildControl(overlapMode);
+  this.addChildControl(overlapMode);
 
-  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+  this.addContentSeparator();
 
   //region Labels
   var labels = new anychart.chartEditorModule.settings.Labels(model);
@@ -100,7 +93,7 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   labels.allowEditPosition(false);
   labels.allowEditAnchor(false);
   labels.setKey(this.genKey('labels()'));
-  wrapper.addChildControl(labels);
+  this.addChildControl(labels);
 
   var drawFirstLabel = new anychart.chartEditorModule.checkbox.Base();
   drawFirstLabel.setCaption('Draw First Label');
@@ -112,21 +105,17 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   drawLastLabel.init(model, this.genKey('drawLastLabel()'));
   labels.addChildControl(drawLastLabel);
 
-  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+  this.addContentSeparator();
 
   // Ticks
   var ticks = new anychart.chartEditorModule.settings.Ticks(model);
   ticks.allowEnabled(true);
   ticks.allowEditFill(true);
   ticks.setKey(this.genKey('ticks()'));
-  wrapper.addChildControl(ticks);
+  this.addChildControl(ticks);
   //endregion
 
-  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+  this.addContentSeparator();
 
   //region Minor Labels
   var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
@@ -135,11 +124,9 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   minorlabels.allowEditPosition(false);
   minorlabels.allowEditAnchor(false);
   minorlabels.setKey(this.genKey('minorLabels()'));
-  wrapper.addChildControl(minorlabels);
+  this.addChildControl(minorlabels);
 
-  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+  this.addContentSeparator();
 
   // Minor Ticks
   var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
@@ -147,19 +134,16 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   minorTicks.allowEnabled(true);
   minorTicks.allowEditFill(true);
   minorTicks.setKey(this.genKey('minorTicks()'));
-  wrapper.addChildControl(minorTicks);
+  this.addChildControl(minorTicks);
   //endregion
 
-  goog.dom.appendChild(wrapper.getContentElement(), goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
+  this.addContentSeparator();
 
   var scale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear', 'log']);
   scale.setKey(this.genKey('scale()'));
   scale.setName('Scale');
   scale.skipSettings(['stackMode()', 'stackDirection()']);
-  wrapper.addChild(scale, true);
-  //this.scale_ = scale;
+  this.addChildControl(scale);
 };
 
 
@@ -167,35 +151,14 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
 anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.onChartDraw = function(evt) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   this.getHandler().listenOnce(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
-  if (this.isExcluded()) return;
 
-  var chart = evt.chart;
-  this.axisExists = chart.getAxesCount() > this.index_;
+  if (!this.isExcluded()) {
+    var chart = evt.chart;
+    this.axisExists = chart.getAxesCount() > this.index_;
 
-  // this.title_.exclude(!this.axisExists);
-  //
-  // this.labels_.exclude(!this.axisExists);
-  // this.ticks_.exclude(!this.axisExists);
-  //
-  // if (this.minorLabels_)
-  //   this.minorLabels_.exclude(!this.axisExists);
-  //
-  // if (this.minorTicks_)
-  //   this.minorTicks_.exclude(!this.axisExists);
-
-  if (this.axisExists)
-    anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'onChartDraw', evt);
-  else
-    this.setContentEnabled(false);
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.disposeInternal = function() {
-  // goog.disposeAll([this.inverted_, this.orientation_, this.title_]);
-  // this.orientation_ = null;
-  // this.inverted_ = null;
-  // this.title_ = null;
-
-  anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'disposeInternal');
+    if (this.axisExists)
+      anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'onChartDraw', evt);
+    else
+      this.setContentEnabled(false);
+  }
 };

@@ -65,6 +65,8 @@ anychart.chartEditorModule.SettingsPanel = function(model, opt_name, opt_domHelp
    * @protected
    */
   this.labels = [];
+
+  this.addClassName(goog.getCssName('anychart-settings-panel'));
 };
 goog.inherits(anychart.chartEditorModule.SettingsPanel, anychart.chartEditorModule.ComponentWithKey);
 
@@ -144,7 +146,6 @@ anychart.chartEditorModule.SettingsPanel.prototype.createDom = function() {
   anychart.chartEditorModule.SettingsPanel.base(this, 'createDom');
 
   var element = /** @type {Element} */(this.getElement());
-  goog.dom.classlist.add(element, 'anychart-settings-panel');
 
   var dom = this.getDomHelper();
   this.topEl = dom.createDom(goog.dom.TagName.DIV, 'top');
@@ -234,8 +235,9 @@ anychart.chartEditorModule.SettingsPanel.prototype.onRemoveAction = function(evt
 
 /** @inheritDoc */
 anychart.chartEditorModule.SettingsPanel.prototype.onModelChange = function(evt) {
-  if (this.isExcluded()) return;
-  anychart.chartEditorModule.SettingsPanel.base(this, 'onModelChange', evt);
+  if (!this.isExcluded()) {
+    anychart.chartEditorModule.SettingsPanel.base(this, 'onModelChange', evt);
+  }
 };
 
 
@@ -379,6 +381,14 @@ anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(co
   }
 
   return addControl;
+};
+
+
+/** @protected */
+anychart.chartEditorModule.SettingsPanel.prototype.addContentSeparator = function() {
+  goog.dom.appendChild(this.getContentElement(), goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName('anychart-chart-editor-settings-item-separator-gaps')));
 };
 
 

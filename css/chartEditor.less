@@ -664,6 +664,13 @@
   }
 }
 
+.anychart-settings-panel-series-single,
+.anychart-settings-panel-pointer-single {
+  .anychart-plus-minus {
+    margin-top: 5px;
+  }
+}
+
 .anychart-chart-editor-series-name-input,
 .anychart-chart-editor-pointer-name {
   width: 50%;
@@ -710,7 +717,8 @@
 }
 
 .anychart-settings-panel-no-top {
-  > .top {
+  > .top,
+  > .content > .zippy-header .top {
     display: none;
   }
 }
@@ -786,8 +794,7 @@
 }
 
 .anychart-settings-title,
-.anychart-settings-legend-appearance,
-.anychart-settings-panel-tooltip {
+.anychart-settings-legend-appearance {
   .anychart-select-data-field-select {
     min-width: 150px;
   }
@@ -897,9 +904,13 @@
     padding: 15px;
     font-size: 17px;
     outline: none;
+    position: relative;
+    .top {
+      display: inline;
+      position: static;
+    }
   }
   .anychart-plus-minus {
-    margin-top: 5px;
     float: right;
   }
   .anychart-zippy-expanded {
@@ -916,22 +927,12 @@
       padding: 0;
     }
   }
-}
-
-.anychart-settings-panel-tooltip {
-  > .content {
-    padding: 0 !important;
-  }
-  .anychart-settings-panel {
-    padding: 15px;
-  }
-  .anychart-settings-panel-wrapper {
-    padding-bottom: 0;
+  .anychart-settings-panel-remove-btn {
+    top: -6px;
+    right: -6px;
   }
 }
 
-.anychart-settings-panel-axis-single,
-.anychart-settings-panel-range-single,
 .anychart-settings-panel-plot-grids {
   > .top {
     padding: 15px 15px 0 15px;
@@ -958,20 +959,6 @@
   .markers-type {
     min-width: 150px;
     margin-right: 10px;
-  }
-}
-
-.anychart-chart-editor-settings-color-scale {
-  .anychart-settings-panel-wrapper {
-    padding: 0;
-  }
-}
-.anychart-settings-panel-axis-single,
-.anychart-settings-panel-range-single {
-  .anychart-settings-panel-wrapper {
-    .anychart-settings-panel {
-      padding: 0;
-    }
   }
 }
 
@@ -1670,8 +1657,6 @@
   }
   .anychart-chart-editor-settings-panel-zippy,
   .anychart-settings-panel-legend-single,
-  .anychart-settings-panel-axis-single,
-  .anychart-settings-panel-range-single,
   .anychart-settings-panel-plot-grids {
     border: none;
   }

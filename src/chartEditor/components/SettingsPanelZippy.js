@@ -39,6 +39,9 @@ anychart.chartEditorModule.SettingsPanelZippy.prototype.createDom = function() {
   this.addChild(zippyHeader, true);
   this.zippyHeader = zippyHeader;
 
+  if (this.topEl)
+    goog.dom.appendChild(this.zippyHeader.getElement(), this.topEl);
+
   var plusMinus = goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-plus-minus'));
   this.zippyHeader.getElement().appendChild(plusMinus);
   // endregion
@@ -94,7 +97,7 @@ anychart.chartEditorModule.SettingsPanelZippy.prototype.addHeaderChildControl = 
 };
 
 
-/** @protected */
+/** @override */
 anychart.chartEditorModule.SettingsPanelZippy.prototype.addContentSeparator = function() {
   goog.dom.appendChild(this.zippyContent.getElement(), goog.dom.createDom(
       goog.dom.TagName.DIV,

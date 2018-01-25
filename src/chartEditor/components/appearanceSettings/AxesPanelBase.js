@@ -31,12 +31,11 @@ goog.inherits(anychart.chartEditorModule.AxesPanelBase, anychart.chartEditorModu
 
 /** @inheritDoc */
 anychart.chartEditorModule.AxesPanelBase.prototype.enterDocument = function() {
-  anychart.chartEditorModule.AxesPanelBase.base(this, 'enterDocument');
-
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getModel()['chart']['type'];
-
   this.allowAddPanels(chartType !== 'radar' && chartType !== 'polar');
+  
+  anychart.chartEditorModule.AxesPanelBase.base(this, 'enterDocument');
 };
 
 
