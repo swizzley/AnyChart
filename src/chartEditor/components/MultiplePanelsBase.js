@@ -168,6 +168,10 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = funct
     this.panels_[panelPlotIndex].push(panelInstance);
   }
 
+  if (this.allowAddPanels_ && panelIndex > 0 && this.panels_[panelPlotIndex][panelIndex - 1]) {
+    /** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(this.panels_[panelPlotIndex][panelIndex - 1]).allowRemove(false);
+  }
+
   this.panelsContainer_.addChild(panelInstance, true);
 };
 
@@ -186,6 +190,15 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.onRemovePanel = function
 
   goog.dispose(this.panels_[panelPlotIndex][panelIndex]);
   this.panels_[panelPlotIndex][panelIndex] = null;
+
+  if (this.allowAddPanels_) {
+    for (var i = (panelIndex - 1); i >= this.removeFromIndex_; i--) {
+      if (this.panels_[panelPlotIndex][i]) {
+        /** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(this.panels_[panelPlotIndex][i]).allowRemove(true);
+        break;
+      }
+    }
+  }
 };
 
 

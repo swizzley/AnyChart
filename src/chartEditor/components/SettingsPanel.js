@@ -121,6 +121,9 @@ anychart.chartEditorModule.SettingsPanel.prototype.allowEnabled = function(value
 /** @param {boolean} value */
 anychart.chartEditorModule.SettingsPanel.prototype.allowRemove = function(value) {
   this.allowRemove_ = value;
+  if (this.removeButton) {
+    goog.style.setElementShown(this.removeButton, this.allowRemove_);
+  }
 };
 
 
