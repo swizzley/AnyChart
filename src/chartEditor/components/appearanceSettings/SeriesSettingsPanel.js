@@ -46,7 +46,3 @@ anychart.chartEditorModule.SeriesSettingsPanel.prototype.createPanels = function
   }
 };
 
-// anychart.chartEditorModule.SeriesSettingsPanel.prototype.removeAllPanels = function() {
-//   debugger
-//   anychart.chartEditorModule.SeriesSettingsPanel.base(this, 'removeAllPanels');
-// }

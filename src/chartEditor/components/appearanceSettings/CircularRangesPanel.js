@@ -17,34 +17,26 @@ anychart.chartEditorModule.CircularRangesPanel = function(model, opt_domHelper) 
 
   this.setButtonLabel('+ Add range');
 
+  this.setRemoveFromIndex(0);
+
   this.addClassName(goog.getCssName('anychart-settings-panel-gauge-ranges'));
 };
 goog.inherits(anychart.chartEditorModule.CircularRangesPanel, anychart.chartEditorModule.MultiplePanelsBase);
 
 
 /** @override */
-anychart.chartEditorModule.CircularRangesPanel.prototype.onAddPanel = function() {
+anychart.chartEditorModule.CircularRangesPanel.prototype.createPanel = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var rangeIndex = model.addCircularRange();
-  this.addPanel(rangeIndex);
+  var panelIndex = model.addCircularRange();
+
+  return new anychart.chartEditorModule.settings.CircularRange(model, panelIndex);
 };
 
 
 /** @override */
-anychart.chartEditorModule.CircularRangesPanel.prototype.onRemovePanel = function(evt) {
-  var panelIndex = anychart.chartEditorModule.CircularRangesPanel.base(this, 'onRemovePanel', evt);
+anychart.chartEditorModule.CircularRangesPanel.prototype.removePanel = function(panelIndex) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   model.dropCircularRange(panelIndex);
-  return panelIndex;
-};
-
-
-/** @override */
-anychart.chartEditorModule.CircularRangesPanel.prototype.addPanel = function(panelIndex) {
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var range = new anychart.chartEditorModule.settings.CircularRange(model, panelIndex);
-  range.allowEnabled(true);
-  this.addPanelInstance(range, true);
 };
 
 
@@ -54,14 +46,15 @@ anychart.chartEditorModule.CircularRangesPanel.prototype.createPanels = function
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var settings = model.getModel()['chart']['settings'];
 
-    var pattern = '^' + 'range\\((\\d+)\\)\\.enabled\\(\\)$';
+    var pattern = '^range\\((\\d+)\\)\\.enabled\\(\\)$';
     var regExp = new RegExp(pattern);
 
     for (var key in settings) {
       var match = key.match(regExp);
       if (match) {
-        var rangeIndex = Number(match[1]);
-        this.addPanel(rangeIndex);
+        var axisIndex = Number(match[1]);
+        var panel = new anychart.chartEditorModule.settings.CircularRange(model, axisIndex);
+        this.addPanelInstance(panel);
       }
     }
   }

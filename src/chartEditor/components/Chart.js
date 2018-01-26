@@ -116,7 +116,11 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
     // todo: debug
     if (chartType === 'gauges.circular') {
-      /*var axis = */this.chart_['axis']();
+      var axis0Exists = model.getValue([['chart'], ['settings'], 'axis(0).enabled()']);
+      if (!goog.isDef(axis0Exists)) {
+        model.setValue([['chart'], ['settings'], 'axis(0).enabled()'], true);
+      }
+      ///*var axis = */this.chart_['axis']();
       //axis.scale().minimum(0).maximum(100);
       //axis.scale().maximumGap(0.44);
     }

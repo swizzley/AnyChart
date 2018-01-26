@@ -31,6 +31,7 @@ anychart.chartEditorModule.settings.Axis = function(model, xOrY, index, opt_domH
   this.name = this.xOrY + 'Axis(' + (this.isSingleAxis ? '' : this.index_) + ')';
   this.key = [['chart'], ['settings'], this.xOrY + 'Axis(' + (this.isSingleAxis ? '' : this.index_) + ')'];
 
+  this.allowEnabled(true);
   this.addClassName(goog.getCssName('anychart-settings-panel-axis-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.Axis, anychart.chartEditorModule.SettingsPanelZippy);

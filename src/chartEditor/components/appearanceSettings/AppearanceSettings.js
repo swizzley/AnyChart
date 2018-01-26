@@ -98,7 +98,7 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       instance: null
     },
     {
-      name: 'Axes',
+      name: 'CircularGaugeAxes',
       enabled: true,
       classFunc: anychart.chartEditorModule.CircularGaugeAxesPanel,
       instance: null

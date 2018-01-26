@@ -34,61 +34,51 @@ anychart.chartEditorModule.AxesPanelBase.prototype.enterDocument = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getModel()['chart']['type'];
   this.allowAddPanels(chartType !== 'radar' && chartType !== 'polar');
-  
+
   anychart.chartEditorModule.AxesPanelBase.base(this, 'enterDocument');
 };
 
 
 /** @override */
-anychart.chartEditorModule.AxesPanelBase.prototype.onAddPanel = function() {
+anychart.chartEditorModule.AxesPanelBase.prototype.createPanel = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var axisIndex = model.addAxis(this.xOrY);
-  this.addPanel(axisIndex);
+
+  return new anychart.chartEditorModule.settings.Axis(model, this.xOrY, axisIndex);
 };
 
 
 /** @override */
-anychart.chartEditorModule.AxesPanelBase.prototype.onRemovePanel = function(evt) {
-  var axisIndex = anychart.chartEditorModule.AxesPanelBase.base(this, 'onRemovePanel', evt);
+anychart.chartEditorModule.AxesPanelBase.prototype.removePanel = function(panelIndex) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  model.dropAxis(axisIndex, this.xOrY);
-  return axisIndex;
+  model.dropAxis(panelIndex, this.xOrY);
 };
 
 
 /** @override */
 anychart.chartEditorModule.AxesPanelBase.prototype.createPanels = function() {
-  if (this.isExcluded()) return;
-  // Always create 0 axis panel
-  this.addPanel(0);
+  if (!this.isExcluded()) {
 
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartType = model.getModel()['chart']['type'];
-
-  if (chartType !== 'radar' && chartType !== 'polar') {
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var settings = model.getModel()['chart']['settings'];
 
     var pattern = '^' + this.xOrY + 'Axis\\((\\d+)\\)\\.enabled\\(\\)$';
     var regExp = new RegExp(pattern);
+    var axisCount = 0;
 
     for (var key in settings) {
       var match = key.match(regExp);
       if (match) {
         var axisIndex = Number(match[1]);
-        if (axisIndex > 0)
-          this.addPanel(axisIndex);
+        var panel = new anychart.chartEditorModule.settings.Axis(model, this.xOrY, axisIndex);
+        this.addPanelInstance(panel);
+        axisCount++;
       }
     }
+
+    if (axisCount === 0) {
+      // Always create 0 axis panel
+      this.addPanelInstance(/** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(this.createPanel()));
+    }
   }
-};
-
-
-/**
- * @param {number} axisIndex
- */
-anychart.chartEditorModule.AxesPanelBase.prototype.addPanel = function(axisIndex) {
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var axis = new anychart.chartEditorModule.settings.Axis(model, this.xOrY, axisIndex);
-  axis.allowEnabled(true);
-  this.addPanelInstance(axis, true, 1);
 };

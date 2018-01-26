@@ -22,6 +22,7 @@ anychart.chartEditorModule.settings.CircularRange = function(model, index, opt_d
   this.name = 'Range(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], 'range(' + this.index_ + ')'];
 
+  this.allowEnabled(true);
   this.addClassName(goog.getCssName('anychart-settings-panel-range-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.CircularRange, anychart.chartEditorModule.SettingsPanelZippy);

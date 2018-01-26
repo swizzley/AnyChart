@@ -42,6 +42,19 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.allowAddPanels = functio
 
 
 /**
+ * @type {number}
+ * @private
+ */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.removeFromIndex_ = 1;
+
+
+/** @param {number} value */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.setRemoveFromIndex = function(value) {
+  this.removeFromIndex_ = value;
+};
+
+
+/**
  * @type {string}
  * @private
  */
@@ -82,38 +95,61 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.enterDocument = function
   }
 
   this.createPanels();
+
   if (this.panels_.length === 1 && this.panels_[0].length === 1 && goog.isFunction(this.panels_[0][0].expand))
     this.panels_[0][0].expand();
 };
 
 
 /**
- * @param {number} panelIndex
- * @protected
+ * Removes all panels elements from panel.
+ * @private
  */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanel = function(panelIndex) {
-  // Should be overridden
+anychart.chartEditorModule.MultiplePanelsBase.prototype.removeAllPanels = function() {
+  for (var i = 0; i < this.panels_.length; i++) {
+    for (var j = 0; j < this.panels_[i].length; j++) {
+      if (this.panels_[i][j]) {
+        this.panelsContainer_.removeChild(this.panels_[i][j], true);
+        goog.dispose(this.panels_[i][j]);
+      }
+    }
+  }
+  this.panels_.length = 0;
+};
 
-  // Create panel and configure instance
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  // var axis = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
-  // axis.allowEnabled(true);
+
+/** @override */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.exitDocument = function() {
+  this.removeAllPanels();
+  anychart.chartEditorModule.MultiplePanelsBase.base(this, 'exitDocument');
+};
+
+
+/** @override */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.disposeInternal = function() {
+  this.removeAllPanels();
+  anychart.chartEditorModule.MultiplePanelsBase.base(this, 'disposeInternal');
+};
+
+
+/** @private */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.onAddPanel = function() {
+  var panel = /** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(this.createPanel());
 
   // Add instance to panels list
-  // this.addPanelInstance(axis, true, 1);
+  this.addPanelInstance(panel);
 };
 
 
 /**
  * @param {anychart.chartEditorModule.SettingsPanelIndexed} panelInstance
- * @param {boolean=} opt_allowRemove Should be panels removable or not
- * @param {number=} opt_removeFromIndex
+ * @protected
  */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = function(panelInstance, opt_allowRemove, opt_removeFromIndex) {
+anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = function(panelInstance) {
   var panelIndex = panelInstance.getIndex();
   var panelPlotIndex = panelInstance.getPlotIndex();
 
-  if (opt_allowRemove && (!goog.isDef(opt_removeFromIndex) || panelIndex >= opt_removeFromIndex)) {
+  if (this.allowAddPanels_ && (!goog.isDef(this.removeFromIndex_) || panelIndex >= this.removeFromIndex_)) {
     panelInstance.allowRemove(true);
     this.getHandler().listen(panelInstance, anychart.chartEditorModule.events.EventType.PANEL_CLOSE, this.onRemovePanel);
   }
@@ -136,93 +172,59 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = funct
 };
 
 
-/** @protected */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.onAddPanel = function() {
-  // Should be overridden
-  //
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  // var axisIndex = model.addAxis();
-  // this.addPanel(axisIndex);
-};
-
 
 /**
  * @param {Object} evt
- * @return {number}
- * @protected
+ * @private
  */
 anychart.chartEditorModule.MultiplePanelsBase.prototype.onRemovePanel = function(evt) {
   var panelInstance = /** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(evt.currentTarget);
   var panelIndex = panelInstance.getIndex();
   var panelPlotIndex = panelInstance.getPlotIndex();
 
+  this.removePanel(panelIndex);
+
   goog.dispose(this.panels_[panelPlotIndex][panelIndex]);
   this.panels_[panelPlotIndex][panelIndex] = null;
+};
 
-  // Should do something like this
-  //
+
+/**
+ * @return {?anychart.chartEditorModule.SettingsPanelIndexed}
+ * @protected
+ */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.createPanel = function() {
+  // Should be overridden like this:
+
   // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  // model.dropAxis(axisIndex);
+  // var panelIndex = model.addAxis();
 
-  // For now we are not thinking about plots. Forget it, bro...
-  return panelIndex;
+  // Create and configure panel instance
+  // var panel = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
+  // panel.allowEnabled(true);
+
+  // return panel;
+
+  return null;
+};
+
+
+/**
+ * @param {number} panelIndex
+ * @protected
+ */
+anychart.chartEditorModule.MultiplePanelsBase.prototype.removePanel = function(panelIndex) {
+  // Should be overridden something like this:
+
+  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  // model.dropAxis(axisIndex, this.xOrY);
 };
 
 
 /**
  * Create Axes settings panels.
+ * @protected
  */
 anychart.chartEditorModule.MultiplePanelsBase.prototype.createPanels = function() {
   // Should be overridden
-  //
-  // if (!this.isExcluded()) {
-  //   // Always create 0 axis panel
-  //   this.addPanel(0);
-  //
-  //   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  //   var settings = model.getModel()['chart']['settings'];
-  //
-  //   var pattern = '^' + 'axis\\((\\d+)\\)\\.enabled\\(\\)$';
-  //   var regExp = new RegExp(pattern);
-  //
-  //   for (var key in settings) {
-  //     var match = key.match(regExp);
-  //     if (match) {
-  //       var panelIndex = Number(match[1]);
-  //       if (panelIndex > 0)
-  //         this.addPanel(panelIndex);
-  //     }
-  //   }
-  // }
-};
-
-
-/**
- * Removes all panels elements from panel.
- * @private
- */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.removeAllPanels = function() {
-  for (var i = 0; i < this.panels_.length; i++) {
-    for (var j = 0; j < this.panels_[i].length; j++) {
-      if (this.panels_[i][j]) {
-        this.panelsContainer_.removeChild(this.panels_[i][j], true);
-        goog.dispose(this.panels_[i][j]);
-      }
-    }
-  }
-  this.panels_.length = 0;
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.exitDocument = function() {
-  this.removeAllPanels();
-  anychart.chartEditorModule.MultiplePanelsBase.base(this, 'exitDocument');
-};
-
-
-/** @override */
-anychart.chartEditorModule.MultiplePanelsBase.prototype.disposeInternal = function() {
-  this.removeAllPanels();
-  anychart.chartEditorModule.MultiplePanelsBase.base(this, 'disposeInternal');
 };

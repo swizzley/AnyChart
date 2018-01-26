@@ -28,6 +28,7 @@ anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, o
   this.name = 'Axis(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], 'axis(' + this.index_ + ')'];
 
+  this.allowEnabled(true);
   this.addClassName(goog.getCssName('anychart-settings-panel-gauge-axis-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanelZippy);
@@ -149,7 +150,6 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.onChartDraw = function(evt) {
-  console.log("onChartDraw");
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   this.getHandler().listenOnce(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
 

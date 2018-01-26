@@ -1445,7 +1445,7 @@ anychart.chartEditorModule.EditorModel.prototype.setContextMenuItemEnable = func
  * @return {number} Created axis index.
  */
 anychart.chartEditorModule.EditorModel.prototype.addAxis = function(opt_xOrY) {
-  var index = 0; // todo: because 0 axis exists %)
+  var index = -1;
   var pattern;
   var stringKey;
   if (goog.isDef(opt_xOrY))
