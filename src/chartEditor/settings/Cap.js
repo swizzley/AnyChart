@@ -36,7 +36,6 @@ anychart.chartEditorModule.settings.Cap.prototype.createDom = function() {
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-
   var fill = new anychart.chartEditorModule.colorPicker.Base();
   var fillLC = new anychart.chartEditorModule.controls.LabeledControl(fill, 'Cap Fill');
   fillLC.init(model, this.genKey('fill()'));

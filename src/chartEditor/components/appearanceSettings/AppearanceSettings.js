@@ -218,7 +218,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = funct
     var excluded;
 
     if (this.descriptors_[i].name === 'Specific') {
-      panel.actualize();
+      panel.updateSpecific();
       excluded = panel.isExcluded();
       if (!excluded)
         this.getDomHelper().setTextContent(this.buttons_[i], /** @type {string} */(panel.getName()));

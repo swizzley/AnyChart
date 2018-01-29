@@ -43,7 +43,7 @@ anychart.chartEditorModule.input.Palette.prototype.enterDocument = function() {
 anychart.chartEditorModule.input.Palette.prototype.onChange = function() {
   var value = this.getValue();
 
-  if (!this.noDispatch && value != this.lastValue && this.editorModel) {
+  if (!this.noDispatch && value !== this.lastValue && this.editorModel) {
     this.lastValue = value;
     value = value.split(',');
 
@@ -66,6 +66,7 @@ anychart.chartEditorModule.input.Palette.prototype.onChange = function() {
  */
 anychart.chartEditorModule.input.Palette.prototype.setValueByTarget = function(target, opt_force) {
   if (!opt_force && this.revisionCount1 - this.revisionCount2 > 1) return;
+
   this.revisionCount2 = this.revisionCount1;
   this.target = target;
   var stringKey = anychart.chartEditorModule.EditorModel.getStringKey(this.key);
@@ -136,7 +137,7 @@ anychart.chartEditorModule.input.Palette.prototype.valueToString = function(opt_
  */
 anychart.chartEditorModule.input.Palette.componentToHex = function(c) {
   var hex = c.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
+  return hex.length === 1 ? "0" + hex : hex;
 };
 
 

@@ -183,12 +183,13 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   // console.log(settings['chart']['settings']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
-    if (goog.isString(value))
+    if (goog.isString(value)) {
       value = value.replace(/(\\\\)/g, '\\');
 
-    if (key === 'palette()') {
-      value = self.anychart['palettes'][value];
+      if (key === 'palette()')
+        value = self.anychart['palettes'][value];
     }
+
     anychart.bindingModule.exec(self.chart_, key, value);
   });
 

@@ -13,7 +13,7 @@ goog.require('anychart.chartEditorModule.settings.CircularRange');
 anychart.chartEditorModule.CircularRangesPanel = function(model, opt_domHelper) {
   anychart.chartEditorModule.CircularRangesPanel.base(this, 'constructor', model, 'Ranges', opt_domHelper);
 
-  this.stringId = 'CircularRanges';
+  this.stringId = 'circularRanges';
 
   this.setButtonLabel('+ Add range');
 
