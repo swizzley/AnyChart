@@ -6,6 +6,7 @@ goog.require('anychart.chartEditorModule.settings.pointers.CircularBase');
 goog.require('anychart.chartEditorModule.settings.pointers.Knob');
 goog.require('anychart.chartEditorModule.settings.pointers.Led');
 goog.require('anychart.chartEditorModule.settings.pointers.LinearBase');
+goog.require('anychart.chartEditorModule.settings.pointers.LinearMarker');
 goog.require('anychart.chartEditorModule.settings.pointers.Marker');
 goog.require('anychart.chartEditorModule.settings.pointers.Needle');
 
@@ -53,6 +54,9 @@ anychart.chartEditorModule.PointersPanel.prototype.createPanels = function() {
         break;
       case 'linearGauge.led':
         className = anychart.chartEditorModule.settings.pointers.Led;
+        break;
+        case 'linearGauge.marker':
+        className = anychart.chartEditorModule.settings.pointers.LinearMarker;
         break;
       default:
         className = anychart.chartEditorModule.settings.pointers.LinearBase;

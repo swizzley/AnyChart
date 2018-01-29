@@ -454,7 +454,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'value': 'gauges.led',
     'name': 'Led Gauge',
     'icon': 'vertical-gauge-1.svg',
-    'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer'],
+    'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer', 'linearGauge.marker'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange', 'circularRanges',
       'circularGaugeAxes'
@@ -657,6 +657,11 @@ anychart.chartEditorModule.EditorModel.Series = {
   'linearGauge.thermometer': {
     'ctor': 'thermometer',
     'name': 'Thermometer',
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'linearGauge.marker': {
+    'ctor': 'marker',
+    'name': 'Marker',
     'fields': [{'field': 'value', 'name': 'Value'}]
   }
 };
