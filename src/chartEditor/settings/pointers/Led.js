@@ -3,7 +3,9 @@ goog.provide('anychart.chartEditorModule.settings.pointers.Led');
 goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
+goog.require('anychart.chartEditorModule.input.Numbers');
 goog.require('anychart.chartEditorModule.settings.pointers.LinearBase');
+goog.require('anychart.chartEditorModule.settings.scales.Base');
 
 
 /**
@@ -29,22 +31,30 @@ goog.inherits(anychart.chartEditorModule.settings.pointers.Led, anychart.chartEd
 anychart.chartEditorModule.settings.pointers.Led.prototype.createDom = function() {
   anychart.chartEditorModule.settings.pointers.Led.base(this, 'createDom');
 
-  // var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  // var position = new anychart.chartEditorModule.controls.select.DataField({label: 'Position'});
-  // position.getSelect().setOptions(goog.object.getValues(anychart.enums.GaugeSidePosition));
-  // position.init(model, this.genKey('position()'));
-  // this.addChildControl(position);
-  //
-  // var radius = new anychart.chartEditorModule.comboBox.Percent();
-  // radius.setOptions([10, 30, 50, 70, 90, 100]);
-  // var radiusLC = new anychart.chartEditorModule.controls.LabeledControl(radius, 'Radius');
-  // radiusLC.init(model, this.genKey('radius()'));
-  // this.addChildControl(radiusLC);
-  //
-  // var width = new anychart.chartEditorModule.comboBox.Percent();
-  // width.setOptions([0, 1, 3, 5, 10, 20]);
-  // var widthLC = new anychart.chartEditorModule.controls.LabeledControl(width, 'Width');
-  // widthLC.init(model, this.genKey('width()'));
-  // this.addChildControl(widthLC);
+  this.addContentSeparator();
+
+  var count = new anychart.chartEditorModule.input.Numbers();
+  var countLC = new anychart.chartEditorModule.controls.LabeledControl(count, 'Count');
+  countLC.init(model, this.genKey('count()'));
+  this.addChildControl(countLC);
+
+  var gap = new anychart.chartEditorModule.comboBox.Percent();
+  gap.setOptions([1,2,3,5,7,10]);
+  var gapLC = new anychart.chartEditorModule.controls.LabeledControl(gap, 'Gap');
+  gapLC.init(model, this.genKey('gap()'));
+  this.addChildControl(gapLC);
+
+  var size = new anychart.chartEditorModule.comboBox.Percent();
+  size.setOptions([1,2,3,5,7,10]);
+  var sizeLC = new anychart.chartEditorModule.controls.LabeledControl(size, 'Size');
+  sizeLC.init(model, this.genKey('size()'));
+  this.addChildControl(sizeLC);
+
+  this.addContentSeparator();
+
+  var colorScale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear-color', 'ordinal-color']);
+  colorScale.setKey(this.genKey('colorScale()'));
+  this.addChildControl(colorScale);
 };
