@@ -437,7 +437,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'dataSetCtor': 'set',
     'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
     'settingsExcludes': ['palette()'],
-    'filters': ['common']
+    'filters': ['common', 'gauges']
   },
   // region ==== Linear gauges
   // 'gauges.linear': {

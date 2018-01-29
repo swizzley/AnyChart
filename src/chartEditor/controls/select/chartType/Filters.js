@@ -23,7 +23,8 @@ anychart.chartEditorModule.controls.chartType.Filters.CSS_CLASS = goog.getCssNam
 anychart.chartEditorModule.controls.chartType.Filters.Map = {
   'common': 'Common',
   'stacked-value': 'Stacked',
-  'stacked-percent': 'Percent stacked'
+  'stacked-percent': 'Percent stacked',
+  'gauges': 'Gauges'
 };
 
 
@@ -38,7 +39,7 @@ anychart.chartEditorModule.controls.chartType.Filters.prototype.createDom = func
     var checkbox = new anychart.chartEditorModule.checkbox.Base();
     checkbox.setModel(key);
     checkbox.setCaption(map[key]);
-    if (key == 'common') checkbox.setChecked(true);
+    if (key === 'common') checkbox.setChecked(true);
 
     this.addChild(checkbox, true);
   }
