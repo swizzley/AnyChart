@@ -131,7 +131,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       for (var j = 0; j < plotMapping.length; j++) {
         seriesMapping = plotMapping[j]['mapping'];
         
-        mappingObj = dsCtor === 'table' || chartType.indexOf('gauge') === 0 ? {} :
+        mappingObj = dsCtor === 'table' || model.chartTypeStartsFrom('gauges') ? {} :
             dsCtor === 'tree' ?
                 {'id': settings['dataSettings']['field']} :
                 {'x': settings['dataSettings']['field']};
@@ -149,7 +149,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
         } else {
           // todo: debug
-          if (chartType.indexOf('gauge') === 0 && i === 0 && j === 0) {
+          if (model.chartTypeStartsFrom('gauges') && i === 0 && j === 0) {
             this.chart_['data'](mappingInstance);
           }
 
@@ -161,7 +161,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
             var plot = this.chart_['plot'](i);
             series = plot[seriesCtor](mappingInstance);
 
-          } else if (chartType.indexOf('gauge') === 0) {
+          } else if (model.chartTypeStartsFrom('gauges')) {
             // todo: debug
             series = this.chart_[seriesCtor](j/*, mappingInstance*/);
             series.dataIndex(0);

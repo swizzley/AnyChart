@@ -457,7 +457,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange', 'circularRanges',
-      'circularGaugeAxes', 'pointers'
+      'circularGaugeAxes'
     ],
     'settingsExcludes': ['palette()'],
     'filters': ['common', 'gauges']
@@ -922,7 +922,7 @@ anychart.chartEditorModule.EditorModel.prototype.createPlotMapping = function() 
   var fieldIndex;
 
   if (singleSeries ||
-      chartType === 'map' || chartType === 'box' || chartType.indexOf('gauge') === 0 ||
+      chartType === 'map' || chartType === 'box' || this.chartTypeStartsFrom('gauges') ||
       (chartType === 'stock' && seriesType === 'column' && plotIndex === 1))
     numSeries = 1;
   else
@@ -988,7 +988,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
       var chartType = this.model_['chart']['type'];
       var singleSeries = this.isChartSingleSeries();
 
-      if (!singleSeries && chartType !== 'stock' && chartType.indexOf('gauge') !== 0 && fields.length === 1) {
+      if (!singleSeries && chartType !== 'stock' && !this.chartTypeStartsFrom('gauges') && fields.length === 1) {
         var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
         var fieldName = numbers[numberIndex];
         var seriesName = data.fieldNames && data.fieldNames[fieldName] || fieldName;
@@ -1265,9 +1265,12 @@ anychart.chartEditorModule.EditorModel.prototype.addSeries = function(plotIndex)
  * @param {number} seriesIndex
  */
 anychart.chartEditorModule.EditorModel.prototype.dropSeries = function(plotIndex, seriesIndex) {
-  if (this.model_['dataSettings']['mappings'].length > plotIndex && this.model_['dataSettings']['mappings'][plotIndex].length > seriesIndex) {
+  if (this.model_['dataSettings']['mappings'].length > plotIndex &&
+      this.model_['dataSettings']['mappings'][plotIndex].length > seriesIndex) {
+
     var removedSeries = goog.array.splice(this.model_['dataSettings']['mappings'][plotIndex], seriesIndex, 1);
-    this.dropChartSettings('getSeries(\'' + removedSeries[0]['id'] + '\')');
+    var stringKey = this.chartTypeStartsFrom('gauges') ? 'getPointer' : 'getSeries';
+    this.dropChartSettings(stringKey + '(\'' + removedSeries[0]['id'] + '\')');
     this.dispatchUpdate();
   }
 };
@@ -2017,6 +2020,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartAsXml = function() {
  */
 anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(opt_options) {
   var settings = this.getModel();
+  console.log(settings['chart']['settings']);
   var outputSettings = settings['outputSettings'] ? settings['outputSettings'] : {};
   if (goog.isObject(opt_options))
     for (var k1 in opt_options) {
@@ -2128,7 +2132,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     plotMapping = settings['dataSettings']['mappings'][i];
     for (j = 0; j < plotMapping.length; j++) {
       var seriesMapping = plotMapping[j]['mapping'];
-      var mappingObj = dsCtor === 'table' || chartType.indexOf('gauge') === 0 ? {} :
+      var mappingObj = dsCtor === 'table' || this.chartTypeStartsFrom('gauges') ? {} :
           dsCtor === 'tree' ?
               {'id': settings['dataSettings']['field']} :
               {'x': settings['dataSettings']['field']};
@@ -2442,6 +2446,17 @@ anychart.chartEditorModule.EditorModel.prototype.getChartTypeKey = function() {
 anychart.chartEditorModule.EditorModel.prototype.getChartTypeSettings = function() {
   var chartTypeKey = this.getChartTypeKey();
   return anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey];
+};
+
+
+/**
+ * Checks if chart type starts from string value
+ * @param {string} value
+ * @return {boolean} true if so
+ */
+anychart.chartEditorModule.EditorModel.prototype.chartTypeStartsFrom = function(value) {
+  var chartType = this.model_['chart']['type'];
+  return chartType.indexOf(value) === 0;
 };
 
 

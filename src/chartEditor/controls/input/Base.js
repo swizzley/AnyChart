@@ -257,7 +257,9 @@ anychart.chartEditorModule.input.Base.prototype.validateFunction_ = function(val
  * @private
  */
 anychart.chartEditorModule.input.Base.prototype.formatterFunction_ = function(value) {
-  if (typeof value == 'function')
+  if (!goog.isDef(value))
+    value = '';
+  else if (goog.isFunction(value))
     value = '-- value is a function --';
 
   return String(value);

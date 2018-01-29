@@ -84,7 +84,7 @@ anychart.chartEditorModule.ChartTypeSelector.prototype.onModelChange = function(
   goog.dispose(this.activeAndFieldSelect_);
   this.activeAndFieldSelect_ = null;
 
-  if (chartType === 'map' || chartType.indexOf('gauge') === 0) {
+  if (chartType === 'map' || model.chartTypeStartsFrom('gauges')) {
     // Data Set select
     this.activeAndFieldSelect_ = new anychart.chartEditorModule.controls.select.DataField({
       caption: 'Select data set',

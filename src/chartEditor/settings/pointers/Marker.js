@@ -3,7 +3,7 @@ goog.provide('anychart.chartEditorModule.settings.pointers.Marker');
 goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
-goog.require('anychart.chartEditorModule.settings.pointers.Base');
+goog.require('anychart.chartEditorModule.settings.pointers.CircularBase');
 
 
 /**
@@ -13,7 +13,7 @@ goog.require('anychart.chartEditorModule.settings.pointers.Base');
  * @param {number} pointerIndex
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
- * @extends {anychart.chartEditorModule.settings.pointers.Base}
+ * @extends {anychart.chartEditorModule.settings.pointers.CircularBase}
  */
 anychart.chartEditorModule.settings.pointers.Marker = function(model, type, pointerId, pointerIndex, opt_domHelper) {
   anychart.chartEditorModule.settings.pointers.Marker.base(this, 'constructor', model, type, pointerId, pointerIndex, opt_domHelper);
@@ -22,7 +22,7 @@ anychart.chartEditorModule.settings.pointers.Marker = function(model, type, poin
 
   this.addClassName(goog.getCssName('anychart-settings-panel-pointer-marker'));
 };
-goog.inherits(anychart.chartEditorModule.settings.pointers.Marker, anychart.chartEditorModule.settings.pointers.Base);
+goog.inherits(anychart.chartEditorModule.settings.pointers.Marker, anychart.chartEditorModule.settings.pointers.CircularBase);
 
 
 /** @override */

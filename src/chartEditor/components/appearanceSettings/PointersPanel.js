@@ -2,11 +2,12 @@ goog.provide('anychart.chartEditorModule.PointersPanel');
 
 goog.require('anychart.chartEditorModule.MultiplePanelsBase');
 goog.require('anychart.chartEditorModule.settings.pointers.Bar');
-goog.require('anychart.chartEditorModule.settings.pointers.Base');
+goog.require('anychart.chartEditorModule.settings.pointers.CircularBase');
 goog.require('anychart.chartEditorModule.settings.pointers.Knob');
+goog.require('anychart.chartEditorModule.settings.pointers.Led');
+goog.require('anychart.chartEditorModule.settings.pointers.LinearBase');
 goog.require('anychart.chartEditorModule.settings.pointers.Marker');
 goog.require('anychart.chartEditorModule.settings.pointers.Needle');
-
 
 
 /**
@@ -36,23 +37,29 @@ anychart.chartEditorModule.PointersPanel.prototype.createPanels = function() {
   for (var j = 0; j < mappings[0].length; j++) {
     id = mappings[0][j]['id'] ? mappings[0][j]['id'] : j;
     type = mappings[0][j]['ctor'];
+    var className;
     switch (type) {
       case 'gauges.bar':
-        pointer = new anychart.chartEditorModule.settings.pointers.Bar(model, type, id, j);
+        className = anychart.chartEditorModule.settings.pointers.Bar;
         break;
       case 'gauges.marker':
-        pointer = new anychart.chartEditorModule.settings.pointers.Marker(model, type, id, j);
+        className = anychart.chartEditorModule.settings.pointers.Marker;
         break;
       case 'needle':
-        pointer = new anychart.chartEditorModule.settings.pointers.Needle(model, type, id, j);
+        className = anychart.chartEditorModule.settings.pointers.Needle;
         break;
       case 'knob':
-        pointer = new anychart.chartEditorModule.settings.pointers.Knob(model, type, id, j);
+        className = anychart.chartEditorModule.settings.pointers.Knob;
+        break;
+      case 'linearGauge.led':
+        className = anychart.chartEditorModule.settings.pointers.Led;
         break;
       default:
-        pointer = new anychart.chartEditorModule.settings.pointers.Base(model, type, id, j);
+        className = anychart.chartEditorModule.settings.pointers.LinearBase;
         break;
     }
+
+    pointer = new className(model, type, id, j);
 
     this.addPanelInstance(pointer);
   }
