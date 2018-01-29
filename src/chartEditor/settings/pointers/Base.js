@@ -55,13 +55,16 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.createDom = function
   stroke.setKey(this.genKey('stroke()'));
   this.addChildControl(stroke);
 
-  this.addContentSeparator();
+  var chartType = model.getModel()['chart']['type'];
+  if (chartType.indexOf('linear') === -1) {
+    this.addContentSeparator();
 
-  var axisIndex = new anychart.chartEditorModule.controls.select.DataField({label: 'Axis Index'});
-  axisIndex.getSelect().setOptions([{value: '0'}]);
-  axisIndex.init(model, this.genKey('axisIndex()'));
-  this.zippyContent.addChild(axisIndex, true);
-  this.axisIndex_ = axisIndex;
+    var axisIndex = new anychart.chartEditorModule.controls.select.DataField({label: 'Axis Index'});
+    axisIndex.getSelect().setOptions([{value: '0'}]);
+    axisIndex.init(model, this.genKey('axisIndex()'));
+    this.zippyContent.addChild(axisIndex, true);
+    this.axisIndex_ = axisIndex;
+  }
 };
 
 
@@ -71,18 +74,20 @@ anychart.chartEditorModule.settings.pointers.Base.prototype.onChartDraw = functi
   if (!this.isExcluded()) {
     var target = evt.chart;
 
-    var count = target.getAxesCount();
-    if (count === 1) {
-      this.axisIndex_.hide();
+    if (this.axisIndex_) {
+      var count = target.getAxesCount();
+      if (count === 1) {
+        this.axisIndex_.hide();
 
-    } else {
-      this.axisIndex_.show();
-      var options = [];
-      for (var i = 0; i < count; i++) {
-        options.push({'value': String(i)});
+      } else {
+        this.axisIndex_.show();
+        var options = [];
+        for (var i = 0; i < count; i++) {
+          options.push({'value': String(i)});
+        }
+        this.axisIndex_.getSelect().setOptions(options);
+        this.axisIndex_.setValueByTarget(target);
       }
-      this.axisIndex_.getSelect().setOptions(options);
-      this.axisIndex_.setValueByTarget(target);
     }
   }
 };

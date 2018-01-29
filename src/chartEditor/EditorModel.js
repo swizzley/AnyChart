@@ -435,11 +435,54 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'circular-gauge.svg',
     'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
     'dataSetCtor': 'set',
-    // 'singleSeries': true,
     'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
     'settingsExcludes': ['palette()'],
     'filters': ['common']
+  },
+  // region ==== Linear gauges
+  'gauges.linear': {
+    'value': 'gauges.linear',
+    'name': 'Linear Gauge',
+    'icon': 'vertical-gauge-1.svg',
+    'series': ['linearGauge.bar', 'linearGauge.led', 'linearGauge.tank', 'linearGauge.thermometer'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
+    'settingsExcludes': ['palette()'],
+    'filters': ['common', 'gauges']
+  },
+  'gauges.linear.led': {
+    'value': 'gauges.led',
+    'name': 'Led Gauge',
+    'icon': 'vertical-gauge-1.svg',
+    'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
+    'settingsExcludes': ['palette()'],
+    'filters': ['common', 'gauges']
   }
+  // 'gauges.tank': {
+  //   'value': 'gauges.circular',
+  //   'name': 'Circular Gauge',
+  //   'icon': 'circular-gauge.svg',
+  //   'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
+  //   'dataSetCtor': 'set',
+  //   // 'singleSeries': true,
+  //   'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
+  //   'settingsExcludes': ['palette()'],
+  //   'filters': ['common', 'gauges']
+  // },
+  // 'gauges.thermometer': {
+  //   'value': 'gauges.circular',
+  //   'name': 'Circular Gauge',
+  //   'icon': 'circular-gauge.svg',
+  //   'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
+  //   'dataSetCtor': 'set',
+  //   // 'singleSeries': true,
+  //   'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
+  //   'settingsExcludes': ['palette()'],
+  //   'filters': ['common', 'gauges']
+  // }
+  // endregion
 };
 
 
@@ -593,6 +636,26 @@ anychart.chartEditorModule.EditorModel.Series = {
   },
   'knob': {
     'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'linearGauge.bar': {
+    'ctor': 'bar',
+    'name': 'Bar',
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'linearGauge.led': {
+    'ctor': 'led',
+    'name': 'Led',
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'linearGauge.tank': {
+    'ctor': 'tank',
+    'name': 'Tank',
+    'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'linearGauge.thermometer': {
+    'ctor': 'thermometer',
+    'name': 'Thermometer',
+    'fields': [{'field': 'value', 'name': 'Value'}]
   }
 };
 // endregion
@@ -720,10 +783,13 @@ anychart.chartEditorModule.EditorModel.prototype.chooseActiveAndField = function
  */
 anychart.chartEditorModule.EditorModel.prototype.chooseDefaultChartType = function() {
   var chartType = null;
+
   var recomendedChartType = this.data_[this.getActive()].chartType;
   if (recomendedChartType) {
-    var availableTypes = goog.object.getKeys(anychart.chartEditorModule.EditorModel.ChartTypes);
-    if (goog.array.indexOf(availableTypes, recomendedChartType) !== -1)
+    var result = goog.object.filter(anychart.chartEditorModule.EditorModel.ChartTypes, function(item, key){
+      return item['value'] === recomendedChartType || key === recomendedChartType;
+    });
+    if (goog.object.getCount(result))
       chartType = recomendedChartType;
   }
 
@@ -768,17 +834,17 @@ anychart.chartEditorModule.EditorModel.prototype.chooseDefaultChartType = functi
  * Chooses default series type.
  */
 anychart.chartEditorModule.EditorModel.prototype.chooseDefaultSeriesType = function() {
-  var chartTypeKey = this.getChartTypeKey();
   var seriesType = null;
   var recomendedSeriesType = this.data_[this.getActive()].seriesType;
   if (recomendedSeriesType) {
-    var availableTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'];
+    var availableTypes = this.getChartTypeSettings()['series'];
     if (goog.array.indexOf(availableTypes, recomendedSeriesType) !== -1)
       seriesType = recomendedSeriesType;
   }
 
   if (!seriesType) {
-    seriesType = anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'][0];
+    var chartTypeKey = this.getChartTypeKey();
+    seriesType = this.getChartTypeSettings()['series'][0];
     switch (chartTypeKey) {
       case 'map':
         if (this.fieldsState_.coordinates.length === 2) {
@@ -852,7 +918,9 @@ anychart.chartEditorModule.EditorModel.prototype.createPlotMapping = function() 
   var plotIndex = this.model_['dataSettings']['mappings'].length;
   var numSeries;
   var fieldIndex;
-  if (singleSeries || chartType === 'map' || chartType === 'box' || chartType === 'gauges.circular' ||
+
+  if (singleSeries ||
+      chartType === 'map' || chartType === 'box' || chartType.indexOf('gauge') === 0 ||
       (chartType === 'stock' && seriesType === 'column' && plotIndex === 1))
     numSeries = 1;
   else
@@ -918,7 +986,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
       var chartType = this.model_['chart']['type'];
       var singleSeries = this.isChartSingleSeries();
 
-      if (!singleSeries && chartType !== 'stock' && chartType !== 'gauges.circular' && fields.length === 1) {
+      if (!singleSeries && chartType !== 'stock' && chartType.indexOf('gauge') !== 0 && fields.length === 1) {
         var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
         var fieldName = numbers[numberIndex];
         var seriesName = data.fieldNames && data.fieldNames[fieldName] || fieldName;
@@ -943,10 +1011,9 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
  * @return {boolean} true if mappings are not compatible.
  */
 anychart.chartEditorModule.EditorModel.prototype.needResetMappings = function(prevChartType, prevSeriesType) {
-  var chartTypeKey = this.getChartTypeKey();
   var chartType = this.model_['chart']['type'];
 
-  return (goog.array.indexOf(anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'], prevSeriesType) === -1) ||
+  return (goog.array.indexOf(this.getChartTypeSettings()['series'], prevSeriesType) === -1) ||
       (prevChartType === 'stock' || chartType === 'stock') ||
       (prevChartType === 'map' || chartType === 'map') ||
       (prevChartType === 'heatMap' || chartType === 'heatMap') ||
@@ -2017,7 +2084,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
 
   // Create data set
   var rawData = this.getRawData();
-  var dsCtor = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['dataSetCtor'];
+  var dsCtor = this.getChartTypeSettings()['dataSetCtor'];
   var dataSet = anychartGlobal['data'][dsCtor]();
 
   result.push('// Setting up data');
@@ -2059,7 +2126,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     plotMapping = settings['dataSettings']['mappings'][i];
     for (j = 0; j < plotMapping.length; j++) {
       var seriesMapping = plotMapping[j]['mapping'];
-      var mappingObj = dsCtor === 'table' || chartType === 'gauges.circular' ? {} :
+      var mappingObj = dsCtor === 'table' || chartType.indexOf('gauge') === 0 ? {} :
           dsCtor === 'tree' ?
               {'id': settings['dataSettings']['field']} :
               {'x': settings['dataSettings']['field']};
@@ -2075,7 +2142,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
   }
   result.push('');
 
-  var singleSeriesChart = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
+  var singleSeriesChart = !!this.getChartTypeSettings()['singleSeries'];
   if (singleSeriesChart) {
     chart['data'](mappingInstancesList[0][0]);
     result.push(
@@ -2325,8 +2392,7 @@ anychart.chartEditorModule.EditorModel.prototype.isGeoId_ = function(value) {
  * @return {boolean} true if excluded.
  */
 anychart.chartEditorModule.EditorModel.prototype.checkSettingForExclusion = function(stringKey) {
-  var chartType = this.model_['chart']['type'];
-  var excludes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['settingsExcludes'];
+  var excludes = this.getChartTypeSettings()['settingsExcludes'];
   return (excludes && goog.array.indexOf(excludes, stringKey) !== -1);
 };
 
@@ -2337,7 +2403,7 @@ anychart.chartEditorModule.EditorModel.prototype.checkSettingForExclusion = func
  */
 anychart.chartEditorModule.EditorModel.prototype.isChartSingleSeries = function() {
   var chartType = this.model_['chart']['type'];
-  return Boolean(chartType) && Boolean(anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries']);
+  return Boolean(chartType) && Boolean(this.getChartTypeSettings()['singleSeries']);
 };
 
 
@@ -2346,7 +2412,34 @@ anychart.chartEditorModule.EditorModel.prototype.isChartSingleSeries = function(
  */
 anychart.chartEditorModule.EditorModel.prototype.getChartTypeKey = function() {
   var chartType = this.model_['chart']['type'];
-  return this.stackMode ? (chartType + '-stacked-' + this.stackMode) : chartType;
+  var chartTypeKey = this.model_['chart']['typeKey'];
+  
+  if (chartType !== chartTypeKey || anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['value'] !== chartType) {
+    if (this.stackMode) {
+      chartTypeKey = chartType + '-stacked-' + this.stackMode;
+
+    } else {
+      var result = goog.object.filter(anychart.chartEditorModule.EditorModel.ChartTypes, function(item, key){
+        return item['value'] === chartType || key === chartType;
+      });
+      if (goog.object.getCount(result))
+        chartTypeKey = goog.object.getAnyKey(result);
+    }
+
+    this.model_['chart']['typeKey'] = chartTypeKey;
+  }
+
+  return chartTypeKey;
+};
+
+
+/**
+ * Returns settings object for current chart type
+ * @return {*}
+ */
+anychart.chartEditorModule.EditorModel.prototype.getChartTypeSettings = function() {
+  var chartTypeKey = this.getChartTypeKey();
+  return anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey];
 };
 
 

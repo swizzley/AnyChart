@@ -793,6 +793,14 @@ anychart.linearGaugeModule.Chart.prototype.axis = function(opt_indexOrValue, opt
 
 
 /**
+ * @return {number} Number of series.
+ */
+anychart.linearGaugeModule.Chart.prototype.getAxesCount = function() {
+  return this.axes_.length;
+};
+
+
+/**
  * Listener for axes invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
  * @private
@@ -1478,6 +1486,7 @@ anychart.linearGaugeModule.Chart.prototype.thermometer = function(dataIndex) {
   proto['axis'] = proto.axis;
   proto['scaleBar'] = proto.scaleBar;
   proto['scale'] = proto.scale;
+  proto['getAxesCount'] = proto.getAxesCount;
 
   proto['bar'] = proto.bar;
   proto['led'] = proto.led;

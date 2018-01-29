@@ -50,7 +50,7 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
   this.getKey();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
-  if (chartType !== 'gauges.circular' && !model.isChartSingleSeries()) {
+  if (chartType.indexOf('gauge') !== 0 && !model.isChartSingleSeries()) {
     var mappings = model.getValue([['dataSettings'], ['mappings', this.plotIndex_]]);
     var keyStr = chartType === 'stock' ? 'plot(' + this.plotIndex_ + ').' : '';
     var id = goog.isDef(mappings[this.index_]['id']) ? mappings[this.index_]['id'] : this.index_;
@@ -81,10 +81,9 @@ anychart.chartEditorModule.SeriesPanel.prototype.onModelChange = function(evt) {
   anychart.chartEditorModule.SeriesPanel.base(this, 'onModelChange', evt);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartTypeKey = model.getChartTypeKey();
-  var seriesTypes = anychart.chartEditorModule.EditorModel.ChartTypes[chartTypeKey]['series'];
+  var seriesTypes = model.getChartTypeSettings()['series'];
 
-  if (model.isChartSingleSeries() || seriesTypes.length == 1) {
+  if (model.isChartSingleSeries() || seriesTypes.length === 1) {
     goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', true);
     // goog.style.setElementShown(this.typeSelect_.getElement(), false);
 

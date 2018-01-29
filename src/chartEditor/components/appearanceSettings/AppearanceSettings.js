@@ -211,8 +211,7 @@ anychart.chartEditorModule.AppearanceSettings.prototype.enterDocument = function
  */
 anychart.chartEditorModule.AppearanceSettings.prototype.updateExclusions = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartType = model.getModel()['chart']['type'];
-  var panelsExcludes = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['panelsExcludes'];
+  var panelsExcludes = model.getChartTypeSettings()['panelsExcludes'];
 
   for (var i = 0; i < this.descriptors_.length; i++) {
     var panel = /** @type {?anychart.chartEditorModule.SettingsPanel} */(this.descriptors_[i].instance);

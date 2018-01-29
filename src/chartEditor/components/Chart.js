@@ -89,7 +89,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
     }
 
     // Create data set
-    var dsCtor = anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['dataSetCtor'];
+    var dsCtor = model.getChartTypeSettings()['dataSetCtor'];
     var dsCtorArgs = [];
     var plotMapping;
     var seriesMapping;
@@ -131,7 +131,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       for (var j = 0; j < plotMapping.length; j++) {
         seriesMapping = plotMapping[j]['mapping'];
         
-        mappingObj = dsCtor === 'table' || chartType === 'gauges.circular' ? {} :
+        mappingObj = dsCtor === 'table' || chartType.indexOf('gauge') === 0 ? {} :
             dsCtor === 'tree' ?
                 {'id': settings['dataSettings']['field']} :
                 {'x': settings['dataSettings']['field']};
@@ -143,13 +143,13 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
         var mappingInstance = dataSet['mapAs'](mappingObj);
 
-        var singleSeriesChart = !!anychart.chartEditorModule.EditorModel.ChartTypes[chartType]['singleSeries'];
+        var singleSeriesChart = !!model.getChartTypeSettings()['singleSeries'];
         if (singleSeriesChart) {
           this.chart_['data'](mappingInstance);
 
         } else {
           // todo: debug
-          if (chartType === 'gauges.circular' && i === 0 && j === 0) {
+          if (chartType.indexOf('gauge') === 0 && i === 0 && j === 0) {
             this.chart_['data'](mappingInstance);
           }
 
@@ -161,7 +161,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
             var plot = this.chart_['plot'](i);
             series = plot[seriesCtor](mappingInstance);
 
-          } else if (chartType === 'gauges.circular') {
+          } else if (chartType.indexOf('gauge') === 0) {
             // todo: debug
             series = this.chart_[seriesCtor](j/*, mappingInstance*/);
             series.dataIndex(0);
