@@ -14,6 +14,7 @@ goog.require('anychart.chartEditorModule.GeneralTheming');
 goog.require('anychart.chartEditorModule.GridsPanel');
 goog.require('anychart.chartEditorModule.LegendPanel');
 goog.require('anychart.chartEditorModule.PointersPanel');
+goog.require('anychart.chartEditorModule.ScaleBarsPanel');
 goog.require('anychart.chartEditorModule.SeriesSettingsPanel');
 goog.require('anychart.chartEditorModule.SpecificPanel');
 goog.require('anychart.chartEditorModule.TooltipPanel');
@@ -83,6 +84,12 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       name: 'Ranges',
       enabled: true,
       classFunc: anychart.chartEditorModule.CircularRangesPanel,
+      instance: null
+    },
+    {
+      name: 'ScaleBars',
+      enabled: true,
+      classFunc: anychart.chartEditorModule.ScaleBarsPanel,
       instance: null
     },
     {

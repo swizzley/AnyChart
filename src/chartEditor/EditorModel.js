@@ -185,7 +185,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'line-chart-1.svg', // 'http://www.anychart.com/_design/img/upload/charts/types/'
     'series': ['line', 'spline', 'area', 'splineArea', 'column', 'ohlc'], // first value is default
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'area': {
@@ -194,7 +194,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'area-chart.svg',
     'series': ['area', 'splineArea', 'line', 'spline', 'column', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'area-stacked-value': {
@@ -204,7 +204,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'stacked-area-chart.svg',
     'series': ['area', 'splineArea', 'line', 'spline', 'column', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-value']
   },
   'area-stacked-percent': {
@@ -214,7 +214,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'percent-stacked-area-chart.svg',
     'series': ['area', 'splineArea', 'line', 'spline', 'column', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-percent']
   },
   'bar': {
@@ -223,7 +223,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'bar-chart.svg',
     'series': ['bar', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'bar-stacked-value': {
@@ -233,7 +233,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'stacked-bar-chart.svg',
     'series': ['bar', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-value']
   },
   'bar-stacked-percent': {
@@ -243,7 +243,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'percent-stacked-bar-chart.svg',
     'series': ['bar', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-percent']
   },
   'column': {
@@ -252,7 +252,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'column-chart.svg',
     'series': ['column', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'column-stacked-value': {
@@ -262,7 +262,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'stacked-column-chart.svg',
     'series': ['column', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-value']
   },
   'column-stacked-percent': {
@@ -272,7 +272,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'percent-stacked-step-line-area-chart.svg',
     'series': ['column', 'line', 'spline', 'area', 'splineArea', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-percent']
   },
   'scatter': {
@@ -281,7 +281,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'scatter-chart.svg',
     'series': ['marker', 'bubble', 'line'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'waterfall': {
@@ -290,7 +290,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'waterfall-chart.svg',
     'series': ['waterfall'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'pie': {
@@ -300,7 +300,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['pie'],
     'dataSetCtor': 'set',
     'singleSeries': true,
-    'panelsExcludes': ['series', 'grids', 'axes', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['series', 'grids', 'axes', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'funnel': {
@@ -310,7 +310,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['funnel'],
     'dataSetCtor': 'set',
     'singleSeries': true,
-    'panelsExcludes': ['series', 'grids', 'axes', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['series', 'grids', 'axes', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'map': {
@@ -319,7 +319,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'choropleth-map.svg',
     'series': ['marker-by-id', 'marker-by-coordinates', 'bubble-by-id', 'bubble-by-coordinates', 'choropleth'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['grids', 'axes', 'colorScale', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['grids', 'axes', 'colorScale', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'settingsExcludes': ['animation().enabled()'],
     'filters': ['common']
   },
@@ -329,7 +329,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'stock-chart.svg',
     'series': ['ohlc', 'candlestick', 'line', 'spline', 'column', 'area', 'splineArea'],
     'dataSetCtor': 'table',
-    'panelsExcludes': ['dataLabels', 'axes', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['dataLabels', 'axes', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'settingsExcludes': ['palette()', 'legend().enabled()', 'animation().enabled()'],
     'filters': ['common']
   },
@@ -339,7 +339,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'box-chart.svg',
     'series': ['box', 'line', 'spline', 'column', 'area', 'marker', 'bubble', 'ohlc'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'polar': {
@@ -348,7 +348,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'polar-column-chart.svg',
     'series': ['line', 'area', 'column', 'marker', 'polygon', 'polyline', 'rangeColumn'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'radar': {
@@ -357,7 +357,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'radar-chart-1.svg',
     'series': ['line', 'area', 'marker'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'radar-stacked-value': {
@@ -367,7 +367,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'radar-chart-1.svg',
     'series': ['area'/*, 'line', 'marker'*/],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-value']
   },
   'radar-stacked-percent': {
@@ -377,7 +377,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'radar-chart-1.svg',
     'series': ['area'/*, 'line', 'marker'*/],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['stacked-percent']
   },
   'mekko': {
@@ -386,7 +386,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'bar-mekko-chart.svg',
     'series': ['mekko'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['grids', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['grids', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'barmekko': {
@@ -395,7 +395,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'bar-mekko-chart.svg',
     'series': ['mekko'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['grids', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['grids', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'mosaic': {
@@ -404,7 +404,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'bar-mekko-chart.svg',
     'series': ['mekko'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['grids', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['grids', 'colorScale', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'filters': ['common']
   },
   'heatMap': {
@@ -414,7 +414,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['heatMap'],
     'dataSetCtor': 'set',
     'singleSeries': true,
-    'panelsExcludes': ['series', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['series', 'colorRange', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'settingsExcludes': ['palette()', 'animation().enabled()'],
     'filters': ['common']
   },
@@ -425,7 +425,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'series': ['treeMap'],
     'dataSetCtor': 'tree',
     'singleSeries': true,
-    'panelsExcludes': ['series', 'grids', 'axes', 'circularGaugeAxes', 'circularRanges', 'pointers'],
+    'panelsExcludes': ['series', 'grids', 'axes', 'circularGaugeAxes', 'circularRanges', 'scaleBars', 'pointers'],
     'settingsExcludes': ['palette()', 'animation().enabled()'],
     'filters': ['common']
   },
@@ -454,7 +454,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'value': 'gauges.led',
     'name': 'Led Gauge',
     'icon': 'vertical-gauge-1.svg',
-    'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer', 'linearGauge.marker'],
+    'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer', 'linearGauge.marker', 'linearGauge.rangeBar'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange', 'circularRanges',
       'circularGaugeAxes'
@@ -462,28 +462,6 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'settingsExcludes': ['palette()'],
     'filters': ['common', 'gauges']
   }
-  // 'gauges.tank': {
-  //   'value': 'gauges.circular',
-  //   'name': 'Circular Gauge',
-  //   'icon': 'circular-gauge.svg',
-  //   'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
-  //   'dataSetCtor': 'set',
-  //   // 'singleSeries': true,
-  //   'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
-  //   'settingsExcludes': ['palette()'],
-  //   'filters': ['common', 'gauges']
-  // },
-  // 'gauges.thermometer': {
-  //   'value': 'gauges.circular',
-  //   'name': 'Circular Gauge',
-  //   'icon': 'circular-gauge.svg',
-  //   'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
-  //   'dataSetCtor': 'set',
-  //   // 'singleSeries': true,
-  //   'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
-  //   'settingsExcludes': ['palette()'],
-  //   'filters': ['common', 'gauges']
-  // }
   // endregion
 };
 
@@ -663,6 +641,14 @@ anychart.chartEditorModule.EditorModel.Series = {
     'ctor': 'marker',
     'name': 'Marker',
     'fields': [{'field': 'value', 'name': 'Value'}]
+  },
+  'linearGauge.rangeBar': {
+    'ctor': 'rangeBar',
+    'name': 'Range Bar',
+    'fields': [
+      {'field': 'low', 'name': 'Low'},
+      {'field': 'high', 'name': 'High'}
+    ]
   }
 };
 // endregion
@@ -1565,11 +1551,12 @@ anychart.chartEditorModule.EditorModel.prototype.dropAxis = function(index, opt_
 
 
 /**
+ * @param {string} stringKeyBase 'range', 'scaleBar' etc
  * @return {number} Created range index.
  */
-anychart.chartEditorModule.EditorModel.prototype.addCircularRange = function() {
+anychart.chartEditorModule.EditorModel.prototype.addIndexedSetting = function(stringKeyBase) {
   var index = -1;
-  var pattern = '^' + 'range\\((\\d+)\\)\\.enabled\\(\\)$';
+  var pattern = '^' + stringKeyBase + '\\((\\d+)\\)\\.enabled\\(\\)$';
   var regExp = new RegExp(pattern);
 
   for (var key in this.model_['chart']['settings']) {
@@ -1579,7 +1566,7 @@ anychart.chartEditorModule.EditorModel.prototype.addCircularRange = function() {
   }
   index += 1;
 
-  var stringKey = 'range(' + index + ').enabled()';
+  var stringKey = stringKeyBase + '(' + index + ').enabled()';
   this.setValue([['chart'], ['settings'], stringKey], true);
 
   return index;
@@ -1588,9 +1575,10 @@ anychart.chartEditorModule.EditorModel.prototype.addCircularRange = function() {
 
 /**
  * @param {number} index
+ * @param {string} stringKeyBase 'range', 'scaleBar' etc
  */
-anychart.chartEditorModule.EditorModel.prototype.dropCircularRange = function(index) {
-  var pattern = '^' + 'range\\(' + index + '\\)';
+anychart.chartEditorModule.EditorModel.prototype.dropIndexedSetting = function(index, stringKeyBase) {
+  var pattern = '^' + stringKeyBase + '\\(' + index + '\\)';
   var regExp = new RegExp(pattern);
   this.dropChartSettings(regExp);
   this.dispatchUpdate(false, true);

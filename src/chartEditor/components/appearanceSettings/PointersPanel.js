@@ -9,6 +9,7 @@ goog.require('anychart.chartEditorModule.settings.pointers.LinearBase');
 goog.require('anychart.chartEditorModule.settings.pointers.LinearMarker');
 goog.require('anychart.chartEditorModule.settings.pointers.Marker');
 goog.require('anychart.chartEditorModule.settings.pointers.Needle');
+goog.require('anychart.chartEditorModule.settings.pointers.RangeBar');
 goog.require('anychart.chartEditorModule.settings.pointers.Tank');
 goog.require('anychart.chartEditorModule.settings.pointers.Thermometer');
 
@@ -65,6 +66,9 @@ anychart.chartEditorModule.PointersPanel.prototype.createPanels = function() {
         break;
       case 'linearGauge.thermometer':
         className = anychart.chartEditorModule.settings.pointers.Thermometer;
+        break;
+      case 'linearGauge.rangeBar':
+        className = anychart.chartEditorModule.settings.pointers.RangeBar;
         break;
       default:
         className = anychart.chartEditorModule.settings.pointers.LinearBase;

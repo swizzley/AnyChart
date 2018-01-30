@@ -446,7 +446,7 @@ anychart.circularGaugeModule.Chart.prototype.range = function(opt_indexOrValue, 
     circularRange.axisIndex(0);
     circularRange.setup(this.defaultRangeSettings());
     this.registerDisposable(circularRange);
-    circularRange.listenSignals(this.onCircularRangeSignal_, this);
+    circularRange.listenSignals(this.onrangesignal_, this);
     this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
         anychart.ConsistencyState.GAUGE_SCALE,
         anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
@@ -466,7 +466,7 @@ anychart.circularGaugeModule.Chart.prototype.range = function(opt_indexOrValue, 
  * @param {anychart.SignalEvent} event Invalidation event.
  * @private
  */
-anychart.circularGaugeModule.Chart.prototype.onCircularRangeSignal_ = function(event) {
+anychart.circularGaugeModule.Chart.prototype.onrangesignal_ = function(event) {
   this.invalidate(anychart.ConsistencyState.GAUGE_AXIS_MARKERS, anychart.Signal.NEEDS_REDRAW);
 };
 

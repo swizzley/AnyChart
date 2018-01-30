@@ -27,7 +27,7 @@ goog.inherits(anychart.chartEditorModule.CircularRangesPanel, anychart.chartEdit
 /** @override */
 anychart.chartEditorModule.CircularRangesPanel.prototype.createPanel = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var panelIndex = model.addCircularRange();
+  var panelIndex = model.addIndexedSetting('range');
 
   return new anychart.chartEditorModule.settings.CircularRange(model, panelIndex);
 };
@@ -36,7 +36,7 @@ anychart.chartEditorModule.CircularRangesPanel.prototype.createPanel = function(
 /** @override */
 anychart.chartEditorModule.CircularRangesPanel.prototype.removePanel = function(panelIndex) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  model.dropCircularRange(panelIndex);
+  model.dropIndexedSetting(panelIndex, 'range');
 };
 
 
