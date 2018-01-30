@@ -435,7 +435,7 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'icon': 'circular-gauge.svg',
     'series': ['gauges.bar', 'gauges.marker', 'needle', 'knob'],
     'dataSetCtor': 'set',
-    'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange'],
+    'panelsExcludes': ['legend', 'dataLabels', 'series', 'axes', 'grids', 'colorScale', 'colorRange', 'scaleBars'],
     'settingsExcludes': ['palette()'],
     'filters': ['common', 'gauges']
   },

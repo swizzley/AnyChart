@@ -2,6 +2,7 @@ goog.provide('anychart.chartEditorModule.settings.pointers.LinearBase');
 
 goog.require('anychart.chartEditorModule.SettingsPanelZippy');
 goog.require('anychart.chartEditorModule.colorPicker.Base');
+goog.require('anychart.chartEditorModule.comboBox.Base');
 goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
@@ -66,4 +67,10 @@ anychart.chartEditorModule.settings.pointers.LinearBase.prototype.createDom = fu
   var offsetLC = new anychart.chartEditorModule.controls.LabeledControl(offset, 'Offset');
   offsetLC.init(model, this.genKey('offset()'));
   this.addChildControl(offsetLC);
+
+  var zIndex = new anychart.chartEditorModule.comboBox.Base();
+  zIndex.setOptions([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  var zIndexLC = new anychart.chartEditorModule.controls.LabeledControl(zIndex, 'ZIndex');
+  zIndexLC.init(model, this.genKey('zIndex()'));
+  this.addChildControl(zIndexLC);
 };

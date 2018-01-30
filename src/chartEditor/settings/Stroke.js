@@ -45,7 +45,7 @@ anychart.chartEditorModule.settings.Stroke.prototype.createDom = function() {
   this.color_ = color;
 
   var thickness = new anychart.chartEditorModule.comboBox.Base();
-  thickness.setOptions([1, 2, 3, 4, 5]);
+  thickness.setOptions([0, 1, 2, 3, 4, 5]);
   thickness.setRange(0, 10);
 
   this.addChild(thickness, true);
