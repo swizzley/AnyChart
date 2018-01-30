@@ -71,10 +71,7 @@ anychart.chartEditorModule.settings.pointers.CircularBase.prototype.onChartDraw 
 
     if (this.axisIndex_) {
       var count = target.getAxesCount();
-      if (count === 1) {
-        this.axisIndex_.hide();
-
-      } else {
+      if (count > 1) {
         this.axisIndex_.show();
         var options = [];
         for (var i = 0; i < count; i++) {
@@ -82,6 +79,10 @@ anychart.chartEditorModule.settings.pointers.CircularBase.prototype.onChartDraw 
         }
         this.axisIndex_.getSelect().setOptions(options);
         this.axisIndex_.setValueByTarget(target);
+
+      } else {
+
+        this.axisIndex_.hide();
       }
     }
   }
