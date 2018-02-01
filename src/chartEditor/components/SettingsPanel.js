@@ -367,9 +367,10 @@ anychart.chartEditorModule.SettingsPanel.prototype.registerLabel = function(labe
 
 /**
  * @param {anychart.chartEditorModule.SettingsPanel|anychart.chartEditorModule.controls.LabeledControl|anychart.chartEditorModule.checkbox.Base|anychart.chartEditorModule.controls.select.Base|anychart.chartEditorModule.comboBox.Base|anychart.chartEditorModule.colorPicker.Base|anychart.chartEditorModule.input.Base} control
+ * @param {number=} opt_index
  * @return {boolean} true if control was added.
  */
-anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(control) {
+anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(control, opt_index) {
   var addControl = !this.skippedSettings.length;
   
   if (this.skippedSettings.length) {
@@ -380,7 +381,8 @@ anychart.chartEditorModule.SettingsPanel.prototype.addChildControl = function(co
   
   if (addControl) {
     this.childControls_.push(control);
-    this.addChild(control, true);
+    opt_index = goog.isDef(opt_index) ? opt_index : this.getChildCount();
+    this.addChildAt(control, opt_index, true);
   }
 
   return addControl;

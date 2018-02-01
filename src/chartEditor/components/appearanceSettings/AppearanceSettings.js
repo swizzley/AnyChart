@@ -1,7 +1,6 @@
 goog.provide('anychart.chartEditorModule.AppearanceSettings');
 
 goog.require('anychart.chartEditorModule.ChartTitlePanel');
-goog.require('anychart.chartEditorModule.CircularGaugeAxesPanel');
 goog.require('anychart.chartEditorModule.CircularRangesPanel');
 goog.require('anychart.chartEditorModule.ColorRangePanel');
 goog.require('anychart.chartEditorModule.ColorScalePanel');
@@ -10,18 +9,19 @@ goog.require('anychart.chartEditorModule.ContextMenuPanel');
 goog.require('anychart.chartEditorModule.CreditsPanel');
 goog.require('anychart.chartEditorModule.DataLabelsPanel');
 goog.require('anychart.chartEditorModule.EditorModel');
+goog.require('anychart.chartEditorModule.GaugeAxesPanel');
 goog.require('anychart.chartEditorModule.GeneralTheming');
 goog.require('anychart.chartEditorModule.GridsPanel');
 goog.require('anychart.chartEditorModule.LegendPanel');
 goog.require('anychart.chartEditorModule.PointersPanel');
+goog.require('anychart.chartEditorModule.RadarPolarXAxisPanel');
+goog.require('anychart.chartEditorModule.RadarPolarYAxisPanel');
 goog.require('anychart.chartEditorModule.ScaleBarsPanel');
 goog.require('anychart.chartEditorModule.SeriesSettingsPanel');
 goog.require('anychart.chartEditorModule.SpecificPanel');
 goog.require('anychart.chartEditorModule.TooltipPanel');
 goog.require('anychart.chartEditorModule.XAxesPanel');
 goog.require('anychart.chartEditorModule.YAxesPanel');
-goog.require('anychart.chartEditorModule.RadarPolarXAxisPanel');
-goog.require('anychart.chartEditorModule.RadarPolarYAxisPanel');
 
 
 /**
@@ -119,9 +119,9 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       instance: null
     },
     {
-      name: 'CircularGaugeAxes',
+      name: 'gaugeAxes',
       enabled: true,
-      classFunc: anychart.chartEditorModule.CircularGaugeAxesPanel,
+      classFunc: anychart.chartEditorModule.GaugeAxesPanel,
       instance: null
     },
     {

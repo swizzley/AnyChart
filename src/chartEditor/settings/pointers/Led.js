@@ -22,7 +22,7 @@ anychart.chartEditorModule.settings.pointers.Led = function(model, type, pointer
 
   this.pointerType_ = 'led';
 
-  this.skipSettings(['stroke()']);
+  this.skipSettings(['fill()', 'stroke()']);
 
   this.addClassName(goog.getCssName('anychart-settings-panel-pointer-led'));
 };

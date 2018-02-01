@@ -1,6 +1,7 @@
 goog.provide('anychart.chartEditorModule.settings.axes.Polar');
 
 goog.require('anychart.chartEditorModule.SettingsPanelZippy');
+goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Ticks');
 

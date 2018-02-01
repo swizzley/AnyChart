@@ -12,7 +12,7 @@ goog.require('anychart.chartEditorModule.settings.axes.Linear');
  * @extends {anychart.chartEditorModule.settings.axes.Linear}
  */
 anychart.chartEditorModule.settings.axes.Cartesian = function(model, index, xOrY, opt_domHelper) {
-  anychart.chartEditorModule.settings.axes.Cartesian.base(this, 'constructor', model, index, null, opt_domHelper);
+  anychart.chartEditorModule.settings.axes.Cartesian.base(this, 'constructor', model, index, opt_domHelper);
 
   this.xOrY = xOrY;
   this.name = this.xOrY + 'Axis(' + this.index_ + ')';

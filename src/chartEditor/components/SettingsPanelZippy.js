@@ -68,12 +68,13 @@ anychart.chartEditorModule.SettingsPanelZippy.prototype.createDom = function() {
 
 
 /** @override */
-anychart.chartEditorModule.SettingsPanelZippy.prototype.addChildControl = function(control) {
+anychart.chartEditorModule.SettingsPanelZippy.prototype.addChildControl = function(control, opt_index) {
   var added = anychart.chartEditorModule.SettingsPanelZippy.base(this, 'addChildControl', control);
 
   if (added) {
     this.removeChild(control, true);
-    this.zippyContent.addChild(control, true);
+    opt_index = goog.isDef(opt_index) ? opt_index : this.zippyContent.getChildCount();
+    this.zippyContent.addChildAt(control, opt_index, true);
   }
 
   return added;

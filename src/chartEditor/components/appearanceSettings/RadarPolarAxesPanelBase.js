@@ -1,9 +1,9 @@
 goog.provide('anychart.chartEditorModule.RadarPolarAxesPanelBase');
 
 goog.require('anychart.chartEditorModule.MultiplePanelsBase');
+goog.require('anychart.chartEditorModule.settings.axes.Polar');
 goog.require('anychart.chartEditorModule.settings.axes.Radar');
 goog.require('anychart.chartEditorModule.settings.axes.Radial');
-goog.require('anychart.chartEditorModule.settings.axes.Polar');
 
 
 /**
@@ -32,7 +32,6 @@ goog.inherits(anychart.chartEditorModule.RadarPolarAxesPanelBase, anychart.chart
 /** @override */
 anychart.chartEditorModule.RadarPolarAxesPanelBase.prototype.createPanels = function() {
   if (!this.isExcluded()) {
-
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var settings = model.getModel()['chart']['settings'];
     var chartType = model.getModel()['chart']['type'];
