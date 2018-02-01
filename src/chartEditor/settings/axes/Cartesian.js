@@ -1,5 +1,6 @@
 goog.provide('anychart.chartEditorModule.settings.axes.Cartesian');
 
+goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.settings.axes.Linear');
 
 
@@ -21,3 +22,16 @@ anychart.chartEditorModule.settings.axes.Cartesian = function(model, index, xOrY
   this.addClassName(goog.getCssName('anychart-settings-panel-axis-cartesian'));
 };
 goog.inherits(anychart.chartEditorModule.settings.axes.Cartesian, anychart.chartEditorModule.settings.axes.Linear);
+
+
+/** @override */
+anychart.chartEditorModule.settings.axes.Cartesian.prototype.createDom = function() {
+  anychart.chartEditorModule.settings.axes.Cartesian.base(this, 'createDom');
+
+  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+
+  var inverted = new anychart.chartEditorModule.checkbox.Base();
+  inverted.setCaption('Inverted');
+  inverted.init(model, [['chart'], ['settings'], this.xOrY + 'Scale().inverted()']);
+  this.addChildControl(inverted, 0);
+};

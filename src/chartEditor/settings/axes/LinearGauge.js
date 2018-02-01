@@ -3,6 +3,7 @@ goog.provide('anychart.chartEditorModule.settings.axes.LinearGauge');
 goog.require('anychart.chartEditorModule.comboBox.Percent');
 goog.require('anychart.chartEditorModule.controls.LabeledControl');
 goog.require('anychart.chartEditorModule.settings.axes.Linear');
+goog.require('anychart.chartEditorModule.settings.scales.Base');
 
 
 /**
@@ -29,4 +30,12 @@ anychart.chartEditorModule.settings.axes.LinearGauge.prototype.createDom = funct
   var offsetLC = new anychart.chartEditorModule.controls.LabeledControl(offset, 'Offset');
   offsetLC.init(model, this.genKey('offset()'));
   this.addChildControl(offsetLC, 0);
+
+  this.addContentSeparator();
+
+  var scale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear', 'log']);
+  scale.setKey([['chart'], ['settings'], 'scale()']);
+  scale.setName('Scale');
+  scale.skipSettings(['stackMode()', 'stackDirection()']);
+  this.addChildControl(scale);
 };

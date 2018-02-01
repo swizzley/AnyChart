@@ -35,14 +35,6 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  // var inverted = new anychart.chartEditorModule.checkbox.Base();
-  // inverted.setCaption('Inverted');
-  //
-  // inverted.init(model, this.genKey('scale().inverted()'));
-  // console.log(inverted.getKey());
-  // this.addChildControl(inverted);
-  // this.inverted_ = inverted;
-
   var orientation = new anychart.chartEditorModule.controls.select.DataField({label: 'Orientation'});
   orientation.getSelect().setOptions([
     {value: 'left', icon: 'ac ac-position-left'},
@@ -75,7 +67,6 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
   title.allowEditPosition(false, this.xOrY === 'x' ? 'bottom' : 'left');
   title.setKey(this.genKey('title()'));
   this.addChildControl(title);
-  this.title_ = title;
 
   this.addContentSeparator();
 
@@ -86,7 +77,6 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
   labels.allowEditAnchor(false);
   labels.setKey(this.genKey('labels()'));
   this.addChildControl(labels);
-  this.labels_ = labels;
 
   this.addContentSeparator();
 
@@ -96,7 +86,6 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
   ticks.allowEditPosition(true/*!this.isRadarPolarAxis*/);
   ticks.setKey(this.genKey('ticks()'));
   this.addChildControl(ticks);
-  this.ticks_ = ticks;
   //endregion
 
   this.addContentSeparator();
@@ -109,7 +98,6 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
   minorlabels.allowEditAnchor(false);
   minorlabels.setKey(this.genKey('minorLabels()'));
   this.addChildControl(minorlabels);
-  this.minorLabels_ = minorlabels;
 
   this.addContentSeparator();
 
@@ -120,6 +108,5 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
   minorTicks.allowEditPosition(true/*!this.isRadarPolarAxis*/);
   minorTicks.setKey(this.genKey('minorTicks()'));
   this.addChildControl(minorTicks);
-  this.minorTicks_ = minorTicks;
   //endregion
 };

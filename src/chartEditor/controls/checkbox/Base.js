@@ -109,6 +109,8 @@ anychart.chartEditorModule.checkbox.Base.prototype.init = function(model, key, o
    * @protected
    */
   this.editorModel = model;
+  if (!this.editorModel)
+    console.warn('anychart.chartEditorModule.checkbox.Base: Model could not be undefined!');
 
   this.key = key;
 

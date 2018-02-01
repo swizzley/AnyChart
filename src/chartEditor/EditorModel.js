@@ -1121,7 +1121,6 @@ anychart.chartEditorModule.EditorModel.prototype.loadGeoData_ = function(opt_set
         });
   }
 };
-
 // endregion
 
 
@@ -1138,6 +1137,7 @@ anychart.chartEditorModule.EditorModel.prototype.onChartDraw = function(chart, r
     rebuild: rebuild
   });
 };
+
 
 /**
  * Calls callback function by unminified method name.
