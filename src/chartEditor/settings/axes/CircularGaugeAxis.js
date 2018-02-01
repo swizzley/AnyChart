@@ -1,4 +1,4 @@
-goog.provide('anychart.chartEditorModule.settings.CircularGaugeAxis');
+goog.provide('anychart.chartEditorModule.settings.axes.Circular');
 
 goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.SettingsPanelZippy');
@@ -21,8 +21,8 @@ goog.require('anychart.chartEditorModule.settings.scales.Base');
  * @constructor
  * @extends {anychart.chartEditorModule.SettingsPanelZippy}
  */
-anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, opt_domHelper) {
-  anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'constructor', model, index, null, opt_domHelper);
+anychart.chartEditorModule.settings.axes.Circular = function(model, index, opt_domHelper) {
+  anychart.chartEditorModule.settings.axes.Circular.base(this, 'constructor', model, index, null, opt_domHelper);
 
   this.axisExists = false;
   this.name = 'Axis(' + this.index_ + ')';
@@ -31,12 +31,12 @@ anychart.chartEditorModule.settings.CircularGaugeAxis = function(model, index, o
   this.allowEnabled(true);
   this.addClassName(goog.getCssName('anychart-settings-panel-gauge-axis-single'));
 };
-goog.inherits(anychart.chartEditorModule.settings.CircularGaugeAxis, anychart.chartEditorModule.SettingsPanelZippy);
+goog.inherits(anychart.chartEditorModule.settings.axes.Circular, anychart.chartEditorModule.SettingsPanelZippy);
 
 
 /** @override */
-anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = function() {
-  anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'createDom');
+anychart.chartEditorModule.settings.axes.Circular.prototype.createDom = function() {
+  anychart.chartEditorModule.settings.axes.Circular.base(this, 'createDom');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
@@ -119,13 +119,13 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
   this.addContentSeparator();
 
   //region Minor Labels
-  var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
-  minorlabels.setName('Minor Labels');
-  minorlabels.allowEnabled(true);
-  minorlabels.allowEditPosition(false);
-  minorlabels.allowEditAnchor(false);
-  minorlabels.setKey(this.genKey('minorLabels()'));
-  this.addChildControl(minorlabels);
+  var minorLabels = new anychart.chartEditorModule.settings.Labels(model);
+  minorLabels.setName('Minor Labels');
+  minorLabels.allowEnabled(true);
+  minorLabels.allowEditPosition(false);
+  minorLabels.allowEditAnchor(false);
+  minorLabels.setKey(this.genKey('minorLabels()'));
+  this.addChildControl(minorLabels);
 
   this.addContentSeparator();
 
@@ -149,7 +149,7 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.createDom = func
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.onChartDraw = function(evt) {
+anychart.chartEditorModule.settings.axes.Circular.prototype.onChartDraw = function(evt) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   this.getHandler().listenOnce(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
 
@@ -159,7 +159,7 @@ anychart.chartEditorModule.settings.CircularGaugeAxis.prototype.onChartDraw = fu
 
     if (this.axisExists) {
       this.getHandler().unlisten(model, anychart.chartEditorModule.events.EventType.CHART_DRAW, this.onChartDraw);
-      anychart.chartEditorModule.settings.CircularGaugeAxis.base(this, 'onChartDraw', evt);
+      anychart.chartEditorModule.settings.axes.Circular.base(this, 'onChartDraw', evt);
 
     } else
       this.setContentEnabled(false);

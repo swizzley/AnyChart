@@ -1,7 +1,7 @@
-goog.provide('anychart.chartEditorModule.AxesPanelBase');
+goog.provide('anychart.chartEditorModule.CartesianAxesPanelBase');
 
 goog.require('anychart.chartEditorModule.MultiplePanelsBase');
-goog.require('anychart.chartEditorModule.settings.Axis');
+goog.require('anychart.chartEditorModule.settings.axes.Cartesian');
 
 
 /**
@@ -10,10 +10,10 @@ goog.require('anychart.chartEditorModule.settings.Axis');
  * @constructor
  * @extends {anychart.chartEditorModule.MultiplePanelsBase}
  */
-anychart.chartEditorModule.AxesPanelBase = function(model, opt_domHelper) {
-  anychart.chartEditorModule.AxesPanelBase.base(this, 'constructor', model, 'AxesPanelBase', opt_domHelper);
+anychart.chartEditorModule.CartesianAxesPanelBase = function(model, opt_domHelper) {
+  anychart.chartEditorModule.CartesianAxesPanelBase.base(this, 'constructor', model, 'CartesianAxesPanelBase', opt_domHelper);
 
-  this.stringId = 'axes';
+  this.stringId = 'cartesianAxes';
 
   /**
    * Axis prefix. Should be overridden.
@@ -26,37 +26,37 @@ anychart.chartEditorModule.AxesPanelBase = function(model, opt_domHelper) {
 
   this.addClassName(goog.getCssName('anychart-settings-panel-axes'));
 };
-goog.inherits(anychart.chartEditorModule.AxesPanelBase, anychart.chartEditorModule.MultiplePanelsBase);
+goog.inherits(anychart.chartEditorModule.CartesianAxesPanelBase, anychart.chartEditorModule.MultiplePanelsBase);
 
 
 /** @inheritDoc */
-anychart.chartEditorModule.AxesPanelBase.prototype.enterDocument = function() {
+anychart.chartEditorModule.CartesianAxesPanelBase.prototype.enterDocument = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getModel()['chart']['type'];
   this.allowAddPanels(chartType !== 'radar' && chartType !== 'polar');
 
-  anychart.chartEditorModule.AxesPanelBase.base(this, 'enterDocument');
+  anychart.chartEditorModule.CartesianAxesPanelBase.base(this, 'enterDocument');
 };
 
 
 /** @override */
-anychart.chartEditorModule.AxesPanelBase.prototype.createPanel = function() {
+anychart.chartEditorModule.CartesianAxesPanelBase.prototype.createPanel = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var axisIndex = model.addAxis(this.xOrY);
 
-  return new anychart.chartEditorModule.settings.Axis(model, this.xOrY, axisIndex);
+  return new anychart.chartEditorModule.settings.axes.Cartesian(model, axisIndex, this.xOrY);
 };
 
 
 /** @override */
-anychart.chartEditorModule.AxesPanelBase.prototype.removePanel = function(panelIndex) {
+anychart.chartEditorModule.CartesianAxesPanelBase.prototype.removePanel = function(panelIndex) {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   model.dropAxis(panelIndex, this.xOrY);
 };
 
 
 /** @override */
-anychart.chartEditorModule.AxesPanelBase.prototype.createPanels = function() {
+anychart.chartEditorModule.CartesianAxesPanelBase.prototype.createPanels = function() {
   if (!this.isExcluded()) {
 
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
@@ -70,7 +70,7 @@ anychart.chartEditorModule.AxesPanelBase.prototype.createPanels = function() {
       var match = key.match(regExp);
       if (match) {
         var axisIndex = Number(match[1]);
-        var panel = new anychart.chartEditorModule.settings.Axis(model, this.xOrY, axisIndex);
+        var panel = new anychart.chartEditorModule.settings.axes.Cartesian(model, axisIndex, this.xOrY);
         this.addPanelInstance(panel);
         axisCount++;
       }

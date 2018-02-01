@@ -20,6 +20,8 @@ goog.require('anychart.chartEditorModule.SpecificPanel');
 goog.require('anychart.chartEditorModule.TooltipPanel');
 goog.require('anychart.chartEditorModule.XAxesPanel');
 goog.require('anychart.chartEditorModule.YAxesPanel');
+goog.require('anychart.chartEditorModule.RadarPolarXAxisPanel');
+goog.require('anychart.chartEditorModule.RadarPolarYAxisPanel');
 
 
 /**
@@ -93,15 +95,27 @@ anychart.chartEditorModule.AppearanceSettings = function(model, tabs, tabContent
       instance: null
     },
     {
-      name: 'XAxes',
+      name: 'CartesianXAxes',
       enabled: true,
       classFunc: anychart.chartEditorModule.XAxesPanel,
       instance: null
     },
     {
-      name: 'YAxes',
+      name: 'CartesianYAxes',
       enabled: true,
       classFunc: anychart.chartEditorModule.YAxesPanel,
+      instance: null
+    },
+    {
+      name: 'RadarXAxes',
+      enabled: true,
+      classFunc: anychart.chartEditorModule.RadarPolarXAxisPanel,
+      instance: null
+    },
+    {
+      name: 'RadarYAxes',
+      enabled: true,
+      classFunc: anychart.chartEditorModule.RadarPolarYAxisPanel,
       instance: null
     },
     {

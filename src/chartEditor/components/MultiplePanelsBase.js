@@ -213,7 +213,7 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.createPanel = function()
   // var panelIndex = model.addAxis();
 
   // Create and configure panel instance
-  // var panel = new anychart.chartEditorModule.settings.CircularGaugeAxis(model, panelIndex);
+  // var panel = new anychart.chartEditorModule.settings.axes.Circular(model, panelIndex);
   // panel.allowEnabled(true);
 
   // return panel;
