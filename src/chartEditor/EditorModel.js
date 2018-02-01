@@ -440,21 +440,47 @@ anychart.chartEditorModule.EditorModel.ChartTypes = {
     'filters': ['common', 'gauges']
   },
   // region ==== Linear gauges
-  // 'gauges.linear': {
-  //   'value': 'gauges.linear',
-  //   'name': 'Linear Gauge',
-  //   'icon': 'vertical-gauge-1.svg',
-  //   'series': ['linearGauge.bar', 'linearGauge.led', 'linearGauge.tank', 'linearGauge.thermometer'],
-  //   'dataSetCtor': 'set',
-  //   'panelsExcludes': ['legend', 'dataLabels', 'series', 'cartesianAxes', 'grids', 'colorScale', 'colorRange', 'circularRanges'],
-  //   'settingsExcludes': ['palette()'],
-  //   'filters': ['common', 'gauges']
-  // },
+  'gauges.linear': {
+    'value': 'gauges.linear',
+    'name': 'Linear Gauge',
+    'icon': 'vertical-gauge-1.svg',
+    'series': ['linearGauge.bar', 'linearGauge.led', 'linearGauge.tank', 'linearGauge.thermometer', 'linearGauge.marker', 'linearGauge.rangeBar'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['dataLabels', 'series', 'grids', 'colorScale', 'colorRange', 'circularRanges',
+      'cartesianAxes', 'radarPolarAxes'
+    ],
+    'settingsExcludes': ['palette()'],
+    'filters': ['common', 'gauges']
+  },
   'gauges.linear.led': {
     'value': 'gauges.led',
     'name': 'Led Gauge',
     'icon': 'vertical-gauge-1.svg',
     'series': ['linearGauge.led', 'linearGauge.bar', 'linearGauge.tank', 'linearGauge.thermometer', 'linearGauge.marker', 'linearGauge.rangeBar'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['dataLabels', 'series', 'grids', 'colorScale', 'colorRange', 'circularRanges',
+      'cartesianAxes', 'radarPolarAxes'
+    ],
+    'settingsExcludes': ['palette()'],
+    'filters': ['common', 'gauges']
+  },
+  'gauges.linear.tank': {
+    'value': 'gauges.tank',
+    'name': 'Tank Gauge',
+    'icon': 'tank-gauge-1.svg',
+    'series': ['linearGauge.tank', 'linearGauge.bar', 'linearGauge.led', 'linearGauge.thermometer', 'linearGauge.marker', 'linearGauge.rangeBar'],
+    'dataSetCtor': 'set',
+    'panelsExcludes': ['dataLabels', 'series', 'grids', 'colorScale', 'colorRange', 'circularRanges',
+      'cartesianAxes', 'radarPolarAxes'
+    ],
+    'settingsExcludes': ['palette()'],
+    'filters': ['common', 'gauges']
+  },
+  'gauges.linear.thermometer': {
+    'value': 'gauges.thermometer',
+    'name': 'Thermometer Gauge',
+    'icon': 'thermometer-gauge.svg',
+    'series': ['linearGauge.thermometer', 'linearGauge.bar', 'linearGauge.led', 'linearGauge.tank', 'linearGauge.marker', 'linearGauge.rangeBar'],
     'dataSetCtor': 'set',
     'panelsExcludes': ['dataLabels', 'series', 'grids', 'colorScale', 'colorRange', 'circularRanges',
       'cartesianAxes', 'radarPolarAxes'
