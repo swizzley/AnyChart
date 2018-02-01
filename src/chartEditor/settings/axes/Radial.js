@@ -29,7 +29,11 @@ anychart.chartEditorModule.settings.axes.Radial.prototype.createDom = function()
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
-  // Overlap mode
+  var inverted = new anychart.chartEditorModule.checkbox.Base();
+  inverted.setCaption('Inverted');
+  inverted.init(model, [['chart'], ['settings'], 'yScale().inverted()']);
+  this.addChildControl(inverted);
+
   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
   overlapMode.getControl().setOptions([
     {value: 'allow-overlap', caption: 'Overlap'},
@@ -37,6 +41,16 @@ anychart.chartEditorModule.settings.axes.Radial.prototype.createDom = function()
   ]);
   overlapMode.init(model, this.genKey('overlapMode()'));
   this.addChildControl(overlapMode);
+
+  var drawFirstLabel = new anychart.chartEditorModule.checkbox.Base();
+  drawFirstLabel.setCaption('Draw First Label');
+  drawFirstLabel.init(model, this.genKey('drawFirstLabel()'));
+  this.addChildControl(drawFirstLabel);
+
+  var drawLastLabel = new anychart.chartEditorModule.checkbox.Base();
+  drawLastLabel.setCaption('Draw Last Label');
+  drawLastLabel.init(model, this.genKey('drawLastLabel()'));
+  this.addChildControl(drawLastLabel);
 
   this.addContentSeparator();
 
@@ -47,16 +61,6 @@ anychart.chartEditorModule.settings.axes.Radial.prototype.createDom = function()
   labels.allowEditAnchor(false);
   labels.setKey(this.genKey('labels()'));
   this.addChildControl(labels);
-
-  var drawFirstLabel = new anychart.chartEditorModule.checkbox.Base();
-  drawFirstLabel.setCaption('Draw First Label');
-  drawFirstLabel.init(model, this.genKey('drawFirstLabel()'));
-  labels.addChildControl(drawFirstLabel);
-
-  var drawLastLabel = new anychart.chartEditorModule.checkbox.Base();
-  drawLastLabel.setCaption('Draw Last Label');
-  drawLastLabel.init(model, this.genKey('drawLastLabel()'));
-  labels.addChildControl(drawLastLabel);
 
   this.addContentSeparator();
 
