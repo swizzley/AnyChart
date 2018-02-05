@@ -1,8 +1,6 @@
 goog.provide('anychart.chartEditorModule.settings.axes.Linear');
 
-goog.require('anychart.chartEditorModule.SettingsPanel');
 goog.require('anychart.chartEditorModule.SettingsPanelZippy');
-goog.require('anychart.chartEditorModule.checkbox.Base');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.settings.Labels');
 goog.require('anychart.chartEditorModule.settings.Stagger');
@@ -47,14 +45,12 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
 
   this.addContentSeparator();
 
-  // Stagger settings
   var staggerSettings = new anychart.chartEditorModule.settings.Stagger(model);
   staggerSettings.setKey(this.getKey());
   this.addChildControl(staggerSettings);
 
   this.addContentSeparator();
 
-  // Overlap mode
   var overlapMode = new anychart.chartEditorModule.controls.select.DataField({label: 'Labels Overlap'});
   overlapMode.getControl().setOptions([
     {value: 'allow-overlap', caption: 'Overlap'},
@@ -70,7 +66,6 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
 
   this.addContentSeparator();
 
-  //region Labels
   var labels = new anychart.chartEditorModule.settings.Labels(model);
   labels.allowEnabled(true);
   labels.allowEditPosition(false);
@@ -80,17 +75,14 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
 
   this.addContentSeparator();
 
-  // Ticks
   var ticks = new anychart.chartEditorModule.settings.Ticks(model);
   ticks.allowEnabled(true);
   ticks.allowEditPosition(true/*!this.isRadarPolarAxis*/);
   ticks.setKey(this.genKey('ticks()'));
   this.addChildControl(ticks);
-  //endregion
 
   this.addContentSeparator();
 
-  //region Minor Labels
   var minorlabels = new anychart.chartEditorModule.settings.Labels(model);
   minorlabels.setName('Minor Labels');
   minorlabels.allowEnabled(true);
@@ -101,12 +93,10 @@ anychart.chartEditorModule.settings.axes.Linear.prototype.createDom = function()
 
   this.addContentSeparator();
 
-  // Minor Ticks
   var minorTicks = new anychart.chartEditorModule.settings.Ticks(model);
   minorTicks.setName('Minor Ticks');
   minorTicks.allowEnabled(true);
   minorTicks.allowEditPosition(true/*!this.isRadarPolarAxis*/);
   minorTicks.setKey(this.genKey('minorTicks()'));
   this.addChildControl(minorTicks);
-  //endregion
 };
