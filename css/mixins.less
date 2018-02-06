@@ -26,6 +26,13 @@
   box-sizing: @type;
 }
 
+.user-select (@value) {
+  -webkit-user-select: @value;
+  -moz-user-select: @value;
+  -ms-user-select: @value;
+  user-select: @value;
+}
+
 .border-radius (@radius: 5px) {
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;

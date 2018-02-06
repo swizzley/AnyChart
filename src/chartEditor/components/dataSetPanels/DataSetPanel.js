@@ -71,8 +71,12 @@ anychart.chartEditorModule.DataSetPanel.prototype.createDom = function() {
       var field = goog.dom.createDom(
           goog.dom.TagName.DIV,
           'anychart-connected-data-sets-item-field',
-          this.dataSet_.fields[i].name
-      );
+          this.dataSet_.fields[i].name,
+          goog.dom.createDom(
+              goog.dom.TagName.SPAN,
+              'anychart-connected-data-sets-item-token',
+              '{%' + this.dataSet_.fields[i].key+ '}'));
+
       goog.dom.appendChild(element, field);
     }
   }
