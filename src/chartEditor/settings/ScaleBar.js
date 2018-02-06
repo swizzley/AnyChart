@@ -22,6 +22,7 @@ anychart.chartEditorModule.settings.ScaleBar = function(model, index, opt_domHel
   
   this.name = 'scaleBar(' + this.index_ + ')';
   this.key = [['chart'], ['settings'], 'scaleBar(' + this.index_ + ')'];
+  this.enabledKey(this.genKey('enabled', true));
 
   this.allowEnabled(true);
   this.addClassName(goog.getCssName('anychart-settings-panel-scale-bar'));
@@ -38,24 +39,24 @@ anychart.chartEditorModule.settings.ScaleBar.prototype.createDom = function() {
   // region ==== Header
   var fill = new anychart.chartEditorModule.colorPicker.Base();
   fill.addClassName(goog.getCssName('anychart-chart-editor-settings-control-right'));
-  fill.init(model, this.genKey('fill()'));
+  fill.init(model, this.genKey('fill', true));
   this.addHeaderChildControl(fill);
   // endregion
 
   var stroke = new anychart.chartEditorModule.settings.Stroke(model);
-  stroke.setKey(this.genKey('stroke()'));
+  stroke.setKey(this.genKey('stroke', true));
   this.addChildControl(stroke);
 
   var width = new anychart.chartEditorModule.comboBox.Percent();
   width.setOptions([0, 1, 3, 5, 10, 15, 20, 30]);
   var widthLC = new anychart.chartEditorModule.controls.LabeledControl(width, 'Width');
-  widthLC.init(model, this.genKey('width()'));
+  widthLC.init(model, this.genKey('width', true));
   this.addChildControl(widthLC);
 
   var offset = new anychart.chartEditorModule.comboBox.Percent();
   offset.allowNegative(true);
   var offsetLC = new anychart.chartEditorModule.controls.LabeledControl(offset, 'Offset');
-  offsetLC.init(model, this.genKey('offset()'));
+  offsetLC.init(model, this.genKey('offset', true));
   this.addChildControl(offsetLC);
 
   this.addContentSeparator();
@@ -75,32 +76,4 @@ anychart.chartEditorModule.settings.ScaleBar.prototype.createDom = function() {
   var colorScale = new anychart.chartEditorModule.settings.scales.Base(model, ['linear-color', 'ordinal-color']);
   colorScale.setKey(this.genKey('colorScale()'));
   this.addChildControl(colorScale);
-};
-
-
-/** @inheritDoc */
-anychart.chartEditorModule.settings.ScaleBar.prototype.onChartDraw = function(evt) {
-  anychart.chartEditorModule.settings.ScaleBar.base(this, 'onChartDraw', evt);
-  if (!this.isExcluded()) {
-    // var target = evt.chart;
-    //
-    // var count = target.getAxesCount();
-    // var options = [];
-    // for (var i = 0; i < count; i++) {
-    //   options.push({'value': String(i)});
-    // }
-    // this.axisIndex_.getSelect().setOptions(options);
-    // this.axisIndex_.setValueByTarget(target);
-  }
-};
-
-
-/** @override */
-anychart.chartEditorModule.settings.ScaleBar.prototype.disposeInternal = function() {
-  // goog.disposeAll([
-  //   this.axisIndex_
-  // ]);
-  // this.axisIndex_ = null;
-
-  anychart.chartEditorModule.settings.ScaleBar.base(this, 'disposeInternal');
 };

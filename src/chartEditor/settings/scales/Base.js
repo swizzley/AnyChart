@@ -57,22 +57,15 @@ anychart.chartEditorModule.settings.scales.Base = function(model, types, opt_dom
   this.scale_ = null;
 
   this.allowEnabled(false);
+
+  this.addClassName(goog.getCssName('anychart-settings-panel-scale-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.scales.Base, anychart.chartEditorModule.SettingsPanel);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.scales.Base.CSS_CLASS = goog.getCssName('anychart-settings-panel-scale-single');
 
 
 /** @override */
 anychart.chartEditorModule.settings.scales.Base.prototype.createDom = function() {
   anychart.chartEditorModule.settings.scales.Base.base(this, 'createDom');
-
-  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.Base.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var type = new anychart.chartEditorModule.controls.select.ScaleType({

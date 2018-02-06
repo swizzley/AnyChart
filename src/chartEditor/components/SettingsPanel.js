@@ -99,9 +99,16 @@ anychart.chartEditorModule.SettingsPanel.prototype.setName = function(value) {
 };
 
 
-/** @param {anychart.chartEditorModule.EditorModel.Key} key */
-anychart.chartEditorModule.SettingsPanel.prototype.setEnabledKey = function(key) {
-  this.enabledKey_ = key;
+/**
+ * @param {anychart.chartEditorModule.EditorModel.Key=} opt_key
+ * @return {anychart.chartEditorModule.EditorModel.Key|anychart.chartEditorModule.SettingsPanel}
+ */
+anychart.chartEditorModule.SettingsPanel.prototype.enabledKey = function(opt_key) {
+  if (goog.isDef(opt_key)) {
+    this.enabledKey_ = opt_key;
+    return this;
+  }
+  return this.enabledKey_;
 };
 
 
@@ -167,6 +174,9 @@ anychart.chartEditorModule.SettingsPanel.prototype.createDom = function() {
 
   if (this.canBeEnabled()) {
     var enableContentCheckbox = new anychart.chartEditorModule.checkbox.Base();
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    if (!this.enabledKey_) this.enabledKey(this.genKey('enabled()'));
+    enableContentCheckbox.init(model, this.enabledKey_);
 
     if (this.enabledButtonContainer_) {
       enableContentCheckbox.render(this.enabledButtonContainer_);
@@ -331,25 +341,27 @@ anychart.chartEditorModule.SettingsPanel.prototype.setContentEnabled = function(
 /** @inheritDoc */
 anychart.chartEditorModule.SettingsPanel.prototype.setKey = function(key) {
   anychart.chartEditorModule.SettingsPanel.base(this, 'setKey', key);
-  this.updateKeys();
+
+  if (this.enableContentCheckbox) {
+    if (!this.enabledKey_) this.enabledKey(this.genKey('enabled()'));
+    var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
+    this.enableContentCheckbox.init(model, this.enabledKey_);
+  }
 };
 
 
 /**
  * Update model keys.
+ * todo: find out if this method is necessary
  */
 anychart.chartEditorModule.SettingsPanel.prototype.updateKeys = function() {
-  if (this.isExcluded()) return;
-
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (this.enableContentCheckbox)
-    this.enableContentCheckbox.init(model, this.enabledKey_ ? this.enabledKey_ : this.genKey('enabled()'));
+  //if (this.isExcluded()) return;
 };
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.SettingsPanel.prototype.exclude = function(value) {
-  var dirty = this.excluded != value;
+  var dirty = this.excluded !== value;
   anychart.chartEditorModule.SettingsPanel.base(this, 'exclude', value);
   if (dirty) this.updateKeys();
 };

@@ -22,22 +22,15 @@ anychart.chartEditorModule.settings.scales.OrdinalColorSpecific = function(model
    * @private
    */
   this.ranges_ = [];
+
+  this.addClassName(goog.getCssName('anychart-settings-panel-scale-ordinal-color'));
 };
 goog.inherits(anychart.chartEditorModule.settings.scales.OrdinalColorSpecific, anychart.chartEditorModule.settings.scales.SpecificBase);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.CSS_CLASS = goog.getCssName('anychart-settings-panel-scale-ordinal-color');
 
 
 /** @override */
 anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.createDom = function() {
   anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.base(this, 'createDom');
-
-  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 
@@ -197,21 +190,15 @@ anychart.chartEditorModule.settings.ColorScaleSingleRange = function(model, inde
   this.index_ = index;
 
   this.name = 'Range ' + this.index_;
+
+  this.addClassName(goog.getCssName('anychart-settings-color-scale-range-single'));
 };
 goog.inherits(anychart.chartEditorModule.settings.ColorScaleSingleRange, anychart.chartEditorModule.SettingsPanel);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.ColorScaleSingleRange.CSS_CLASS = goog.getCssName('anychart-settings-color-scale-range-single');
 
 
 /** @override */
 anychart.chartEditorModule.settings.ColorScaleSingleRange.prototype.createDom = function() {
   anychart.chartEditorModule.settings.ColorScaleSingleRange.base(this, 'createDom');
-  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.ColorScaleSingleRange.CSS_CLASS);
 
   var color = new anychart.chartEditorModule.colorPicker.Base();
   color.addClassName(goog.getCssName('range-color'));

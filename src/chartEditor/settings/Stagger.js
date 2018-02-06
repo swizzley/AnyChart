@@ -14,30 +14,22 @@ goog.require('anychart.chartEditorModule.controls.LabeledControl');
  */
 anychart.chartEditorModule.settings.Stagger = function(model, opt_domHelper) {
   anychart.chartEditorModule.settings.Stagger.base(this, 'constructor', model, 'Stagger Mode', opt_domHelper);
+
+  this.addClassName(goog.getCssName('anychart-chart-editor-settings-stagger'));
 };
 goog.inherits(anychart.chartEditorModule.settings.Stagger, anychart.chartEditorModule.SettingsPanel);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.Stagger.CSS_CLASS = goog.getCssName('anychart-chart-editor-settings-stagger');
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.Stagger.prototype.setKey = function(key) {
   anychart.chartEditorModule.settings.Stagger.base(this, 'setKey', key);
-  this.setEnabledKey(this.genKey('staggerMode()'));
-  this.updateKeys();
+  this.enabledKey(this.genKey('staggerMode()'));
 };
 
 
 /** @inheritDoc */
 anychart.chartEditorModule.settings.Stagger.prototype.createDom = function() {
   anychart.chartEditorModule.settings.Stagger.base(this, 'createDom');
-
-  goog.dom.classlist.add(this.getElement(), anychart.chartEditorModule.settings.Stagger.CSS_CLASS);
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
 

@@ -27,8 +27,7 @@ goog.inherits(anychart.chartEditorModule.CircularRangesPanel, anychart.chartEdit
 /** @override */
 anychart.chartEditorModule.CircularRangesPanel.prototype.createPanel = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var panelIndex = model.addIndexedSetting('range');
-
+  var panelIndex = model.addIndexedSetting('range', true);
   return new anychart.chartEditorModule.settings.CircularRange(model, panelIndex);
 };
 
@@ -46,7 +45,7 @@ anychart.chartEditorModule.CircularRangesPanel.prototype.createPanels = function
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var settings = model.getModel()['chart']['settings'];
 
-    var pattern = '^range\\((\\d+)\\)\\.enabled\\(\\)$';
+    var pattern = '^range\\((\\d+)\\)$';
     var regExp = new RegExp(pattern);
 
     for (var key in settings) {

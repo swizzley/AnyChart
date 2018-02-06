@@ -19,15 +19,10 @@ anychart.chartEditorModule.settings.Stroke = function(model, opt_name, opt_domHe
   this.name = goog.isDef(opt_name) ? opt_name : 'Stroke';
 
   this.allowEnabled(false);
+
+  this.addClassName(goog.getCssName('anychart-settings-stroke'));
 };
 goog.inherits(anychart.chartEditorModule.settings.Stroke, anychart.chartEditorModule.SettingsPanel);
-
-
-/**
- * Default CSS class.
- * @type {string}
- */
-anychart.chartEditorModule.settings.Stroke.CSS_CLASS = goog.getCssName('anychart-settings-stroke');
 
 
 /** @override */
@@ -36,8 +31,6 @@ anychart.chartEditorModule.settings.Stroke.prototype.createDom = function() {
 
   var element = this.getElement();
   var content = this.getContentElement();
-
-  goog.dom.classlist.add(element, anychart.chartEditorModule.settings.Stroke.CSS_CLASS);
 
   var color = new anychart.chartEditorModule.colorPicker.Base();
   color.addClassName(goog.getCssName('anychart-stroke-color'));

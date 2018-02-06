@@ -1578,11 +1578,17 @@ anychart.chartEditorModule.EditorModel.prototype.dropAxis = function(index, opt_
 
 /**
  * @param {string} stringKeyBase 'range', 'scaleBar' etc
+ * @param {boolean=} opt_asObjectKey
  * @return {number} Created range index.
  */
-anychart.chartEditorModule.EditorModel.prototype.addIndexedSetting = function(stringKeyBase) {
+anychart.chartEditorModule.EditorModel.prototype.addIndexedSetting = function(stringKeyBase, opt_asObjectKey) {
   var index = -1;
-  var pattern = '^' + stringKeyBase + '\\((\\d+)\\)\\.enabled\\(\\)$';
+  var pattern;
+  if (opt_asObjectKey)
+    pattern = '^' + stringKeyBase + '\\((\\d+)\\)$';
+  else
+    pattern = '^' + stringKeyBase + '\\((\\d+)\\)\\.enabled\\(\\)$';
+
   var regExp = new RegExp(pattern);
 
   for (var key in this.model_['chart']['settings']) {
@@ -1592,8 +1598,17 @@ anychart.chartEditorModule.EditorModel.prototype.addIndexedSetting = function(st
   }
   index += 1;
 
-  var stringKey = stringKeyBase + '(' + index + ').enabled()';
-  this.setValue([['chart'], ['settings'], stringKey], true);
+  var stringKey;
+  var value;
+  if (opt_asObjectKey) {
+    stringKey = stringKeyBase + '(' + index + ')';
+    value = {'enabled': true};
+  } else {
+    stringKey = stringKeyBase + '(' + index + ').enabled()';
+    value = true;
+  }
+
+  this.setValue([['chart'], ['settings'], stringKey], value);
 
   return index;
 };

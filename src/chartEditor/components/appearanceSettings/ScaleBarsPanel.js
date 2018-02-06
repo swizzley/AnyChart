@@ -27,7 +27,7 @@ goog.inherits(anychart.chartEditorModule.ScaleBarsPanel, anychart.chartEditorMod
 /** @override */
 anychart.chartEditorModule.ScaleBarsPanel.prototype.createPanel = function() {
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var panelIndex = model.addIndexedSetting('scaleBar');
+  var panelIndex = model.addIndexedSetting('scaleBar', true);
   return new anychart.chartEditorModule.settings.ScaleBar(model, panelIndex);
 };
 
@@ -45,7 +45,7 @@ anychart.chartEditorModule.ScaleBarsPanel.prototype.createPanels = function() {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var settings = model.getModel()['chart']['settings'];
 
-    var pattern = '^scaleBar\\((\\d+)\\)\\.enabled\\(\\)$';
+    var pattern = '^scaleBar\\((\\d+)\\)$';
     var regExp = new RegExp(pattern);
 
     for (var key in settings) {
