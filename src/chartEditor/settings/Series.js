@@ -49,6 +49,8 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   var name = new anychart.chartEditorModule.input.Base('Series name');
   name.init(model, this.genKey('name()'));
   this.addHeaderChildControl(name);
+  var forceSeriesNames = model.getValue([['editorSettings'], 'forceSeriesNames']);
+  name.setEnabled(!forceSeriesNames);
   goog.dom.classlist.add(name.getElement(), goog.getCssName('anychart-chart-editor-series-name-input'));
 
   var color = new anychart.chartEditorModule.colorPicker.Base();

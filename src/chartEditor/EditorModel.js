@@ -55,7 +55,8 @@ anychart.chartEditorModule.EditorModel = function() {
         //'getSeriesAt(0).name()': 'my series'
       }
     },
-    'outputSettings': null
+    'outputSettings': null,
+    'editorSettings': {}
   };
 
   /**
@@ -84,6 +85,7 @@ anychart.chartEditorModule.EditorModel = function() {
     'setActiveGeo': this.setActiveGeo,
     'setChartType': this.setChartType,
     'setSeriesType': this.setSeriesType,
+    'setSeriesField': this.setSeriesField,
     'setTheme': this.setTheme,
     'setSettingForSeries': this.setSettingForSeries,
     'setContextMenuItemEnable': this.setContextMenuItemEnable
@@ -939,7 +941,7 @@ anychart.chartEditorModule.EditorModel.prototype.createPlotMapping = function() 
   var fieldIndex;
 
   if (singleSeries ||
-      chartType === 'map' || chartType === 'box' || this.chartTypeStartsFrom('gauges') ||
+      this.chartTypeLike(['map', 'box', 'gauges']) ||
       (chartType === 'stock' && seriesType === 'column' && plotIndex === 1))
     numSeries = 1;
   else
@@ -981,6 +983,7 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
 
   //
   var fields = anychart.chartEditorModule.EditorModel.Series[type]['fields'];
+  var seriesNameWrited = false;
 
   for (var i = 0; i < fields.length; i++) {
     if (fields[i]['field'] === 'id' && this.fieldsState_.geoId) {
@@ -1002,18 +1005,17 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
               numbers[numberIndex];
 
       // Set series name if possible
-      var chartType = this.model_['chart']['type'];
-      var singleSeries = this.isChartSingleSeries();
-
-      if (!singleSeries && chartType !== 'stock' && !this.chartTypeStartsFrom('gauges') && fields.length === 1) {
+      var forceSeriesNames = this.getValue([['editorSettings'], 'forceSeriesNames']);
+      if (forceSeriesNames && !seriesNameWrited && !this.isChartSingleSeries() && !this.chartTypeLike(['stock', 'gauges'])) {
         var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
         var fieldName = numbers[numberIndex];
-        var seriesName = data.fieldNames && data.fieldNames[fieldName] || fieldName;
+        var seriesName = data.fieldNames[fieldName] || fieldName;
 
-        if (String(seriesName).length > 3) {
+        if (String(seriesName).length > 2) {
           var stringKey = 'getSeries(\'' + config['id'] + '\').name()';
           var key = [['chart'], ['settings'], stringKey];
           this.setValue(key, seriesName, true, true, true);
+          seriesNameWrited = true;
         }
       }
     }
@@ -1286,7 +1288,7 @@ anychart.chartEditorModule.EditorModel.prototype.dropSeries = function(plotIndex
       this.model_['dataSettings']['mappings'][plotIndex].length > seriesIndex) {
 
     var removedSeries = goog.array.splice(this.model_['dataSettings']['mappings'][plotIndex], seriesIndex, 1);
-    var stringKey = this.chartTypeStartsFrom('gauges') ? 'getPointer' : 'getSeries';
+    var stringKey = this.chartTypeLike('gauges') ? 'getPointer' : 'getSeries';
     this.dropChartSettings(stringKey + '(\'' + removedSeries[0]['id'] + '\')');
     this.dispatchUpdate();
   }
@@ -1427,6 +1429,33 @@ anychart.chartEditorModule.EditorModel.prototype.setSeriesType = function(input)
     this.model_['dataSettings']['mappings'][plotIndex][seriesIndex] = this.createSeriesConfig(seriesIndex, type, oldConfig['id']);
     this.dispatchUpdate();
   }
+};
+
+
+/**
+ * Callback function for change of series type select.
+ * @param {anychart.chartEditorModule.controls.select.Base} input
+ */
+anychart.chartEditorModule.EditorModel.prototype.setSeriesField = function(input) {
+  var key = input.getKey();
+  var inputValue = /** @type {Object} */(input.getValue());
+
+  this.suspendDispatch();
+
+  this.setValue(key, inputValue.value);
+
+  var forceSeriesNames = this.getValue([['editorSettings'], 'forceSeriesNames']);
+  var seriesName = inputValue.caption;
+  if (forceSeriesNames && seriesName.length > 2 && !this.isChartSingleSeries() && !this.chartTypeLike(['stock', 'gauges'])) {
+    // Set series name
+    var seriesIdKey = [key[0], key[1], key[2], 'id'];
+    var seriesId = this.getValue(seriesIdKey);
+
+    var seriesNameKey = [['chart'], ['settings'], 'getSeries(\'' + seriesId + '\').name()'];
+    this.setValue(seriesNameKey, seriesName);
+  }
+
+  this.resumeDispatch();
 };
 
 
@@ -1876,7 +1905,7 @@ anychart.chartEditorModule.EditorModel.prototype.addData = function(data) {
       chartType: data.chartType,
       seriesType: data.seriesType,
       activeGeo: data.activeGeo,
-      fieldNames: data.fieldNames,
+      fieldNames: data.fieldNames || {},
       defaults: data.defaults || []
     };
   }
@@ -2166,7 +2195,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
     plotMapping = settings['dataSettings']['mappings'][i];
     for (j = 0; j < plotMapping.length; j++) {
       var seriesMapping = plotMapping[j]['mapping'];
-      var mappingObj = dsCtor === 'table' || this.chartTypeStartsFrom('gauges') ? {} :
+      var mappingObj = dsCtor === 'table' || this.chartTypeLike('gauges') ? {} :
           dsCtor === 'tree' ?
               {'id': settings['dataSettings']['field']} :
               {'x': settings['dataSettings']['field']};
@@ -2396,7 +2425,7 @@ anychart.chartEditorModule.EditorModel.prototype.prepareDataSet_ = function(data
   result.sample = f.format(row);
 
   for (var key in row) {
-    var name = result.fieldNames && goog.isDef(result.fieldNames[key]) ?
+    var name = goog.isDef(result.fieldNames[key]) ?
         result.fieldNames[key] :
         goog.isArray(row) ? 'Field ' + key : key;
 
@@ -2485,10 +2514,18 @@ anychart.chartEditorModule.EditorModel.prototype.getChartTypeSettings = function
 
 /**
  * Checks if chart type starts from string value
- * @param {string} value
+ * @param {string|Array.<string>} value
  * @return {boolean} true if so
  */
-anychart.chartEditorModule.EditorModel.prototype.chartTypeStartsFrom = function(value) {
+anychart.chartEditorModule.EditorModel.prototype.chartTypeLike = function(value) {
+  if (goog.isArray(value)) {
+    for (var i = 0; i < value.length; i++) {
+      if (this.chartTypeLike(value[i]))
+        return true;
+    }
+    return false;
+  }
+
   var chartType = this.model_['chart']['type'];
   return chartType.indexOf(value) === 0;
 };

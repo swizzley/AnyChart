@@ -50,7 +50,7 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
   this.getKey();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   var chartType = model.getValue([['chart'], 'type']);
-  if (!model.chartTypeStartsFrom('gauges') && !model.isChartSingleSeries()) {
+  if (!model.chartTypeLike('gauges') && !model.isChartSingleSeries()) {
     var mappings = model.getValue([['dataSettings'], ['mappings', this.plotIndex_]]);
     var keyStr = chartType === 'stock' ? 'plot(' + this.plotIndex_ + ').' : '';
     var id = goog.isDef(mappings[this.index_]['id']) ? mappings[this.index_]['id'] : this.index_;
@@ -60,6 +60,8 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
     var input = new anychart.chartEditorModule.input.Base();
     this.addChild(input, true);
     input.init(model, key, void 0, true, true);
+    var forceSeriesNames = model.getValue([['editorSettings'], 'forceSeriesNames']);
+    input.setEnabled(!forceSeriesNames);
     this.nameInput_ = input;
     goog.dom.classlist.add(input.getElement(), 'anychart-plot-panel-series-name');
   }
@@ -85,11 +87,9 @@ anychart.chartEditorModule.SeriesPanel.prototype.onModelChange = function(evt) {
 
   if (model.isChartSingleSeries() || seriesTypes.length === 1) {
     goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', true);
-    // goog.style.setElementShown(this.typeSelect_.getElement(), false);
 
   } else {
     goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', false);
-    // goog.style.setElementShown(this.typeSelect_.getElement(), true);
 
     for (var i = 0; i < seriesTypes.length; i++) {
       var type = seriesTypes[i];
@@ -157,7 +157,8 @@ anychart.chartEditorModule.SeriesPanel.prototype.createFields = function() {
       value: item['field']
     });
 
-    fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]));
+    //fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]));
+    fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]), 'setSeriesField');
     fieldSelect.addClassName('anychart-select-with-content');
 
     this.fields_.push(fieldSelect);
@@ -198,7 +199,6 @@ anychart.chartEditorModule.SeriesPanel.prototype.createFieldsOptions = function(
           caption: caption,
           value: dataFields[j].key
         });
-        // var option = new goog.ui.MenuItem(caption, dataFields[j].key);
         fieldSelect.addItem(option);
       }
 
