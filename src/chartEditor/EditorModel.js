@@ -85,7 +85,6 @@ anychart.chartEditorModule.EditorModel = function() {
     'setActiveGeo': this.setActiveGeo,
     'setChartType': this.setChartType,
     'setSeriesType': this.setSeriesType,
-    'setSeriesField': this.setSeriesField,
     'setTheme': this.setTheme,
     'setSettingForSeries': this.setSettingForSeries,
     'setContextMenuItemEnable': this.setContextMenuItemEnable
@@ -983,7 +982,6 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
 
   //
   var fields = anychart.chartEditorModule.EditorModel.Series[type]['fields'];
-  var seriesNameWrited = false;
 
   for (var i = 0; i < fields.length; i++) {
     if (fields[i]['field'] === 'id' && this.fieldsState_.geoId) {
@@ -1003,21 +1001,6 @@ anychart.chartEditorModule.EditorModel.prototype.createSeriesConfig = function(i
           (fields[i]['type'] === 'string' && strings.length) ?
               strings[stringIndex] :
               numbers[numberIndex];
-
-      // Set series name if possible
-      var forceSeriesNames = this.getValue([['editorSettings'], 'forceSeriesNames']);
-      if (forceSeriesNames && !seriesNameWrited && !this.isChartSingleSeries() && !this.chartTypeLike(['stock', 'gauges'])) {
-        var data = this.getPreparedData(this.model_['dataSettings']['active'])[0];
-        var fieldName = numbers[numberIndex];
-        var seriesName = data.fieldNames[fieldName] || fieldName;
-
-        if (String(seriesName).length > 2) {
-          var stringKey = 'getSeries(\'' + config['id'] + '\').name()';
-          var key = [['chart'], ['settings'], stringKey];
-          this.setValue(key, seriesName, true, true, true);
-          seriesNameWrited = true;
-        }
-      }
     }
   }
   return config;
@@ -1429,33 +1412,6 @@ anychart.chartEditorModule.EditorModel.prototype.setSeriesType = function(input)
     this.model_['dataSettings']['mappings'][plotIndex][seriesIndex] = this.createSeriesConfig(seriesIndex, type, oldConfig['id']);
     this.dispatchUpdate();
   }
-};
-
-
-/**
- * Callback function for change of series type select.
- * @param {anychart.chartEditorModule.controls.select.Base} input
- */
-anychart.chartEditorModule.EditorModel.prototype.setSeriesField = function(input) {
-  var key = input.getKey();
-  var inputValue = /** @type {Object} */(input.getValue());
-
-  this.suspendDispatch();
-
-  this.setValue(key, inputValue.value);
-
-  var forceSeriesNames = this.getValue([['editorSettings'], 'forceSeriesNames']);
-  var seriesName = inputValue.caption;
-  if (forceSeriesNames && seriesName.length > 2 && !this.isChartSingleSeries() && !this.chartTypeLike(['stock', 'gauges'])) {
-    // Set series name
-    var seriesIdKey = [key[0], key[1], key[2], 'id'];
-    var seriesId = this.getValue(seriesIdKey);
-
-    var seriesNameKey = [['chart'], ['settings'], 'getSeries(\'' + seriesId + '\').name()'];
-    this.setValue(seriesNameKey, seriesName);
-  }
-
-  this.resumeDispatch();
 };
 
 

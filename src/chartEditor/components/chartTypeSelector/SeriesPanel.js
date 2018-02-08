@@ -157,8 +157,7 @@ anychart.chartEditorModule.SeriesPanel.prototype.createFields = function() {
       value: item['field']
     });
 
-    //fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]));
-    fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]), 'setSeriesField');
+    fieldSelect.getSelect().init(model, this.getKey([['mapping'], item['field']]));
     fieldSelect.addClassName('anychart-select-with-content');
 
     this.fields_.push(fieldSelect);

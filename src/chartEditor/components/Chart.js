@@ -63,6 +63,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   var settings = model.getModel();
   var chartType = settings['chart']['type'];
   var rebuild = !arguments.length || !arguments[0] || arguments[0].rebuildChart;
+  var dataFields;
 
   if (!chartType)
     return;
@@ -170,6 +171,16 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
           } else {
             series = this.chart_[seriesCtor](mappingInstance);
+
+            if (series['id'] && model.getValue([['editorSettings'], 'forceSeriesNames'])) {
+              // Set forced series name
+              dataFields = dataFields || model.getPreparedData(model.getModel()['dataSettings']['active'])[0].fields;
+              var currentField = goog.array.filter(dataFields, function(item) {
+                return item.key === (goog.isDef(seriesMapping['value']) ? seriesMapping['value'] : goog.object.getAnyValue(seriesMapping));
+              })[0];
+              var stringKey = 'getSeries(\'' + plotMapping[j]['id'] + '\').name()';
+              settings['chart']['settings'][stringKey] = currentField.name;
+            }
           }
 
           if (series['id']) series['id'](plotMapping[j]['id']);
