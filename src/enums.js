@@ -1988,6 +1988,35 @@ anychart.enums.normalizeLinearGaugePointerType = function(value, opt_default) {
 
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  CircularGaugePointerTypes
+//
+//----------------------------------------------------------------------------------------------------------------------
+/**
+ * List of all circular gauge pointers type.
+ * @enum {string}
+ */
+anychart.enums.CircularGaugePointerType = {
+  BAR: 'bar',
+  KNOB: 'knob',
+  MARKER: 'marker',
+  NEEDLE: 'needle'
+};
+
+
+/**
+ * Normalizes circular gauge pointers type.
+ * @param {*} value Pointer's type to normalize.
+ * @param {anychart.enums.CircularGaugePointerType=} opt_default Custom default value (defaults to BAR).
+ * @return {anychart.enums.CircularGaugePointerType}
+ */
+anychart.enums.normalizeCircularGaugePointerType = function(value, opt_default) {
+  return /** @type {anychart.enums.CircularGaugePointerType} */(anychart.enums.normalize(anychart.enums.CircularGaugePointerType, value,
+      opt_default || anychart.enums.CircularGaugePointerType.BAR));
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//
 //  Gantt specific data item field.
 //
 //----------------------------------------------------------------------------------------------------------------------

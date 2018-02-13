@@ -171,7 +171,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.name = function(opt_value) {
 
 
 /**
- * Returns series index in chart.
+ * Returns pointer index in gauge.
  * @return {number}
  */
 anychart.linearGaugeModule.pointers.Base.prototype.getIndex = function() {

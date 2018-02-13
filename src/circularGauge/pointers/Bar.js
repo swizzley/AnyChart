@@ -38,6 +38,12 @@ anychart.circularGaugeModule.pointers.Bar = function() {
 goog.inherits(anychart.circularGaugeModule.pointers.Bar, anychart.circularGaugeModule.pointers.Base);
 
 
+/** @inheritDoc */
+anychart.circularGaugeModule.pointers.Bar.prototype.getType = function() {
+  return anychart.enums.CircularGaugePointerType.BAR;
+};
+
+
 /**
  * Bar width. Sets in percent relative gauge radius.
  * @param {(number|string|null)=} opt_value .

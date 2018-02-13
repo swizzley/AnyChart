@@ -293,6 +293,53 @@ anychart.circularGaugeModule.pointers.Base.prototype.gauge = function(opt_gauge)
 };
 
 
+/**
+ * Returns pointer index in gauge.
+ * @return {number}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getIndex = function() {
+  if (this.isDisposed())
+    return -1;
+  return goog.array.indexOf(this.gauge_.getAllSeries(), this);
+};
+
+
+/**
+ * Getter/setter for pointer global index, used in palettes and autoId.
+ * @param {number=} opt_value Id of the pointer.
+ * @return {number|anychart.circularGaugeModule.pointers.Base} Id or self for chaining.
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.autoIndex = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.autoIndex_ = opt_value;
+    return this;
+  }
+  return this.autoIndex_;
+};
+
+
+/**
+ * Getter/setter for pointer id.
+ * @param {(string|number)=} opt_value Id of the pointer.
+ * @return {string|number|anychart.circularGaugeModule.pointers.Base} Id or self for chaining.
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.id = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.id_ = opt_value;
+    return this;
+  } else {
+    return this.id_ || String(this.autoIndex_);
+  }
+};
+
+
+/**
+ * Returns type of the pointer.
+ * @return {anychart.enums.CircularGaugePointerType}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getType = goog.abstractMethod;
+
+
 /** @inheritDoc */
 anychart.circularGaugeModule.pointers.Base.prototype.remove = function() {
   if (this.domElement) {
@@ -713,6 +760,12 @@ anychart.circularGaugeModule.pointers.Base.prototype.serialize = function() {
   json['axisIndex'] = this.axisIndex();
   json['dataIndex'] = this.dataIndex();
 
+  if (this.id_)
+    json['id'] = this.id();
+
+  if (this.autoIndex_ != this.getIndex())
+    json['autoIndex'] = this.autoIndex();
+
   return json;
 };
 
@@ -720,6 +773,9 @@ anychart.circularGaugeModule.pointers.Base.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(config, opt_default) {
   anychart.circularGaugeModule.pointers.Base.base(this, 'setupByJSON', config, opt_default);
+
+  this.id(config['id']);
+  this.autoIndex(config['autoIndex']);
 
   this.fill(config['fill']);
   this.stroke(config['stroke']);
