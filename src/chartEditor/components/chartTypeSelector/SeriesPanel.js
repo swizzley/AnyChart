@@ -1,12 +1,11 @@
 goog.provide('anychart.chartEditorModule.SeriesPanel');
 
 goog.require('anychart.chartEditorModule.ComponentWithKey');
+goog.require('anychart.chartEditorModule.controls.SeriesName');
 goog.require('anychart.chartEditorModule.controls.select.DataField');
 goog.require('anychart.chartEditorModule.controls.select.DataFieldSelectMenuItem');
 goog.require('anychart.chartEditorModule.input.Base');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.MenuItem');
-goog.require('goog.ui.Select');
 
 
 /**
@@ -49,32 +48,34 @@ anychart.chartEditorModule.SeriesPanel.prototype.createDom = function() {
 
   this.getKey();
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  var chartType = model.getValue([['chart'], 'type']);
+
   if (!model.chartTypeLike('gauges') && !model.isChartSingleSeries()) {
     var mappings = model.getValue([['dataSettings'], ['mappings', this.plotIndex_]]);
+
+    var chartType = model.getValue([['chart'], 'type']);
     var keyStr = chartType === 'stock' ? 'plot(' + this.plotIndex_ + ').' : '';
     var id = goog.isDef(mappings[this.index_]['id']) ? mappings[this.index_]['id'] : this.index_;
     keyStr += 'getSeries(\'' + id + '\').name()';
     var key = [['chart'], ['settings'], keyStr];
 
-    var input = new anychart.chartEditorModule.input.Base();
-    this.addChild(input, true);
-    input.init(model, key, void 0, true, true);
-    var forceSeriesNames = model.getValue([['editorSettings'], 'forceSeriesNames']);
-    input.setEnabled(!forceSeriesNames);
-    this.nameInput_ = input;
-    goog.dom.classlist.add(input.getElement(), 'anychart-plot-panel-series-name');
+    var name = new anychart.chartEditorModule.input.Base();
+
+    var isSingleValues = anychart.chartEditorModule.EditorModel.Series[mappings[this.index_]['ctor']]['fields'].length === 1;
+    var nameLC = new anychart.chartEditorModule.controls.SeriesName(name, 'Name', isSingleValues);
+    nameLC.init(model, key, void 0, true, true);
+    this.addChild(nameLC, true);
+    this.name_ = nameLC;
   }
 
-  this.typeSelect_ = new anychart.chartEditorModule.controls.select.DataField({
+  this.type_ = new anychart.chartEditorModule.controls.select.DataField({
     label: 'Series Type',
     caption: 'Select Series Type',
     value: 'ctor'
   });
 
-  this.typeSelect_.getSelect().init(model, this.getKey('ctor'), 'setSeriesType');
+  this.type_.getSelect().init(model, this.getKey('ctor'), 'setSeriesType');
 
-  this.addChild(this.typeSelect_, true);
+  this.addChild(this.type_, true);
 };
 
 
@@ -86,10 +87,10 @@ anychart.chartEditorModule.SeriesPanel.prototype.onModelChange = function(evt) {
   var seriesTypes = model.getChartTypeSettings()['series'];
 
   if (model.isChartSingleSeries() || seriesTypes.length === 1) {
-    goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', true);
+    goog.dom.classlist.enable(this.type_.getElement(), 'anychart-hidden', true);
 
   } else {
-    goog.dom.classlist.enable(this.typeSelect_.getElement(), 'anychart-hidden', false);
+    goog.dom.classlist.enable(this.type_.getElement(), 'anychart-hidden', false);
 
     for (var i = 0; i < seriesTypes.length; i++) {
       var type = seriesTypes[i];
@@ -101,10 +102,10 @@ anychart.chartEditorModule.SeriesPanel.prototype.onModelChange = function(evt) {
         caption: caption,
         value: type
       });
-      this.typeSelect_.getSelect().addItem(item);
+      this.type_.getSelect().addItem(item);
     }
 
-    this.typeSelect_.getSelect().setValueByModel();
+    this.type_.getSelect().setValueByModel();
   }
 
   this.createFields();
@@ -115,7 +116,7 @@ anychart.chartEditorModule.SeriesPanel.prototype.onModelChange = function(evt) {
 /** @inheritDoc */
 anychart.chartEditorModule.SeriesPanel.prototype.onChartDraw = function(evt) {
   anychart.chartEditorModule.SeriesPanel.base(this, 'onChartDraw', evt);
-  if (this.nameInput_) this.nameInput_.setValueByTarget(evt.chart);
+  if (this.name_) this.name_.setValueByTarget(evt.chart);
 };
 
 

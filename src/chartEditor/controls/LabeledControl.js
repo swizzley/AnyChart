@@ -65,10 +65,12 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.setControl = functi
  * @param {string=} opt_callback Callback function that will be called on control's value change instead of simple change value in model.
  *  This function should be model's public method.
  * @param {boolean=} opt_noRebuild Should or not rebuild target (chart) on change value of this control.
+ * @param {boolean=} opt_noRebuildMapping
  * @public
  */
-anychart.chartEditorModule.controls.LabeledControl.prototype.init = function(model, key, opt_callback, opt_noRebuild) {
-  this.control_.init(model, key, opt_callback, opt_noRebuild);
+anychart.chartEditorModule.controls.LabeledControl.prototype.init = function(model, key, opt_callback, opt_noRebuild, opt_noRebuildMapping) {
+  this.setModel(model);
+  this.control_.init(model, key, opt_callback, opt_noRebuild, opt_noRebuildMapping);
 };
 
 

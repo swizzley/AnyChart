@@ -108,33 +108,6 @@ anychart.chartEditorModule.Editor.prototype.getTheme = function() {
 
 
 /**
- * Setter/getter for editor's global setting.
- * @param {string} setting
- * @param {*=} opt_value
- * @return {*|anychart.chartEditorModule.Editor}
- */
-anychart.chartEditorModule.Editor.prototype.setting = function(setting, opt_value) {
-  var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (goog.isDef(opt_value)) {
-    model.setValue([['editorSettings'], setting], opt_value);
-    return this;
-  }
-  return model.getValue([['editorSettings'], setting]);
-};
-
-
-/**
- * Setter/getter for forceSeriesName setting.
- * If true, uses fieldNames values or data keys for series names.
- * @param {boolean=} opt_value
- * @return {boolean|anychart.chartEditorModule.Editor}
- */
-anychart.chartEditorModule.Editor.prototype.forceSeriesNames = function(opt_value) {
-  return /** @type {boolean|anychart.chartEditorModule.Editor} */(this.setting('forceSeriesNames', opt_value));
-};
-
-
-/**
  * Renders the Chart Editor as modal dialog.
  * @param {string=} opt_class CSS class name for the dialog element, also used
  *     as a class name prefix for related elements; defaults to modal-dialog.
@@ -549,8 +522,6 @@ anychart.ui.editor = function() {
   proto['getChartAsJsCode'] = proto.getChartAsJsCode;
   proto['getChartAsJson'] = proto.getChartAsJson;
   proto['getChartAsXml'] = proto.getChartAsXml;
-  proto['setting'] = proto.setting;
-  proto['forceSeriesNames'] = proto.forceSeriesNames;
   proto['steps'] = proto.steps;
   proto['data'] = proto.data;
   proto['setDefaults'] = proto.setDefaults;

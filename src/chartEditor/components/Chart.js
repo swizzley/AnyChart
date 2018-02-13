@@ -63,7 +63,6 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
   var settings = model.getModel();
   var chartType = settings['chart']['type'];
   var rebuild = !arguments.length || !arguments[0] || arguments[0].rebuildChart;
-  var dataFields;
 
   if (!chartType)
     return;
@@ -126,6 +125,8 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
       //axis.scale().maximumGap(0.44);
     }
 
+    var dataFields;
+
     // Create mapping and series
     for (var i = 0; i < settings['dataSettings']['mappings'].length; i++) {
       plotMapping = settings['dataSettings']['mappings'][i];
@@ -166,19 +167,19 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
             // todo: debug
             series = this.chart_[seriesCtor](j/*, mappingInstance*/);
             series.dataIndex(0);
-            // series.fill('red');
-            // series.stroke({'color': 'green', 'thickness': 3});
 
           } else {
             series = this.chart_[seriesCtor](mappingInstance);
 
-            if (series['id'] && model.getValue([['editorSettings'], 'forceSeriesNames'])) {
+            // Force series names
+            var stringKey = 'getSeries(\'' + plotMapping[j]['id'] + '\').name()';
+            if (series['id'] && model.getValue([['editorSettings'], ['lockSeriesName'], stringKey])) {
               // Set forced series name
               dataFields = dataFields || model.getPreparedData(model.getModel()['dataSettings']['active'])[0].fields;
               var currentField = goog.array.filter(dataFields, function(item) {
                 return item.key === (goog.isDef(seriesMapping['value']) ? seriesMapping['value'] : goog.object.getAnyValue(seriesMapping));
               })[0];
-              var stringKey = 'getSeries(\'' + plotMapping[j]['id'] + '\').name()';
+
               settings['chart']['settings'][stringKey] = currentField.name;
             }
           }
@@ -191,7 +192,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
   // Chart settings
   // console.log("=== Chart draw ===");
-  // console.log(settings['chart']['settings']);
+  // console.log(settings['editorSettings']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
     if (goog.isString(value)) {

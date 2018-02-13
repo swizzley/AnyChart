@@ -86,12 +86,6 @@ anychart.chartEditorModule.button.Toggle.prototype.setCheckedValue = function(va
 };
 
 
-/** @param {Array.<string>} value */
-anychart.chartEditorModule.button.Toggle.prototype.setOptions = function(value) {
-  this.options_ = value;
-};
-
-
 /** @return {anychart.chartEditorModule.EditorModel.Key} */
 anychart.chartEditorModule.button.Toggle.prototype.getKey = function() {
   return this.key;
@@ -174,6 +168,6 @@ anychart.chartEditorModule.button.Toggle.prototype.setValueByTarget = function(t
   var value = /** @type {string} */(anychart.bindingModule.exec(this.target, stringKey));
 
   this.noDispatch = true;
-  this.setChecked(value == this.checkedValue_);
+  this.setChecked(value === this.checkedValue_);
   this.noDispatch = false;
 };

@@ -120,7 +120,7 @@ anychart.chartEditorModule.input.Base.prototype.onChange = function() {
 
   var value = this.getValue();
 
-  if (!this.noDispatch && value != this.lastValue && this.editorModel) {
+  if (!this.noDispatch && value !== this.lastValue && this.editorModel) {
     if (this.validateFunction_(value)) {
       var caretPosition = goog.dom.selection.getStart(this.getElement());
 
@@ -209,7 +209,7 @@ anychart.chartEditorModule.input.Base.prototype.setValueByTarget = function(targ
  * @param {boolean=} opt_needRedraw
  */
 anychart.chartEditorModule.input.Base.prototype.exclude = function(value, opt_needRedraw) {
-  var dirty = this.excluded != value;
+  var dirty = this.excluded !== value;
   this.excluded = value;
 
   if (this.isInDocument())
