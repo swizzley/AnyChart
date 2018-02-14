@@ -358,11 +358,11 @@ anychart.linearGaugeModule.Chart.prototype.getDataHolders = function() {
 /**
  * Creates pointer.
  * @param {string} type Pointer type.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndexOrData Pointer data index or pointer data.
  * @private
  * @return {anychart.linearGaugeModule.pointers.Base} Pointer instance.
  */
-anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type, dataIndex) {
+anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type, dataIndexOrData) {
   type = anychart.enums.normalizeLinearGaugePointerType(type);
   var config = this.defaultPointerSettings()[anychart.utils.toCamelCase(type)];
   var ctl = anychart.linearGaugeModule.Chart.PointersTypesMap[type];
@@ -372,7 +372,7 @@ anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type,
   var instance;
 
   if (ctl) {
-    instance = new ctl(this, dataIndex);
+    instance = new ctl(dataIndexOrData);
     var lastPointer = this.pointers_[this.pointers_.length - 1];
     var index = lastPointer ? /** @type {number} */ (lastPointer.autoIndex()) + 1 : 0;
     this.pointers_.push(instance);
@@ -384,6 +384,7 @@ anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type,
       instance.autoType(/** @type {anychart.enums.MarkerType} */ (this.markerPalette().itemAt(this.markersCount_++)));
     }
     instance.setAutoHatchFill(/** @type {acgraph.vector.HatchFill|acgraph.vector.PatternFill} */(this.hatchFillPalette().itemAt(index)));
+    instance.gauge(this);
     instance.setParentEventTarget(this);
     instance.setupInternal(true, config);
     instance.listenSignals(this.pointerInvalidated_, this);
@@ -1391,64 +1392,91 @@ anychart.linearGaugeModule.Chart.prototype.pointerInvalidated_ = function(e) {
 };
 
 
-/**
+// Generate pointer constructors
+(function() {
+  /**
+   * @param {anychart.enums.LinearGaugePointerType} type
+   * @return {Function}
+   */
+  var constructorsGenerator = function(type) {
+    return function(dataIndexOrData) {
+      return this.createPointerByType_(type, dataIndexOrData);
+    };
+  };
+  var prototype = anychart.linearGaugeModule.Chart.prototype;
+  var types = anychart.enums.LinearGaugePointerType;
+  for (var i in types) {
+    var methodName = anychart.utils.toCamelCase(types[i]);
+    /**
+     * Pointer constructor.
+     * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
+     * @return {anychart.linearGaugeModule.pointers.Base} Bar pointer.
+     * @this {anychart.linearGaugeModule.Chart}
+     */
+    prototype[methodName] = constructorsGenerator(types[i]);
+  }
+})();
+
+
+/*
+/!**
  * Creates bar pointer.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
  * @return {anychart.linearGaugeModule.pointers.Base} Bar pointer.
- */
+ *!/
 anychart.linearGaugeModule.Chart.prototype.bar = function(dataIndex) {
   return this.createPointerByType_(anychart.enums.LinearGaugePointerType.BAR, dataIndex);
 };
 
 
-/**
+/!**
  * Creates led pointer.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
  * @return {anychart.linearGaugeModule.pointers.Base} Led pointer.
- */
+ *!/
 anychart.linearGaugeModule.Chart.prototype.led = function(dataIndex) {
   return this.createPointerByType_(anychart.enums.LinearGaugePointerType.LED, dataIndex);
 };
 
 
-/**
+/!**
  * Creates marker pointer.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
  * @return {anychart.linearGaugeModule.pointers.Base} Marker pointer.
- */
+ *!/
 anychart.linearGaugeModule.Chart.prototype.marker = function(dataIndex) {
   return this.createPointerByType_(anychart.enums.LinearGaugePointerType.MARKER, dataIndex);
 };
 
 
-/**
+/!**
  * Creates range bar pointer.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
  * @return {anychart.linearGaugeModule.pointers.Base} Range Bar pointer.
- */
+ *!/
 anychart.linearGaugeModule.Chart.prototype.rangeBar = function(dataIndex) {
   return this.createPointerByType_(anychart.enums.LinearGaugePointerType.RANGE_BAR, dataIndex);
 };
 
 
-/**
+/!**
  * Creates tank pointer.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
  * @return {anychart.linearGaugeModule.pointers.Base} Tank pointer.
- */
+ *!/
 anychart.linearGaugeModule.Chart.prototype.tank = function(dataIndex) {
   return this.createPointerByType_(anychart.enums.LinearGaugePointerType.TANK, dataIndex);
 };
 
 
-/**
+/!**
  * Creates thermometer pointer.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
  * @return {anychart.linearGaugeModule.pointers.Base} Thermometer pointer.
- */
+ *!/
 anychart.linearGaugeModule.Chart.prototype.thermometer = function(dataIndex) {
   return this.createPointerByType_(anychart.enums.LinearGaugePointerType.THERMOMETER, dataIndex);
-};
+};*/
 //endregion
 
 //exports
@@ -1479,10 +1507,11 @@ anychart.linearGaugeModule.Chart.prototype.thermometer = function(dataIndex) {
   proto['scaleBar'] = proto.scaleBar;
   proto['scale'] = proto.scale;
 
-  proto['bar'] = proto.bar;
-  proto['led'] = proto.led;
-  proto['marker'] = proto.marker;
-  proto['rangeBar'] = proto.rangeBar;
-  proto['tank'] = proto.tank;
-  proto['thermometer'] = proto.thermometer;
+  // generated automatically
+  //proto['bar'] = proto.bar;
+  //proto['led'] = proto.led;
+  //proto['marker'] = proto.marker;
+  //proto['rangeBar'] = proto.rangeBar;
+  //proto['tank'] = proto.tank;
+  //proto['thermometer'] = proto.thermometer;
 })();

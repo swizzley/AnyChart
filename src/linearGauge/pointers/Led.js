@@ -5,13 +5,12 @@ goog.require('anychart.linearGaugeModule.pointers.Base');
 
 /**
  * Led pointer class.
- * @param {anychart.linearGaugeModule.Chart} gauge Gauge.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndexOrData Pointer data index.
  * @extends {anychart.linearGaugeModule.pointers.Base}
  * @constructor
  */
-anychart.linearGaugeModule.pointers.Led = function(gauge, dataIndex) {
-  anychart.linearGaugeModule.pointers.Led.base(this, 'constructor', gauge, dataIndex);
+anychart.linearGaugeModule.pointers.Led = function(dataIndexOrData) {
+  anychart.linearGaugeModule.pointers.Led.base(this, 'constructor', dataIndexOrData);
 
   /**
    * @type {?(string|number)}

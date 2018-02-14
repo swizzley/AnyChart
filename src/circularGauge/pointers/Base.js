@@ -788,6 +788,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(conf
 //exports
 (function() {
   var proto = anychart.circularGaugeModule.pointers.Base.prototype;
+  proto['id'] = proto.id;
   proto['stroke'] = proto.stroke;
   proto['fill'] = proto.fill;
   proto['hatchFill'] = proto.hatchFill;

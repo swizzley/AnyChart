@@ -6,13 +6,12 @@ goog.require('anychart.linearGaugeModule.pointers.Base');
 
 /**
  * Tank pointer class.
- * @param {anychart.linearGaugeModule.Chart} gauge Gauge.
- * @param {number} dataIndex Pointer data index.
+ * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndexOrData Pointer data index.
  * @extends {anychart.linearGaugeModule.pointers.Base}
  * @constructor
  */
-anychart.linearGaugeModule.pointers.Tank = function(gauge, dataIndex) {
-  anychart.linearGaugeModule.pointers.Tank.base(this, 'constructor', gauge, dataIndex);
+anychart.linearGaugeModule.pointers.Tank = function(dataIndexOrData) {
+  anychart.linearGaugeModule.pointers.Tank.base(this, 'constructor', dataIndexOrData);
 
   /**
    * @type {acgraph.vector.Layer}
