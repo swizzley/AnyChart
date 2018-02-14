@@ -140,9 +140,10 @@ anychart.linearGaugeModule.pointers.Base.prototype.data = function(opt_value, op
       else if (anychart.utils.instanceOf(opt_value, anychart.data.Set))
         this.ownData = this.parentViewToDispose = opt_value.mapAs();
       else
-        this.ownData = (this.parentViewToDispose = new anychart.data.Set(
-            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs();
-      this.ownData.listenSignals(this.dataInvalidated_, this);
+        this.ownData = !goog.isNull(opt_value) ? (this.parentViewToDispose = new anychart.data.Set(
+            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs() : null;
+      if (this.ownData)
+        this.ownData.listenSignals(this.dataInvalidated_, this);
       this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
