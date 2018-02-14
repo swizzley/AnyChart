@@ -42,7 +42,10 @@ anychart.chartEditorModule.SettingsPanelZippy.prototype.createDom = function() {
   if (this.topEl)
     goog.dom.appendChild(this.zippyHeader.getElement(), this.topEl);
 
-  var plusMinus = goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-plus-minus'));
+  var plusMinus = goog.dom.createDom(goog.dom.TagName.DIV, goog.getCssName('anychart-plus-minus'), [
+    goog.dom.createDom(goog.dom.TagName.DIV, 'expand ac ac-chevron-circle-down'),
+    goog.dom.createDom(goog.dom.TagName.DIV, 'collapse ac ac-chevron-circle-up')
+  ]);
   this.zippyHeader.getElement().appendChild(plusMinus);
   // endregion
 

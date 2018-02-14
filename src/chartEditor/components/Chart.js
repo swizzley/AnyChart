@@ -196,7 +196,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
   // Chart settings
   // console.log("=== Chart draw ===");
-  console.log(settings['editorSettings']);
+  // console.log(settings['editorSettings']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
     if (goog.isString(value)) {

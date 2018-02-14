@@ -659,25 +659,23 @@
 }
 
 .anychart-plus-minus {
-  .border-radius(10px);
-  width: 20px;
-  height: 20px;
-  background-color: @color-blue;
+  color: @color-arrow;
+  font-size: 22px;
+
   cursor: pointer;
   position: relative;
+  width: 22px;
+  height: 22px;
 
-  text-align: center;
-  color: white;
-  font-size: 22px;
-  line-height: 20px;
-  font-weight: bold;
-
-  &:hover {
-    background-color: @color-blue-hovered;
+  .expand,
+  .collapse {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
-  &:after {
-    position: relative;
-    content: "+";
+
+  .collapse {
+    display: none;
   }
 }
 
@@ -691,7 +689,7 @@
 .anychart-settings-panel-pointer-single,
 .anychart-settings-panel-scale-bar {
   .anychart-plus-minus {
-    margin-top: 5px;
+    margin-top: 4px;
   }
 }
 
@@ -936,9 +934,13 @@
     float: right;
   }
   .anychart-zippy-expanded {
-    .anychart-plus-minus:after {
-      content: "-";
-      top: -2px;
+    .anychart-plus-minus {
+      .expand {
+        display: none;
+      }
+      .collapse {
+        display: block;
+      }
     }
   }
   .zippy-content {

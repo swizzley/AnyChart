@@ -55,7 +55,6 @@ anychart.chartEditorModule.EditorModel = function() {
         //'getSeriesAt(0).name()': 'my series'
       }
     },
-    'outputSettings': null,
     'editorSettings': {}
   };
 
@@ -138,8 +137,7 @@ anychart.chartEditorModule.EditorModel.Key;
  *      type: ?string,
  *      seriesType: ?string,
  *      settings: Object
- *  },
- *  outputSettings: ?anychart.chartEditorModule.EditorModel.OutputOptions
+ *  }
  * }}
  */
 anychart.chartEditorModule.EditorModel.Model;
@@ -2003,7 +2001,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartAsJson = function() {
   if (!chart) return '';
   var json = chart ? chart.toJson() : '';
   var settings = this.getModel();
-  var outputSettings = settings['outputSettings'] ? settings['outputSettings'] : {};
+  var outputSettings = settings['editorSettings']['output'] ? settings['editorSettings']['output'] : {};
   var minify = !!outputSettings['minify'];
   var containerId = outputSettings['container'];
   if (containerId) {
@@ -2040,8 +2038,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartAsXml = function() {
  */
 anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(opt_options) {
   var settings = this.getModel();
-  console.log(settings['chart']['settings']);
-  var outputSettings = settings['outputSettings'] ? settings['outputSettings'] : {};
+  var outputSettings = settings['editorSettings']['output'] ? settings['editorSettings']['output'] : {};
   if (goog.isObject(opt_options))
     for (var k1 in opt_options) {
       outputSettings[k1] = opt_options[k1];
@@ -2058,6 +2055,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
   var wrapper = goog.isDef(outputSettings['wrapper']) ? String(outputSettings['wrapper']) : 'function';
   var addData = !goog.isDef(outputSettings['addData']) || outputSettings['addData'];
   var addGeoData = !goog.isDef(outputSettings['addGeoData']) || outputSettings['addGeoData'];
+  var addMarkers = !!outputSettings['addMarkers'];
   var eq = minify ? '=' : ' = ';
 
   var anychartGlobal = anychart.window['anychart'];
@@ -2115,8 +2113,12 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
 
   result.push('// Setting up data');
 
+  if (addMarkers) result.push('/*==rawData*/');
+
   var str = 'var rawData' + eq + (addData ? this.printValue_(printer, rawData) : '[/*Add your data here*/]') + ';';
   result.push(str);
+
+  if (addMarkers) result.push('/*rawData==*/');
 
   if (dsCtor === 'table') {
     result.push('var data' + eq + 'anychart.data.' + dsCtor + '(' + this.printValue_(printer, settings['dataSettings']['field']) + ');');
@@ -2205,6 +2207,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
 
   if (!goog.object.isEmpty(settings['chart']['settings'])) {
     result.push('// Applying appearance settings');
+    var markerSeriesName = '';
     goog.object.forEach(settings['chart']['settings'], function(value, key) {
       var pVal = value;
       var force = false;
@@ -2216,9 +2219,26 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
         quotes = force = true;
 
       if (anychart.bindingModule.testExec(chart, key, value)) {
-        result.push(self.printKey_(printer, 'chart', key, pVal, force, quotes));
+        var settingString = self.printKey_(printer, 'chart', key, pVal, force, quotes);
+
+        if (addMarkers) {
+          var pattern = /^(plot\(\d\)\.)?getSeries.*\.name\(.*\)/;
+          if (markerSeriesName === '' && settingString.search(pattern)) {
+            result.push('/*==seriesNames*/');
+            markerSeriesName = 'opened';
+          } else if (markerSeriesName === 'opened' && !settingString.search(pattern)) {
+            result.push('/*seriesNames*==/');
+            markerSeriesName = 'closed';
+          }
+        }
+
+        result.push(settingString);
       }
     });
+    if (addMarkers && markerSeriesName === 'opened') {
+      result.push('/*seriesNames*==/');
+      markerSeriesName = 'closed';
+    }
     result.push('');
   }
 
