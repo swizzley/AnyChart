@@ -2207,8 +2207,21 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
 
   if (!goog.object.isEmpty(settings['chart']['settings'])) {
     result.push('// Applying appearance settings');
+
+    var chartSettings;
+    if (addMarkers) {
+      // Sort settings by keys
+      chartSettings = {};
+      var keys = goog.object.getKeys(settings['chart']['settings']);
+      goog.array.sort(keys);
+      for (var k = 0; k < keys.length; k++) {
+        chartSettings[keys[k]] = settings['chart']['settings'][keys[k]];
+      }
+    } else
+      chartSettings = settings['chart']['settings'];
+
     var markerSeriesName = '';
-    goog.object.forEach(settings['chart']['settings'], function(value, key) {
+    goog.object.forEach(chartSettings, function(value, key) {
       var pVal = value;
       var force = false;
       var quotes = false;
@@ -2222,12 +2235,12 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
         var settingString = self.printKey_(printer, 'chart', key, pVal, force, quotes);
 
         if (addMarkers) {
-          var pattern = /^(plot\(\d\)\.)?getSeries.*\.name\(.*\)/;
-          if (markerSeriesName === '' && settingString.search(pattern)) {
+          var pattern = /(plot\(\d\)\.)?getSeries.*\.name\(.*\)/;
+          if (markerSeriesName === '' && settingString.search(pattern) !== -1) {
             result.push('/*==seriesNames*/');
             markerSeriesName = 'opened';
-          } else if (markerSeriesName === 'opened' && !settingString.search(pattern)) {
-            result.push('/*seriesNames*==/');
+          } else if (markerSeriesName === 'opened' && settingString.search(pattern) === -1) {
+            result.push('/*seriesNames==*/');
             markerSeriesName = 'closed';
           }
         }
