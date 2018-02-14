@@ -1170,7 +1170,7 @@ anychart.chartEditorModule.EditorModel.prototype.dropChartSettings = function(op
     for (var key in this.model_['chart']['settings']) {
       var found = false;
       if (typeof opt_pattern === 'object') {
-        var r = new RegExp(opt_pattern);
+        var r = new RegExp(/** @type {RegExp} */(opt_pattern));
         found = r.test(key);
       } else
         found = key.indexOf(opt_pattern) >= 0;
@@ -1180,6 +1180,7 @@ anychart.chartEditorModule.EditorModel.prototype.dropChartSettings = function(op
     }
   } else {
     this.model_['chart']['settings'] = {};
+    this.model_['editorSettings']['lockSeriesName'] = {};
     this.stackMode = false;
     this.resetContextMenuItems();
 

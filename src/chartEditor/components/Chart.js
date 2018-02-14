@@ -159,9 +159,12 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
           seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
 
           var series;
+          var stringKey = 'getSeries(\'' + plotMapping[j]['id'] + '\').name()';
+
           if (chartType === 'stock') {
             var plot = this.chart_['plot'](i);
             series = plot[seriesCtor](mappingInstance);
+            stringKey = 'plot(' + i + ').' + stringKey;
 
           } else if (model.chartTypeLike('gauges')) {
             // todo: debug
@@ -170,10 +173,13 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
           } else {
             series = this.chart_[seriesCtor](mappingInstance);
+          }
 
-            // Force series names
-            var stringKey = 'getSeries(\'' + plotMapping[j]['id'] + '\').name()';
-            if (series['id'] && model.getValue([['editorSettings'], ['lockSeriesName'], stringKey])) {
+          if (series['id']) {
+            // Set series id
+            series['id'](plotMapping[j]['id']);
+
+            if (model.getValue([['editorSettings'], ['lockSeriesName'], stringKey])) {
               // Set forced series name
               dataFields = dataFields || model.getPreparedData(model.getModel()['dataSettings']['active'])[0].fields;
               var currentField = goog.array.filter(dataFields, function(item) {
@@ -183,8 +189,6 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
               settings['chart']['settings'][stringKey] = currentField.name;
             }
           }
-
-          if (series['id']) series['id'](plotMapping[j]['id']);
         }
       }
     }
@@ -192,7 +196,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
   // Chart settings
   // console.log("=== Chart draw ===");
-  // console.log(settings['editorSettings']);
+  console.log(settings['editorSettings']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
     if (goog.isString(value)) {

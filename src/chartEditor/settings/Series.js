@@ -50,8 +50,8 @@ anychart.chartEditorModule.settings.Series.prototype.createDom = function() {
   name.init(model, this.genKey('name()'));
   this.addHeaderChildControl(name);
 
-  // var forceSeriesNames = model.getValue([['editorSettings'], 'forceSeriesNames']);
-  // name.setEnabled(!forceSeriesNames);
+  var lockSeriesNames = model.getValue([['editorSettings'], ['lockSeriesName'], name.getKey()[2]]);
+  name.setEnabled(!lockSeriesNames);
 
   goog.dom.classlist.add(name.getElement(), goog.getCssName('anychart-chart-editor-series-name-input'));
 

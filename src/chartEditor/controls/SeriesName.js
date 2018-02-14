@@ -27,7 +27,7 @@ anychart.chartEditorModule.controls.SeriesName = function(control, opt_label, op
 
   if (opt_isSingeValues) {
     var button = new anychart.chartEditorModule.button.Toggle();
-    button.setIcon('ac ac-bold');
+    button.setIcon('ac ac-unlock');
     button.setNormalValue(false);
     button.setCheckedValue(true);
 
@@ -49,10 +49,14 @@ anychart.chartEditorModule.controls.SeriesName.prototype.createDom = function() 
 /** @inheritDoc */
 anychart.chartEditorModule.controls.SeriesName.prototype.enterDocument = function() {
   anychart.chartEditorModule.controls.SeriesName.base(this, 'enterDocument');
+
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
   if (model.getValue(this.lockKey_)) {
     this.control_.setEnabled(false);
-    if (this.lockButton_) this.lockButton_.setChecked(true);
+    if (this.lockButton_) {
+      this.lockButton_.setIcon('ac ac-unlock-alt');
+      this.lockButton_.setChecked(true);
+    }
 
   } else {
     this.control_.setEnabled(true);
@@ -67,9 +71,12 @@ anychart.chartEditorModule.controls.SeriesName.prototype.init = function(model, 
 
   this.lockKey_ = [['editorSettings'], ['lockSeriesName'], this.control_.getKey()[2]];
 
-  if (this.lockButton_)
+  if (this.lockButton_) {
+    if (model.getValue(this.lockKey_) === void 0)
+      model.setValue(this.lockKey_, true, true);
+
     this.lockButton_.init(model, this.lockKey_);
-  else
+  } else
     model.removeByKey(this.lockKey_, true);
 };
 
