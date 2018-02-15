@@ -4,6 +4,7 @@ goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
+goog.require('anychart.data.Set');
 goog.require('anychart.format.Context');
 
 
@@ -75,6 +76,8 @@ anychart.circularGaugeModule.pointers.Base = function() {
    * @type {anychart.core.utils.InteractivityState}
    */
   this.state = new anychart.core.utils.InteractivityState(this);
+
+
 };
 goog.inherits(anychart.circularGaugeModule.pointers.Base, anychart.core.VisualBase);
 
@@ -356,6 +359,50 @@ anychart.circularGaugeModule.pointers.Base.prototype.remove = function() {
       this.hatchFillElement.container(null);
   }
 };
+
+
+//region --- DATA ---
+/**
+ * Getter/setter for series mapping.
+ * @param {?(number|anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+ * @return {(!anychart.circularGaugeModule.pointers.Base|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.data = function(opt_value, opt_csvSettings) {
+  if (goog.isDef(opt_value)) {
+    if (this.rawData !== opt_value) {
+      this.rawData = opt_value;
+      goog.dispose(this.parentViewToDispose); // disposing a view created by the series if any;
+      if (anychart.utils.instanceOf(opt_value, anychart.data.View))
+        this.ownData = this.parentViewToDispose = opt_value.derive(); // deriving a view to avoid interference with other view users
+      else if (anychart.utils.instanceOf(opt_value, anychart.data.Set))
+        this.ownData = this.parentViewToDispose = opt_value.mapAs();
+      else
+        this.ownData = !goog.isNull(opt_value) ? (this.parentViewToDispose = new anychart.data.Set(
+            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs() : null;
+      if (this.ownData)
+        this.ownData.listenSignals(this.dataInvalidated_, this);
+      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+    }
+    return this;
+  }
+  return this.ownData;
+};
+
+
+/**
+ * Listens to data invalidation.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.dataInvalidated_ = function(e) {
+  if (e.hasSignal(anychart.Signal.DATA_CHANGED)) {
+    this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
+  }
+};
+
+
+//endregion
 
 
 /**

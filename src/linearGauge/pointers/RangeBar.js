@@ -5,12 +5,11 @@ goog.require('anychart.linearGaugeModule.pointers.Bar');
 
 /**
  * Range bar pointer class.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndexOrData Pointer data index.
  * @extends {anychart.linearGaugeModule.pointers.Bar}
  * @constructor
  */
-anychart.linearGaugeModule.pointers.RangeBar = function(dataIndexOrData) {
-  anychart.linearGaugeModule.pointers.RangeBar.base(this, 'constructor', dataIndexOrData);
+anychart.linearGaugeModule.pointers.RangeBar = function() {
+  anychart.linearGaugeModule.pointers.RangeBar.base(this, 'constructor');
 
   this.referenceValueNames = ['high', 'low'];
 };

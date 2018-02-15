@@ -359,10 +359,11 @@ anychart.linearGaugeModule.Chart.prototype.getDataHolders = function() {
  * Creates pointer.
  * @param {string} type Pointer type.
  * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndexOrData Pointer data index or pointer data.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
  * @private
  * @return {anychart.linearGaugeModule.pointers.Base} Pointer instance.
  */
-anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type, dataIndexOrData) {
+anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type, dataIndexOrData, opt_csvSettings) {
   type = anychart.enums.normalizeLinearGaugePointerType(type);
   var config = this.defaultPointerSettings()[anychart.utils.toCamelCase(type)];
   var ctl = anychart.linearGaugeModule.Chart.PointersTypesMap[type];
@@ -372,7 +373,12 @@ anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type,
   var instance;
 
   if (ctl) {
-    instance = new ctl(dataIndexOrData);
+    instance = new ctl();
+    if (goog.isNumber(dataIndexOrData)) {
+      instance.dataIndex(/** @type {number} */(dataIndexOrData));
+    } else {
+      instance.data(/** @type {anychart.data.View|anychart.data.Set|Array|string} */(dataIndexOrData), opt_csvSettings);
+    }
     var lastPointer = this.pointers_[this.pointers_.length - 1];
     var index = lastPointer ? /** @type {number} */ (lastPointer.autoIndex()) + 1 : 0;
     this.pointers_.push(instance);
@@ -403,7 +409,7 @@ anychart.linearGaugeModule.Chart.prototype.createPointerByType_ = function(type,
 
 /**
  * Adds pointers to gauge.
- * @param {...(number)} var_args Data indexes for pointers.
+ * @param {...(number|anychart.data.View|anychart.data.Set|Array)} var_args Data indexes or data for pointers.
  * @return {Array.<anychart.linearGaugeModule.pointers.Base>} Array of created pointers.
  */
 anychart.linearGaugeModule.Chart.prototype.addPointer = function(var_args) {
@@ -1071,8 +1077,8 @@ anychart.linearGaugeModule.Chart.prototype.drawContent = function(bounds) {
     for (i = 0; i < items.length; i++) {
       item = items[i];
       if (item && item.enabled()) {
-        width = anychart.utils.normalizeSize(/** @type {number|string} */ (anychart.utils.normalizeToPercent(item.width())), parentWidth);
-        offset = anychart.utils.normalizeSize(/** @type {number|string} */ (anychart.utils.normalizeToPercent(item.offset())), parentWidth);
+        width = anychart.utils.normalizeSize(/** @type {number|string} */ (anychart.utils.normalizeToPercent(item.getOption('width'))), parentWidth);
+        offset = anychart.utils.normalizeSize(/** @type {number|string} */ (anychart.utils.normalizeToPercent(item.getOption('offset'))), parentWidth);
         if (isVertical)
           pb = anychart.math.rect(offset, bounds.top, width, height);
         else
@@ -1399,8 +1405,8 @@ anychart.linearGaugeModule.Chart.prototype.pointerInvalidated_ = function(e) {
    * @return {Function}
    */
   var constructorsGenerator = function(type) {
-    return function(dataIndexOrData) {
-      return this.createPointerByType_(type, dataIndexOrData);
+    return function(dataIndexOrData, opt_csvSettings) {
+      return this.createPointerByType_(type, dataIndexOrData, opt_csvSettings);
     };
   };
   var prototype = anychart.linearGaugeModule.Chart.prototype;
