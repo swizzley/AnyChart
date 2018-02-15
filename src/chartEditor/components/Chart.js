@@ -186,7 +186,10 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
                 return item.key === (goog.isDef(seriesMapping['value']) ? seriesMapping['value'] : goog.object.getAnyValue(seriesMapping));
               })[0];
 
-              settings['chart']['settings'][stringKey] = currentField.name;
+              if (currentField) {
+                settings['chart']['settings'][stringKey] = currentField.name;
+                model.setValue([['editorSettings'], ['lockSeriesName'], stringKey], currentField.key, true);
+              }
             }
           }
         }
@@ -196,7 +199,7 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
 
   // Chart settings
   // console.log("=== Chart draw ===");
-  // console.log(settings['editorSettings']);
+  //console.log(settings['editorSettings']['lockSeriesName']);
   goog.object.forEach(settings['chart']['settings'], function(value, key) {
     //console.log("chart settings", key, value);
     if (goog.isString(value)) {

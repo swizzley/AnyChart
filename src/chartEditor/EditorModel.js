@@ -2113,12 +2113,12 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
 
   result.push('// Setting up data');
 
-  if (addMarkers) result.push('/*==rawData*/');
+  if (addMarkers) result.push('/*=rawData*/');
 
   var str = 'var rawData' + eq + (addData ? this.printValue_(printer, rawData) : '[/*Add your data here*/]') + ';';
   result.push(str);
 
-  if (addMarkers) result.push('/*rawData==*/');
+  if (addMarkers) result.push('/*rawData=*/');
 
   if (dsCtor === 'table') {
     result.push('var data' + eq + 'anychart.data.' + dsCtor + '(' + this.printValue_(printer, settings['dataSettings']['field']) + ');');
@@ -2237,10 +2237,10 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
         if (addMarkers) {
           var pattern = /(plot\(\d\)\.)?getSeries.*\.name\(.*\)/;
           if (markerSeriesName === '' && settingString.search(pattern) !== -1) {
-            result.push('/*==seriesNames*/');
+            result.push('/*=seriesNames*/');
             markerSeriesName = 'opened';
           } else if (markerSeriesName === 'opened' && settingString.search(pattern) === -1) {
-            result.push('/*seriesNames==*/');
+            result.push('/*seriesNames=*/');
             markerSeriesName = 'closed';
           }
         }

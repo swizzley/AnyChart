@@ -51,10 +51,12 @@ anychart.chartEditorModule.controls.SeriesName.prototype.enterDocument = functio
   anychart.chartEditorModule.controls.SeriesName.base(this, 'enterDocument');
 
   var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-  if (model.getValue(this.lockKey_)) {
+  var checkedValue = model.getValue(this.lockKey_);
+  if (checkedValue) {
     this.control_.setEnabled(false);
     if (this.lockButton_) {
-      this.lockButton_.setIcon('ac ac-unlock-alt');
+      this.lockButton_.setIcon('ac ac-lock');
+      this.lockButton_.setCheckedValue(checkedValue);
       this.lockButton_.setChecked(true);
     }
 
