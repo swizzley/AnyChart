@@ -2001,7 +2001,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartAsJson = function() {
   if (!chart) return '';
   var json = chart ? chart.toJson() : '';
   var settings = this.getModel();
-  var outputSettings = settings['editorSettings']['output'] ? settings['editorSettings']['output'] : {};
+  var outputSettings = settings['editorSettings'] && settings['editorSettings']['output'] ? settings['editorSettings']['output'] : {};
   var minify = !!outputSettings['minify'];
   var containerId = outputSettings['container'];
   if (containerId) {
@@ -2038,7 +2038,7 @@ anychart.chartEditorModule.EditorModel.prototype.getChartAsXml = function() {
  */
 anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(opt_options) {
   var settings = this.getModel();
-  var outputSettings = settings['editorSettings']['output'] ? settings['editorSettings']['output'] : {};
+  var outputSettings = settings['editorSettings'] && settings['editorSettings']['output'] ? settings['editorSettings']['output'] : {};
   if (goog.isObject(opt_options))
     for (var k1 in opt_options) {
       outputSettings[k1] = opt_options[k1];
