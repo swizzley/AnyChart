@@ -1468,9 +1468,11 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
 
           iterator.select(pointer.dataIndex());
           axis = this.axes_[axisIndex];
-          axis.scale().extendDataRange(iterator.get('value'));
-          if (anychart.utils.instanceOf(pointer, anychart.circularGaugeModule.pointers.Bar))
-            axis.scale().extendDataRange(0);
+          if (axis) {
+            axis.scale().extendDataRange(iterator.get('value'));
+            if (anychart.utils.instanceOf(pointer, anychart.circularGaugeModule.pointers.Bar))
+              axis.scale().extendDataRange(0);
+          }
         }
       }
     }

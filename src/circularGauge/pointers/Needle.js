@@ -190,6 +190,8 @@ anychart.circularGaugeModule.pointers.Needle.prototype.draw = function() {
   if (!axis || !axis.enabled()) {
     if (this.domElement) this.domElement.clear();
     if (this.hatchFillElement) this.hatchFillElement.clear();
+    if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS))
+      this.markConsistent(anychart.ConsistencyState.BOUNDS);
     return this;
   }
 
