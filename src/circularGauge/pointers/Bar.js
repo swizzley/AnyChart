@@ -234,8 +234,9 @@ anychart.circularGaugeModule.pointers.Bar.prototype.setupByJSON = function(confi
 
 /** @inheritDoc */
 anychart.circularGaugeModule.pointers.Bar.prototype.disposeInternal = function() {
-  goog.dispose(this.domElement);
+  goog.disposeAll(this.domElement, this.hatchFillElement);
   this.domElement = null;
+  this.hatchFillElement = null;
   anychart.circularGaugeModule.pointers.Bar.base(this, 'disposeInternal');
 };
 
