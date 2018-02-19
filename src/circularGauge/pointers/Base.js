@@ -267,14 +267,15 @@ anychart.circularGaugeModule.pointers.Base.prototype.dataIndex = function(opt_in
   if (goog.isDef(opt_index)) {
     if (this.dataIndex_ != opt_index) {
       this.dataIndex_ = opt_index;
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
-          anychart.Signal.NEEDS_REDRAW |
-          anychart.Signal.NEEDS_RECALCULATION
-      );
+      if (!this.ownData)
+        this.invalidate(anychart.ConsistencyState.BOUNDS,
+            anychart.Signal.NEEDS_REDRAW |
+            anychart.Signal.NEEDS_RECALCULATION
+        );
     }
     return this;
   } else {
-    return this.dataIndex_;
+    return (this.ownData ? 0 : /** @type {number} */(this.dataIndex_));
   }
 };
 
@@ -382,7 +383,10 @@ anychart.circularGaugeModule.pointers.Base.prototype.data = function(opt_value, 
             (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs() : null;
       if (this.ownData)
         this.ownData.listenSignals(this.dataInvalidated_, this);
-      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW |
+          anychart.Signal.NEEDS_RECALCULATION
+      );
     }
     return this;
   }
@@ -397,30 +401,51 @@ anychart.circularGaugeModule.pointers.Base.prototype.data = function(opt_value, 
  */
 anychart.circularGaugeModule.pointers.Base.prototype.dataInvalidated_ = function(e) {
   if (e.hasSignal(anychart.Signal.DATA_CHANGED)) {
-    this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
+    this.invalidate(anychart.ConsistencyState.BOUNDS,
+        anychart.Signal.NEEDS_REDRAW |
+        anychart.Signal.NEEDS_RECALCULATION
+    );
   }
 };
 
 
-//endregion
+/**
+ * Returns own data iterator.
+ * @return {!anychart.data.Iterator}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getOwnIterator = function() {
+  return this.iterator_ || this.getOwnResetIterator();
+};
 
 
 /**
- * Returns current mapping iterator.
- * @return {!anychart.data.Iterator} Current series iterator.
+ * Returns own data reset iterator.
+ * @return {!anychart.data.Iterator}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getOwnResetIterator = function() {
+  return (this.iterator_ = this.ownData.getIterator());
+};
+
+
+/**
+ * Returns gauge iterator.
+ * @return {!anychart.data.Iterator} Iterator.
  */
 anychart.circularGaugeModule.pointers.Base.prototype.getIterator = function() {
-  return this.gauge().getIterator();
+  return this.ownData ? this.getOwnIterator() : this.gauge_.getIterator();
 };
 
 
 /**
- * Returns new default iterator for the current mapping.
- * @return {!anychart.data.Iterator} New iterator.
+ * Returns reset iterator.
+ * @return {!anychart.data.Iterator}
  */
 anychart.circularGaugeModule.pointers.Base.prototype.getResetIterator = function() {
-  return this.gauge().getResetIterator();
+  return this.ownData ? this.getOwnResetIterator() : this.gauge_.getResetIterator();
 };
+
+
+//endregion
 
 
 /**
@@ -577,7 +602,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.makePointEvent = function(e
   pointIndex = anychart.utils.toNumber(pointIndex);
   event['pointIndex'] = pointIndex;
 
-  var iter = this.gauge().getIterator();
+  var iter = this.getIterator();
   if (!iter.select(pointIndex))
     iter.reset();
 
@@ -624,7 +649,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.makeInteractive = function(
   if (opt_seriesGlobal) {
     element.tag.index = true;
   } else {
-    element.tag.index = this.gauge().getIterator().getIndex();
+    element.tag.index = this.getIterator().getIndex();
   }
 };
 

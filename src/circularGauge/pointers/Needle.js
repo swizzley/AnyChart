@@ -220,7 +220,7 @@ anychart.circularGaugeModule.pointers.Needle.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = gauge.getResetIterator();
+    var iterator = this.getIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
 
     var value = parseFloat(iterator.get('value'));

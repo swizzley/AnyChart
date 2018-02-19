@@ -514,6 +514,7 @@ anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(typ
     instance.autoIndex(index);
     instance.zIndex(pointerZIndex);
     instance.dataIndex(isKnob ? this.knobCounter_++ : this.pointerCounter_++);
+    instance.data(opt_data, opt_csvSettings);
     instance.axisIndex(0);
     instance.gauge(this);
     instance.setupInternal(true, config);
