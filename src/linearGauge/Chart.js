@@ -1415,8 +1415,9 @@ anychart.linearGaugeModule.Chart.prototype.pointerInvalidated_ = function(e) {
     var methodName = anychart.utils.toCamelCase(types[i]);
     /**
      * Pointer constructor.
-     * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
-     * @return {anychart.linearGaugeModule.pointers.Base} Bar pointer.
+     * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndexOrData Pointer data index or pointer data.
+     * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+     * @return {anychart.linearGaugeModule.pointers.Base} Pointer.
      * @this {anychart.linearGaugeModule.Chart}
      */
     prototype[methodName] = constructorsGenerator(types[i]);

@@ -483,11 +483,13 @@ anychart.circularGaugeModule.Chart.prototype.onCircularRangeSignal_ = function(e
 /**
  * Creates pointer.
  * @param {string|anychart.enums.CircularGaugePointerType} type Pointer type.
- * @param {Array=} opt_data Pointer data.
+ * @param {number} arrIndex Typed array index.
+ * @param {(anychart.data.View|anychart.data.Set|Array|string)=} opt_data Pointer data.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
  * @private
  * @return {anychart.circularGaugeModule.pointers.Base} Pointer instance.
  */
-anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(type, opt_data) {
+anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(type, arrIndex, opt_data, opt_csvSettings) {
   type = anychart.enums.normalizeCircularGaugePointerType(type);
   var isKnob = (type == anychart.enums.CircularGaugePointerType.KNOB);
   var ctl = anychart.circularGaugeModule.Chart.PointersTypesMap[type];
@@ -497,11 +499,15 @@ anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(typ
    */
   var instance;
 
+  var typedArray = this.getTypedArray(type);
+
   if (ctl) {
     instance = new ctl();
     var lastPointer = this.pointers_[this.pointers_.length - 1];
     var index = lastPointer ? /** @type {number} */(lastPointer.autoIndex()) + 1 : 0;
     this.pointers_.push(instance);
+    typedArray[arrIndex] = instance;
+
     var pointerZIndex = anychart.circularGaugeModule.Chart.ZINDEX_POINTER + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER *
         (isKnob ? this.knobCounter_ : this.pointerCounter_);
 
@@ -534,10 +540,12 @@ anychart.circularGaugeModule.Chart.prototype.addPointer = function(var_args) {
 
   var type = /** @type {anychart.enums.CircularGaugePointerType} */ (this.getOption('defaultPointerType'));
   var count = arguments.length;
+  var typedArray = this.getTypedArray(type);
+  var arrIndex = typedArray.length;
   this.suspendSignalsDispatching();
   if (count) {
     for (var i = 0; i < count; i++) {
-      rv.push(this.createPointerByType_(type, arguments[i]));
+      rv.push(this.createPointerByType_(type, arrIndex + i, arguments[i]));
     }
   }
   this.resumeSignalsDispatching(true);
@@ -810,6 +818,15 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
   }
 };*/
 
+
+/**
+ * @param {*} value
+ * @return {boolean}
+ */
+anychart.circularGaugeModule.Chart.prototype.isConfig_ = function(value) {
+  return !goog.isArray(value) && !goog.isFunction(value) && goog.isObject(value);
+};
+
 // Generate pointer constructors
 (function() {
   /**
@@ -817,25 +834,133 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
    * @return {Function}
    */
   var constructorsGenerator = function(type) {
-    return function(opt_indexOrValue, opt_value) {
-      var index, value;
-      index = anychart.utils.toNumber(opt_indexOrValue);
-      if (isNaN(index)) {
-        index = 0;
-        value = opt_indexOrValue;
+    /*
+    ---  WAS:  ---
+
+      0 argument
+      bar() - getter index=0
+
+      1 argument
+      bar(index) getter index
+      bar(config) setter config index=0
+
+      2 argument
+      bar(index, config) setter config index
+
+    --- BECOME ---
+
+      0 argument
+      bar() - getter index=0
+
+      1 argument
+      bar(index) - getter index
+      bar(config) - setter config index=0
+      bar(data) - setter data index=0
+
+      2 arguments
+      bar(config, data) - setter config data index=0
+      bar(data, csvSettings) - setter data settings index=0
+      bar(index, config) - setter config index
+      bar(index, data) - setter data index
+
+      3 arguments
+      bar(config, data, csvSettings) setter config data settings index=0
+      bar(index, config, data) - setter config data index
+      bar(index, data, csvSettings) setter data settings index
+
+      4 arguments
+      bar(index, config, data, csvSettings) - setter config data settings index
+
+    */
+
+    return function(opt_indexOrValueOrData, opt_valueOrDataOrSettings, opt_dataOrSettings, opt_csvSettings) {
+      var index, config, data, settings;
+      var argLen = arguments.length;
+
+      index = anychart.utils.toNumber(opt_indexOrValueOrData);
+      if (argLen > 3) {
+        // 4 arguments
+
+        // bar(index, config, data, csvSettings) - setter config data settings index
+        if (isNaN(index)) index = 0;
+        config = opt_valueOrDataOrSettings;
+        data = opt_dataOrSettings;
+        settings = opt_csvSettings;
+
+      } else if (argLen > 2) {
+        // 3 arguments
+
+        if (this.isConfig_(opt_indexOrValueOrData)) {
+          // bar(config, data, csvSettings) setter config data settings index=0
+          index = 0;
+          config = opt_indexOrValueOrData;
+          data = opt_valueOrDataOrSettings;
+          settings = opt_dataOrSettings;
+        } else {
+          if (isNaN(index)) index = 0;
+          if (this.isConfig_(opt_valueOrDataOrSettings)) {
+            // bar(index, config, data) - setter config data index
+            config = opt_valueOrDataOrSettings;
+            data = opt_dataOrSettings;
+          } else {
+            // bar(index, data, csvSettings) setter data settings index
+            data = opt_valueOrDataOrSettings;
+            settings = opt_dataOrSettings;
+          }
+        }
+
+      } else if (argLen > 1) {
+        // 2 arguments
+
+        if (this.isConfig_(opt_indexOrValueOrData)) {
+          // bar(config, data) - setter config data index=0
+          index = 0;
+          config = opt_indexOrValueOrData;
+          data = opt_valueOrDataOrSettings;
+        } else {
+          if (isNaN(index)) {
+            // bar(data, csvSettings) - setter data settings index=0
+            index = 0;
+            data = opt_indexOrValueOrData;
+            settings = opt_valueOrDataOrSettings;
+          } else {
+            if (this.isConfig_(opt_valueOrDataOrSettings))
+              // bar(index, config) - setter config index
+              config = opt_valueOrDataOrSettings;
+            else
+              // bar(index, data) - setter data index
+              data = opt_valueOrDataOrSettings;
+          }
+        }
+
+
+      } else if (argLen > 0) {
+        // 1 argument
+
+        if (isNaN(index)) {
+          index = 0;
+          if (this.isConfig_(opt_indexOrValueOrData))
+            // bar(config) - setter config index=0
+            config = opt_indexOrValueOrData;
+          else
+            // bar(data) - setter data index=0
+            data = opt_indexOrValueOrData;
+        }
+        // bar(index) - getter index
+
       } else {
-        index = /** @type {number} */(opt_indexOrValue);
-        value = opt_value;
+        // 0 arguments
+        index = 0;
       }
+
       var arr = this.getTypedArray(type);
       var pointer = arr[index];
       if (!pointer) {
-        pointer = this.createPointerByType_(type);
-        arr[index] = pointer;
+        pointer = this.createPointerByType_(type, index, data, settings);
       }
 
-      if (goog.isDef(value)) {
-        pointer.setup(value);
+      if (goog.isDef(config)) {
+        pointer.setup(config);
         return this;
       } else {
         return pointer;
@@ -848,9 +973,11 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
     var methodName = anychart.utils.toCamelCase(types[i]);
     /**
      * Pointer constructor.
-     * @param {?(boolean|number|Object)=} opt_indexOrValue .
-     * @param {?(boolean|Object)=} opt_value .
-     * @return {!anychart.circularGaugeModule.pointers.Base|anychart.circularGaugeModule.Chart} .
+     * @param {?(boolean|number|Object|anychart.data.View|anychart.data.Set|Array|string)=} opt_indexOrValueOrData .
+     * @param {?(boolean|Object|anychart.data.View|anychart.data.Set|Array|string|anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_valueOrDataOrSettings .
+     * @param {(anychart.data.View|anychart.data.Set|Array|string|anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_dataOrSettings Pointer data index or pointer data.
+     * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+     * @return {!anychart.circularGaugeModule.pointers.Base|anychart.circularGaugeModule.Chart} Pointer.
      * @this {anychart.circularGaugeModule.Chart}
      */
     prototype[methodName] = constructorsGenerator(types[i]);
@@ -860,10 +987,8 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
 
 /** invalidates pointers */
 anychart.circularGaugeModule.Chart.prototype.invalidatePointerBounds = function() {
-  var pointers = goog.array.concat(this.bars_, this.markers_, this.needles_, this.knobs_);
-
-  for (var i = 0, len = pointers.length; i < len; i++) {
-    var pointer = pointers[i];
+  for (var i = 0, len = this.pointers_.length; i < len; i++) {
+    var pointer = this.pointers_[i];
     if (pointer) pointer.invalidate(anychart.ConsistencyState.BOUNDS);
   }
 };
