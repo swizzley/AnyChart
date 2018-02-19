@@ -842,9 +842,6 @@ anychart.chartEditorModule.EditorModel.prototype.chooseDefaultChartType = functi
     this.initGeoData_();
 
   this.model_['chart']['type'] = chartType;
-
-  // DEBUG
-  // this.model_['chart']['type'] = 'heatMap';
 };
 
 
