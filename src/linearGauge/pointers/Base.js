@@ -6,35 +6,27 @@ goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.LegendItemSettings');
 goog.require('anychart.core.utils.LinearGaugeInteractivityState');
+goog.require('anychart.data.Set');
 goog.require('anychart.format.Context');
 
 
 
 /**
  * Base class for pointers.
- * @param {anychart.linearGaugeModule.Chart} gauge Gauge.
- * @param {number} dataIndex Pointer data index.
  * @extends {anychart.core.VisualBase}
  * @implements {anychart.core.utils.IInteractiveSeries}
  * @implements {anychart.core.IShapeManagerUser}
  * @constructor
  */
-anychart.linearGaugeModule.pointers.Base = function(gauge, dataIndex) {
+anychart.linearGaugeModule.pointers.Base = function() {
   anychart.linearGaugeModule.pointers.Base.base(this, 'constructor');
 
   /**
-   * Gauge.
-   * @type {anychart.linearGaugeModule.Chart}
-   * @protected
-   */
-  this.gauge = gauge;
-
-  /**
    * Pointer data index.
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
-  this.dataIndex_ = dataIndex;
+  this.dataIndex_ = 0;
 
   /**
    * Reference value names.
@@ -71,6 +63,12 @@ anychart.linearGaugeModule.pointers.Base = function(gauge, dataIndex) {
    */
   this.BOUNDS_DEPENDENT_STATES = anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.GAUGE_POINTER_LABELS;
 
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['name', 0, anychart.Signal.NEED_UPDATE_LEGEND],
+    ['width', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
+    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW]
+  ]);
+
   var normalDescriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(normalDescriptorsMeta, [
     ['fill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND],
@@ -94,6 +92,8 @@ anychart.linearGaugeModule.pointers.Base = function(gauge, dataIndex) {
   this.fillResolver = anychart.color.getColorResolver('fill', anychart.enums.ColorType.FILL, true);
   this.strokeResolver = anychart.color.getColorResolver('stroke', anychart.enums.ColorType.STROKE, true);
   this.hatchFillResolver = anychart.color.getColorResolver('hatchFill', anychart.enums.ColorType.HATCH_FILL, true);
+
+  this.data(null);
 };
 goog.inherits(anychart.linearGaugeModule.pointers.Base, anychart.core.VisualBase);
 anychart.core.settings.populateAliases(anychart.linearGaugeModule.pointers.Base, ['fill', 'stroke', 'hatchFill', 'labels'], 'normal');
@@ -129,6 +129,48 @@ anychart.linearGaugeModule.pointers.Base.DEFAULT_HATCH_FILL_TYPE = acgraph.vecto
 
 
 //endregion
+//region --- DATA ---
+/**
+ * Getter/setter for series mapping.
+ * @param {?(number|anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+ * @return {(!anychart.linearGaugeModule.pointers.Base|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.data = function(opt_value, opt_csvSettings) {
+  if (goog.isDef(opt_value)) {
+    if (this.rawData !== opt_value) {
+      this.rawData = opt_value;
+      goog.dispose(this.parentViewToDispose); // disposing a view created by the series if any;
+      if (anychart.utils.instanceOf(opt_value, anychart.data.View))
+        this.ownData = this.parentViewToDispose = opt_value.derive(); // deriving a view to avoid interference with other view users
+      else if (anychart.utils.instanceOf(opt_value, anychart.data.Set))
+        this.ownData = this.parentViewToDispose = opt_value.mapAs();
+      else
+        this.ownData = !goog.isNull(opt_value) ? (this.parentViewToDispose = new anychart.data.Set(
+            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs() : null;
+      if (this.ownData)
+        this.ownData.listenSignals(this.dataInvalidated_, this);
+      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+    }
+    return this;
+  }
+  return this.ownData;
+};
+
+
+/**
+ * Listens to data invalidation.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.dataInvalidated_ = function(e) {
+  if (e.hasSignal(anychart.Signal.DATA_CHANGED)) {
+    this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+  }
+};
+
+
+//endregion
 //region --- OWN API ---
 /**
  * Returns type of the pointer.
@@ -154,30 +196,13 @@ anychart.linearGaugeModule.pointers.Base.prototype.getReferenceValues = function
 
 
 /**
- * Getter/setter for pointer name.
- * @param {string=} opt_value Pointer name.
- * @return {string|anychart.linearGaugeModule.pointers.Base}
- */
-anychart.linearGaugeModule.pointers.Base.prototype.name = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    if (this.name_ != opt_value) {
-      this.name_ = opt_value;
-      this.dispatchSignal(anychart.Signal.NEED_UPDATE_LEGEND);
-    }
-    return this;
-  }
-  return this.name_;
-};
-
-
-/**
- * Returns series index in chart.
+ * Returns pointer index in gauge.
  * @return {number}
  */
 anychart.linearGaugeModule.pointers.Base.prototype.getIndex = function() {
   if (this.isDisposed())
     return -1;
-  return goog.array.indexOf(this.gauge.getAllSeries(), this);
+  return goog.array.indexOf(this.gauge_.getAllSeries(), this);
 };
 
 
@@ -219,21 +244,48 @@ anychart.linearGaugeModule.pointers.Base.prototype.dataIndex = function(opt_inde
   if (goog.isDef(opt_index)) {
     if (this.dataIndex_ != opt_index) {
       this.dataIndex_ = opt_index;
-      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+      if (!this.ownData)
+        this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
   } else {
-    return this.dataIndex_;
+    return (this.ownData ? 0 : /** @type {number} */(this.dataIndex_));
   }
 };
 
 
 /**
  * Getter/setter for gauge.
- * @return {anychart.linearGaugeModule.Chart} Gauge.
+ * @param {anychart.linearGaugeModule.Chart=} opt_value Gauge inst for set.
+ * @return {anychart.linearGaugeModule.pointers.Base|anychart.linearGaugeModule.Chart}
  */
-anychart.linearGaugeModule.pointers.Base.prototype.getGauge = function() {
-  return this.gauge;
+anychart.linearGaugeModule.pointers.Base.prototype.gauge = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.gauge_ != opt_value) {
+      this.gauge_ = opt_value;
+    }
+    return this;
+  } else {
+    return this.gauge_;
+  }
+};
+
+
+/**
+ * Returns own data iterator.
+ * @return {!anychart.data.Iterator}
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.getOwnIterator = function() {
+  return this.iterator_ || this.getOwnResetIterator();
+};
+
+
+/**
+ * Returns own data reset iterator.
+ * @return {!anychart.data.Iterator}
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.getOwnResetIterator = function() {
+  return (this.iterator_ = this.ownData.getIterator());
 };
 
 
@@ -242,7 +294,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.getGauge = function() {
  * @return {!anychart.data.Iterator} Iterator.
  */
 anychart.linearGaugeModule.pointers.Base.prototype.getIterator = function() {
-  return this.gauge.getIterator();
+  return this.ownData ? this.getOwnIterator() : this.gauge_.getIterator();
 };
 
 
@@ -251,7 +303,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.getIterator = function() {
  * @return {!anychart.data.Iterator}
  */
 anychart.linearGaugeModule.pointers.Base.prototype.getResetIterator = function() {
-  return this.gauge.data().getIterator();
+  return this.ownData ? this.getOwnResetIterator() : this.gauge_.getResetIterator();
 };
 
 
@@ -291,7 +343,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.scale = function(opt_value) {
     return this;
   }
   if (!this.scale_)
-    this.scale(/** @type {anychart.scales.ScatterBase} */ (this.gauge.scale()));
+    this.scale(/** @type {anychart.scales.ScatterBase} */ (this.gauge_.scale()));
   return this.scale_;
 };
 
@@ -338,7 +390,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.getStartRatio = function() {
  * @return {number}
  */
 anychart.linearGaugeModule.pointers.Base.prototype.getEndRatio = function() {
-  var iterator = this.gauge.getIterator();
+  var iterator = this.getIterator();
   iterator.select(/** @type {number} */ (this.dataIndex()));
   var value = iterator.get('value');
   return goog.math.clamp(this.scale().transform(value), 0, 1);
@@ -506,40 +558,6 @@ anychart.linearGaugeModule.pointers.Base.prototype.setAutoHatchFill = function(v
 
 //endregion
 //region --- POSITION/BOUNDS ---
-/**
- * Width for pointer.
- * @param {string=} opt_value
- * @return {string|anychart.linearGaugeModule.pointers.Base} Width or self for chaining.
- */
-anychart.linearGaugeModule.pointers.Base.prototype.width = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    opt_value = /** @type {string} */ (anychart.utils.normalizeToPercent(opt_value));
-    if (this.width_ != opt_value) {
-      this.width_ = opt_value;
-      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  }
-  return this.width_;
-};
-
-
-/**
- * Getter/setter for pointer offset.
- * @param {string=} opt_value Percent offset.
- * @return {string|anychart.linearGaugeModule.pointers.Base} Offset or self for chaining.
- */
-anychart.linearGaugeModule.pointers.Base.prototype.offset = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    opt_value = /** @type {string} */ (anychart.utils.normalizeToPercent(opt_value));
-    if (this.offset_ != opt_value) {
-      this.offset_ = opt_value;
-      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-    }
-    return this;
-  }
-  return this.offset_;
-};
 
 
 /** @inheritDoc */
@@ -740,7 +758,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.getLegendItemData = function(
     itemText = itemsFormat.call(format, format);
   }
   if (!goog.isString(itemText))
-    itemText = goog.isDef(this.name()) ? this.name() : 'Pointer: ' + this.autoIndex();
+    itemText = goog.isDef(this.getOption('name')) ? this.getOption('name') : 'Pointer: ' + this.autoIndex();
 
   json['iconType'] = this.getLegendIconType(json['iconType']);
 
@@ -1026,7 +1044,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.hoverMode = function(opt_valu
   if (goog.isDef(opt_value)) {
     return this;
   }
-  return /** @type {anychart.enums.HoverMode} */((/** @type {anychart.linearGaugeModule.Chart}*/(this.gauge)).interactivity().hoverMode());
+  return /** @type {anychart.enums.HoverMode} */((/** @type {anychart.linearGaugeModule.Chart}*/(this.gauge_)).interactivity().hoverMode());
 };
 
 
@@ -1185,7 +1203,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.createFormatProvider = functi
     'pointer': {value: this, type: anychart.enums.TokenType.UNKNOWN},
     'index': {value: iterator.getIndex(), type: anychart.enums.TokenType.NUMBER},
     'value': {value: iterator.get('value'), type: anychart.enums.TokenType.NUMBER},
-    'name': {value: this.name() || 'Pointer ' + this.autoIndex(), type: anychart.enums.TokenType.STRING},
+    'name': {value: this.getOption('name') || 'Pointer ' + this.autoIndex(), type: anychart.enums.TokenType.STRING},
     'high': {value: iterator.get('high'), type: anychart.enums.TokenType.NUMBER},
     'low': {value: iterator.get('low'), type: anychart.enums.TokenType.NUMBER}
   };
@@ -1308,15 +1326,31 @@ anychart.linearGaugeModule.pointers.Base.prototype.selectSeries = function() {
 
 
 //endregion
+//region --- DESCRIPTORS
+/**
+ * Properties that should be defined in series.Base prototype.
+ * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
+ */
+anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS = (function() {
+  /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
+  var map = {};
+  anychart.core.settings.createDescriptors(map, [
+    ['name', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.asIsNormalizer],
+    ['width', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent],
+    ['offset', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent]
+  ]);
+  return map;
+})();
+anychart.core.settings.populate(anychart.linearGaugeModule.pointers.Base, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS);
+
+
+//endregion
 //region --- JSON/DISPOSING ---
 /** @inheritDoc */
 anychart.linearGaugeModule.pointers.Base.prototype.serialize = function() {
   var json = anychart.linearGaugeModule.pointers.Base.base(this, 'serialize');
+  anychart.core.settings.serialize(this, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS, json, 'Pointer');
   json['pointerType'] = this.getType();
-  if (goog.isDef(this.name()))
-    json['name'] = this.name();
-  json['width'] = this.width();
-  json['offset'] = this.offset();
   json['dataIndex'] = this.dataIndex();
   json['legendItem'] = this.legendItem().serialize();
 
@@ -1341,11 +1375,10 @@ anychart.linearGaugeModule.pointers.Base.prototype.setupByJSON = function(config
 
   this.id(config['id']);
   this.autoIndex(config['autoIndex']);
-  this.name(config['name']);
-  this.width(config['width']);
-  this.offset(config['offset']);
   this.dataIndex(config['dataIndex']);
   this.legendItem().setup(config['legendItem']);
+
+  anychart.core.settings.deserialize(this, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS, config, opt_default);
 
   this.color(config['color']);
   this.normal_.setupInternal(!!opt_default, config);
@@ -1385,17 +1418,21 @@ anychart.linearGaugeModule.pointers.Base.prototype.disposeInternal = function() 
   var proto = anychart.linearGaugeModule.pointers.Base.prototype;
   proto['scale'] = proto.scale;
   proto['legendItem'] = proto.legendItem;
-  proto['name'] = proto.name;
+  proto['id'] = proto.id;
   proto['dataIndex'] = proto.dataIndex;
-  proto['getGauge'] = proto.getGauge;
+  proto['gauge'] = proto.gauge;
   proto['color'] = proto.color;
+
+  proto['data'] = proto.data;
 
   proto['normal'] = proto.normal;
   proto['hovered'] = proto.hovered;
   proto['selected'] = proto.selected;
+  // auto generated
+  //proto['name'] = proto.name;
+  //proto['width'] = proto.width;
+  //proto['offset'] = proto.offset;
 
-  proto['width'] = proto.width;
-  proto['offset'] = proto.offset;
   proto['hover'] = proto.hoverPoint;
   proto['unhover'] = proto.unhover;
   proto['select'] = proto.selectPoint;

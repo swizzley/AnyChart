@@ -51,6 +51,12 @@ anychart.circularGaugeModule.pointers.Knob = function() {
 goog.inherits(anychart.circularGaugeModule.pointers.Knob, anychart.circularGaugeModule.pointers.Base);
 
 
+/** @inheritDoc */
+anychart.circularGaugeModule.pointers.Knob.prototype.getType = function() {
+  return anychart.enums.CircularGaugePointerType.KNOB;
+};
+
+
 /**
  * Vertices count.
  * @param {(number)=} opt_value .
@@ -300,7 +306,7 @@ anychart.circularGaugeModule.pointers.Knob.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = gauge.getResetIterator();
+    var iterator = this.getIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
     var value = parseFloat(iterator.get('value'));
 

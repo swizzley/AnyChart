@@ -4,6 +4,7 @@ goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
+goog.require('anychart.data.Set');
 goog.require('anychart.format.Context');
 
 
@@ -75,6 +76,8 @@ anychart.circularGaugeModule.pointers.Base = function() {
    * @type {anychart.core.utils.InteractivityState}
    */
   this.state = new anychart.core.utils.InteractivityState(this);
+
+
 };
 goog.inherits(anychart.circularGaugeModule.pointers.Base, anychart.core.VisualBase);
 
@@ -264,14 +267,15 @@ anychart.circularGaugeModule.pointers.Base.prototype.dataIndex = function(opt_in
   if (goog.isDef(opt_index)) {
     if (this.dataIndex_ != opt_index) {
       this.dataIndex_ = opt_index;
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
-          anychart.Signal.NEEDS_REDRAW |
-          anychart.Signal.NEEDS_RECALCULATION
-      );
+      if (!this.ownData)
+        this.invalidate(anychart.ConsistencyState.BOUNDS,
+            anychart.Signal.NEEDS_REDRAW |
+            anychart.Signal.NEEDS_RECALCULATION
+        );
     }
     return this;
   } else {
-    return this.dataIndex_;
+    return (this.ownData ? 0 : /** @type {number} */(this.dataIndex_));
   }
 };
 
@@ -293,6 +297,53 @@ anychart.circularGaugeModule.pointers.Base.prototype.gauge = function(opt_gauge)
 };
 
 
+/**
+ * Returns pointer index in gauge.
+ * @return {number}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getIndex = function() {
+  if (this.isDisposed())
+    return -1;
+  return goog.array.indexOf(this.gauge_.getAllSeries(), this);
+};
+
+
+/**
+ * Getter/setter for pointer global index, used in palettes and autoId.
+ * @param {number=} opt_value Id of the pointer.
+ * @return {number|anychart.circularGaugeModule.pointers.Base} Id or self for chaining.
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.autoIndex = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.autoIndex_ = opt_value;
+    return this;
+  }
+  return this.autoIndex_;
+};
+
+
+/**
+ * Getter/setter for pointer id.
+ * @param {(string|number)=} opt_value Id of the pointer.
+ * @return {string|number|anychart.circularGaugeModule.pointers.Base} Id or self for chaining.
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.id = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.id_ = opt_value;
+    return this;
+  } else {
+    return this.id_ || String(this.autoIndex_);
+  }
+};
+
+
+/**
+ * Returns type of the pointer.
+ * @return {anychart.enums.CircularGaugePointerType}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getType = goog.abstractMethod;
+
+
 /** @inheritDoc */
 anychart.circularGaugeModule.pointers.Base.prototype.remove = function() {
   if (this.domElement) {
@@ -311,22 +362,90 @@ anychart.circularGaugeModule.pointers.Base.prototype.remove = function() {
 };
 
 
+//region --- DATA ---
 /**
- * Returns current mapping iterator.
- * @return {!anychart.data.Iterator} Current series iterator.
+ * Getter/setter for series mapping.
+ * @param {?(number|anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+ * @return {(!anychart.circularGaugeModule.pointers.Base|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.data = function(opt_value, opt_csvSettings) {
+  if (goog.isDef(opt_value)) {
+    if (this.rawData !== opt_value) {
+      this.rawData = opt_value;
+      goog.dispose(this.parentViewToDispose); // disposing a view created by the series if any;
+      if (anychart.utils.instanceOf(opt_value, anychart.data.View))
+        this.ownData = this.parentViewToDispose = opt_value.derive(); // deriving a view to avoid interference with other view users
+      else if (anychart.utils.instanceOf(opt_value, anychart.data.Set))
+        this.ownData = this.parentViewToDispose = opt_value.mapAs();
+      else
+        this.ownData = !goog.isNull(opt_value) ? (this.parentViewToDispose = new anychart.data.Set(
+            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs() : null;
+      if (this.ownData)
+        this.ownData.listenSignals(this.dataInvalidated_, this);
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW |
+          anychart.Signal.NEEDS_RECALCULATION
+      );
+    }
+    return this;
+  }
+  return this.ownData;
+};
+
+
+/**
+ * Listens to data invalidation.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.dataInvalidated_ = function(e) {
+  if (e.hasSignal(anychart.Signal.DATA_CHANGED)) {
+    this.invalidate(anychart.ConsistencyState.BOUNDS,
+        anychart.Signal.NEEDS_REDRAW |
+        anychart.Signal.NEEDS_RECALCULATION
+    );
+  }
+};
+
+
+/**
+ * Returns own data iterator.
+ * @return {!anychart.data.Iterator}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getOwnIterator = function() {
+  return this.iterator_ || this.getOwnResetIterator();
+};
+
+
+/**
+ * Returns own data reset iterator.
+ * @return {!anychart.data.Iterator}
+ */
+anychart.circularGaugeModule.pointers.Base.prototype.getOwnResetIterator = function() {
+  return (this.iterator_ = this.ownData.getIterator());
+};
+
+
+/**
+ * Returns gauge iterator.
+ * @return {!anychart.data.Iterator} Iterator.
  */
 anychart.circularGaugeModule.pointers.Base.prototype.getIterator = function() {
-  return this.gauge().getIterator();
+  return this.ownData ? this.getOwnIterator() : this.gauge_.getIterator();
 };
 
 
 /**
- * Returns new default iterator for the current mapping.
- * @return {!anychart.data.Iterator} New iterator.
+ * Returns reset iterator.
+ * @return {!anychart.data.Iterator}
  */
 anychart.circularGaugeModule.pointers.Base.prototype.getResetIterator = function() {
-  return this.gauge().getResetIterator();
+  return this.ownData ? this.getOwnResetIterator() : this.gauge_.getResetIterator();
 };
+
+
+//endregion
 
 
 /**
@@ -483,7 +602,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.makePointEvent = function(e
   pointIndex = anychart.utils.toNumber(pointIndex);
   event['pointIndex'] = pointIndex;
 
-  var iter = this.gauge().getIterator();
+  var iter = this.getIterator();
   if (!iter.select(pointIndex))
     iter.reset();
 
@@ -530,7 +649,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.makeInteractive = function(
   if (opt_seriesGlobal) {
     element.tag.index = true;
   } else {
-    element.tag.index = this.gauge().getIterator().getIndex();
+    element.tag.index = this.getIterator().getIndex();
   }
 };
 
@@ -713,6 +832,12 @@ anychart.circularGaugeModule.pointers.Base.prototype.serialize = function() {
   json['axisIndex'] = this.axisIndex();
   json['dataIndex'] = this.dataIndex();
 
+  if (this.id_)
+    json['id'] = this.id();
+
+  if (this.autoIndex_ != this.getIndex())
+    json['autoIndex'] = this.autoIndex();
+
   return json;
 };
 
@@ -720,6 +845,9 @@ anychart.circularGaugeModule.pointers.Base.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(config, opt_default) {
   anychart.circularGaugeModule.pointers.Base.base(this, 'setupByJSON', config, opt_default);
+
+  this.id(config['id']);
+  this.autoIndex(config['autoIndex']);
 
   this.fill(config['fill']);
   this.stroke(config['stroke']);
@@ -732,6 +860,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(conf
 //exports
 (function() {
   var proto = anychart.circularGaugeModule.pointers.Base.prototype;
+  proto['id'] = proto.id;
   proto['stroke'] = proto.stroke;
   proto['fill'] = proto.fill;
   proto['hatchFill'] = proto.hatchFill;

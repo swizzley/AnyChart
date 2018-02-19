@@ -57,6 +57,12 @@ anychart.circularGaugeModule.pointers.Marker = function() {
 goog.inherits(anychart.circularGaugeModule.pointers.Marker, anychart.circularGaugeModule.pointers.Base);
 
 
+/** @inheritDoc */
+anychart.circularGaugeModule.pointers.Marker.prototype.getType = function() {
+  return anychart.enums.CircularGaugePointerType.MARKER;
+};
+
+
 /**
  * Marker size in percent relative gauge radius.
  * @param {(null|number|string)=} opt_value .
@@ -183,7 +189,7 @@ anychart.circularGaugeModule.pointers.Marker.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = gauge.getResetIterator();
+    var iterator = this.getIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
     var value = parseFloat(iterator.get('value'));
 

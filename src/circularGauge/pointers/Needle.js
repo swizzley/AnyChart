@@ -57,6 +57,12 @@ anychart.circularGaugeModule.pointers.Needle = function() {
 goog.inherits(anychart.circularGaugeModule.pointers.Needle, anychart.circularGaugeModule.pointers.Base);
 
 
+/** @inheritDoc */
+anychart.circularGaugeModule.pointers.Needle.prototype.getType = function() {
+  return anychart.enums.CircularGaugePointerType.NEEDLE;
+};
+
+
 /**
  * .
  * @param {(null|number|string)=} opt_value .
@@ -214,7 +220,7 @@ anychart.circularGaugeModule.pointers.Needle.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = gauge.getResetIterator();
+    var iterator = this.getIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
 
     var value = parseFloat(iterator.get('value'));

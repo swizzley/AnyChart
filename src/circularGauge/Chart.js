@@ -72,6 +72,13 @@ anychart.circularGaugeModule.Chart = function(opt_data, opt_csvSettings) {
   this.ranges_ = [];
 
   /**
+   * Array with pointers.
+   * @type {!Array.<?anychart.circularGaugeModule.pointers.Base>}
+   * @private
+   */
+  this.pointers_ = [];
+
+  /**
    * @type {number}
    * @private
    */
@@ -111,7 +118,8 @@ anychart.circularGaugeModule.Chart = function(opt_data, opt_csvSettings) {
       anychart.Signal.NEEDS_REDRAW],
     ['sweepAngle',
       anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW]
+      anychart.Signal.NEEDS_REDRAW],
+    ['defaultPointerType', 0, 0]
   ]);
 
   this.resumeSignalsDispatching(true);
@@ -210,7 +218,7 @@ anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER = 0.0001;
  * @inheritDoc
  */
 anychart.circularGaugeModule.Chart.prototype.getAllSeries = function() {
-  return goog.array.concat(this.bars_, this.markers_, this.needles_, this.knobs_);
+  return this.pointers_;
 };
 
 
@@ -471,12 +479,229 @@ anychart.circularGaugeModule.Chart.prototype.onrangesignal_ = function(event) {
 };
 
 
+//region --- Pointers
 /**
+ * Creates pointer.
+ * @param {string|anychart.enums.CircularGaugePointerType} type Pointer type.
+ * @param {number} arrIndex Typed array index.
+ * @param {(anychart.data.View|anychart.data.Set|Array|string)=} opt_data Pointer data.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+ * @private
+ * @return {anychart.circularGaugeModule.pointers.Base} Pointer instance.
+ */
+anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(type, arrIndex, opt_data, opt_csvSettings) {
+  type = anychart.enums.normalizeCircularGaugePointerType(type);
+  var isKnob = (type == anychart.enums.CircularGaugePointerType.KNOB);
+  var ctl = anychart.circularGaugeModule.Chart.PointersTypesMap[type];
+  var config = this.defaultPointerSettings()[anychart.utils.toCamelCase(type)];
+  /**
+   * @type {anychart.circularGaugeModule.pointers.Base}
+   */
+  var instance;
+
+  var typedArray = this.getTypedArray(type);
+
+  if (ctl) {
+    instance = new ctl();
+    var lastPointer = this.pointers_[this.pointers_.length - 1];
+    var index = lastPointer ? /** @type {number} */(lastPointer.autoIndex()) + 1 : 0;
+    this.pointers_.push(instance);
+    typedArray[arrIndex] = instance;
+
+    var pointerZIndex = anychart.circularGaugeModule.Chart.ZINDEX_POINTER + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER *
+        (isKnob ? this.knobCounter_ : this.pointerCounter_);
+
+    instance.autoIndex(index);
+    instance.zIndex(pointerZIndex);
+    instance.dataIndex(isKnob ? this.knobCounter_++ : this.pointerCounter_++);
+    instance.data(opt_data, opt_csvSettings);
+    instance.axisIndex(0);
+    instance.gauge(this);
+    instance.setupInternal(true, config);
+    instance.listenSignals(this.onPointersSignal_, this);
+
+    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
+        anychart.ConsistencyState.GAUGE_SCALE,
+        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
+  } else {
+    instance = null;
+  }
+
+  return instance;
+};
+
+
+/**
+ * Adds pointers to gauge.
+ * @param {...(number)} var_args Data indexes for pointers.
+ * @return {Array.<anychart.circularGaugeModule.pointers.Base>} Array of created pointers.
+ */
+anychart.circularGaugeModule.Chart.prototype.addPointer = function(var_args) {
+  var rv = [];
+
+  var type = /** @type {anychart.enums.CircularGaugePointerType} */ (this.getOption('defaultPointerType'));
+  var count = arguments.length;
+  var typedArray = this.getTypedArray(type);
+  var arrIndex = typedArray.length;
+  this.suspendSignalsDispatching();
+  if (count) {
+    for (var i = 0; i < count; i++) {
+      rv.push(this.createPointerByType_(type, arrIndex + i, arguments[i]));
+    }
+  }
+  this.resumeSignalsDispatching(true);
+
+  return rv;
+};
+
+
+/**
+ * Removes pointer by id.
+ * @param {number|string} id Id of the pointer.
+ * @return {anychart.circularGaugeModule.Chart} Gauge instance.
+ */
+anychart.circularGaugeModule.Chart.prototype.removePointer = function(id) {
+  return this.removePointerAt(this.getPointerIndexByPointerId(id));
+};
+
+
+/**
+ * @param {anychart.enums.CircularGaugePointerType} type Pointer type.
+ * @return {?Array.<anychart.circularGaugeModule.pointers.Base>}
+ */
+anychart.circularGaugeModule.Chart.prototype.getTypedArray = function(type) {
+  switch (type) {
+    case anychart.enums.CircularGaugePointerType.BAR:
+      return this.bars_;
+    case anychart.enums.CircularGaugePointerType.MARKER:
+      return this.markers_;
+    case anychart.enums.CircularGaugePointerType.NEEDLE:
+      return this.needles_;
+    case anychart.enums.CircularGaugePointerType.KNOB:
+      return this.knobs_;
+  }
+  return null;
+};
+
+
+/**
+ * Remove pointer from typed pointer array.
+ * @param {anychart.circularGaugeModule.pointers.Base} pointer
+ */
+anychart.circularGaugeModule.Chart.prototype.removeFromTypedArray = function(pointer) {
+  var type = pointer.getType();
+  var arr = this.getTypedArray(type);
+  var index = goog.array.indexOf(arr, pointer);
+  if (index != -1) {
+    goog.array.splice(arr, index, 1);
+  }
+};
+
+
+/**
+ * Removes pointer by index.
+ * @param {number} index Pointer index.
+ * @return {anychart.circularGaugeModule.Chart} Gauge instance.
+ */
+anychart.circularGaugeModule.Chart.prototype.removePointerAt = function(index) {
+  var pointer = this.pointers_[index];
+  if (pointer) {
+    anychart.globalLock.lock();
+    goog.array.splice(this.pointers_, index, 1);
+    this.removeFromTypedArray(pointer);
+    goog.dispose(pointer);
+    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
+        anychart.ConsistencyState.GAUGE_SCALE,
+        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
+    anychart.globalLock.unlock();
+  }
+  return this;
+};
+
+
+/**
+ * Removes all pointers from gauge.
+ * @return {anychart.circularGaugeModule.Chart} Gauge instance.
+ */
+anychart.circularGaugeModule.Chart.prototype.removeAllPointers = function() {
+  if (this.pointers_.length) {
+    anychart.globalLock.lock();
+    var pointers = this.pointers_;
+    this.pointers_ = [];
+    this.bars_ = [];
+    this.knobs_ = [];
+    this.markers_ = [];
+    this.needles_ = [];
+    goog.disposeAll(pointers);
+    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
+        anychart.ConsistencyState.GAUGE_SCALE,
+        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
+    anychart.globalLock.unlock();
+  }
+  return this;
+};
+
+
+/**
+ * Find pointer index by pointer id.
+ * @param {number|string} id Pointer id.
+ * @return {number} Pointer index of -1 if can not be found.
+ */
+anychart.circularGaugeModule.Chart.prototype.getPointerIndexByPointerId = function(id) {
+  return goog.array.findIndex(this.pointers_, function(item) {
+    return item.id() == id;
+  });
+};
+
+
+/**
+ * Returns pointer by id.
+ * @param {number|string} id Id of the pointer.
+ * @return {?anychart.circularGaugeModule.pointers.Base} Pointer instance.
+ */
+anychart.circularGaugeModule.Chart.prototype.getPointer = function(id) {
+  return this.getPointerAt(this.getPointerIndexByPointerId(id));
+};
+
+
+/**
+ * Returns pointer by index.
+ * @param {number} index Pointer index.
+ * @return {?anychart.circularGaugeModule.pointers.Base} Pointer instance.
+ */
+anychart.circularGaugeModule.Chart.prototype.getPointerAt = function(index) {
+  return this.pointers_[index] || null;
+};
+
+
+/**
+ * INTERNAL USE ONLY. DO NOT EXPORT.
+ * Method is trying to find pointer by it's auto index.
+ * @param {number} autoIndex Pointer autoIndex.
+ * @return {anychart.circularGaugeModule.pointers.Base} Found pointer.
+ */
+anychart.circularGaugeModule.Chart.prototype.getPointerByAutoIndex = function(autoIndex) {
+  return goog.array.find(this.pointers_, function(item) {
+    return item.autoIndex() == autoIndex;
+  });
+};
+
+
+/**
+ * Returns pointers count.
+ * @return {number} Number of pointers.
+ */
+anychart.circularGaugeModule.Chart.prototype.getPointersCount = function() {
+  return this.pointers_.length;
+};
+
+
+/*/!**
  * Bar pointer.
  * @param {?(boolean|number|Object)=} opt_indexOrValue .
  * @param {?(boolean|Object)=} opt_value .
  * @return {!anychart.circularGaugeModule.pointers.Bar|anychart.circularGaugeModule.Chart} .
- */
+ *!/
 anychart.circularGaugeModule.Chart.prototype.bar = function(opt_indexOrValue, opt_value) {
   var index, value;
   index = anychart.utils.toNumber(opt_indexOrValue);
@@ -484,24 +709,13 @@ anychart.circularGaugeModule.Chart.prototype.bar = function(opt_indexOrValue, op
     index = 0;
     value = opt_indexOrValue;
   } else {
-    index = /** @type {number} */(opt_indexOrValue);
+    index = /!** @type {number} *!/(opt_indexOrValue);
     value = opt_value;
   }
   var bar = this.bars_[index];
   if (!bar) {
-    bar = new anychart.circularGaugeModule.pointers.Bar();
+    bar = this.createPointerByType_(anychart.enums.CircularGaugePointerType.BAR);
     this.bars_[index] = bar;
-    bar.zIndex(anychart.circularGaugeModule.Chart.ZINDEX_POINTER + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER * this.pointerCounter_);
-    bar.dataIndex(this.pointerCounter_++);
-    bar.axisIndex(0);
-    bar.gauge(this);
-    //TODO(AntonKagakin): may be we should create gauge pointers (not only bar, but knob, markers too) and colorize them with default palette?
-    bar.setup(this.defaultPointerSettings()['bar']);
-    this.registerDisposable(bar);
-    bar.listenSignals(this.onPointersSignal_, this);
-    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
-        anychart.ConsistencyState.GAUGE_SCALE,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
   }
 
   if (goog.isDef(value)) {
@@ -513,12 +727,12 @@ anychart.circularGaugeModule.Chart.prototype.bar = function(opt_indexOrValue, op
 };
 
 
-/**
+/!**
  * Marker pointer.
  * @param {?(boolean|number|Object)=} opt_indexOrValue .
  * @param {?(boolean|Object)=} opt_value .
  * @return {!anychart.circularGaugeModule.pointers.Marker|anychart.circularGaugeModule.Chart} .
- */
+ *!/
 anychart.circularGaugeModule.Chart.prototype.marker = function(opt_indexOrValue, opt_value) {
   var index, value;
   index = anychart.utils.toNumber(opt_indexOrValue);
@@ -526,23 +740,13 @@ anychart.circularGaugeModule.Chart.prototype.marker = function(opt_indexOrValue,
     index = 0;
     value = opt_indexOrValue;
   } else {
-    index = /** @type {number} */(opt_indexOrValue);
+    index = /!** @type {number} *!/(opt_indexOrValue);
     value = opt_value;
   }
   var marker = this.markers_[index];
   if (!marker) {
-    marker = new anychart.circularGaugeModule.pointers.Marker();
+    marker = this.createPointerByType_(anychart.enums.CircularGaugePointerType.MARKER);
     this.markers_[index] = marker;
-    marker.zIndex(anychart.circularGaugeModule.Chart.ZINDEX_POINTER + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER * this.pointerCounter_);
-    marker.dataIndex(this.pointerCounter_++);
-    marker.axisIndex(0);
-    marker.gauge(this);
-    marker.setup(this.defaultPointerSettings()['marker']);
-    this.registerDisposable(marker);
-    marker.listenSignals(this.onPointersSignal_, this);
-    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
-        anychart.ConsistencyState.GAUGE_SCALE,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
   }
 
   if (goog.isDef(value)) {
@@ -554,12 +758,12 @@ anychart.circularGaugeModule.Chart.prototype.marker = function(opt_indexOrValue,
 };
 
 
-/**
+/!**
  * Needle pointer.
  * @param {?(boolean|number|Object)=} opt_indexOrValue .
  * @param {?(boolean|Object)=} opt_value .
  * @return {!anychart.circularGaugeModule.pointers.Needle|anychart.circularGaugeModule.Chart} .
- */
+ *!/
 anychart.circularGaugeModule.Chart.prototype.needle = function(opt_indexOrValue, opt_value) {
   var index, value;
   index = anychart.utils.toNumber(opt_indexOrValue);
@@ -567,23 +771,13 @@ anychart.circularGaugeModule.Chart.prototype.needle = function(opt_indexOrValue,
     index = 0;
     value = opt_indexOrValue;
   } else {
-    index = /** @type {number} */(opt_indexOrValue);
+    index = /!** @type {number} *!/(opt_indexOrValue);
     value = opt_value;
   }
   var needle = this.needles_[index];
   if (!needle) {
-    needle = new anychart.circularGaugeModule.pointers.Needle();
+    needle = this.createPointerByType_(anychart.enums.CircularGaugePointerType.NEEDLE);
     this.needles_[index] = needle;
-    needle.zIndex(anychart.circularGaugeModule.Chart.ZINDEX_POINTER + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER * this.pointerCounter_);
-    needle.dataIndex(this.pointerCounter_++);
-    needle.axisIndex(0);
-    needle.gauge(this);
-    needle.setup(this.defaultPointerSettings()['needle']);
-    this.registerDisposable(needle);
-    needle.listenSignals(this.onPointersSignal_, this);
-    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
-        anychart.ConsistencyState.GAUGE_SCALE,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
   }
 
   if (goog.isDef(value)) {
@@ -595,12 +789,12 @@ anychart.circularGaugeModule.Chart.prototype.needle = function(opt_indexOrValue,
 };
 
 
-/**
+/!**
  * Knob pointer.
  * @param {?(boolean|number|Object)=} opt_indexOrValue .
  * @param {?(boolean|Object)=} opt_value .
  * @return {!anychart.circularGaugeModule.pointers.Knob|anychart.circularGaugeModule.Chart} .
- */
+ *!/
 anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, opt_value) {
   var index, value;
   index = anychart.utils.toNumber(opt_indexOrValue);
@@ -608,23 +802,13 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
     index = 0;
     value = opt_indexOrValue;
   } else {
-    index = /** @type {number} */(opt_indexOrValue);
+    index = /!** @type {number} *!/(opt_indexOrValue);
     value = opt_value;
   }
   var knob = this.knobs_[index];
   if (!knob) {
-    knob = new anychart.circularGaugeModule.pointers.Knob();
+    knob = this.createPointerByType_(anychart.enums.CircularGaugePointerType.KNOB);
     this.knobs_[index] = knob;
-    knob.zIndex(anychart.circularGaugeModule.Chart.ZINDEX_KNOB + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER * this.knobCounter_);
-    knob.dataIndex(this.knobCounter_++);
-    knob.axisIndex(0);
-    knob.gauge(this);
-    knob.setup(this.defaultPointerSettings()['knob']);
-    this.registerDisposable(knob);
-    knob.listenSignals(this.onPointersSignal_, this);
-    this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
-        anychart.ConsistencyState.GAUGE_SCALE,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
   }
 
   if (goog.isDef(value)) {
@@ -633,15 +817,179 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
   } else {
     return knob;
   }
+};*/
+
+
+/**
+ * @param {*} value
+ * @return {boolean}
+ */
+anychart.circularGaugeModule.Chart.prototype.isConfig_ = function(value) {
+  return !goog.isArray(value) && !goog.isFunction(value) && goog.isObject(value);
 };
+
+// Generate pointer constructors
+(function() {
+  /**
+   * @param {anychart.enums.CircularGaugePointerType} type
+   * @return {Function}
+   */
+  var constructorsGenerator = function(type) {
+    /*
+    ---  WAS:  ---
+
+      0 argument
+      bar() - getter index=0
+
+      1 argument
+      bar(index) getter index
+      bar(config) setter config index=0
+
+      2 argument
+      bar(index, config) setter config index
+
+    --- BECOME ---
+
+      0 argument
+      bar() - getter index=0
+
+      1 argument
+      bar(index) - getter index
+      bar(config) - setter config index=0
+      bar(data) - setter data index=0
+
+      2 arguments
+      bar(config, data) - setter config data index=0
+      bar(data, csvSettings) - setter data settings index=0
+      bar(index, config) - setter config index
+      bar(index, data) - setter data index
+
+      3 arguments
+      bar(config, data, csvSettings) setter config data settings index=0
+      bar(index, config, data) - setter config data index
+      bar(index, data, csvSettings) setter data settings index
+
+      4 arguments
+      bar(index, config, data, csvSettings) - setter config data settings index
+
+    */
+
+    return function(opt_indexOrValueOrData, opt_valueOrDataOrSettings, opt_dataOrSettings, opt_csvSettings) {
+      var index, config, data, settings;
+      var argLen = arguments.length;
+
+      index = anychart.utils.toNumber(opt_indexOrValueOrData);
+      if (argLen > 3) {
+        // 4 arguments
+
+        // bar(index, config, data, csvSettings) - setter config data settings index
+        if (isNaN(index)) index = 0;
+        config = opt_valueOrDataOrSettings;
+        data = opt_dataOrSettings;
+        settings = opt_csvSettings;
+
+      } else if (argLen > 2) {
+        // 3 arguments
+
+        if (this.isConfig_(opt_indexOrValueOrData)) {
+          // bar(config, data, csvSettings) setter config data settings index=0
+          index = 0;
+          config = opt_indexOrValueOrData;
+          data = opt_valueOrDataOrSettings;
+          settings = opt_dataOrSettings;
+        } else {
+          if (isNaN(index)) index = 0;
+          if (this.isConfig_(opt_valueOrDataOrSettings)) {
+            // bar(index, config, data) - setter config data index
+            config = opt_valueOrDataOrSettings;
+            data = opt_dataOrSettings;
+          } else {
+            // bar(index, data, csvSettings) setter data settings index
+            data = opt_valueOrDataOrSettings;
+            settings = opt_dataOrSettings;
+          }
+        }
+
+      } else if (argLen > 1) {
+        // 2 arguments
+
+        if (this.isConfig_(opt_indexOrValueOrData)) {
+          // bar(config, data) - setter config data index=0
+          index = 0;
+          config = opt_indexOrValueOrData;
+          data = opt_valueOrDataOrSettings;
+        } else {
+          if (isNaN(index)) {
+            // bar(data, csvSettings) - setter data settings index=0
+            index = 0;
+            data = opt_indexOrValueOrData;
+            settings = opt_valueOrDataOrSettings;
+          } else {
+            if (this.isConfig_(opt_valueOrDataOrSettings))
+              // bar(index, config) - setter config index
+              config = opt_valueOrDataOrSettings;
+            else
+              // bar(index, data) - setter data index
+              data = opt_valueOrDataOrSettings;
+          }
+        }
+
+
+      } else if (argLen > 0) {
+        // 1 argument
+
+        if (isNaN(index)) {
+          index = 0;
+          if (this.isConfig_(opt_indexOrValueOrData))
+            // bar(config) - setter config index=0
+            config = opt_indexOrValueOrData;
+          else
+            // bar(data) - setter data index=0
+            data = opt_indexOrValueOrData;
+        }
+        // bar(index) - getter index
+
+      } else {
+        // 0 arguments
+        index = 0;
+      }
+
+      var arr = this.getTypedArray(type);
+      var pointer = arr[index];
+      if (!pointer) {
+        pointer = this.createPointerByType_(type, index, data, settings);
+      }
+
+      if (goog.isDef(config)) {
+        pointer.setup(config);
+        return this;
+      } else {
+        return pointer;
+      }
+    };
+  };
+  var prototype = anychart.circularGaugeModule.Chart.prototype;
+  var types = anychart.enums.CircularGaugePointerType;
+  for (var i in types) {
+    var methodName = anychart.utils.toCamelCase(types[i]);
+    /**
+     * Pointer constructor.
+     * @param {?(boolean|number|Object|anychart.data.View|anychart.data.Set|Array|string)=} opt_indexOrValueOrData .
+     * @param {?(boolean|Object|anychart.data.View|anychart.data.Set|Array|string|anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_valueOrDataOrSettings .
+     * @param {(anychart.data.View|anychart.data.Set|Array|string|anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_dataOrSettings Pointer data index or pointer data.
+     * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+     * @return {!anychart.circularGaugeModule.pointers.Base|anychart.circularGaugeModule.Chart} Pointer.
+     * @this {anychart.circularGaugeModule.Chart}
+     */
+    prototype[methodName] = constructorsGenerator(types[i]);
+  }
+})();
 
 
 /** invalidates pointers */
 anychart.circularGaugeModule.Chart.prototype.invalidatePointerBounds = function() {
-  var pointers = goog.array.concat(this.bars_, this.markers_, this.needles_, this.knobs_);
-
-  for (var i = 0, len = pointers.length; i < len; i++) {
-    var pointer = pointers[i];
+  for (var i = 0, len = this.pointers_.length; i < len; i++) {
+    var pointer = this.pointers_[i];
     if (pointer) pointer.invalidate(anychart.ConsistencyState.BOUNDS);
   }
 };
@@ -669,6 +1017,9 @@ anychart.circularGaugeModule.Chart.prototype.onPointersSignal_ = function(event)
   // if there are no signals, !state and nothing happens.
   this.invalidate(state, signal);
 };
+
+
+//endregion
 
 
 /**
@@ -750,6 +1101,18 @@ anychart.circularGaugeModule.Chart.prototype.getAxis = function(index) {
 };
 
 
+//region --- Properties
+/**
+ * Map of pointers constructors by type.
+ * @type {Object.<string, Function>}
+ */
+anychart.circularGaugeModule.Chart.PointersTypesMap = {};
+anychart.circularGaugeModule.Chart.PointersTypesMap[anychart.enums.CircularGaugePointerType.BAR] = anychart.circularGaugeModule.pointers.Bar;
+anychart.circularGaugeModule.Chart.PointersTypesMap[anychart.enums.CircularGaugePointerType.KNOB] = anychart.circularGaugeModule.pointers.Knob;
+anychart.circularGaugeModule.Chart.PointersTypesMap[anychart.enums.CircularGaugePointerType.MARKER] = anychart.circularGaugeModule.pointers.Marker;
+anychart.circularGaugeModule.Chart.PointersTypesMap[anychart.enums.CircularGaugePointerType.NEEDLE] = anychart.circularGaugeModule.pointers.Needle;
+
+
 /**
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
@@ -801,6 +1164,9 @@ anychart.circularGaugeModule.Chart.PROPERTY_DESCRIPTORS = (function() {
   return map;
 })();
 anychart.core.settings.populate(anychart.circularGaugeModule.Chart, anychart.circularGaugeModule.Chart.PROPERTY_DESCRIPTORS);
+
+
+//endregion
 
 
 /**
@@ -1255,7 +1621,7 @@ anychart.circularGaugeModule.Chart.prototype.setupByJSON = function(config, opt_
   if ('defaultRangeSettings' in config)
     this.defaultRangeSettings(config['defaultRangeSettings']);
 
-  anychart.core.settings.deserialize(this, anychart.circularGaugeModule.Chart.PROPERTY_DESCRIPTORS, config);
+  anychart.core.settings.deserialize(this, anychart.circularGaugeModule.Chart.PROPERTY_DESCRIPTORS, config, opt_default);
 
   this.data(config['data']);
   if (goog.isDef(config['cap']))
@@ -1271,11 +1637,13 @@ anychart.circularGaugeModule.Chart.prototype.setupByJSON = function(config, opt_
     }
   }
 
+  //TODO(AntonKagakin): up setup to config['pointers'] with fallback to bars/markers/etc...
+
   var bars = config['bars'];
   if (bars) {
     for (i = 0, len = bars.length; i < len; i++) {
       if (bars[i])
-        this.bar(i, bars[i]);
+        this['bar'](i, bars[i]);
     }
   }
 
@@ -1283,7 +1651,7 @@ anychart.circularGaugeModule.Chart.prototype.setupByJSON = function(config, opt_
   if (markers) {
     for (i = 0, len = markers.length; i < len; i++) {
       if (markers[i])
-        this.marker(i, markers[i]);
+        this['marker'](i, markers[i]);
     }
   }
 
@@ -1291,7 +1659,7 @@ anychart.circularGaugeModule.Chart.prototype.setupByJSON = function(config, opt_
   if (needles) {
     for (i = 0, len = needles.length; i < len; i++) {
       if (needles[i])
-        this.needle(i, needles[i]);
+        this['needle'](i, needles[i]);
     }
   }
 
@@ -1299,7 +1667,7 @@ anychart.circularGaugeModule.Chart.prototype.setupByJSON = function(config, opt_
   if (knobs) {
     for (i = 0, len = knobs.length; i < len; i++) {
       if (knobs[i])
-        this.knob(i, knobs[i]);
+        this['knob'](i, knobs[i]);
     }
   }
 
@@ -1399,10 +1767,11 @@ anychart.circularGaugeModule.Chart.prototype.getDefaultThemeObj = function() {
   proto['axis'] = proto.axis;
   proto['getAxesCount'] = proto.getAxesCount;
 
-  proto['bar'] = proto.bar;
-  proto['marker'] = proto.marker;
-  proto['needle'] = proto.needle;
-  proto['knob'] = proto.knob;
+  // auto exported
+  //proto['bar'] = proto.bar;
+  //proto['marker'] = proto.marker;
+  //proto['needle'] = proto.needle;
+  //proto['knob'] = proto.knob;
 
   proto['range'] = proto.range;
 

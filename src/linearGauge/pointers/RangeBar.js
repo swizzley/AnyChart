@@ -5,13 +5,11 @@ goog.require('anychart.linearGaugeModule.pointers.Bar');
 
 /**
  * Range bar pointer class.
- * @param {anychart.linearGaugeModule.Chart} gauge Gauge.
- * @param {number} dataIndex Pointer data index.
  * @extends {anychart.linearGaugeModule.pointers.Bar}
  * @constructor
  */
-anychart.linearGaugeModule.pointers.RangeBar = function(gauge, dataIndex) {
-  anychart.linearGaugeModule.pointers.RangeBar.base(this, 'constructor', gauge, dataIndex);
+anychart.linearGaugeModule.pointers.RangeBar = function() {
+  anychart.linearGaugeModule.pointers.RangeBar.base(this, 'constructor');
 
   this.referenceValueNames = ['high', 'low'];
 };
@@ -27,7 +25,7 @@ anychart.linearGaugeModule.pointers.RangeBar.prototype.getType = function() {
 
 /** @inheritDoc */
 anychart.linearGaugeModule.pointers.RangeBar.prototype.getStartRatio = function() {
-  var iterator = this.gauge.getIterator();
+  var iterator = this.getIterator();
   iterator.select(/** @type {number} */ (this.dataIndex()));
   var value = iterator.get('low');
   return goog.math.clamp(this.scale().transform(value), 0, 1);
@@ -36,7 +34,7 @@ anychart.linearGaugeModule.pointers.RangeBar.prototype.getStartRatio = function(
 
 /** @inheritDoc */
 anychart.linearGaugeModule.pointers.RangeBar.prototype.getEndRatio = function() {
-  var iterator = this.gauge.getIterator();
+  var iterator = this.getIterator();
   iterator.select(/** @type {number} */ (this.dataIndex()));
   var value = iterator.get('high');
   return goog.math.clamp(this.scale().transform(value), 0, 1);
