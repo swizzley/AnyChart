@@ -65,8 +65,8 @@ anychart.linearGaugeModule.pointers.Base = function() {
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['name', 0, anychart.Signal.NEED_UPDATE_LEGEND],
-    ['width', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
-    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW]
+    ['width', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
   ]);
 
   var normalDescriptorsMeta = {};
