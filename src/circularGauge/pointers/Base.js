@@ -454,8 +454,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.getResetIterator = function
 anychart.circularGaugeModule.pointers.Base.prototype.ensureCreated = function() {
   if (!this.domElement) {
     this.domElement = acgraph.path();
-  } else
-    this.domElement.clear();
+  }
 };
 
 
