@@ -82,6 +82,8 @@ anychart.circularGaugeModule.pointers.Marker.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
+  this.ensureCreated();
+
   if (!axis || !axis.enabled()) {
     if (this.domElement) this.domElement.clear();
     if (this.hatchFillElement) this.hatchFillElement.clear();
