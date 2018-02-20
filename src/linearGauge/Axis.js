@@ -19,7 +19,7 @@ anychart.linearGaugeModule.Axis = function() {
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['width', this.ALL_VISUAL_STATES, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
   ]);
 };
 goog.inherits(anychart.linearGaugeModule.Axis, anychart.core.Axis);

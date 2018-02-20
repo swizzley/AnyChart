@@ -377,7 +377,7 @@ anychart.linearGaugeModule.ScaleBar.prototype.draw = function() {
     this.rootLayer = acgraph.layer();
   }
 
-  var points = this.getOption('points');
+  var points = /** @type {Array.<anychart.linearGaugeModule.ScaleBar.ControlPoint>} */(this.getOption('points'));
   if (!points) {
     points = [];
     this.setOption('points', points);
