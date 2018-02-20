@@ -44,9 +44,9 @@ anychart.circularGaugeModule.pointers.Bar.OWN_DESCRIPTORS = (function() {
     return goog.isNull(opt_value) ? opt_value : /** @type {string} */ (anychart.utils.normalizeToPercent(opt_value));
   };
   anychart.core.settings.createDescriptors(map, [
-    ['width', anychart.enums.PropertyHandlerType.SINGLE_ARG, widthRadiusNormalizer],
-    ['position', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.enums.normalizeGaugeSidePosition],
-    ['radius', anychart.enums.PropertyHandlerType.SINGLE_ARG, widthRadiusNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'width', widthRadiusNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'position', anychart.enums.normalizeGaugeSidePosition],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'radius', widthRadiusNormalizer]
   ]);
 
   return map;

@@ -1335,9 +1335,9 @@ anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
   anychart.core.settings.createDescriptors(map, [
-    ['name', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.asIsNormalizer],
-    ['width', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent],
-    ['offset', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'name', anychart.core.settings.asIsNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'width', anychart.utils.normalizeToPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offset', anychart.utils.normalizeToPercent]
   ]);
   return map;
 })();

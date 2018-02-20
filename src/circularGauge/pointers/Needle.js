@@ -47,12 +47,12 @@ anychart.circularGaugeModule.pointers.Needle.OWN_DESCRIPTORS = (function() {
   };
 
   anychart.core.settings.createDescriptors(map, [
-    ['startWidth', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['startRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['middleWidth', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['middleRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['endWidth', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['endRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'startWidth', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'startRadius', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'middleWidth', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'middleRadius', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'endWidth', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'endRadius', normalizer]
   ]);
 
   return map;

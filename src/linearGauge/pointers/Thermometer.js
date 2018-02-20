@@ -118,8 +118,8 @@ anychart.linearGaugeModule.pointers.Thermometer.OWN_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
   anychart.core.settings.createDescriptors(map, [
-    ['bulbRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent],
-    ['bulbPadding', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'bulbRadius', anychart.utils.normalizeToPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'bulbPadding', anychart.utils.normalizeToPercent]
   ]);
   return map;
 })();

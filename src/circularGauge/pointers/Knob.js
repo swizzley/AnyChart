@@ -50,12 +50,12 @@ anychart.circularGaugeModule.pointers.Knob.OWN_DESCRIPTORS = (function() {
     return goog.isNull(opt_value) ? opt_value : /** @type {string} */ (anychart.utils.normalizeToPercent(opt_value));
   };
   anychart.core.settings.createDescriptors(map, [
-    ['verticesCount', anychart.enums.PropertyHandlerType.SINGLE_ARG, verticesCountNormalizer],
-    ['verticesCurvature', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.asIsNormalizer],
-    ['topRatio', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.ratioNormalizer],
-    ['bottomRatio', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.ratioNormalizer],
-    ['topRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['bottomRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'verticesCount', verticesCountNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'verticesCurvature', anychart.core.settings.asIsNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'topRatio', anychart.core.settings.ratioNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'bottomRatio', anychart.core.settings.ratioNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'topRadius', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'bottomRadius', normalizer]
   ]);
 
   return map;

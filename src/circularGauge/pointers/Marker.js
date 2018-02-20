@@ -62,10 +62,10 @@ anychart.circularGaugeModule.pointers.Marker.OWN_DESCRIPTORS = (function() {
         anychart.enums.normalizeMarkerType(opt_value, anychart.enums.MarkerType.LINE);
   };
   anychart.core.settings.createDescriptors(map, [
-    ['size', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent],
-    ['position', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.enums.normalizeGaugeSidePosition],
-    ['radius', anychart.enums.PropertyHandlerType.SINGLE_ARG, radiusNormalizer],
-    ['type', anychart.enums.PropertyHandlerType.SINGLE_ARG, typeNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'size', anychart.utils.normalizeToPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'position', anychart.enums.normalizeGaugeSidePosition],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'radius', radiusNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'type', typeNormalizer]
   ]);
 
   return map;
