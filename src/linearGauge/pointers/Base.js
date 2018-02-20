@@ -255,6 +255,15 @@ anychart.linearGaugeModule.pointers.Base.prototype.dataIndex = function(opt_inde
 
 
 /**
+ * Getter for gauge.
+ * @return {anychart.linearGaugeModule.Chart} Gauge.
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.getGauge = function() {
+  return /** @type {anychart.linearGaugeModule.Chart} */(this.gauge());
+};
+
+
+/**
  * Getter/setter for gauge.
  * @param {anychart.linearGaugeModule.Chart=} opt_value Gauge inst for set.
  * @return {anychart.linearGaugeModule.pointers.Base|anychart.linearGaugeModule.Chart}
@@ -1420,7 +1429,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.disposeInternal = function() 
   proto['legendItem'] = proto.legendItem;
   proto['id'] = proto.id;
   proto['dataIndex'] = proto.dataIndex;
-  proto['gauge'] = proto.gauge;
+  proto['getGauge'] = proto.getGauge;
   proto['color'] = proto.color;
 
   proto['data'] = proto.data;

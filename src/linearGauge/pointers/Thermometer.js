@@ -123,7 +123,7 @@ anychart.linearGaugeModule.pointers.Thermometer.OWN_DESCRIPTORS = (function() {
   ]);
   return map;
 })();
-anychart.core.settings.populate(anychart.linearGaugeModule.pointers.Base, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS);
+anychart.core.settings.populate(anychart.linearGaugeModule.pointers.Thermometer, anychart.linearGaugeModule.pointers.Thermometer.OWN_DESCRIPTORS);
 
 
 //endregion
