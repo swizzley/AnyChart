@@ -106,7 +106,7 @@ anychart.circularGaugeModule.pointers.Needle.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = this.getIterator();
+    var iterator = this.getResetIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
 
     var value = parseFloat(iterator.get('value'));
