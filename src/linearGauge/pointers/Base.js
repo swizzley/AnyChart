@@ -384,6 +384,16 @@ anychart.linearGaugeModule.pointers.Base.prototype.isVertical = function() {
 
 
 /**
+ * @return {boolean}
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.isMissing = function() {
+  var iterator = this.getIterator();
+  var value = iterator.get('value');
+  return isNaN(this.scale().transform(value));
+};
+
+
+/**
  * Returns start ratio for pointer.
  * @return {number}
  */
@@ -1022,7 +1032,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.draw = function() {
   var iterator = this.getIterator();
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
     this.createShapes();
-    if (iterator.select(/** @type {number} */ (this.dataIndex()))) {
+    if (iterator.select(/** @type {number} */ (this.dataIndex())) && !this.isMissing()) {
       if (this.isVertical())
         this.drawVertical();
       else
