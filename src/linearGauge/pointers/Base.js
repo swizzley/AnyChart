@@ -65,8 +65,8 @@ anychart.linearGaugeModule.pointers.Base = function() {
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['name', 0, anychart.Signal.NEED_UPDATE_LEGEND],
-    ['width', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
-    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW]
+    ['width', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['offset', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
   ]);
 
   var normalDescriptorsMeta = {};
@@ -255,6 +255,15 @@ anychart.linearGaugeModule.pointers.Base.prototype.dataIndex = function(opt_inde
 
 
 /**
+ * Getter for gauge.
+ * @return {anychart.linearGaugeModule.Chart} Gauge.
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.getGauge = function() {
+  return /** @type {anychart.linearGaugeModule.Chart} */(this.gauge());
+};
+
+
+/**
  * Getter/setter for gauge.
  * @param {anychart.linearGaugeModule.Chart=} opt_value Gauge inst for set.
  * @return {anychart.linearGaugeModule.pointers.Base|anychart.linearGaugeModule.Chart}
@@ -371,6 +380,16 @@ anychart.linearGaugeModule.pointers.Base.prototype.scaleInvalidated = function(e
  */
 anychart.linearGaugeModule.pointers.Base.prototype.isVertical = function() {
   return this.layout_ == anychart.enums.Layout.VERTICAL;
+};
+
+
+/**
+ * @return {boolean}
+ */
+anychart.linearGaugeModule.pointers.Base.prototype.isMissing = function() {
+  var iterator = this.getIterator();
+  var value = iterator.get('value');
+  return isNaN(this.scale().transform(value));
 };
 
 
@@ -1013,7 +1032,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.draw = function() {
   var iterator = this.getIterator();
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
     this.createShapes();
-    if (iterator.select(/** @type {number} */ (this.dataIndex()))) {
+    if (iterator.select(/** @type {number} */ (this.dataIndex())) && !this.isMissing()) {
       if (this.isVertical())
         this.drawVertical();
       else
@@ -1335,9 +1354,9 @@ anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
   anychart.core.settings.createDescriptors(map, [
-    ['name', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.asIsNormalizer],
-    ['width', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent],
-    ['offset', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.utils.normalizeToPercent]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'name', anychart.core.settings.asIsNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'width', anychart.utils.normalizeToPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offset', anychart.utils.normalizeToPercent]
   ]);
   return map;
 })();
@@ -1420,7 +1439,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.disposeInternal = function() 
   proto['legendItem'] = proto.legendItem;
   proto['id'] = proto.id;
   proto['dataIndex'] = proto.dataIndex;
-  proto['gauge'] = proto.gauge;
+  proto['getGauge'] = proto.getGauge;
   proto['color'] = proto.color;
 
   proto['data'] = proto.data;

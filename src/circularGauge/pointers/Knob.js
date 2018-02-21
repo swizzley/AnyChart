@@ -50,12 +50,12 @@ anychart.circularGaugeModule.pointers.Knob.OWN_DESCRIPTORS = (function() {
     return goog.isNull(opt_value) ? opt_value : /** @type {string} */ (anychart.utils.normalizeToPercent(opt_value));
   };
   anychart.core.settings.createDescriptors(map, [
-    ['verticesCount', anychart.enums.PropertyHandlerType.SINGLE_ARG, verticesCountNormalizer],
-    ['verticesCurvature', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.asIsNormalizer],
-    ['topRatio', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.ratioNormalizer],
-    ['bottomRatio', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.core.settings.ratioNormalizer],
-    ['topRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer],
-    ['bottomRadius', anychart.enums.PropertyHandlerType.SINGLE_ARG, normalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'verticesCount', verticesCountNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'verticesCurvature', anychart.core.settings.asIsNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'topRatio', anychart.core.settings.ratioNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'bottomRatio', anychart.core.settings.ratioNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'topRadius', normalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'bottomRadius', normalizer]
   ]);
 
   return map;
@@ -177,6 +177,8 @@ anychart.circularGaugeModule.pointers.Knob.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
+  this.ensureCreated();
+
   if (!axis || !axis.enabled()) {
     if (this.domElement) this.domElement.clear();
     if (this.hatchFillElement) this.hatchFillElement.clear();
@@ -211,7 +213,7 @@ anychart.circularGaugeModule.pointers.Knob.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = this.getIterator();
+    var iterator = this.getResetIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
     var value = parseFloat(iterator.get('value'));
 

@@ -44,9 +44,9 @@ anychart.circularGaugeModule.pointers.Bar.OWN_DESCRIPTORS = (function() {
     return goog.isNull(opt_value) ? opt_value : /** @type {string} */ (anychart.utils.normalizeToPercent(opt_value));
   };
   anychart.core.settings.createDescriptors(map, [
-    ['width', anychart.enums.PropertyHandlerType.SINGLE_ARG, widthRadiusNormalizer],
-    ['position', anychart.enums.PropertyHandlerType.SINGLE_ARG, anychart.enums.normalizeGaugeSidePosition],
-    ['radius', anychart.enums.PropertyHandlerType.SINGLE_ARG, widthRadiusNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'width', widthRadiusNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'position', anychart.enums.normalizeGaugeSidePosition],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'radius', widthRadiusNormalizer]
   ]);
 
   return map;
@@ -62,6 +62,8 @@ anychart.circularGaugeModule.pointers.Bar.prototype.draw = function() {
   var axis = gauge.getAxis(/** @type {number} */(this.axisIndex()));
   if (!this.checkDrawingNeeded())
     return this;
+
+  this.ensureCreated();
 
   if (!axis || !axis.enabled()) {
     if (this.domElement) this.domElement.clear();
@@ -97,7 +99,7 @@ anychart.circularGaugeModule.pointers.Bar.prototype.draw = function() {
 
     var scale = axis.scale();
 
-    var iterator = this.getIterator();
+    var iterator = this.getResetIterator();
     iterator.select(/** @type {number} */(this.dataIndex()));
     var value = parseFloat(iterator.get('value'));
 

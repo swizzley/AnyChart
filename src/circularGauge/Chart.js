@@ -521,7 +521,7 @@ anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(typ
     instance.listenSignals(this.onPointersSignal_, this);
 
     this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
-        anychart.ConsistencyState.GAUGE_SCALE,
+        anychart.ConsistencyState.GAUGE_SCALE | anychart.ConsistencyState.BOUNDS,
         anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION);
   } else {
     instance = null;
@@ -1046,7 +1046,7 @@ anychart.circularGaugeModule.Chart.prototype.axis = function(opt_indexOrValue, o
     this.axes_[index] = axis;
     this.registerDisposable(axis);
     axis.listenSignals(this.onAxisSignal_, this);
-    this.invalidate(anychart.ConsistencyState.GAUGE_AXES, anychart.Signal.NEEDS_REDRAW);
+    this.invalidate(anychart.ConsistencyState.GAUGE_AXES | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
   }
 
   if (goog.isDef(value)) {

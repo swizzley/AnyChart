@@ -24,6 +24,14 @@ anychart.linearGaugeModule.pointers.RangeBar.prototype.getType = function() {
 
 
 /** @inheritDoc */
+anychart.linearGaugeModule.pointers.RangeBar.prototype.isMissing = function() {
+  var iterator = this.getIterator();
+  var scale = this.scale();
+  return isNaN(scale.transform(iterator.get('high'))) || isNaN(scale.transform(iterator.get('low')));
+};
+
+
+/** @inheritDoc */
 anychart.linearGaugeModule.pointers.RangeBar.prototype.getStartRatio = function() {
   var iterator = this.getIterator();
   iterator.select(/** @type {number} */ (this.dataIndex()));
