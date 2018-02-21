@@ -1466,8 +1466,6 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.GAUGE_SCALE)) {
 
-    var iterator = this.getIterator();
-
     var needAutoCalc = false;
     goog.array.forEach(this.axes_, function(axis) {
       axis.scale().startAutoCalc();
@@ -1476,11 +1474,12 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
 
     if (needAutoCalc) {
       for (i = 0, len = pointers.length; i < len; i++) {
-        pointer = pointers[i];
+        pointer = /** @type {anychart.circularGaugeModule.pointers.Base} */(pointers[i]);
         if (pointer) {
-          var axisIndex = pointer.axisIndex();
+          var iterator = pointer.getIterator();
+          var axisIndex = /** @type {number} */(pointer.axisIndex());
 
-          iterator.select(pointer.dataIndex());
+          iterator.select(/** @type {number} */(pointer.dataIndex()));
           axis = this.axes_[axisIndex];
           if (axis) {
             axis.scale().extendDataRange(iterator.get('value'));
