@@ -533,7 +533,7 @@ anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(typ
 
 /**
  * Adds pointers to gauge.
- * @param {...(number)} var_args Data indexes for pointers.
+ * @param {...(anychart.data.View|anychart.data.Set|Array)} var_args Data indexes or data for pointers.
  * @return {Array.<anychart.circularGaugeModule.pointers.Base>} Array of created pointers.
  */
 anychart.circularGaugeModule.Chart.prototype.addPointer = function(var_args) {
@@ -696,136 +696,26 @@ anychart.circularGaugeModule.Chart.prototype.getPointersCount = function() {
 };
 
 
-/*/!**
- * Bar pointer.
- * @param {?(boolean|number|Object)=} opt_indexOrValue .
- * @param {?(boolean|Object)=} opt_value .
- * @return {!anychart.circularGaugeModule.pointers.Bar|anychart.circularGaugeModule.Chart} .
- *!/
-anychart.circularGaugeModule.Chart.prototype.bar = function(opt_indexOrValue, opt_value) {
-  var index, value;
-  index = anychart.utils.toNumber(opt_indexOrValue);
-  if (isNaN(index)) {
-    index = 0;
-    value = opt_indexOrValue;
-  } else {
-    index = /!** @type {number} *!/(opt_indexOrValue);
-    value = opt_value;
-  }
-  var bar = this.bars_[index];
-  if (!bar) {
-    bar = this.createPointerByType_(anychart.enums.CircularGaugePointerType.BAR);
-    this.bars_[index] = bar;
-  }
-
-  if (goog.isDef(value)) {
-    bar.setup(value);
-    return this;
-  } else {
-    return bar;
-  }
+/**
+ * @param {*} value
+ * @return {boolean}
+ * @private
+ */
+anychart.circularGaugeModule.Chart.prototype.isData_ = function(value) {
+  return (anychart.utils.instanceOf(value, anychart.data.Set) ||
+          anychart.utils.instanceOf(value, anychart.data.View) ||
+          anychart.utils.instanceOf(value, anychart.data.Mapping) ||
+          goog.isArray(value));
 };
-
-
-/!**
- * Marker pointer.
- * @param {?(boolean|number|Object)=} opt_indexOrValue .
- * @param {?(boolean|Object)=} opt_value .
- * @return {!anychart.circularGaugeModule.pointers.Marker|anychart.circularGaugeModule.Chart} .
- *!/
-anychart.circularGaugeModule.Chart.prototype.marker = function(opt_indexOrValue, opt_value) {
-  var index, value;
-  index = anychart.utils.toNumber(opt_indexOrValue);
-  if (isNaN(index)) {
-    index = 0;
-    value = opt_indexOrValue;
-  } else {
-    index = /!** @type {number} *!/(opt_indexOrValue);
-    value = opt_value;
-  }
-  var marker = this.markers_[index];
-  if (!marker) {
-    marker = this.createPointerByType_(anychart.enums.CircularGaugePointerType.MARKER);
-    this.markers_[index] = marker;
-  }
-
-  if (goog.isDef(value)) {
-    marker.setup(value);
-    return this;
-  } else {
-    return marker;
-  }
-};
-
-
-/!**
- * Needle pointer.
- * @param {?(boolean|number|Object)=} opt_indexOrValue .
- * @param {?(boolean|Object)=} opt_value .
- * @return {!anychart.circularGaugeModule.pointers.Needle|anychart.circularGaugeModule.Chart} .
- *!/
-anychart.circularGaugeModule.Chart.prototype.needle = function(opt_indexOrValue, opt_value) {
-  var index, value;
-  index = anychart.utils.toNumber(opt_indexOrValue);
-  if (isNaN(index)) {
-    index = 0;
-    value = opt_indexOrValue;
-  } else {
-    index = /!** @type {number} *!/(opt_indexOrValue);
-    value = opt_value;
-  }
-  var needle = this.needles_[index];
-  if (!needle) {
-    needle = this.createPointerByType_(anychart.enums.CircularGaugePointerType.NEEDLE);
-    this.needles_[index] = needle;
-  }
-
-  if (goog.isDef(value)) {
-    needle.setup(value);
-    return this;
-  } else {
-    return needle;
-  }
-};
-
-
-/!**
- * Knob pointer.
- * @param {?(boolean|number|Object)=} opt_indexOrValue .
- * @param {?(boolean|Object)=} opt_value .
- * @return {!anychart.circularGaugeModule.pointers.Knob|anychart.circularGaugeModule.Chart} .
- *!/
-anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, opt_value) {
-  var index, value;
-  index = anychart.utils.toNumber(opt_indexOrValue);
-  if (isNaN(index)) {
-    index = 0;
-    value = opt_indexOrValue;
-  } else {
-    index = /!** @type {number} *!/(opt_indexOrValue);
-    value = opt_value;
-  }
-  var knob = this.knobs_[index];
-  if (!knob) {
-    knob = this.createPointerByType_(anychart.enums.CircularGaugePointerType.KNOB);
-    this.knobs_[index] = knob;
-  }
-
-  if (goog.isDef(value)) {
-    knob.setup(value);
-    return this;
-  } else {
-    return knob;
-  }
-};*/
 
 
 /**
  * @param {*} value
  * @return {boolean}
+ * @private
  */
 anychart.circularGaugeModule.Chart.prototype.isConfig_ = function(value) {
-  return !goog.isArray(value) && !goog.isFunction(value) && goog.isObject(value);
+  return !this.isData_(value) && !goog.isFunction(value) && goog.isObject(value);
 };
 
 // Generate pointer constructors
@@ -1119,47 +1009,24 @@ anychart.circularGaugeModule.Chart.PointersTypesMap[anychart.enums.CircularGauge
 anychart.circularGaugeModule.Chart.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.MULTI_ARG,
-      'fill',
-      anychart.core.settings.fillNormalizer);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.MULTI_ARG,
-      'stroke',
-      anychart.core.settings.strokeNormalizer);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'circularPadding',
-      anychart.utils.normalizeToPercent);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'encloseWithStraightLine',
-      anychart.core.settings.asIsNormalizer);
 
   function startAngleNormalizer(opt_value) {
     return goog.math.standardAngle(anychart.utils.toNumber(opt_value) || 0);
   }
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'startAngle',
-      startAngleNormalizer);
 
   function sweepAngleNormalizer(opt_value) {
     return goog.math.clamp(anychart.utils.toNumber(opt_value) || 0, -360, 360);
   }
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'sweepAngle',
-      sweepAngleNormalizer);
+
+  anychart.core.settings.createDescriptors(map, [
+    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'fill', anychart.core.settings.fillNormalizer],
+    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'stroke', anychart.core.settings.strokeNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'circularPadding', anychart.utils.normalizeToPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'encloseWithStraightLine', anychart.core.settings.asIsNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'startAngle', startAngleNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'sweepAngle', sweepAngleNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'defaultPointerType', anychart.enums.normalizeCircularGaugePointerType]
+  ]);
 
   return map;
 })();
@@ -1460,8 +1327,6 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.GAUGE_SCALE)) {
 
-    var iterator = this.getIterator();
-
     var needAutoCalc = false;
     goog.array.forEach(this.axes_, function(axis) {
       axis.scale().startAutoCalc();
@@ -1470,11 +1335,12 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
 
     if (needAutoCalc) {
       for (i = 0, len = pointers.length; i < len; i++) {
-        pointer = pointers[i];
+        pointer = /** @type {anychart.circularGaugeModule.pointers.Base} */(pointers[i]);
         if (pointer) {
-          var axisIndex = pointer.axisIndex();
+          var iterator = pointer.getIterator();
+          var axisIndex = /** @type {number} */(pointer.axisIndex());
 
-          iterator.select(pointer.dataIndex());
+          iterator.select(/** @type {number} */(pointer.dataIndex()));
           axis = this.axes_[axisIndex];
           if (axis) {
             axis.scale().extendDataRange(iterator.get('value'));

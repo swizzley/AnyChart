@@ -363,7 +363,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.remove = function() {
 //region --- DATA ---
 /**
  * Getter/setter for series mapping.
- * @param {?(number|anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
+ * @param {?(anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
  * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
  * @return {(!anychart.circularGaugeModule.pointers.Base|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
  */
@@ -838,7 +838,10 @@ anychart.circularGaugeModule.pointers.Base.prototype.serialize = function() {
   }
   json['hatchFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.hatchFill()));
   json['axisIndex'] = this.axisIndex();
-  json['dataIndex'] = this.dataIndex();
+  if (this.ownData) {
+    json['data'] = this.data().serialize();
+  }
+  json['dataIndex'] = this.dataIndex_;
 
   if (this.id_)
     json['id'] = this.id();
@@ -862,6 +865,8 @@ anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(conf
   this.hatchFill(config['hatchFill']);
   this.axisIndex(config['axisIndex']);
   this.dataIndex(config['dataIndex']);
+  if ('data' in config)
+    this.data(config['data'] || null);
 };
 
 

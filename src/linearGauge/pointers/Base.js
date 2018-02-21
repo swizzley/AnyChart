@@ -132,7 +132,7 @@ anychart.linearGaugeModule.pointers.Base.DEFAULT_HATCH_FILL_TYPE = acgraph.vecto
 //region --- DATA ---
 /**
  * Getter/setter for series mapping.
- * @param {?(number|anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
+ * @param {?(anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
  * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
  * @return {(!anychart.linearGaugeModule.pointers.Base|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
  */
@@ -1370,7 +1370,10 @@ anychart.linearGaugeModule.pointers.Base.prototype.serialize = function() {
   var json = anychart.linearGaugeModule.pointers.Base.base(this, 'serialize');
   anychart.core.settings.serialize(this, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS, json, 'Pointer');
   json['pointerType'] = this.getType();
-  json['dataIndex'] = this.dataIndex();
+  if (this.ownData) {
+    json['data'] = this.data().serialize();
+  }
+  json['dataIndex'] = this.dataIndex_;
   json['legendItem'] = this.legendItem().serialize();
 
   if (this.id_)
@@ -1395,6 +1398,8 @@ anychart.linearGaugeModule.pointers.Base.prototype.setupByJSON = function(config
   this.id(config['id']);
   this.autoIndex(config['autoIndex']);
   this.dataIndex(config['dataIndex']);
+  if ('data' in config)
+    this.data(config['data'] || null);
   this.legendItem().setup(config['legendItem']);
 
   anychart.core.settings.deserialize(this, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS, config, opt_default);
