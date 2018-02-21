@@ -122,23 +122,13 @@ anychart.linearGaugeModule.Chart.ZINDEX_INCREMENT_MULTIPLIER = 0.00001;
 anychart.linearGaugeModule.Chart.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'globalOffset',
-      anychart.utils.normalizeToPercent);
 
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'layout',
-      anychart.enums.normalizeLayout);
+  anychart.core.settings.createDescriptors(map, [
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'globalOffset', anychart.utils.normalizeToPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'layout', anychart.enums.normalizeLayout],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'defaultPointerType', anychart.enums.normalizeLinearGaugePointerType]
+  ]);
 
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'defaultPointerType',
-      anychart.enums.normalizeLinearGaugePointerType);
   return map;
 })();
 anychart.core.settings.populate(anychart.linearGaugeModule.Chart, anychart.linearGaugeModule.Chart.PROPERTY_DESCRIPTORS);
