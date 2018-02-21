@@ -1425,65 +1425,6 @@ anychart.linearGaugeModule.Chart.prototype.pointerInvalidated_ = function(e) {
 })();
 
 
-/*
-/!**
- * Creates bar pointer.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
- * @return {anychart.linearGaugeModule.pointers.Base} Bar pointer.
- *!/
-anychart.linearGaugeModule.Chart.prototype.bar = function(dataIndex) {
-  return this.createPointerByType_(anychart.enums.LinearGaugePointerType.BAR, dataIndex);
-};
-
-
-/!**
- * Creates led pointer.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
- * @return {anychart.linearGaugeModule.pointers.Base} Led pointer.
- *!/
-anychart.linearGaugeModule.Chart.prototype.led = function(dataIndex) {
-  return this.createPointerByType_(anychart.enums.LinearGaugePointerType.LED, dataIndex);
-};
-
-
-/!**
- * Creates marker pointer.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
- * @return {anychart.linearGaugeModule.pointers.Base} Marker pointer.
- *!/
-anychart.linearGaugeModule.Chart.prototype.marker = function(dataIndex) {
-  return this.createPointerByType_(anychart.enums.LinearGaugePointerType.MARKER, dataIndex);
-};
-
-
-/!**
- * Creates range bar pointer.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
- * @return {anychart.linearGaugeModule.pointers.Base} Range Bar pointer.
- *!/
-anychart.linearGaugeModule.Chart.prototype.rangeBar = function(dataIndex) {
-  return this.createPointerByType_(anychart.enums.LinearGaugePointerType.RANGE_BAR, dataIndex);
-};
-
-
-/!**
- * Creates tank pointer.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
- * @return {anychart.linearGaugeModule.pointers.Base} Tank pointer.
- *!/
-anychart.linearGaugeModule.Chart.prototype.tank = function(dataIndex) {
-  return this.createPointerByType_(anychart.enums.LinearGaugePointerType.TANK, dataIndex);
-};
-
-
-/!**
- * Creates thermometer pointer.
- * @param {number|anychart.data.View|anychart.data.Set|Array|string} dataIndex Pointer data index.
- * @return {anychart.linearGaugeModule.pointers.Base} Thermometer pointer.
- *!/
-anychart.linearGaugeModule.Chart.prototype.thermometer = function(dataIndex) {
-  return this.createPointerByType_(anychart.enums.LinearGaugePointerType.THERMOMETER, dataIndex);
-};*/
 //endregion
 
 //exports
