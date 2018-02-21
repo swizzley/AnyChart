@@ -58,7 +58,6 @@ anychart.chartEditorModule.CartesianAxesPanelBase.prototype.removePanel = functi
 /** @override */
 anychart.chartEditorModule.CartesianAxesPanelBase.prototype.createPanels = function() {
   if (!this.isExcluded()) {
-
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var settings = model.getModel()['chart']['settings'];
 

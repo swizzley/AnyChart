@@ -2156,9 +2156,9 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
               {'id': settings['dataSettings']['field']} :
               {'x': settings['dataSettings']['field']};
 
-      for (var k in seriesMapping) {
-        if (seriesMapping.hasOwnProperty(k))
-          mappingObj[k] = seriesMapping[k];
+      for (var m in seriesMapping) {
+        if (seriesMapping.hasOwnProperty(m))
+          mappingObj[m] = seriesMapping[m];
       }
 
       mappingInstances.push(dataSet['mapAs'](mappingObj));
@@ -2177,6 +2177,8 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
   } else {
     result.push('// Creating series and setting data to them');
     result.push('var series;');
+
+    var pointersIndexes = {};
     for (i = 0; i < settings['dataSettings']['mappings'].length; i++) {
       plotMapping = settings['dataSettings']['mappings'][i];
       for (j = 0; j < plotMapping.length; j++) {
@@ -2188,6 +2190,12 @@ anychart.chartEditorModule.EditorModel.prototype.getChartWithJsCode_ = function(
           var plot = chart['plot'](i);
           series = plot[seriesCtor](mappingInstancesList[i][j]);
           result.push('series' + eq + 'chart.plot(' + i + ').' + seriesCtor + mappingPostfix);
+
+        } else if (chartType === 'gauges.circular') {
+          pointersIndexes[seriesCtor] = ++pointersIndexes[seriesCtor] || 0;
+          series = chart[seriesCtor](pointersIndexes[seriesCtor], mappingInstancesList[i][j]);
+          mappingPostfix = '(' + pointersIndexes[seriesCtor] + ', mapping' + (isSingleSeries ? '' : ((isSinglePlot ? '' : '_' + i) + '_' + j)) + ');';
+          result.push('series' + eq + 'chart.' + seriesCtor + mappingPostfix);
 
         } else {
           series = chart[seriesCtor](mappingInstancesList[i][j]);

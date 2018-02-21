@@ -114,20 +114,9 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
     else
       dataSet['data'](rawData);
 
-    // todo: debug
-    if (chartType === 'gauges.circular') {
-      var axis0Exists = model.getValue([['chart'], ['settings'], 'axis(0).enabled()']);
-      if (!goog.isDef(axis0Exists)) {
-        model.setValue([['chart'], ['settings'], 'axis(0).enabled()'], true);
-      }
-      ///*var axis = */this.chart_['axis']();
-      //axis.scale().minimum(0).maximum(100);
-      //axis.scale().maximumGap(0.44);
-    }
-
-    var dataFields;
-
     // Create mapping and series
+    var dataFields;
+    var pointersIndexes = {};
     for (var i = 0; i < settings['dataSettings']['mappings'].length; i++) {
       plotMapping = settings['dataSettings']['mappings'][i];
       for (var j = 0; j < plotMapping.length; j++) {
@@ -150,11 +139,6 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
           this.chart_['data'](mappingInstance);
 
         } else {
-          // todo: debug
-          if (model.chartTypeLike('gauges') && i === 0 && j === 0) {
-            this.chart_['data'](mappingInstance);
-          }
-
           var seriesCtor = plotMapping[j]['ctor'];
           seriesCtor = anychart.chartEditorModule.EditorModel.Series[seriesCtor]['ctor'] || seriesCtor;
 
@@ -166,10 +150,9 @@ anychart.chartEditorModule.Chart.prototype.onModelChange = function(evt) {
             series = plot[seriesCtor](mappingInstance);
             stringKey = 'plot(' + i + ').' + stringKey;
 
-          } else if (model.chartTypeLike('gauges')) {
-            // todo: debug
-            series = this.chart_[seriesCtor](j/*, mappingInstance*/);
-            series.dataIndex(0);
+          } else if (chartType === 'gauges.circular') {
+            pointersIndexes[seriesCtor] = ++pointersIndexes[seriesCtor] || 0;
+            series = this.chart_[seriesCtor](pointersIndexes[seriesCtor], mappingInstance);
 
           } else {
             series = this.chart_[seriesCtor](mappingInstance);

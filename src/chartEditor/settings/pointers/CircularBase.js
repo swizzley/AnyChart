@@ -10,26 +10,25 @@ goog.require('anychart.chartEditorModule.settings.Stroke');
  * @param {anychart.chartEditorModule.EditorModel} model
  * @param {string} type
  * @param {string|number} pointerId
- * @param {number} pointerIndex
+ * @param {number} panelIndex
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link goog.ui.Component} for semantics.
  * @constructor
  * @extends {anychart.chartEditorModule.SettingsPanelZippy}
  */
-anychart.chartEditorModule.settings.pointers.CircularBase = function(model, type, pointerId, pointerIndex, opt_domHelper) {
-  anychart.chartEditorModule.settings.pointers.CircularBase.base(this, 'constructor', model, pointerIndex, null, opt_domHelper);
+anychart.chartEditorModule.settings.pointers.CircularBase = function(model, type, pointerId, panelIndex, opt_domHelper) {
+  anychart.chartEditorModule.settings.pointers.CircularBase.base(this, 'constructor', model, panelIndex, null, opt_domHelper);
 
   this.pointerId_ = String(pointerId);
   this.pointerType_ = type;
 
-  // todo: debug
-  var tmp = type.split('.');
-  var ctor = tmp[tmp.length - 1];
-  var stringKey = ctor + '(' + pointerIndex + ')';
-  //var stringKey = 'getPointer(\'' + this.pointerId_ + '\')';
+  var stringKey = 'getPointer(\'' + this.pointerId_ + '\')';
 
   this.key = [['chart'], ['settings'], stringKey];
 
-  this.setName(this.key[2]);
+  var tmp = type.split('.');
+  var name = goog.string.capitalize(tmp[tmp.length - 1]);
+  this.setName(name);
+
   this.allowEnabled(false);
   this.addClassName(goog.getCssName('anychart-settings-panel-pointer-single'));
 };

@@ -58,6 +58,7 @@ anychart.chartEditorModule.GaugeAxesPanel.prototype.createPanels = function() {
 
     var pattern = '^axis\\((\\d+)\\)\\.enabled\\(\\)$';
     var regExp = new RegExp(pattern);
+    var axisCount = 0;
 
     for (var key in settings) {
       var match = key.match(regExp);
@@ -67,7 +68,13 @@ anychart.chartEditorModule.GaugeAxesPanel.prototype.createPanels = function() {
             new anychart.chartEditorModule.settings.axes.LinearGauge(model, axisIndex) :
             new anychart.chartEditorModule.settings.axes.Circular(model, axisIndex);
         this.addPanelInstance(panel);
+        axisCount++;
       }
+    }
+
+    if (axisCount === 0 && !this.isLinear) {
+      // Always create 0 axis panel
+      this.addPanelInstance(/** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(this.createPanel()));
     }
   }
 };
