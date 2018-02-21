@@ -533,7 +533,7 @@ anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(typ
 
 /**
  * Adds pointers to gauge.
- * @param {...(number)} var_args Data indexes for pointers.
+ * @param {...(anychart.data.View|anychart.data.Set|Array)} var_args Data indexes or data for pointers.
  * @return {Array.<anychart.circularGaugeModule.pointers.Base>} Array of created pointers.
  */
 anychart.circularGaugeModule.Chart.prototype.addPointer = function(var_args) {
@@ -823,9 +823,23 @@ anychart.circularGaugeModule.Chart.prototype.knob = function(opt_indexOrValue, o
 /**
  * @param {*} value
  * @return {boolean}
+ * @private
+ */
+anychart.circularGaugeModule.Chart.prototype.isData_ = function(value) {
+  return (anychart.utils.instanceOf(value, anychart.data.Set) ||
+          anychart.utils.instanceOf(value, anychart.data.View) ||
+          anychart.utils.instanceOf(value, anychart.data.Mapping) ||
+          goog.isArray(value));
+};
+
+
+/**
+ * @param {*} value
+ * @return {boolean}
+ * @private
  */
 anychart.circularGaugeModule.Chart.prototype.isConfig_ = function(value) {
-  return !goog.isArray(value) && !goog.isFunction(value) && goog.isObject(value);
+  return !this.isData_(value) && !goog.isFunction(value) && goog.isObject(value);
 };
 
 // Generate pointer constructors

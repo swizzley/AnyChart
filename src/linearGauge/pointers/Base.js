@@ -132,7 +132,7 @@ anychart.linearGaugeModule.pointers.Base.DEFAULT_HATCH_FILL_TYPE = acgraph.vecto
 //region --- DATA ---
 /**
  * Getter/setter for series mapping.
- * @param {?(number|anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
+ * @param {?(anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
  * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
  * @return {(!anychart.linearGaugeModule.pointers.Base|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
  */
