@@ -838,7 +838,10 @@ anychart.circularGaugeModule.pointers.Base.prototype.serialize = function() {
   }
   json['hatchFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.hatchFill()));
   json['axisIndex'] = this.axisIndex();
-  json['dataIndex'] = this.dataIndex();
+  if (this.ownData) {
+    json['data'] = this.data().serialize();
+  }
+  json['dataIndex'] = this.dataIndex_;
 
   if (this.id_)
     json['id'] = this.id();
@@ -862,6 +865,8 @@ anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(conf
   this.hatchFill(config['hatchFill']);
   this.axisIndex(config['axisIndex']);
   this.dataIndex(config['dataIndex']);
+  if ('data' in config)
+    this.data(config['data'] || null);
 };
 
 

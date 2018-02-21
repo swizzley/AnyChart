@@ -1370,7 +1370,10 @@ anychart.linearGaugeModule.pointers.Base.prototype.serialize = function() {
   var json = anychart.linearGaugeModule.pointers.Base.base(this, 'serialize');
   anychart.core.settings.serialize(this, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS, json, 'Pointer');
   json['pointerType'] = this.getType();
-  json['dataIndex'] = this.dataIndex();
+  if (this.ownData) {
+    json['data'] = this.data().serialize();
+  }
+  json['dataIndex'] = this.dataIndex_;
   json['legendItem'] = this.legendItem().serialize();
 
   if (this.id_)
@@ -1395,6 +1398,8 @@ anychart.linearGaugeModule.pointers.Base.prototype.setupByJSON = function(config
   this.id(config['id']);
   this.autoIndex(config['autoIndex']);
   this.dataIndex(config['dataIndex']);
+  if ('data' in config)
+    this.data(config['data'] || null);
   this.legendItem().setup(config['legendItem']);
 
   anychart.core.settings.deserialize(this, anychart.linearGaugeModule.pointers.Base.OWN_DESCRIPTORS, config, opt_default);
