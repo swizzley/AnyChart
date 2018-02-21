@@ -1760,11 +1760,20 @@ anychart.circularGaugeModule.Chart.prototype.getDefaultThemeObj = function() {
   proto['cap'] = proto.cap;
   proto['axis'] = proto.axis;
 
-  // auto exported
+  proto['addPointer'] = proto.addPointer;
+  proto['removePointer'] = proto.removePointer;
+  proto['removePointerAt'] = proto.removePointerAt;
+  proto['removeAllPointers'] = proto.removeAllPointers;
+  proto['getPointer'] = proto.getPointer;
+  proto['getPointerAt'] = proto.getPointerAt;
+  proto['getPointersCount'] = proto.getPointersCount;
+
+  // auto generated
   //proto['bar'] = proto.bar;
   //proto['marker'] = proto.marker;
   //proto['needle'] = proto.needle;
   //proto['knob'] = proto.knob;
+  //proto['defaultPointerType'] = proto.defaultPointerType;
 
   proto['range'] = proto.range;
 
