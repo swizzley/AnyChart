@@ -76,8 +76,6 @@ anychart.circularGaugeModule.pointers.Base = function() {
    * @type {anychart.core.utils.InteractivityState}
    */
   this.state = new anychart.core.utils.InteractivityState(this);
-
-
 };
 goog.inherits(anychart.circularGaugeModule.pointers.Base, anychart.core.VisualBase);
 
@@ -871,6 +869,7 @@ anychart.circularGaugeModule.pointers.Base.prototype.setupByJSON = function(conf
 (function() {
   var proto = anychart.circularGaugeModule.pointers.Base.prototype;
   proto['id'] = proto.id;
+  proto['data'] = proto.data;
   proto['stroke'] = proto.stroke;
   proto['fill'] = proto.fill;
   proto['hatchFill'] = proto.hatchFill;
