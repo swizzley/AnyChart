@@ -768,7 +768,10 @@ anychart.circularGaugeModule.Chart.prototype.isConfig_ = function(value) {
       var index, config, data, settings;
       var argLen = arguments.length;
 
-      index = anychart.utils.toNumber(opt_indexOrValueOrData);
+      if (goog.isArray(opt_indexOrValueOrData))
+        index = NaN;
+      else
+        index = anychart.utils.toNumber(opt_indexOrValueOrData);
       if (argLen > 3) {
         // 4 arguments
 
