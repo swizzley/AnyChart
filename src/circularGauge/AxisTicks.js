@@ -328,8 +328,9 @@ anychart.circularGaugeModule.AxisTicks.prototype.startDrawing = function() {
 
 /**
  * @param {number} angle
+ * @param {number} tickValue
  */
-anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle) {
+anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tickValue) {
   var angleRad = goog.math.toRadians(angle);
 
   var cx = this.axis_.gauge().getCx();
@@ -344,7 +345,8 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle) {
   this.contextProvider_['rotation'] = rotation + angle + 90;
   this.contextProvider_['x'] = x;
   this.contextProvider_['y'] = y;
-  this.contextProvider_['angle'] = angle;
+  this.contextProvider_['angle'] = goog.math.standardAngle(angle - anychart.circularGaugeModule.Chart.DEFAULT_START_ANGLE);
+  this.contextProvider_['value'] = tickValue;
 
   tick.rotation(rotation + angle + 90);
   if (goog.isFunction(this.fill_))
