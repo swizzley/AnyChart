@@ -134,8 +134,6 @@ anychart.linearGaugeModule.ScaleBar.prototype.colorScale = function(opt_value) {
     if (val) {
       var dispatch = this.colorScale_ == val;
       this.colorScale_ = /** @type {anychart.scales.Base} */(val);
-      this.fill_ = null;
-      this.stroke_ = null;
       this.colorScale_.resumeSignalsDispatching(dispatch);
       if (!dispatch)
         this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
@@ -174,10 +172,6 @@ anychart.linearGaugeModule.ScaleBar.prototype.fill = function(opt_fillOrColorOrK
     var fill = acgraph.vector.normalizeFill.apply(null, arguments);
     if (fill != this.fill_) {
       this.fill_ = fill;
-      if (this.colorScale_) {
-        this.colorScale_.unlistenSignals(this.colorScaleInvalidated_, this);
-        this.colorScale_ = null;
-      }
       this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
@@ -201,10 +195,6 @@ anychart.linearGaugeModule.ScaleBar.prototype.stroke = function(opt_strokeOrFill
     var stroke = acgraph.vector.normalizeStroke.apply(null, arguments);
     if (stroke != this.stroke_) {
       this.stroke_ = stroke;
-      if (this.colorScale_) {
-        this.colorScale_.unlistenSignals(this.colorScaleInvalidated_, this);
-        this.colorScale_ = null;
-      }
       this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
@@ -465,7 +455,27 @@ anychart.linearGaugeModule.ScaleBar.prototype.draw = function() {
       colors = colorScale.colors();
     var inverted = this.scale().inverted();
     var path, fill, stroke;
-    if (anychart.utils.instanceOf(colorScale, anychart.colorScalesModule.Linear)) {
+
+    // if one of fill/stroke is set - use them
+    // only if there no fill/stroke - use color scale
+    var fillIsSet = !!this.fill();
+    var strokeIsSet = !!this.stroke();
+    if (fillIsSet || strokeIsSet) {
+      fill = this.fill();
+      stroke = this.stroke();
+      path = this.paths[0] ? this.paths[0] : this.paths[0] = this.rootLayer.path();
+      path
+          .moveTo(left, top)
+          .lineTo(right, top)
+          .lineTo(right, bottom)
+          .lineTo(left, bottom)
+          .lineTo(left, top)
+          .close();
+
+      path.fill(fill || null);
+      path.stroke(stroke || null);
+      path.clip(this.clipPath_);
+    } else if (anychart.utils.instanceOf(colorScale, anychart.colorScalesModule.Linear)) {
       var offsets = goog.array.map(colors, function(color) {
         return color['offset'];
       });
@@ -529,18 +539,6 @@ anychart.linearGaugeModule.ScaleBar.prototype.draw = function() {
         path.fill(color).stroke('none');
       }
       this.rootLayer.clip(this.clipPath_);
-    } else if (!colorScale) {
-      fill = this.fill();
-      stroke = this.stroke();
-      path = this.paths[0] ? this.paths[0] : this.paths[0] = this.rootLayer.path();
-      path
-          .moveTo(left, top)
-          .lineTo(right, top)
-          .lineTo(right, bottom)
-          .lineTo(left, bottom)
-          .lineTo(left, top)
-          .close();
-      path.fill(fill).stroke(stroke).clip(this.clipPath_);
     }
 
     this.markConsistent(anychart.ConsistencyState.APPEARANCE);
