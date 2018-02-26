@@ -84,7 +84,7 @@ anychart.chartEditorModule.controls.LabeledControl.prototype.setValueByTarget = 
 
 
 /**
- * @param {string} value
+ * @param {string|null} value
  * @param {boolean=} opt_noDispatch
  */
 anychart.chartEditorModule.controls.LabeledControl.prototype.setValue = function(value, opt_noDispatch) {

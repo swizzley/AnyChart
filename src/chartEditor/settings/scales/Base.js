@@ -107,8 +107,15 @@ anychart.chartEditorModule.settings.scales.Base.prototype.onModelChange = functi
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
     var scale = model.getValue(this.getKey());
     var scaleType = scale ? scale.type : void 0;
-    if (this.scaleTypeField_ && scaleType) {
-      this.scaleTypeField_.setValue(scaleType, true);
+
+    if (this.scaleTypeField_) {
+      if (scaleType) {
+        this.scaleTypeField_.setValue(scaleType, true);
+        if (this.specificComponent_ && scaleType !== this.scaleType_)
+          this.specificComponent_.exclude(true);
+
+      } else
+        this.scaleTypeField_.setValue(null, true);
     }
   }
 };
@@ -128,6 +135,9 @@ anychart.chartEditorModule.settings.scales.Base.prototype.onChartDraw = function
       this.scaleTypeField_.setValue(type, true);
       if (this.updateSpecific())
         this.specificComponent_.onChartDraw(evt);
+
+    } else if (this.specificComponent_) {
+      this.specificComponent_.exclude(true);
     }
   }
 };
@@ -139,7 +149,8 @@ anychart.chartEditorModule.settings.scales.Base.prototype.onChartDraw = function
  * @return {boolean}
  */
 anychart.chartEditorModule.settings.scales.Base.prototype.updateSpecific = function(opt_force) {
-  var newScaleType = this.scaleTypeField_.getValue().value;
+  var selectValue = this.scaleTypeField_.getValue();
+  var newScaleType = selectValue && selectValue.value;
 
   if (newScaleType && (opt_force || newScaleType !== this.scaleType_)) {
     this.scaleType_ = newScaleType;

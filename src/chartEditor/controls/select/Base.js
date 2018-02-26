@@ -111,7 +111,7 @@ anychart.chartEditorModule.controls.select.Base.prototype.handleSelectionChange 
 
   if (!this.noDispatch && this.editorModel && goog.isDefAndNotNull(this.getValue())) {
     var selectedIndex = this.getSelectedIndex();
-    if (this.prevSelectedIndex_ == selectedIndex) return;
+    if (this.prevSelectedIndex_ === selectedIndex) return;
     this.prevSelectedIndex_ = selectedIndex;
 
     if (this.callback)
@@ -160,13 +160,13 @@ anychart.chartEditorModule.controls.select.Base.prototype.setValue = function(va
   var selectionModel = this.getSelectionModel();
   if (goog.isDefAndNotNull(value) && selectionModel) {
     for (var i = 0, item; item = selectionModel.getItemAt(i); i++) {
-      if (item && typeof item.getValue == 'function') {
+      if (item && typeof item.getValue === 'function') {
         var itemModel = item.getValue();
-        if (itemModel == value || itemModel.value == value) {
+        if (itemModel === value || itemModel.value === value) {
           var additionalMatch = true;
           if (goog.isObject(opt_additionalValues)) {
             for (var j in opt_additionalValues) {
-              if (opt_additionalValues[j] != itemModel[j]) {
+              if (opt_additionalValues[j] !== itemModel[j]) {
                 additionalMatch = false;
                 break;
               }
@@ -248,7 +248,7 @@ anychart.chartEditorModule.controls.select.Base.prototype.suspendDispatch = func
  * @return {boolean}
  */
 anychart.chartEditorModule.controls.select.Base.prototype.exclude = function(value) {
-  var dirty = this.excluded != value;
+  var dirty = this.excluded !== value;
   this.excluded = value;
   if (this.isInDocument())
     goog.style.setElementShown(this.getElement(), !this.excluded);

@@ -96,8 +96,10 @@ anychart.chartEditorModule.settings.Stroke.prototype.onChange = function() {
 
   if (colorValue || thicknessValue || dashValue) {
     var model = /** @type {anychart.chartEditorModule.EditorModel} */(this.getModel());
-    if (model)
+    if (model) {
       model.setValue(this.key, value);
+      this.dispatchEvent(goog.ui.Component.EventType.ACTION);
+    }
   }
 };
 
