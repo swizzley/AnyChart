@@ -76,10 +76,12 @@ anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.onAddR
 
 
 /**
- * @param {Object} evt
+ * @param {goog.events.Event} evt
  * @private
  */
 anychart.chartEditorModule.settings.scales.OrdinalColorSpecific.prototype.onRemoveRange_ = function(evt) {
+  evt.stopPropagation();
+
   var index = /** @type {anychart.chartEditorModule.settings.ColorScaleSingleRange} */(evt.target).index();
 
   var removedRange = goog.array.splice(this.ranges_, index, 1);

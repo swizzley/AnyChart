@@ -178,10 +178,12 @@ anychart.chartEditorModule.MultiplePanelsBase.prototype.addPanelInstance = funct
 
 
 /**
- * @param {Object} evt
+ * @param {goog.events.Event} evt
  * @private
  */
 anychart.chartEditorModule.MultiplePanelsBase.prototype.onRemovePanel = function(evt) {
+  evt.stopPropagation();
+
   var panelInstance = /** @type {anychart.chartEditorModule.SettingsPanelIndexed} */(evt.currentTarget);
   var panelIndex = panelInstance.getIndex();
   var panelPlotIndex = panelInstance.getPlotIndex();
