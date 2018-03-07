@@ -4075,6 +4075,10 @@ anychart.enums.Statistics = {
    */
   CATEGORY_Y_SUM: 'categoryYSum',
   /**
+   Counts of chart elements (axes, grids, etc)
+   */
+  CHART_ELEMENTS: 'chartElements',
+  /**
    The close value of this point (OHLC, Candlestick).
    */
   CLOSE: 'close',

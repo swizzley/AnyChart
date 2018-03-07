@@ -59,7 +59,12 @@ anychart.radarPolarBaseModule.Chart = function(categorizeData) {
 };
 goog.inherits(anychart.radarPolarBaseModule.Chart, anychart.core.ChartWithOrthogonalScales);
 
-
+//region --- Infrastructure
+//----------------------------------------------------------------------------------------------------------------------
+//
+//  Infrastructure
+//
+//----------------------------------------------------------------------------------------------------------------------
 /**
  * Supported consistency states. Adds AXES, AXES_MARKERS, GRIDS to anychart.core.ChartWithSeries states.
  * @type {number}
@@ -70,6 +75,26 @@ anychart.radarPolarBaseModule.Chart.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.ConsistencyState.AXES_CHART_GRIDS;
 
 
+/** @inheritDoc */
+anychart.radarPolarBaseModule.Chart.prototype.calculateStatistics = function() {
+  anychart.radarPolarBaseModule.Chart.base(this, 'calculateStatistics');
+
+  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {};
+  elementsStat['axes'] || (elementsStat['axes'] = {});
+  elementsStat['axes']['x'] = 1;
+  elementsStat['axes']['y'] = 1;
+
+  elementsStat['grids'] || (elementsStat['grids'] = {});
+  elementsStat['grids']['x'] = this.xGrids_.length;
+  elementsStat['grids']['y'] = this.yGrids_.length;
+  elementsStat['grids']['xMinor'] = this.xMinorGrids_.length;
+  elementsStat['grids']['yMinor'] = this.yMinorGrids_.length;
+
+  this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
+};
+
+
+//endregion
 //region --- Specific settings
 //------------------------------------------------------------------------------
 //
