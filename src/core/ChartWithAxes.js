@@ -211,15 +211,15 @@ anychart.core.ChartWithAxes.prototype.calculateStatistics = function() {
   anychart.core.ChartWithAxes.base(this, 'calculateStatistics');
 
   var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS);
-  elementsStat['axes'] || (elementsStat['axes'] = {});
-  elementsStat['axes']['x'] = this.xAxes_.length;
-  elementsStat['axes']['y'] = this.yAxes_.length;
 
-  elementsStat['grids'] || (elementsStat['grids'] = {});
-  elementsStat['grids']['x'] = this.xGrids_.length;
-  elementsStat['grids']['y'] = this.yGrids_.length;
-  elementsStat['grids']['xMinor'] = this.xMinorGrids_.length;
-  elementsStat['grids']['yMinor'] = this.yMinorGrids_.length;
+  elementsStat['axes'] = {'x': this.xAxes_.length, 'y': this.yAxes_.length};
+
+  elementsStat['grids'] = {
+    'x': this.xGrids_.length,
+    'y': this.yGrids_.length,
+    'xMinor': this.xMinorGrids_.length,
+    'yMinor': this.yMinorGrids_.length
+  };
 
   this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };
