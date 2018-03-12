@@ -210,7 +210,7 @@ anychart.core.ChartWithAxes.prototype.invalidateAnnotations = function() {
 anychart.core.ChartWithAxes.prototype.calculateStatistics = function() {
   anychart.core.ChartWithAxes.base(this, 'calculateStatistics');
 
-  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {};
+  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS);
   elementsStat['axes'] || (elementsStat['axes'] = {});
   elementsStat['axes']['x'] = this.xAxes_.length;
   elementsStat['axes']['y'] = this.yAxes_.length;

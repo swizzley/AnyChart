@@ -1583,6 +1583,10 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
     this.calculateScalesStatistics();
     this.markConsistent(anychart.ConsistencyState.SCALE_CHART_SCALES_STATISTICS);
   }
+
+  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {};
+  elementsStat['series'] = this.seriesList.length;
+  this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };
 
 

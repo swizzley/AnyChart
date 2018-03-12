@@ -79,7 +79,7 @@ anychart.radarPolarBaseModule.Chart.prototype.SUPPORTED_CONSISTENCY_STATES =
 anychart.radarPolarBaseModule.Chart.prototype.calculateStatistics = function() {
   anychart.radarPolarBaseModule.Chart.base(this, 'calculateStatistics');
 
-  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {};
+  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS);
   elementsStat['axes'] || (elementsStat['axes'] = {});
   elementsStat['axes']['x'] = 1;
   elementsStat['axes']['y'] = 1;
