@@ -148,6 +148,13 @@ anychart.stockModule.Plot = function(chart) {
   this.eventMarkers_ = null;
 
   /**
+   * Statistics object.
+   * @type {Object}
+   * @private
+   */
+  this.statistics_ = {};
+
+  /**
    * Whether this plot is last in chart.
    * @type {boolean}
    * @private
@@ -320,7 +327,74 @@ anychart.stockModule.Plot.PROPERTY_DESCRIPTORS = (function() {
 })();
 anychart.core.settings.populate(anychart.stockModule.Plot, anychart.stockModule.Plot.PROPERTY_DESCRIPTORS);
 
+//region --- Statistics
+//------------------------------------------------------------------------------
+//
+//  Statistics
+//
+//------------------------------------------------------------------------------
+/**
+ * Ensures that statistics is ready.
+ */
+anychart.stockModule.Plot.prototype.calculateStatistics = function() {
+  var elementsStat = this.statistics(anychart.enums.Statistics.PLOT_ELEMENTS) || {'axes': {}, 'grids': {}};
 
+  elementsStat['axes']['x'] = 1;
+  elementsStat['axes']['y'] = this.yAxes_.length;
+
+  elementsStat['grids']['x'] = this.xGrids_.length;
+  elementsStat['grids']['y'] = this.yGrids_.length;
+  elementsStat['grids']['xMinor'] = this.xMinorGrids_.length;
+  elementsStat['grids']['yMinor'] = this.yMinorGrids_.length;
+
+  elementsStat['series'] = this.series_.length;
+
+  this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
+};
+
+
+/**
+ * Chart statistics getter/setter for internal usage. Turns names to lower case and asks values as lower case.
+ * @param {string=} opt_name Statistics parameter name.
+ * @param {*=} opt_value Statistics parameter value.
+ * @return {anychart.stockModule.Plot|*}
+ */
+anychart.stockModule.Plot.prototype.statistics = function(opt_name, opt_value) {
+  if (goog.isDef(opt_name)) {
+    if (goog.isDef(opt_value)) {
+      this.statistics_[opt_name.toLowerCase()] = opt_value;
+      return this;
+    } else {
+      return this.statistics_[opt_name.toLowerCase()];
+    }
+  } else {
+    return this.statistics_;
+  }
+};
+
+
+/**
+ * Resets statistics
+ * @return {anychart.stockModule.Plot} - Itself.
+ */
+anychart.stockModule.Plot.prototype.resetStatistics = function() {
+  this.statistics_ = {};
+  return this;
+};
+
+
+/**
+ * Gets statistics value by key.
+ * @param {string} key - Key.
+ * @return {*} - Statistics value.
+ */
+anychart.stockModule.Plot.prototype.getStat = function(key) {
+  this.calculateStatistics();
+  return this.statistics(key);
+};
+
+
+//endregion
 //region Series-related methods
 /**
  * Creates and returns a new area series.
@@ -3014,4 +3088,5 @@ anychart.stockModule.Plot.Dragger.prototype.limitY = function(y) {
   proto['eventMarkers'] = proto.eventMarkers;
   proto['priceIndicator'] = proto.priceIndicator;
   proto['noData'] = proto.noData;
+  proto['getStat'] = proto.getStat;
 })();
