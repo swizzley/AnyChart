@@ -188,7 +188,7 @@ anychart.ConsistencyState = {
   //---------------------------------- DATA GRID COLUMN STATES (VB) ---------------------------------
   DATA_GRID_COLUMN_TITLE: 1 << 6,
   DATA_GRID_COLUMN_POSITION: 1 << 7,
-  DATA_GRID_COLUMN_BUTTON_CURSOR: 1 << 8,
+  DATA_GRID_COLUMN_BUTTON: 1 << 8,
   //---------------------------------- BACKGROUND STATES (VB) ---------------------------------
   BACKGROUND_POINTER_EVENTS: 1 << 6,
   //---------------------------------- LABEL STATES (VB) ---------------------------------
@@ -278,12 +278,17 @@ anychart.ConsistencyState = {
   //---------------------------------- STOCK SCROLLER (SCROLLER) ----------------------------------------
   STOCK_SCROLLER_SERIES: 1 << 9,
   STOCK_SCROLLER_AXIS: 1 << 10,
-  //---------------------------------- TREE MAP CHART (SEPARATE CHART) ----------------------------------
-  TREEMAP_DATA: 1 << 12,
+  //---------------------------------- TREE CHART (CHART) ----------------------------------
+  TREE_DATA: 1 << 12,
+  //---------------------------------- TREE MAP CHART (TREE CHART) ----------------------------------
   TREEMAP_COLOR_SCALE: 1 << 13,
   TREEMAP_NODE_TYPES: 1 << 14,
   TREEMAP_COLOR_RANGE: 1 << 15,
   TREEMAP_HINT_OPACITY: 1 << 16,
+  //---------------------------------- SUNBURST_LABELS STATES (TREE CHART) ---------------------------------
+  SUNBURST_CENTER_CONTENT: 1 << 13,
+  SUNBURST_COLOR_SCALE: 1 << 14,
+  SUNBURST_CALCULATIONS: 1 << 15,
   //---------------------------------- PERT CHART (SEPARATE CHART) ----------------------------------
   PERT_DATA: 1 << 12,
   PERT_CALCULATIONS: 1 << 13,
@@ -401,6 +406,21 @@ anychart.PointState = {
   HOVER: 1,
   SELECT: 2,
   ALL: 0xFFFFFFFF
+};
+
+
+/**
+ * The list of state settings states.
+ * @enum {number}
+ */
+anychart.SettingsState = {
+  NORMAL: 0,
+  HOVERED: 1,
+  SELECTED: 2,
+  EXPANDED: 3,
+  COLLAPSED: 4,
+  PUSHED: 5,
+  DISABLED: 6
 };
 
 

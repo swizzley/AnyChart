@@ -631,6 +631,7 @@ anychart.themes.merging.mergingMap_ = (function() {
         ['default', [
           'Title',
           'CrosshairLabel',
+          'ButtonSettings.normal',
           ['Tooltip', [
             '',
             '.contentInternal'
@@ -671,6 +672,7 @@ anychart.themes.merging.mergingMap_ = (function() {
         [[
           ['default', [
             'Title',
+            'ButtonSettings.normal',
             ['Tooltip', [
               '',
               '.contentInternal'
@@ -749,6 +751,7 @@ anychart.themes.merging.mergingMap_ = (function() {
         [[
           'venn',
           'pieFunnelPyramidBase',
+          'sunburst',
           [['heat', 'tree'], 'Map'],
           [[
             'chart.defaultAnnotation',
@@ -1058,6 +1061,12 @@ anychart.themes.merging.mergingMap_ = (function() {
       ]
     },
     {
+      defaultObj: 'defaultButtonSettings',
+      targets: [
+        'defaultDataGrid.buttons'
+      ]
+    },
+    {
       defaultObj: 'chart',
       targets: [
         'tagCloud',
@@ -1074,7 +1083,8 @@ anychart.themes.merging.mergingMap_ = (function() {
         'pert',
         'resource',
         'mekko',
-        'venn'
+        'venn',
+        'sunburst'
       ]
     },
     {
