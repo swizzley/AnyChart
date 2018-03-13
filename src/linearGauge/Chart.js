@@ -927,6 +927,15 @@ anychart.linearGaugeModule.Chart.prototype.calculate = function() {
 };
 
 
+/** @inheritDoc */
+anychart.linearGaugeModule.Chart.prototype.calculateStatistics = function() {
+  anychart.linearGaugeModule.Chart.base(this, 'calculateStatistics');
+
+  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {};
+  elementsStat['axes'] = this.axes_.length;
+  this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
+};
+
 //endregion
 //region --- DRAWING ---
 /** @inheritDoc */

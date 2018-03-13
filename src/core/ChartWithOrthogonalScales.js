@@ -348,12 +348,6 @@ anychart.core.ChartWithOrthogonalScales.prototype.invalidateSeriesOfScale = func
 //  Calculations
 //
 //----------------------------------------------------------------------------------------------------------------------
-/** @inheritDoc */
-anychart.core.ChartWithOrthogonalScales.prototype.ensureStatisticsReady = function() {
-  this.calculate();
-  this.calculateStatistics();
-};
-
 
 /** @inheritDoc */
 anychart.core.ChartWithOrthogonalScales.prototype.drawInternal = function() {
@@ -1271,9 +1265,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateScalesStatistics = fu
 };
 
 
-/**
- * Calculates all statistics for the chart.
- */
+/** @inheritDoc */
 anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.SCALE_CHART_STATISTICS)) {
     anychart.performance.start('Statistics calculation');
