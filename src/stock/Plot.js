@@ -349,7 +349,7 @@ anychart.stockModule.Plot.prototype.calculateStatistics = function() {
 
   elementsStat['series'] = this.series_.length;
 
-  this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
+  this.statistics(anychart.enums.Statistics.PLOT_ELEMENTS, elementsStat);
 };
 
 
