@@ -918,6 +918,7 @@ anychart.utils.getFirstNotNullValue = function(var_args) {
   }
 };
 
+
 /**
  * Returns first defined argument, recurse in arrays.
  * @param {...*} var_args .
