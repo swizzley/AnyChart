@@ -2128,7 +2128,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
        */
       'format': function() {
         var name = this['name'];
-        return (name !== void 0) ? name + '' : '';
+        return (name !== void 0) ? String(name) : '';
       }
     },
     'defaultColumnSettings': {
@@ -2176,7 +2176,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
          */
         'format': function() {
           var val = this['item']['meta']('index');
-          return (val != null) ? (val + 1) + '' : '';
+          return (val != null) ? String(val + 1) : '';
         },
         'title': {
           'text': '#'
@@ -2192,7 +2192,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
          */
         'format': function() {
           var val = this['name'];
-          return (val != null) ? (val + '') : '';
+          return (val != null) ? String(val) : '';
         },
         'title': {
           'text': 'Name'
@@ -2279,6 +2279,92 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'progressBarPosition': 'left-center',
     'progressBarAnchor': 'left-center',
     //all another settings should be set to 'null' for serialization demerging purposes
+
+    'elements': {
+      'rendering': {
+        /**
+         * @this {*}
+         * @return {*}
+         */
+        'drawer': function() {
+          var shapes = this['shapes'];
+          var path = shapes['path'];
+          var bounds = this['predictedBounds'];
+          anychart.graphics['vector']['primitives']['roundedRect'](path, bounds, 0);
+        },
+        'shapes': [
+          {
+            'name': 'path',
+            'shapeType': 'path',
+            'fillName': 'fill',
+            'strokeName': 'stroke',
+            'zIndex': 0,
+            'disablePointerEvents': false
+          }
+        ]
+      }
+    },
+
+    'tasks': {
+      'progress': {
+        'rendering': {
+          'shapes': [
+            {
+              'name': 'path',
+              'shapeType': 'path',
+              'fillName': 'fill',
+              'strokeName': 'stroke',
+              'zIndex': 1,
+              'disablePointerEvents': true
+            }
+          ]
+        }
+      }
+    },
+
+    'groupingTasks': {
+      'rendering': {
+        /**
+         * @this {*}
+         * @return {*}
+         */
+        'drawer': function() {
+          var shapes = this['shapes'];
+          var path = shapes['path'];
+          var bounds = this['predictedBounds'];
+
+          var right = bounds.left + bounds.width;
+          var top = bounds.top + bounds.height;
+          var top2 = bounds.top + bounds.height * 1.4;
+          path
+              .moveTo(bounds.left, bounds.top)
+              .lineTo(right, bounds.top)
+              .lineTo(right, top2)
+              .lineTo(right - 1, top2)
+              .lineTo(right - 1, top)
+              .lineTo(bounds.left + 1, top)
+              .lineTo(bounds.left + 1, top2)
+              .lineTo(bounds.left, top2)
+              .close();
+        }
+      }
+    },
+
+    'milestones': {
+      'rendering': {
+        /**
+         * @this {*}
+         * @return {*}
+         */
+        'drawer': function() {
+          var shapes = this['shapes'];
+          var path = shapes['path'];
+          var bounds = this['predictedBounds'];
+          var radius = bounds.width / 2;
+          anychart.graphics['vector']['primitives']['diamond'](path, bounds.left + radius, bounds.top + radius, radius);
+        }
+      }
+    },
 
     'connectorFill': '#545f69',
     'connectorStroke': '#545f69',
