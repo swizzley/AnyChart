@@ -3953,27 +3953,7 @@
         "rowFill": {"$ref": "#/definitions/fill"},
         "rowHoverFill": {"$ref": "#/definitions/fill"},
         "rowSelectedFill": {"$ref": "#/definitions/fill"},
-        "baseFill": {"$ref": "#/definitions/fill"},
-        "baseStroke": {"$ref": "#/definitions/stroke"},
-        "baselineFill": {"$ref": "#/definitions/fill"},
-        "baselineStroke": {"$ref": "#/definitions/stroke"},
-        "milestoneFill": {"$ref": "#/definitions/fill"},
-        "milestoneStroke": {"$ref": "#/definitions/stroke"},
-        "parentFill": {"$ref": "#/definitions/fill"},
-        "parentStroke": {"$ref": "#/definitions/stroke"},
-        "progressFill": {"$ref": "#/definitions/fill"},
-        "progressStroke": {"$ref": "#/definitions/stroke"},
-        "connectorFill": {"$ref": "#/definitions/fill"},
-        "connectorStroke": {"$ref": "#/definitions/stroke"},
-        "selectedElementFill": {"$ref": "#/definitions/fill"},
-        "selectedElementStroke": {"$ref": "#/definitions/stroke"},
-        "selectedConnectorStroke": {"$ref": "#/definitions/stroke"},
         "labels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
-        "baseLabels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
-        "parentLabels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
-        "milestoneLabels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
-        "baselineLabels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
-        "progressLabels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
         "markers": {"$ref": "#/definitions/anychart.core.ui.MarkersFactory"},
         "header": {"$ref": "#/definitions/anychart.core.ui.TimelineHeader"},
         "connectorPreviewStroke": {"$ref": "#/definitions/stroke"},
@@ -3989,7 +3969,6 @@
         "editStructurePreviewStroke": {"$ref": "#/definitions/stroke"},
         "editStructurePreviewDashStroke": {"$ref": "#/definitions/stroke"},
         "editing": {"type": "boolean"},
-        "baselineAbove": {"type": "boolean"},
         "headerHeight": {"type": "number"},
         "defaultRowHeight": {"type": "number"},
         "lineAxesMarkers": {
@@ -4031,26 +4010,13 @@
         "editFinishConnectorMarkerVerticalOffset": {"type": "number"},
         "editIntervalWidth": {"type": "number"},
 
-        "baseBarHeight": {"type": ["number", "string"]},
-        "baseBarAnchor": {"type": "string"},
-        "baseBarPosition": {"type": "string"},
-        "baseBarOffset": {"type": ["number", "string"]},
-        "baselineBarHeight": {"type": ["number", "string"]},
-        "baselineBarAnchor": {"type": "string"},
-        "baselineBarPosition": {"type": "string"},
-        "baselineBarOffset": {"type": ["number", "string"]},
-        "parentBarHeight": {"type": ["number", "string"]},
-        "parentBarAnchor": {"type": "string"},
-        "parentBarPosition": {"type": "string"},
-        "parentBarOffset": {"type": ["number", "string"]},
-        "progressBarHeight": {"type": ["number", "string"]},
-        "progressBarAnchor": {"type": "string"},
-        "progressBarPosition": {"type": "string"},
-        "progressBarOffset": {"type": ["number", "string"]},
-        "milestoneHeight": {"type": ["number", "string"]},
-        "milestoneAnchor": {"type": "string"},
-        "milestonePosition": {"type": "string"},
-        "milestoneOffset": {"type": ["number", "string"]},
+        "elements": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"},
+        "tasks": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineTasksElement"},
+        "groupingTasks": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineTasksElement"},
+        "baselines": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineBaselinesElement"},
+        "periods": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"},
+        "milestones": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"},
+        "connectors": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineConnectorsElement"},
 
         "elements": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
         "tasks": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
@@ -4099,17 +4065,58 @@
       }
     },
 
-    "anychart.core.ui.GanttElementsBase": {
+    "anychart.core.ui.GanttTimelineElement": {
       "type": "object",
-      "allOf": [{"$ref": "#/definitions/anychart.core.VisualBase"}],
       "properties": {
-        "rendering": {"$ref": "#/definitions/anychart.core.ui.GanttRenderingSettings"}
+        "rendering": {"$ref": "#/definitions/anychart.core.ui.GanttRenderingSettings"},
+        "normal": {"$ref": "#/definitions/anychart.core.StateSettings"},
+        "selected": {"$ref": "#/definitions/anychart.core.StateSettings"},
+        "labels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
+        "stroke": {"$ref": "#/definitions/stroke"},
+        "fill": {"$ref": "#/definitions/fill"},
+        "height": {
+          "type": ["number", "string"]
+        },
+        "offset": {
+          "type": ["number", "string"]
+        },
+        "anchor": {
+          "type": ["string"]
+        },
+        "position": {
+          "type": ["string"]
+        }
+      }
+    },
+
+    "anychart.core.ui.GanttTimelineTasksElement": {
+      "type": "object",
+      "allOf": [{"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"}],
+      "properties": {
+        "progress": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"}
+      }
+    },
+
+    "anychart.core.ui.GanttTimelineBaselinesElement": {
+      "type": "object",
+      "allOf": [{"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"}],
+      "properties": {
+        "above": {
+          "type": ["boolean"]
+        }
+      }
+    },
+
+    "anychart.core.ui.GanttTimelineConnectorsElement": {
+      "type": "object",
+      "properties": {
+        "normal": {"$ref": "#/definitions/anychart.core.StateSettings"},
+        "selected": {"$ref": "#/definitions/anychart.core.StateSettings"}
       }
     },
 
     "anychart.core.ui.GanttRenderingSettings": {
       "type": "object",
-      "allOf": [{"$ref": "#/definitions/anychart.core.VisualBase"}],
       "properties": {
         "shapes": {
           "type": "array",
@@ -4125,12 +4132,6 @@
           "type": "string"
         },
         "shapeType": {
-          "type": "string"
-        },
-        "fillName": {
-          "type": "string"
-        },
-        "strokeName": {
           "type": "string"
         },
         "zIndex": {

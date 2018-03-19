@@ -790,7 +790,6 @@ anychart.ganttModule.Scale.prototype.transform = function(value) {
 
 /**
  * This method is added only for compatibility with line/range/text markers of gantt chart's timeline.
- * NOTE: Use timestampToRatio method instead.
  * @param {number} ratio - Ratio to transform.
  * @return {number} - Ratio transformed to datetime.
  */

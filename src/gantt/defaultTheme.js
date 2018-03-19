@@ -70,33 +70,45 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
         'titleFormat': '{%Name}',
         'format': 'Start Date: {%actualStart}\nEnd Date: {%actualEnd}\nComplete: {%progress}'
       },
-      'baseLabels': {
-        'format': '{%Progress}',
-        'position': 'right-center',
-        'anchor': 'left-center',
-        'enabled': null
+      'elements': {
+        'labels': {
+          'format': '{%Progress}',
+          'position': 'right-center',
+          'anchor': 'left-center',
+          'enabled': null
+        }
       },
-      'baselineLabels': {
-        'position': 'right-center',
-        'anchor': 'left-center',
-        'format': 'Baseline Label',
-        'enabled': false
+      'tasks': {
+        'progress': {
+          'labels': {
+            'format': '{%Progress}',
+            'enabled': false
+          }
+        }
       },
-      'parentLabels': {
-        'format': '{%Progress}',
-        'position': 'right-center',
-        'anchor': 'left-center',
-        'enabled': null
+      'groupingTasks': {
+        'progress': {
+          'labels': {
+            'format': '{%Progress}',
+            'enabled': false
+          }
+        }
       },
-      'milestoneLabels': {
-        'format': '{%Name}',
-        'anchor': 'left-center',
-        'position': 'right-center',
-        'enabled': null
+      'baselines': {
+        'labels': {
+          'position': 'right-center',
+          'anchor': 'left-center',
+          'format': 'Baseline Label',
+          'enabled': false
+        }
       },
-      'progressLabels': {
-        'format': '{%Progress}',
-        'enabled': false
+      'milestones': {
+        'labels': {
+          'format': '{%Name}',
+          'anchor': 'left-center',
+          'position': 'right-center',
+          'enabled': null
+        }
       }
     }
   }

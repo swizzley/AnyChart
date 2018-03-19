@@ -2013,6 +2013,7 @@ anychart.ganttModule.BaseGrid.prototype.createController = function(opt_isResour
  * 4) appearanceInvalidated()
  * 5) specialInvalidated()
  * 6) positionFinal()
+ * 7) labelsInvalidated()
  *
  * @param {boolean} positionRecalculated - If the vertical position was really recalculated.
  * @return {anychart.ganttModule.BaseGrid} - Itself for method chaining.
@@ -2204,6 +2205,9 @@ anychart.ganttModule.BaseGrid.prototype.drawInternal = function(positionRecalcul
     this.positionFinal();
     this.redrawPosition = false;
   }
+
+  this.labelsInvalidated();
+
   if (manualSuspend) stage.resume();
   if (this.isStandalone) {
     this.initMouseFeatures();
@@ -2491,6 +2495,12 @@ anychart.ganttModule.BaseGrid.prototype.selectRow = function(item) {
  * Special invalidation. Used by child classes to preform own invalidation.
  */
 anychart.ganttModule.BaseGrid.prototype.specialInvalidated = goog.nullFunction;
+
+
+/**
+ * Labels invalidation. Used by child classes to preform own invalidation.
+ */
+anychart.ganttModule.BaseGrid.prototype.labelsInvalidated = goog.nullFunction;
 
 
 /**

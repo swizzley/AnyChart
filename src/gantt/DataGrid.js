@@ -567,7 +567,6 @@ anychart.ganttModule.DataGrid.prototype.columns = function(opt_indexOrValue, opt
     }
     return column;
   }
-
 };
 
 
