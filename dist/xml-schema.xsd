@@ -1494,7 +1494,7 @@
 
     <xsd:complexType name="core.DataGrid.Column">
         <xsd:all>
-            <xsd:element minOccurs="0" maxOccurs="1" name="cell_text_settings" type="core.LabelsFactory"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="labels" type="core.LabelsFactory"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="title" type="core.Title"/>
         </xsd:all>
         <xsd:attributeGroup ref="attrs.VisualBase"/>

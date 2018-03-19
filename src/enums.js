@@ -1527,7 +1527,18 @@ anychart.enums.EventType = {
   SELECT_MARQUEE_FINISH: 'selectmarqueefinish',
 
   // data changed event for no data label
-  DATA_CHANGED: 'datachanged'
+  DATA_CHANGED: 'datachanged',
+
+  // edit input ui events
+  // EDIT_INPUT_BEFORE_SHOW: 'editinputbeforeshow',
+  // EDIT_INPUT_SHOW: 'editinputshow',
+  EDIT_INPUT_SUBMIT: 'editinputsubmit',
+  EDIT_INPUT_ESCAPE: 'editinputescape',
+  EDIT_INPUT_BLUR: 'editinputblur',
+  EDIT_INPUT_FOCUS: 'editinputfocus',
+  EDIT_INPUT_KEY_PRESS: 'editinputkeypress',
+  EDIT_INPUT_BEFORE_HIDE: 'editinputbeforehide',
+  EDIT_INPUT_HIDE: 'editinputhide'
 };
 
 

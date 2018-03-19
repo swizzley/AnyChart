@@ -729,7 +729,7 @@ anychart.themes.merging.mergingMap_ = (function() {
               ['header.', [[['top', 'mid', 'low'], 'Level.']]]
             ], 'labels']
           ]],
-          'DataGrid.defaultColumnSettings.cellTextSettings'
+          'DataGrid.defaultColumnSettings.labels'
         ]],
         'standalones.labelsFactory',
         ['map.axesSettings.', [

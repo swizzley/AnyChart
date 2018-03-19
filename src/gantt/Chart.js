@@ -406,6 +406,15 @@ anychart.ganttModule.Chart.prototype.defaultRowHeight = function(opt_value) {
 
 
 /**
+ * @inheritDoc
+ */
+anychart.ganttModule.Chart.prototype.lockInteractivity = function(lock) {
+  this.dg_.lockInteractivity(lock);
+  this.tl_.lockInteractivity(lock);
+};
+
+
+/**
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
 anychart.ganttModule.Chart.PROPERTY_DESCRIPTORS = (function() {

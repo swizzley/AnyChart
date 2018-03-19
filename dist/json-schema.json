@@ -5170,7 +5170,7 @@
       "type": "object",
       "allOf": [{"$ref": "#/definitions/anychart.core.VisualBase"}],
       "properties": {
-        "cellTextSettings": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
+        "labels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"},
         "title": {"$ref": "#/definitions/anychart.core.ui.Title"},
         "width": {"type": "number"},
         "buttonCursor": {"type": "string"},
