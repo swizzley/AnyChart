@@ -21,6 +21,7 @@ AnyChart is a flexible JavaScript (HTML5, SVG, VML) charting framework that fits
 * [Technical Integrations](#technical-integrations)
 * [Contribution guide](#contribution-guide)
 * [Build and debug](#build-and-debug)
+* [Module system](#module-system)
 * [Package directory](#package-directory)
 * [Contacts](#contacts)
 * [Links](#links)
@@ -216,11 +217,7 @@ After running this command you can compile the project using the `compile` comma
 
 `./build.py compile`
 
-This compiles production version of **anychart-bundle** and **all** modules and puts them into the `out` folder.
-
-To compile other modules use `-m` or `--module` option. To see all available modules see the description of `-m` option in the `compile` command help:
-
-`./build.py compile -h`
+This compiles production version of **anychart-bundle** and **all** modules and puts them into the `out` folder. You can read more about modules in our [Modules](https://docs.anychart.com/Quick_Start/Modules) article.
 
 To create a dev build for the debug purposes use `-d` or `--develop` option:
 
