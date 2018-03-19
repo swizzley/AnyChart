@@ -4739,8 +4739,14 @@
         "displayMode": {"$ref": "#/definitions/anychart.enums.CrosshairDisplayMode"},
         "xStroke": {"$ref": "#/definitions/stroke"},
         "yStroke": {"$ref": "#/definitions/stroke"},
-        "xLabel": {"$ref": "#/definitions/anychart.core.ui.CrosshairLabel"},
-        "yLabel": {"$ref": "#/definitions/anychart.core.ui.CrosshairLabel"}
+        "xLabels": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/anychart.core.ui.CrosshairLabel"}
+        },
+        "yLabels": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/anychart.core.ui.CrosshairLabel"}
+        }
       }
     },
     "anychart.core.ui.Legend": {

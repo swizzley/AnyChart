@@ -1573,6 +1573,10 @@ anychart.utils.getNodeNames_ = function(arrayPropName) {
       return ['angles', 'angle'];
     case 'levels':
       return ['levels', 'level'];
+    case 'xLabels':
+      return ['x_labels', 'item'];
+    case 'yLabels':
+      return ['y_labels', 'item'];
   }
   return null;
 };
@@ -1672,6 +1676,10 @@ anychart.utils.getArrayPropName_ = function(nodeName) {
       return ['angles', 'angle'];
     case 'levels':
       return ['levels', 'level'];
+    case 'xLabels':
+      return ['xLabels', 'item'];
+    case 'yLabels':
+      return ['yLabels', 'item'];
   }
   return null;
 };

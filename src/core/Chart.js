@@ -620,8 +620,8 @@ anychart.core.Chart.prototype.onLabelSignal_ = function(event) {
 
 
 /**
- * Getter/setter for axis default settings.
- * @param {Object=} opt_value Object with x-axis settings.
+ * Getter/setter for chart label default settings.
+ * @param {Object=} opt_value Object with label settings.
  * @return {Object}
  */
 anychart.core.Chart.prototype.defaultLabelSettings = function(opt_value) {

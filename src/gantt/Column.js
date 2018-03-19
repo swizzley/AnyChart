@@ -298,7 +298,7 @@ anychart.ganttModule.Column.prototype.format = function(opt_value) {
   if (goog.isDef(opt_value))
     anychart.core.reporting.warning(anychart.enums.WarningCode.DEPRECATED, null, ['column.format()', 'column.labels().format()'], true);
   var l = /** @type {anychart.core.ui.LabelsFactory} */ (this.labels());
-  return l.format(opt_value);
+  return l['format'](opt_value);
 };
 
 
