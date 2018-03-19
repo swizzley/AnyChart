@@ -1681,7 +1681,7 @@ anychart.themes.merging.mergingMap_ = (function() {
       defaultObj: 'defaultGroupingSettings',
       targets: [
         ['stock.', [
-            [['g', 'scrollerG'], 'rouping']
+          [['g', 'scrollerG'], 'rouping']
         ]]
       ]
     },

@@ -2051,6 +2051,18 @@
             ]
           }
         },
+        "pointers": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {"$ref": "#/definitions/disable"},
+              {"$ref": "#/definitions/anychart.core.gauge.pointers.Bar"},
+              {"$ref": "#/definitions/anychart.core.gauge.pointers.Marker"},
+              {"$ref": "#/definitions/anychart.core.gauge.pointers.Needle"},
+              {"$ref": "#/definitions/anychart.core.gauge.pointers.Knob"}
+            ]
+          }
+        },
         "encloseWithStraightLine": {
           "type": "boolean"
         }
