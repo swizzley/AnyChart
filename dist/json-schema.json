@@ -3231,6 +3231,7 @@
         {"$ref": "#/definitions/anychart.core.VisualBase"}
       ],
       "properties": {
+        "pointerType": {"type": "string"},
         "stroke": {"$ref": "#/definitions/stroke"},
         "fill": {"$ref": "#/definitions/fill"},
         "hatchFill": {"$ref": "#/definitions/hatchFillSet"},
@@ -3248,6 +3249,7 @@
         {"$ref": "#/definitions/anychart.core.gauge.pointers.Base"}
       ],
       "properties": {
+        "pointerType": {"enum": ["bar"]},
         "radius": {
           "type": ["string", "number", "null"]
         },
@@ -3263,6 +3265,7 @@
         {"$ref": "#/definitions/anychart.core.gauge.pointers.Base"}
       ],
       "properties": {
+        "pointerType": {"enum": ["knob"]},
         "verticesCount": {"type": "number"},
         "verticesCurvature": {"type": "number"},
         "topRatio": {"type": "number"},
@@ -3277,6 +3280,7 @@
         {"$ref": "#/definitions/anychart.core.gauge.pointers.Base"}
       ],
       "properties": {
+        "pointerType": {"enum": ["marker"]},
         "size": {
           "type": ["string", "number", "null"]
         },
@@ -3297,6 +3301,7 @@
         {"$ref": "#/definitions/anychart.core.gauge.pointers.Base"}
       ],
       "properties": {
+        "pointerType": {"enum": ["needle"]},
         "startRadius": {"type": ["string", "number", "null"]},
         "middleRadius": {"type": ["string", "number", "null"]},
         "endRadius": {"type": ["string", "number", "null"]},
