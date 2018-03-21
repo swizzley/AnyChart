@@ -3321,7 +3321,7 @@
           "type": "string"
         },
         "name": {
-          "type": "string"
+          "type": ["null", "string"]
         },
         "width": {
           "type": "string"
