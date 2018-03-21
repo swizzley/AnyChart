@@ -295,6 +295,7 @@ anychart.ganttModule.elements.ConnectorElement.prototype.getStroke = function(fr
 anychart.ganttModule.elements.ConnectorElement.prototype.setupByJSON = function(config, opt_default) {
   anychart.ganttModule.elements.ConnectorElement.base(this, 'setupByJSON', config, opt_default);
   // anychart.core.settings.deserialize(this, anychart.ganttModule.elements.ConnectorElement.DESCRIPTORS, config, opt_default);
+  this.normal().setupInternal(!!opt_default, config);
   this.normal().setupInternal(!!opt_default, config['normal']);
   this.selected().setupInternal(!!opt_default, config['selected']);
 };

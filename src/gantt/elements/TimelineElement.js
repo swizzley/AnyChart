@@ -657,6 +657,7 @@ anychart.ganttModule.elements.TimelineElement.prototype.setupByJSON = function(c
   anychart.ganttModule.elements.TimelineElement.base(this, 'setupByJSON', config, opt_default);
   anychart.core.settings.deserialize(this, anychart.ganttModule.elements.TimelineElement.DESCRIPTORS, config, opt_default);
   this.labels().setupInternal(!!opt_default, config['labels']);
+  this.normal().setupInternal(!!opt_default, config);
   this.normal().setupInternal(!!opt_default, config['normal']);
   this.selected().setupInternal(!!opt_default, config['selected']);
   this.rendering().setupInternal(!!opt_default, config['rendering']);
