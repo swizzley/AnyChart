@@ -2299,25 +2299,6 @@
         </xsd:all>
     </xsd:complexType>
 
-    <xsd:complexType name="GanttRenderingSettings">
-        <xsd:all>
-            <xsd:element minOccurs="0" maxOccurs="1" name="shapes" type="GanttShapes_list"/>
-        </xsd:all>
-    </xsd:complexType>
-
-    <xsd:complexType name="GanttShapes_list">
-        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="shape" type="GanttShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="GanttShape">
-        <xsd:attribute name="name" type="xsd:string"/>
-        <xsd:attribute name="shape_type" type="xsd:string"/>
-        <xsd:attribute name="z_index" type="xsd:double"/>
-        <xsd:attribute name="disable_pointer_events" type="simple.Bool"/>
-    </xsd:complexType>
-
     <xsd:complexType name="GanttElementBase">
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="rendering" type="GanttRenderingSettings"/>
