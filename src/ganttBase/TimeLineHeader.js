@@ -1533,6 +1533,17 @@ anychart.ganttBaseModule.TimeLineHeader.LevelWrapper.prototype.serialize = funct
 
 
 /** @inheritDoc */
+anychart.ganttBaseModule.TimeLineHeader.LevelWrapper.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    this['enabled'](!!arg0);
+    return true;
+  }
+  return false;
+};
+
+
+/** @inheritDoc */
 anychart.ganttBaseModule.TimeLineHeader.LevelWrapper.prototype.setupByJSON = function(config, opt_default) {
   anychart.ganttBaseModule.TimeLineHeader.LevelWrapper.base(this, 'setupByJSON', config);
 

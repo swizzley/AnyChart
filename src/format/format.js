@@ -170,7 +170,7 @@ goog.exportSymbol('anychart.format.locales.default.dateTimeLocale', {
     'timeline_week_minute': ['EEEE, dd HH:mm', 'EE, dd HH:mm', 'dd HH:mm'],
     'timeline_week_second': ['EEEE, dd HH:mm:ss', 'EE, dd HH:mm:ss', 'dd HH:mm:ss'],
     'timeline_week_millisecond': ['EEEE, dd HH:mm:ss.SSS', 'EE, dd HH:mm:ss.SSS', 'dd HH:mm:ss.SSS'],
-    'timeline_day': ['EEEE, dd', 'EEEE', 'EE, dd', 'dd'],
+    'timeline_day': ['EEEE, dd', 'EEEE, dd', 'EE, dd', 'dd'],
     'timeline_day_hour': ['EEEE, dd HH\'h\'', 'EE, dd HH\'h\'', 'dd HH\'h\''],
     'timeline_day_minute': ['EEEE, dd HH:mm', 'EE, dd HH:mm', 'dd HH:mm'],
     'timeline_day_second': ['EEEE, dd HH:mm:ss', 'EE, dd HH:mm:ss', 'dd HH:mm:ss'],
