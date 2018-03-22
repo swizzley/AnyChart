@@ -931,7 +931,13 @@ anychart.ganttBaseModule.TimeLineHeader.prototype.draw = function() {
         if ('formats' in level) {
           this.sourceFormats_[i] = level['formats'];
         } else {
-          var parentLevelUnit = this.levels_[i + 1] ? anychart.utils.getParentInterval(this.levels_[i + 1]['unit'], -1) : undefined;
+          var levelUnit = level['unit'];
+          var parentLevelUnit = undefined;
+          if (this.levels_[i + 1]) {
+            parentLevelUnit = this.levels_[i + 1]['unit'];
+            if (parentLevelUnit != levelUnit)
+              parentLevelUnit = anychart.utils.getParentInterval(parentLevelUnit, -1);
+          }
           var id = anychart.format.getIntervalIdentifier(level['unit'], parentLevelUnit, 'timeline');
           this.sourceFormats_[i] = anychart.format.getDateTimeFormats(id);
         }
