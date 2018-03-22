@@ -2327,6 +2327,12 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
         }
       }
     }
+
+    goog.array.forEach([pointNormal, pointExtremumNormal, pointState, pointExtremumState], function(item) {
+      if (goog.isObject(item) && !('enabled' in item)) {
+        item['enabled'] = true;
+      }
+    });
     
     isDraw = anychart.utils.getFirstNotNullValueRecursive(anychart.utils.extractSettings([
       pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
