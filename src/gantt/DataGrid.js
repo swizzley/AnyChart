@@ -516,7 +516,7 @@ anychart.ganttModule.DataGrid.prototype.addSplitter_ = function() {
  * @return {(anychart.ganttModule.Column|anychart.ganttModule.DataGrid)} - Column by index of itself for method chaining if used
  *  like setter.
  */
-anychart.ganttModule.DataGrid.prototype.columns = function(opt_indexOrValue, opt_value) {
+anychart.ganttModule.DataGrid.prototype.column = function(opt_indexOrValue, opt_value) {
   var index, value;
   var newColumn = false;
   index = anychart.utils.toNumber(opt_indexOrValue);
@@ -567,21 +567,6 @@ anychart.ganttModule.DataGrid.prototype.columns = function(opt_indexOrValue, opt
     }
     return column;
   }
-};
-
-
-/**
- * Gets column by index or creates a new one if column doesn't exist yet.
- * If works like setter, sets a column by index.
- * @param {(number|anychart.ganttModule.Column|string)=} opt_indexOrValue - Column index or column.
- * @param {(anychart.ganttModule.Column|Object)=} opt_value - Column to be set.
- * @deprecated since 8.2.0 use dataGrid.columns() instead. DVF-3625
- * @return {(anychart.ganttModule.Column|anychart.ganttModule.DataGrid)} - Column by index of itself for method chaining if used
- *  like setter.
- */
-anychart.ganttModule.DataGrid.prototype.column = function(opt_indexOrValue, opt_value) {
-  anychart.core.reporting.warning(anychart.enums.WarningCode.DEPRECATED, null, ['dataGrid.column()', 'dataGrid.columns()'], true);
-  return this.columns(opt_indexOrValue, opt_value);
 };
 
 
@@ -1213,7 +1198,7 @@ anychart.ganttModule.DataGrid.prototype.setupByJSON = function(config, opt_defau
   if ('columns' in config) {
     for (var i = 0, l = config['columns'].length; i < l; i++) {
       var col = config['columns'][i];
-      if (col) this.columns(i, col);
+      if (col) this.column(i, col);
     }
   }
 
@@ -1303,7 +1288,6 @@ anychart.standalones.dataGrid = function() {
   proto['editing'] = proto.editing;
 
   proto['column'] = proto.column;
-  proto['columns'] = proto.columns;
 
   proto['data'] = proto.data;
   proto['startIndex'] = proto.startIndex;
