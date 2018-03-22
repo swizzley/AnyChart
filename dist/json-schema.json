@@ -201,7 +201,7 @@
         },
         "margin": {"$ref": "#/definitions/anychart.core.utils.Space"},
         "padding": {"$ref": "#/definitions/anychart.core.utils.Space"},
-        "autoRedraw": {"$ref": "boolean"},
+        "autoRedraw": {"type": "boolean"},
         "title": {
           "oneOf": [
             {"type": "string"},
@@ -4021,52 +4021,85 @@
         "baselines": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineBaselinesElement"},
         "periods": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"},
         "milestones": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineElement"},
-        "connectors": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineConnectorsElement"},
-
-        "elements": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
-        "tasks": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
-        "groupingTasks": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
-        "baselines": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
-        "periods": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
-        "progress": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"},
-        "milestones": {"$ref": "#/definitions/anychart.core.ui.GanttElementsBase"}
+        "connectors": {"$ref": "#/definitions/anychart.core.ui.GanttTimelineConnectorsElement"}
       }
     },
 
     "anychart.core.ui.TimelineHeader": {
       "type": "object",
-      "allOf": [{"$ref": "#/definitions/anychart.core.VisualBase"}],
+      "allOf": [
+        {"$ref": "#/definitions/anychart.core.VisualBase"},
+        {"$ref": "#/definitions/anychart.core.Text"}
+      ],
       "properties": {
-        "levelsSeparationStroke": {"$ref": "#/definitions/stroke"},
-        "backgroundFill": {"$ref": "#/definitions/fill"},
-        "topLevel": {
-          "oneOf": [
-            {"$ref": "#/definitions/disable"},
-            {"$ref": "#/definitions/anychart.core.ui.TimelineHeaderLevel"}
+        "format": {"type": "string"},
+        "stroke": {"$ref": "#/definitions/stroke"},
+        "fill": {"$ref": "#/definitions/fill"},
+        "background": {"$ref": "#/definitions/anychart.core.ui.Background"},
+        "padding": {"$ref": "#/definitions/anychart.core.utils.Space"},
+        "drawTopLine": {"type": "boolean"},
+        "drawRightLine": {"type": "boolean"},
+        "drawBottomLine": {"type": "boolean"},
+        "drawLeftLine": {"type": "boolean"},
+        "minFontSize": {
+          "type": [
+            "number",
+            "string"
           ]
         },
-        "midLevel": {
-          "oneOf": [
-            {"$ref": "#/definitions/disable"},
-            {"$ref": "#/definitions/anychart.core.ui.TimelineHeaderLevel"}
+        "maxFontSize": {
+          "type": [
+            "number",
+            "string"
           ]
         },
-        "lowLevel": {
-          "oneOf": [
-            {"$ref": "#/definitions/disable"},
-            {"$ref": "#/definitions/anychart.core.ui.TimelineHeaderLevel"}
-          ]
+        "levels": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {"$ref": "#/definitions/disable"},
+              {"$ref": "#/definitions/anychart.core.ui.TimelineHeaderLevel"}
+            ]
+          }
         }
       }
     },
 
     "anychart.core.ui.TimelineHeaderLevel": {
       "type": "object",
-      "allOf": [{"$ref": "#/definitions/anychart.core.VisualBase"}],
+      "allOf": [
+        {"$ref": "#/definitions/anychart.core.VisualBase"},
+        {"$ref": "#/definitions/anychart.core.Text"}
+      ],
       "properties": {
-        "tilesSeparationStroke": {"$ref": "#/definitions/stroke"},
-        "tileFill": {"$ref": "#/definitions/fill"},
-        "labels": {"$ref": "#/definitions/anychart.core.ui.LabelsFactory"}
+        "stroke": {"$ref": "#/definitions/stroke"},
+        "fill": {"$ref": "#/definitions/fill"},
+        "width": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "height": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "minFontSize": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "maxFontSize": {
+          "type": [
+            "number",
+            "string"
+          ]
+        }
       }
     },
 

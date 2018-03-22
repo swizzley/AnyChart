@@ -2221,28 +2221,68 @@
 
     <xsd:complexType name="TimelineHeader">
         <xsd:all>
-            <xsd:element minOccurs="0" maxOccurs="1" name="background_fill" type="Fill"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="levels_separation_stroke" type="Stroke"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="top_level" type="TimelineHeaderLevel"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="mid_level" type="TimelineHeaderLevel"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="low_level" type="TimelineHeaderLevel"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="background" type="core.Background"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="padding" type="utils.Space" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="levels" type="TimelineHeaderLevel_list"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="format" type="simple.Text"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="adjust_font_size" type="utils.AdjustFontSizeObj"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="holidays" type="TimelineHeaderHolidaysSettings"/>
         </xsd:all>
-        <xsd:attribute name="background_fill" type="xsd:string"/>
-        <xsd:attribute name="levels_separation_stroke" type="xsd:string"/>
-
+        <xsd:attribute name="adjust_font_size" type="simple.Bool" default="false"/>
+        <xsd:attribute name="background" type="simple.StringOrBoolOrNull"/>
+        <xsd:attribute name="format" type="xsd:string"/>
+        <xsd:attribute name="fill" type="xsd:string"/>
+        <xsd:attribute name="stroke" type="xsd:string"/>
+        <xsd:attribute name="level_height" type="simple.NumberOrPercentOrNull"/>
+        <xsd:attribute name="draw_top_line" type="xsd:boolean"/>
+        <xsd:attribute name="draw_right_line" type="xsd:boolean"/>
+        <xsd:attribute name="draw_bottom_line" type="xsd:boolean"/>
+        <xsd:attribute name="draw_left_line" type="xsd:boolean"/>
+        <xsd:attribute name="min_font_size" type="xsd:string"/>
+        <xsd:attribute name="max_font_size" type="xsd:string"/>
+        <xsd:attributeGroup ref="attrs.TextSettings"/>
         <xsd:attributeGroup ref="attrs.VisualBase"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="TimelineHeaderLevel_list">
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="level" type="TimelineHeaderLevel"/>
+        </xsd:sequence>
     </xsd:complexType>
 
     <xsd:complexType name="TimelineHeaderLevel">
         <xsd:all>
-            <xsd:element minOccurs="0" maxOccurs="1" name="tile_fill" type="Fill"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="tiles_separation_stroke" type="Stroke"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="labels" type="core.LabelsFactory" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="levels" type="TimelineHeaderLevel_list"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="format" type="simple.Text"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="adjust_font_size" type="utils.AdjustFontSizeObj"/>
         </xsd:all>
-        <xsd:attribute name="tile_fill" type="xsd:string"/>
-        <xsd:attribute name="tiles_separation_stroke" type="xsd:string"/>
-
+        <xsd:attribute name="adjust_font_size" type="simple.Bool" default="false"/>
+        <xsd:attribute name="format" type="xsd:string"/>
+        <xsd:attribute name="fill" type="xsd:string"/>
+        <xsd:attribute name="stroke" type="xsd:string"/>
+        <xsd:attribute name="height" type="simple.NumberOrPercentOrNull"/>
+        <xsd:attribute name="min_font_size" type="xsd:string"/>
+        <xsd:attribute name="max_font_size" type="xsd:string"/>
+        <xsd:attributeGroup ref="attrs.TextSettings"/>
         <xsd:attributeGroup ref="attrs.VisualBase"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="TimelineHeaderHolidaysSettings">
+        <xsd:all>
+            <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="format" type="simple.Text"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="padding" type="utils.Space"/>
+        </xsd:all>
+        <xsd:attribute name="adjust_font_size" type="simple.Bool" default="false"/>
+        <xsd:attribute name="format" type="xsd:string"/>
+        <xsd:attribute name="fill" type="xsd:string"/>
+        <xsd:attribute name="min_font_size" type="xsd:string"/>
+        <xsd:attribute name="max_font_size" type="xsd:string"/>
+        <xsd:attributeGroup ref="attrs.TextSettings"/>
     </xsd:complexType>
 
     <xsd:complexType name="GanttTimelineElement">

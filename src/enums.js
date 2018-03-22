@@ -2673,6 +2673,7 @@ anychart.enums.normalizeInterval = function(value, opt_default, opt_allowDateOnl
     case 'm':
       return anychart.enums.Interval.MONTH;
     case 'thirdofmonths':
+    case 'third-of-month':
     case 'thirdofmonth':
     case 'decades':
     case 'decade':

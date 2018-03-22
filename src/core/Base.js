@@ -527,7 +527,7 @@ anychart.core.Base.prototype.getThemeOption = function(name) {
 
 /** @inheritDoc */
 anychart.core.Base.prototype.getOption = function(name) {
-  return this.hasOwnOption(name) ? this.ownSettings[name] : this.themeSettings[name];
+  return this.hasOwnOption(name) ? this.getOwnOption(name) : this.getThemeOption(name);
 };
 
 

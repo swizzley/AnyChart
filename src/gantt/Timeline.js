@@ -6,10 +6,10 @@ goog.require('acgraph.vector.Path');
 goog.require('anychart.core.IStandaloneBackend');
 goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.ganttBaseModule.TimeLineHeader');
 goog.require('anychart.ganttModule.BaseGrid');
 goog.require('anychart.ganttModule.Scale');
 goog.require('anychart.ganttModule.ScrollBar');
-goog.require('anychart.ganttModule.TimelineHeader');
 goog.require('anychart.ganttModule.axisMarkers.Line');
 goog.require('anychart.ganttModule.axisMarkers.Range');
 goog.require('anychart.ganttModule.axisMarkers.Text');
@@ -1541,12 +1541,12 @@ anychart.ganttModule.TimeLine.prototype.getScale = function() {
 /**
  * Gets/configures timeline header.
  * @param {Object=} opt_value - Config.
- * @return {anychart.ganttModule.TimelineHeader|anychart.ganttModule.TimeLine} - Header or itself for chaining..
+ * @return {anychart.ganttBaseModule.TimeLineHeader|anychart.ganttModule.TimeLine} - Header or itself for chaining..
  */
 anychart.ganttModule.TimeLine.prototype.header = function(opt_value) {
   if (!this.header_) {
-    this.header_ = new anychart.ganttModule.TimelineHeader();
-    this.header_.scale(this.scale_);
+    this.header_ = new anychart.ganttBaseModule.TimeLineHeader();
+    this.header_.xScale(this.scale_);
     this.header_.zIndex(anychart.ganttModule.TimeLine.HEADER_Z_INDEX);
     this.registerDisposable(this.header_);
     this.header_.listenSignals(this.headerInvalidated_, this);
@@ -4771,9 +4771,7 @@ anychart.ganttModule.TimeLine.prototype.initDom = function() {
  * @override
  */
 anychart.ganttModule.TimeLine.prototype.boundsInvalidated = function() {
-  this.header()
-      .bounds()
-      .set(this.pixelBoundsCache.left, this.pixelBoundsCache.top,
+  this.header().bounds(this.pixelBoundsCache.left, this.pixelBoundsCache.top,
           this.pixelBoundsCache.width, /** @type {number} */ (this.headerHeight()));
   this.redrawHeader = true;
 };
@@ -4836,19 +4834,22 @@ anychart.ganttModule.TimeLine.prototype.specialInvalidated = function() {
   }
 
   if (this.redrawHeader) {
-    this.header().invalidate(anychart.ConsistencyState.TIMELINE_HEADER_SCALES);
-    this.header_.draw();
-    var level, ticks = [];
-    if (this.header_.lowLevel().enabled()) {
-      level = this.header_.lowLevel();
-    } else if (this.header_.midLevel().enabled()) {
-      level = this.header_.midLevel();
-    } else if (this.header_.topLevel().enabled()) {
-      level = this.header_.topLevel();
+    var header = this.header();
+    header.suspendSignalsDispatching();
+    var levels = this.scale_.getLevelsData();
+    header.setLevels(levels);
+
+    var ticks = [];
+    for (var i = 0; i < levels.length; i++) {
+      if (header.level(i).enabled()) {
+        var level = levels[i];
+        ticks = this.scale_.getSimpleTicks(/** @type {anychart.enums.Interval} */(level['unit']), /** @type {number} */(level['count']));
+        break;
+      }
     }
 
-    if (level)
-      ticks = level.getTicks();
+    header.draw();
+    header.resumeSignalsDispatching(false);
 
     this.drawLowTicks_(ticks);
 
@@ -5285,7 +5286,7 @@ anychart.ganttModule.TimeLine.prototype.setupByJSON = function(config, opt_defau
   this.labels().setupInternal(!!opt_default, config['labels']);
 
   if ('markers' in config) this.markers(config['markers']);
-  if ('header' in config) this.header(config['header']);
+  if ('header' in config) this.header().setupInternal(!!opt_default, config['header']);
 
   anychart.core.settings.deserialize(this, anychart.ganttModule.TimeLine.COLOR_DESCRIPTORS, config, opt_default);
 

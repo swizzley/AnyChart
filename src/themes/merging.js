@@ -672,6 +672,7 @@ anychart.themes.merging.mergingMap_ = (function() {
         [[
           ['default', [
             'Title',
+            'Timeline.header',
             'ButtonSettings.normal',
             ['Tooltip', [
               '',
@@ -724,10 +725,8 @@ anychart.themes.merging.mergingMap_ = (function() {
         ['default', [
           ['Axis.', [[['minorL', 'l'], 'abels']]],
           ['Timeline.', [
-            [[
-              '',
-              ['header.', [[['top', 'mid', 'low'], 'Level.']]]
-            ], 'labels']
+            'header',
+            'labels'
           ]],
           'DataGrid.defaultColumnSettings.labels'
         ]],

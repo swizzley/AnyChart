@@ -134,6 +134,7 @@ anychart.stockModule.scales.Scatter = function(chartOrScroller) {
 goog.inherits(anychart.stockModule.scales.Scatter, anychart.core.Base);
 
 
+
 /**
  * @typedef {{
  *    min: number,
