@@ -2328,12 +2328,18 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
       }
     }
 
-    goog.array.forEach([pointNormal, pointExtremumNormal, pointState, pointExtremumState], function(item) {
+    var pointProps = goog.array.map([pointNormal, pointExtremumNormal, pointState, pointExtremumState], function(item) {
       if (goog.isObject(item) && !('enabled' in item)) {
+        item = goog.object.clone(item);
         item['enabled'] = true;
       }
+      return item;
     });
-    
+    pointNormal = pointProps[0];
+    pointExtremumNormal = pointProps[1];
+    pointState = pointProps[2];
+    pointExtremumState = pointProps[3];
+
     isDraw = anychart.utils.getFirstNotNullValueRecursive(anychart.utils.extractSettings([
       pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
       pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
