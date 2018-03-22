@@ -95,8 +95,6 @@ anychart.stockModule.scales.ScatterTicksIterator.prototype.reset = function() {
     this.currentMajor.add(this.majorInterval);
   }
 
-
-
   /**
    * @type {goog.date.UtcDateTime}
    * @protected

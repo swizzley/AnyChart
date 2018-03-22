@@ -450,6 +450,7 @@ anychart.stockModule.Axis.prototype.draw = function() {
         bounds.height = this.height_;
       }
       if (this.labels_) {
+        console.log('labels clear');
         this.labels_.clear();
         this.labels_.dropCallsCache();
       }
@@ -628,6 +629,9 @@ anychart.stockModule.Axis.prototype.drawLabels_ = function(bounds, iterator) {
     minorIndexes.push.apply(minorIndexes, prevMinorIndexes);
     allMinorBounds.push.apply(allMinorBounds, prevMinorBounds);
   }
+
+  this.labels().dropCallsCache();
+  this.minorLabels().dropCallsCache();
 
   curr = iterator.getPreFirstMajor();
   if (this.drawHelperLabel_ && !isNaN(curr)) {
