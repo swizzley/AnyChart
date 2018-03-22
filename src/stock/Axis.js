@@ -450,7 +450,6 @@ anychart.stockModule.Axis.prototype.draw = function() {
         bounds.height = this.height_;
       }
       if (this.labels_) {
-        console.log('labels clear');
         this.labels_.clear();
         this.labels_.dropCallsCache();
       }
