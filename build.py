@@ -44,7 +44,8 @@ GRAPHICS_SRC_PATH = os.path.join(LIBS_PATH, GRAPHICS_PATH, 'src')
 
 # closure tools
 # COMPILER_VERSION = '20170521'
-COMPILER_VERSION = '20161024'
+# COMPILER_VERSION = '20161024'
+COMPILER_VERSION = '20180204'
 COMPILER_PATH = os.path.join(LIBS_PATH, 'compiler', 'closure-compiler-v%s.jar' % COMPILER_VERSION)
 CLOSURE_LIBRARY_PATH = os.path.join(LIBS_PATH, 'closure-library')
 CLOSURE_SOURCE_PATH = os.path.join(CLOSURE_LIBRARY_PATH, 'closure', 'goog')
@@ -333,7 +334,7 @@ def __xml_schema_xmlns_version(value=None):
 
 def __definition_file_version(value=None):
     return __version_by_pattern(
-        'Type definitions for AnyChart charting library, Version %s',
+        'Type definitions for AnyChart JavaScript Charting Library, v%s',
         os.path.join(PROJECT_PATH, 'dist', 'index.d.ts'),
         value
     )

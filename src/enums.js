@@ -1527,7 +1527,18 @@ anychart.enums.EventType = {
   SELECT_MARQUEE_FINISH: 'selectmarqueefinish',
 
   // data changed event for no data label
-  DATA_CHANGED: 'datachanged'
+  DATA_CHANGED: 'datachanged',
+
+  // edit input ui events
+  // EDIT_INPUT_BEFORE_SHOW: 'editinputbeforeshow',
+  // EDIT_INPUT_SHOW: 'editinputshow',
+  EDIT_INPUT_SUBMIT: 'editinputsubmit',
+  EDIT_INPUT_ESCAPE: 'editinputescape',
+  EDIT_INPUT_BLUR: 'editinputblur',
+  EDIT_INPUT_FOCUS: 'editinputfocus',
+  EDIT_INPUT_KEY_PRESS: 'editinputkeypress',
+  EDIT_INPUT_BEFORE_HIDE: 'editinputbeforehide',
+  EDIT_INPUT_HIDE: 'editinputhide'
 };
 
 
@@ -2001,6 +2012,35 @@ anychart.enums.normalizeLinearGaugePointerType = function(value, opt_default) {
 
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  CircularGaugePointerTypes
+//
+//----------------------------------------------------------------------------------------------------------------------
+/**
+ * List of all circular gauge pointers type.
+ * @enum {string}
+ */
+anychart.enums.CircularGaugePointerType = {
+  BAR: 'bar',
+  KNOB: 'knob',
+  MARKER: 'marker',
+  NEEDLE: 'needle'
+};
+
+
+/**
+ * Normalizes circular gauge pointers type.
+ * @param {*} value Pointer's type to normalize.
+ * @param {anychart.enums.CircularGaugePointerType=} opt_default Custom default value (defaults to BAR).
+ * @return {anychart.enums.CircularGaugePointerType}
+ */
+anychart.enums.normalizeCircularGaugePointerType = function(value, opt_default) {
+  return /** @type {anychart.enums.CircularGaugePointerType} */(anychart.enums.normalize(anychart.enums.CircularGaugePointerType, value,
+      opt_default || anychart.enums.CircularGaugePointerType.BAR));
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//
 //  Gantt specific data item field.
 //
 //----------------------------------------------------------------------------------------------------------------------
@@ -2070,16 +2110,17 @@ anychart.enums.normalizeGanttRangeAnchor = function(value, opt_default) {
 /**
  * Timeline visual element types.
  * In current time (21 Jul 2015) doesn't need to be exported.
- * @enum {number}
+ * @enum {string}
  */
 anychart.enums.TLElementTypes = {
-  PARENT: 0,
-  BASE: 1,
-  PROGRESS: 2,
-  BASELINE: 3,
-  MILESTONE: 4,
-  PERIOD: 5,
-  CONNECTOR: 6
+  ALL: 'all',
+  GROUPING_TASKS: 'grouping-tasks',
+  TASKS: 'tasks',
+  PROGRESS: 'progress',
+  BASELINES: 'baselines',
+  MILESTONES: 'milestones',
+  PERIODS: 'periods',
+  CONNECTORS: 'connectors'
 };
 
 
@@ -2632,6 +2673,7 @@ anychart.enums.normalizeInterval = function(value, opt_default, opt_allowDateOnl
     case 'm':
       return anychart.enums.Interval.MONTH;
     case 'thirdofmonths':
+    case 'third-of-month':
     case 'thirdofmonth':
     case 'decades':
     case 'decade':
@@ -3187,6 +3229,7 @@ anychart.enums.StockRangeChangeSource = {
 anychart.enums.StockRangeType = {
   UNIT: 'unit',
   POINTS: 'points',
+  RANGE: 'range',
   YTD: 'ytd',
   QTD: 'qtd',
   MTD: 'mtd',
@@ -4659,6 +4702,16 @@ anychart.enums.ShapeType = {
   RECT: 'rect',
   ELLIPSE: 'ellipse',
   NONE: 'none'
+};
+
+
+/**
+ * Normalizes shape type.
+ * @param {anychart.enums.ShapeType|string} value - Shape type.
+ * @return {anychart.enums.ShapeType} - Normalized type.
+ */
+anychart.enums.normalizeShapeType = function(value) {
+  return /** @type {anychart.enums.ShapeType} */(anychart.enums.normalize(anychart.enums.ShapeType, value, anychart.enums.ShapeType.PATH));
 };
 
 
