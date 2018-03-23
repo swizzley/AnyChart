@@ -171,7 +171,7 @@ anychart.ganttModule.Scale.prototype.SUPPORTED_SIGNALS =
 
 
 /**
- * @typedef {Array.<Array.<(string|{unit:anychart.enums.Interval,count:number})>>}
+ * @typedef {Array.<Array.<(anychart.enums.Interval|{unit:anychart.enums.Interval,count:number})>>}
  */
 anychart.ganttModule.Scale.ZoomLevelsSettings;
 
@@ -253,7 +253,7 @@ anychart.ganttModule.Scale.createFormat_ = function(pattern, opt_template) {
 
 /**
  *
- * @type {Array.<Array.<anychart.ganttModule.Scale.ZoomLevelsSettings>>}
+ * @type {anychart.ganttModule.Scale.ZoomLevelsSettings}
  */
 anychart.ganttModule.Scale.DEFAULT_LEVELS = [
   [{'unit': anychart.enums.Interval.MINUTE, 'count': 10}, {'unit': anychart.enums.Interval.HOUR, 'count': 1}, {'unit': anychart.enums.Interval.DAY, 'count': 1}],
