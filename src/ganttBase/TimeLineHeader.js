@@ -796,20 +796,11 @@ anychart.ganttBaseModule.TimeLineHeader.prototype.labelsConfiguration = function
   }
 
   settings['anchor'] = 'left-top';
+
   label.getTextElement().clip(label.cellBounds);
   label.setSettings(settings);
   label.padding(0);
-
-  if (!this.choosenFormats_[row] && this.formatIndex_ != this.sourceFormats_[row].length - 1) {
-    this.formatIndex_ = Math.max(
-        this.formatIndex_,
-        this.getLabelFormatIndex_(
-            tick['start'],
-            labels,
-            settings,
-            label.sourceBounds,
-            this.sourceFormats_[row]));
-  }
+  label.parentBounds(label.sourceBounds);
 };
 
 
@@ -820,12 +811,61 @@ anychart.ganttBaseModule.TimeLineHeader.prototype.labelsConfiguration = function
 anychart.ganttBaseModule.TimeLineHeader.prototype.drawLabels = function(row) {
   var labels = this.labels_[row];
   var format = this.choosenFormats_[row] ? this.choosenFormats_[row] : this.choosenFormats_[row] = this.sourceFormats_[row][this.formatIndex_];
-  for (var i = 0, len = labels.labelsCount(); i < len; i++) {
-    var label = labels.getLabel(i);
+  var i, len, fontSize = Number.MAX_VALUE, label, mergedSettings;
+
+  for (i = 0, len = labels.labelsCount(); i < len; i++) {
+    label = labels.getLabel(i);
+    mergedSettings = label.getMergedSettings();
+
+    if (mergedSettings['adjustByWidth'] || mergedSettings['adjustByHeight']) {
+      fontSize = Math.min(fontSize, label.calculateFontSize(
+          label.sourceBounds.width,
+          label.sourceBounds.height,
+          mergedSettings['minFontSize'],
+          mergedSettings['maxFontSize'],
+          mergedSettings['adjustByWidth'],
+          mergedSettings['adjustByHeight']
+      ));
+    }
+  }
+
+  for (i = 0, len = labels.labelsCount(); i < len; i++) {
+    label = labels.getLabel(i);
+    mergedSettings = label.getMergedSettings();
+
+    if (mergedSettings['adjustByWidth'] || mergedSettings['adjustByHeight']) {
+      label.fontSize(fontSize);
+      label.adjustFontSize(false);
+    }
+
+    if (!this.choosenFormats_[row] && this.formatIndex_ != this.sourceFormats_[row].length - 1) {
+      this.formatIndex_ = Math.max(
+          this.formatIndex_,
+          this.getLabelFormatIndex_(
+              label.positionProvider()['tickValue'],
+              labels,
+              mergedSettings,
+              label.sourceBounds,
+              this.sourceFormats_[row]));
+    }
+  }
+
+
+
+  for (i = 0, len = labels.labelsCount(); i < len; i++) {
+    label = labels.getLabel(i);
+
     var tickValue = label.formatProvider()['tickValue'];
     label.formatProvider(this.getLabelsFormatProvider_(tickValue, format));
 
-    var bounds = labels.measure(label);
+    var settings;
+    if (mergedSettings['adjustByWidth'] || mergedSettings['adjustByHeight']) {
+      settings = {'fontSize': fontSize};
+      label.fontSize(fontSize);
+      label.adjustFontSize(false);
+    }
+    var bounds = labels.measure(label, void 0, settings);
+
     var hAlign = label.getFinalSettings('hAlign');
     if (hAlign == anychart.enums.HAlign.LEFT || hAlign == anychart.enums.HAlign.START) {
       bounds.left = label.sourceBounds.left;
@@ -848,6 +888,7 @@ anychart.ganttBaseModule.TimeLineHeader.prototype.drawLabels = function(row) {
     label.positionProvider({'value': {'x': bounds.left, 'y': bounds.top}});
   }
   labels.dropCallsCache();
+  // labels.adjustFontSizeMode('same');
   labels.draw();
 };
 

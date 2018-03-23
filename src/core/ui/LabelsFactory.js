@@ -2417,11 +2417,16 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
     //define parent bounds
     var parentWidth, parentHeight;
     this.finalParentBounds = /** @type {anychart.math.Rect} */(this.iterateDrawingPlans_(function(state, settings) {
-      if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory)) {
-        var parentBounds = settings.parentBounds();
-        if (parentBounds)
-          return parentBounds;
+      // console.log(state);
+      var parentBounds;
+      if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory) ||
+          anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory.Label)) {
+        parentBounds = settings.parentBounds();
+      } else if (goog.isObject(settings)) {
+        parentBounds = settings.parentBounds;
       }
+      if (parentBounds)
+        return parentBounds;
     }, true));
 
     if (!this.finalParentBounds) {
@@ -2523,8 +2528,14 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
 
     if (goog.isDef(textHeight)) this.textElement.height(textHeight);
 
-    var canAdjustByWidth = !autoWidth;
-    var canAdjustByHeight = !autoHeight;
+    var canAdjustByWidth = !autoWidth || !!parentWidth;
+    if (autoWidth) {
+      textWidth = parentWidth;
+    }
+    var canAdjustByHeight = !autoHeight || !!parentHeight;
+    if (autoWidth) {
+      textHeight = parentHeight;
+    }
     var needAdjust = ((canAdjustByWidth && mergedSettings['adjustByHeight']) || (canAdjustByHeight && mergedSettings['adjustByHeight']));
 
     if (needAdjust) {
