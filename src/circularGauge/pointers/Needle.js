@@ -61,6 +61,14 @@ anychart.core.settings.populate(anychart.circularGaugeModule.pointers.Needle, an
 
 
 //endregion
+//region --- Overrides
+/** @inheritDoc */
+anychart.circularGaugeModule.pointers.Needle.prototype.hasOwnOption = function(name) {
+  return goog.isDefAndNotNull(this.ownSettings[name]);
+};
+
+
+//endregion
 //region --- Drawing
 /** @inheritDoc */
 anychart.circularGaugeModule.pointers.Needle.prototype.draw = function() {
