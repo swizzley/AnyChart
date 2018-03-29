@@ -4295,10 +4295,6 @@ anychart.enums.Statistics = {
    */
   PERT_CHART_PROJECT_DURATION: 'pertChartProjectDuration',
   /**
-   Counts of plot elements (axes, grids, etc)
-   */
-  PLOT_ELEMENTS: 'plotElements',
-  /**
    The range of this point (RangeEnd - RangeStart).
    */
   RANGE: 'range',

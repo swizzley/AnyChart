@@ -351,7 +351,7 @@ anychart.core.settings.populate(anychart.stockModule.Plot, anychart.stockModule.
  * Ensures that statistics is ready.
  */
 anychart.stockModule.Plot.prototype.calculateStatistics = function() {
-  var elementsStat = this.statistics(anychart.enums.Statistics.PLOT_ELEMENTS) || {'axes': {}, 'grids': {}};
+  var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {'axes': {}, 'grids': {}};
 
   elementsStat['axes']['x'] = 1;
   elementsStat['axes']['y'] = this.yAxes_.length;
@@ -363,7 +363,7 @@ anychart.stockModule.Plot.prototype.calculateStatistics = function() {
 
   elementsStat['series'] = this.series_.length;
 
-  this.statistics(anychart.enums.Statistics.PLOT_ELEMENTS, elementsStat);
+  this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };
 
 
