@@ -874,7 +874,9 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateYScales = function() 
               missing: false,
               shared: {
                 positiveAnchor: NaN,
-                negativeAnchor: NaN
+                negativeAnchor: NaN,
+                hasNotZero: false,
+                drawn: false
               }
             });
           }
@@ -976,6 +978,8 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateYScales = function() 
                   }
                 }
                 stackVal.missing = false;
+                //fixes DVF-3048
+                stackVal.shared.hasNotZero = stackVal.shared.hasNotZero || !!(stackVal.positive || stackVal.negative);
               }
             }
           } else {
