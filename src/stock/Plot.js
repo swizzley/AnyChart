@@ -362,15 +362,29 @@ anychart.core.settings.populate(anychart.stockModule.Plot, anychart.stockModule.
 anychart.stockModule.Plot.prototype.calculateStatistics = function() {
   var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {'axes': {}, 'grids': {}};
 
-  elementsStat['axes']['x'] = 1;
-  elementsStat['axes']['y'] = this.yAxes_.length;
-
-  elementsStat['grids']['x'] = this.xGrids_.length;
-  elementsStat['grids']['y'] = this.yGrids_.length;
-  elementsStat['grids']['xMinor'] = this.xMinorGrids_.length;
-  elementsStat['grids']['yMinor'] = this.yMinorGrids_.length;
-
   elementsStat['series'] = this.series_.length;
+
+  elementsStat['axes']['x'] = 1;
+  elementsStat['axes']['y'] = 0;
+  elementsStat['grids']['x'] = 0;
+  elementsStat['grids']['y'] = 0;
+  elementsStat['grids']['xMinor'] = 0;
+  elementsStat['grids']['yMinor'] = 0;
+
+  var length = Math.max(
+      this.yAxes_.length,
+      this.xGrids_.length,
+      this.yGrids_.length,
+      this.xMinorGrids_.length,
+      this.yMinorGrids_.length);
+
+  for (var i = length; i--;) {
+    if (this.yAxes_[i]) elementsStat['axes']['y']++;
+    if (this.xGrids_[i]) elementsStat['grids']['x']++;
+    if (this.yGrids_[i]) elementsStat['grids']['y']++;
+    if (this.xMinorGrids_[i]) elementsStat['grids']['xMinor']++;
+    if (this.yMinorGrids_[i]) elementsStat['grids']['yMinor']++;
+  }
 
   this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };

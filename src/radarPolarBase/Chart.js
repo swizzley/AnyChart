@@ -82,13 +82,20 @@ anychart.radarPolarBaseModule.Chart.prototype.calculateStatistics = function() {
   var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS);
 
   elementsStat['axes'] = {'x': 1, 'y': 1};
+  elementsStat['grids'] = {'x': 0, 'y': 0, 'xMinor': 0, 'yMinor': 0};
 
-  elementsStat['grids'] = {
-    'x': this.xGrids_.length,
-    'y': this.yGrids_.length,
-    'xMinor': this.xMinorGrids_.length,
-    'yMinor': this.yMinorGrids_.length
-  };
+  var length = Math.max(
+      this.xGrids_.length,
+      this.yGrids_.length,
+      this.xMinorGrids_.length,
+      this.yMinorGrids_.length);
+
+  for (var i = length; i--;) {
+    if (this.xGrids_[i]) elementsStat['grids']['x']++;
+    if (this.yGrids_[i]) elementsStat['grids']['y']++;
+    if (this.xMinorGrids_[i]) elementsStat['grids']['xMinor']++;
+    if (this.yMinorGrids_[i]) elementsStat['grids']['yMinor']++;
+  }
 
   this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };

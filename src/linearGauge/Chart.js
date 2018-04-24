@@ -929,7 +929,11 @@ anychart.linearGaugeModule.Chart.prototype.calculateStatistics = function() {
   anychart.linearGaugeModule.Chart.base(this, 'calculateStatistics');
 
   var elementsStat = this.statistics(anychart.enums.Statistics.CHART_ELEMENTS) || {};
-  elementsStat['axes'] = this.axes_.length;
+  var axesCount = 0;
+  for (var i = this.axes_.length; i--;) {
+    if (this.axes_[i]) axesCount++;
+  }
+  elementsStat['axes'] = axesCount;
   this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };
 
