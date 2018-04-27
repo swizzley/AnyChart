@@ -3335,7 +3335,7 @@ anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
       clip = null;
     }
   }
-  var clipElement;
+  var clipElement, domElement;
   if (clip) {
     if (!this.clipElement_)
       this.clipElement_ = acgraph.clip();
@@ -3344,22 +3344,22 @@ anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
   } else {
     clipElement = null;
   }
-  if (this.check(anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT)) {
-    this.shapeManager.applyClip(clipElement);
-  } else {
-    this.rootLayer.clip(clipElement);
-  }
+  // if (this.check(anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT)) {
+  //   this.shapeManager.applyClip(clipElement);
+  // } else {
+  //   this.rootLayer.clip(clipElement);
+  // }
   if (this.supportsLabels()) {
-    var labelDOM = this.normal_.labels().getDomElement();
-    if (labelDOM) labelDOM.clip(clipElement);
+    domElement = this.normal_.labels().getDomElement();
+    if (domElement) domElement.clip(clipElement);
   }
   if (this.supportsMarkers()) {
-    var markerDOM = this.normal_.markers().getDomElement();
-    if (markerDOM) markerDOM.clip(clipElement);
+    // var domElement = this.normal_.markers().getDomElement();
+    // if (domElement) domElement.clip(clipElement);
   }
   if (this.supportsOutliers()) {
-    markerDOM = this.normal_.outlierMarkers().getDomElement();
-    if (markerDOM) markerDOM.clip(clipElement);
+    domElement = this.normal_.outlierMarkers().getDomElement();
+    if (domElement) domElement.clip(clipElement);
   }
 };
 
