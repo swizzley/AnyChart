@@ -492,6 +492,7 @@ goog.addDependency('../../../../src/stock/eventMarkers/PlotController.js', ['any
 goog.addDependency('../../../../src/stock/eventMarkers/Table.js', ['anychart.stockModule.eventMarkers.Table'], ['anychart.data.IIterator', 'anychart.data.IRowInfo', 'anychart.format', 'anychart.stockModule.data.TableIterator.ICoIterator', 'anychart.utils', 'goog.array'], {});
 goog.addDependency('../../../../src/stock/indicators/ADL.js', ['anychart.stockModule.indicators.ADL'], ['anychart.enums', 'anychart.stockModule.indicators.Base', 'anychart.stockModule.math.adl', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/indicators/AMA.js', ['anychart.stockModule.indicators.AMA'], ['anychart.enums', 'anychart.stockModule.indicators.Base', 'anychart.stockModule.math.ama', 'anychart.utils'], {});
+goog.addDependency('../../../../src/stock/indicators/AO.js', ['anychart.stockModule.indicators.AO'], ['anychart.enums', 'anychart.stockModule.indicators.Base', 'anychart.stockModule.math.ao', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/indicators/ATR.js', ['anychart.stockModule.indicators.ATR'], ['anychart.enums', 'anychart.stockModule.indicators.Base', 'anychart.stockModule.math.atr', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/indicators/Aroon.js', ['anychart.stockModule.indicators.Aroon'], ['anychart.enums', 'anychart.stockModule.indicators.Base', 'anychart.stockModule.math.aroon', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/indicators/BBands.js', ['anychart.stockModule.indicators.BBands'], ['anychart.enums', 'anychart.stockModule.indicators.Base', 'anychart.stockModule.math.bbands', 'anychart.utils'], {});
@@ -518,6 +519,7 @@ goog.addDependency('../../../../src/stock/indicators/indicators.js', ['anychart.
 goog.addDependency('../../../../src/stock/math/CycledQueue.js', ['anychart.stockModule.math.CycledQueue'], ['anychart.utils', 'goog.math'], {});
 goog.addDependency('../../../../src/stock/math/adl.js', ['anychart.stockModule.math.adl'], ['anychart.stockModule.math.CycledQueue', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/math/ama.js', ['anychart.stockModule.math.ama'], ['anychart.stockModule.math.CycledQueue', 'anychart.utils'], {});
+goog.addDependency('../../../../src/stock/math/ao.js', ['anychart.stockModule.math.ao'], ['anychart.stockModule.math.CycledQueue', 'anychart.stockModule.math.ema', 'anychart.stockModule.math.sma', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/math/aroon.js', ['anychart.stockModule.math.aroon'], ['anychart.stockModule.math.CycledQueue', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/math/atr.js', ['anychart.stockModule.math.atr'], ['anychart.stockModule.math.CycledQueue', 'anychart.stockModule.math.sma', 'anychart.utils'], {});
 goog.addDependency('../../../../src/stock/math/bbands.js', ['anychart.stockModule.math.bbands'], ['anychart.stockModule.math.CycledQueue', 'anychart.stockModule.math.sma', 'anychart.utils'], {});
