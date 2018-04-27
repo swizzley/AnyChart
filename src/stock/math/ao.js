@@ -7,8 +7,8 @@ goog.require('anychart.utils');
 
 /**
  * @typedef {{
- *   fastMAContext: (anychart.stockModule.math.ema.Context|anychart.stockModule.math.sma.Context),
- *   slowMAContext: (anychart.stockModule.math.ema.Context|anychart.stockModule.math.sma.Context),
+ *   fastMAContext: (anychart.stockModule.math.sma.Context|anychart.stockModule.math.ema.Context),
+ *   slowMAContext: (anychart.stockModule.math.sma.Context|anychart.stockModule.math.ema.Context),
  *   maCalculate: Function,
  *   maType: anychart.enums.MovingAverageType,
  *   dispose: Function
@@ -32,13 +32,13 @@ anychart.stockModule.math.ao.initContext = function(opt_fastPeriod, opt_slowPeri
   var fastMAContext, slowMAContext, maCalculate;
 
   if (maType == anychart.enums.MovingAverageType.SMA) {
-    fastMAContext = anychart.stockModule.math.sma(fastPeriod);
-    slowMAContext = anychart.stockModule.math.sma(slowPeriod);
-    maCalculate = anychart.stockModule.math.sma.calculate
+    fastMAContext = anychart.stockModule.math.sma.initContext(fastPeriod);
+    slowMAContext = anychart.stockModule.math.sma.initContext(slowPeriod);
+    maCalculate = anychart.stockModule.math.sma.calculate;
   } else {
-    fastMAContext = anychart.stockModule.math.ema(fastPeriod);
-    slowMAContext = anychart.stockModule.math.ema(slowPeriod);
-    maCalculate = anychart.stockModule.math.ema.calculate
+    fastMAContext = anychart.stockModule.math.ema.initContext(fastPeriod);
+    slowMAContext = anychart.stockModule.math.ema.initContext(slowPeriod);
+    maCalculate = anychart.stockModule.math.ema.calculate;
   }
 
   return {
@@ -53,7 +53,7 @@ anychart.stockModule.math.ao.initContext = function(opt_fastPeriod, opt_slowPeri
       this.fastMAContext['dispose']();
       this.slowMAContext['dispose']();
     }
-  }
+  };
 
 };
 
@@ -85,7 +85,7 @@ anychart.stockModule.math.ao.calculate = function(context, high, low) {
   if (isNaN(high) || isNaN(low)) {
     return NaN;
   } else {
-    return context.maCalculate(context.fastMAContext, (high + low) / 2) - context.maCalculate(context.slowMAContext, (high + low) / 2)
+    return context.maCalculate(context.fastMAContext, (high + low) / 2) - context.maCalculate(context.slowMAContext, (high + low) / 2);
   }
 };
 
