@@ -22,7 +22,7 @@ anychart.stockModule.math.ao.Context;
  * @param {number=} opt_fastPeriod [5] Indicator period. Defaults to 5.
  * @param {number=} opt_slowPeriod [34] Indicator period. Defaults to 34.
  * @param {string=} opt_maType [SMA] Indicator smoothing type. Defaults to SMA.
- * @return anychart.stockModule.math.ao.Context
+ * @return {anychart.stockModule.math.ao.Context}
  */
 anychart.stockModule.math.ao.initContext = function(opt_fastPeriod, opt_slowPeriod, opt_maType) {
   var fastPeriod = anychart.utils.normalizeToNaturalNumber(opt_fastPeriod, 5, false);
@@ -85,7 +85,9 @@ anychart.stockModule.math.ao.calculate = function(context, high, low) {
   if (isNaN(high) || isNaN(low)) {
     return NaN;
   } else {
-    return context.maCalculate(context.fastMAContext, (high + low) / 2) - context.maCalculate(context.slowMAContext, (high + low) / 2);
+    var fastMA = /** @type {number} */ context.maCalculate(context.fastMAContext, (high + low) / 2);
+    var slowMA = /** @type {number} */ context.maCalculate(context.slowMAContext, (high + low) / 2);
+    return fastMA - slowMA;
   }
 };
 

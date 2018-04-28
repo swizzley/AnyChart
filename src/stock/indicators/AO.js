@@ -60,8 +60,7 @@ anychart.stockModule.indicators.AO.prototype.createNameForSeries = function(seri
  * @return {anychart.stockModule.indicators.AO|anychart.stockModule.Series}
  */
 anychart.stockModule.indicators.AO.prototype.series = function(opt_type) {
-  return /** @type {anychart.stockModule.indicators.AO|anychart.stockModule.Series} */(
-    this.seriesInternal('main', opt_type));
+  return /** @type {anychart.stockModule.indicators.AO|anychart.stockModule.Series} */(this.seriesInternal('main', opt_type));
 };
 
 
