@@ -72,6 +72,27 @@ anychart.utils.extractSettings = function(settingsArray, opt_callProp) {
 
 
 /**
+ * Returns new instance of constructor function with unknown parameters. Generic version of "new" operator.
+ * @param {Function} ctor .
+ * @param {...*} var_args .
+ * @return {*}
+ */
+anychart.utils.construct = function(ctor, var_args) {
+  var args = Array.prototype.slice.call(arguments, 1);
+
+  /**
+   * @return {*}
+   * @constructor
+   */
+  var F = function() {
+    return ctor.apply(this, args);
+  };
+  F.prototype = ctor.prototype;
+  return new F();
+};
+
+
+/**
  * Extracting settings modes.
  * @enum {number}
  */
@@ -1388,7 +1409,7 @@ anychart.utils.json2xml = function(json, opt_rootNodeName, opt_returnAsXmlNode) 
   var root = anychart.utils.json2xml_(json, opt_rootNodeName || 'anychart', result);
   if (root) {
     if (!opt_rootNodeName)
-      root.setAttribute('xmlns', 'http://anychart.com/schemas/8.2.0/xml-schema.xsd');
+      root.setAttribute('xmlns', 'http://anychart.com/schemas/8.2.1/xml-schema.xsd');
     result.appendChild(root);
   }
   return opt_returnAsXmlNode ? result : goog.dom.xml.serialize(result);
