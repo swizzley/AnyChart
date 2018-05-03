@@ -46,24 +46,6 @@ goog.inherits(anychart.core.utils.Factory, anychart.core.VisualBase);
 
 //region --- Class const
 /**
- * Supported consistency states.
- * @type {number}
- */
-anychart.core.utils.Factory.prototype.SUPPORTED_SIGNALS =
-    anychart.core.Base.prototype.SUPPORTED_SIGNALS |
-    anychart.Signal.NEEDS_REDRAW;
-
-
-/**
- * Supported consistency states.
- * @type {number}
- */
-anychart.core.utils.Factory.prototype.SUPPORTED_CONSISTENCY_STATES =
-    anychart.core.Base.prototype.SUPPORTED_CONSISTENCY_STATES |
-    anychart.ConsistencyState.APPEARANCE;
-
-
-/**
  * Enumeration to handle composite event handlers attachment on DOM create.
  * @const {Object.<number>}
  * @private
@@ -286,6 +268,11 @@ anychart.core.utils.Factory.prototype.draw = function() {
         elem.draw();
       }
     }, this);
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
+    this.layer_.zIndex(/** @type {number} */(this.zIndex()));
+    this.markConsistent(anychart.ConsistencyState.Z_INDEX);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {

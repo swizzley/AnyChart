@@ -2509,7 +2509,7 @@ anychart.core.series.Base.prototype.checkBoundsCollision = function(factory, lab
 
 /**
  * Setups label drawing plan.
- * @param {anychart.core.ui.LabelsFactory.Label} label
+ * @param {anychart.core.Label} label
  * @param {anychart.core.ui.LabelsFactory} chartNormal
  * @param {anychart.core.ui.LabelsFactory} seriesNormal
  * @param {*} pointNormal
@@ -2528,7 +2528,7 @@ anychart.core.series.Base.prototype.setupLabelDrawingPlan = function(label,
                                                                      chartState, seriesState, pointState,
                                                                      chartExtremumNormal, seriesExtremumNormal, pointExtremumNormal,
                                                                      chartExtremumState, seriesExtremumState, pointExtremumState) {
-  label.stateOrder(anychart.utils.extractSettings([
+  label.settings(anychart.utils.extractSettings([
     pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
@@ -2565,21 +2565,25 @@ anychart.core.series.Base.prototype.setupLabelDrawingPlan = function(label,
  * @protected
  */
 anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
-  var mainFactory = /** @type {anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory} */(factories[0]);
-  var element = formatProvider ? mainFactory.getLabel(/** @type {number} */(index)) : mainFactory.getMarker(/** @type {number} */(index));
+  var mainFactory = formatProvider ? this.getLabelsFactory() : /** @type {anychart.core.ui.MarkersFactory} */(factories[0]);
+  console.log(mainFactory);
+  var element = formatProvider ? mainFactory.getElement(/** @type {number} */(index)) : mainFactory.getMarker(/** @type {number} */(index));
   if (element) {
     if (formatProvider)
       element.formatProvider(formatProvider);
     element.positionProvider(positionProvider);
   } else {
-    if (formatProvider)
-      element = mainFactory.add(formatProvider, positionProvider, index);
-    else
+    if (formatProvider) {
+      element = mainFactory.add(index);
+      element
+          .formatProvider(formatProvider)
+          .positionProvider(positionProvider);
+    } else
       element = mainFactory.add(positionProvider, index);
   }
   element.resetSettings();
   if (formatProvider) {
-    var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(element);
+    var label = /** @type {anychart.core.Label} */(element);
     settings.unshift(label);
     this.setupLabelDrawingPlan.apply(this, settings);
 
@@ -2607,6 +2611,18 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
 //  Labels
 //
 //----------------------------------------------------------------------------------------------------------------------
+/**
+ * Labels factory getter/creator.
+ * @return {anychart.core.utils.Factory} .
+ */
+anychart.core.series.Base.prototype.getLabelsFactory = function() {
+  if (!this.labelsFactory_) {
+    this.labelsFactory_ = new anychart.core.utils.Factory(anychart.core.Label);
+  }
+  return this.labelsFactory_;
+};
+
+
 /**
  * Listener for labels invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
@@ -3054,7 +3070,7 @@ anychart.core.series.Base.prototype.draw = function() {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_LABELS | COMMON_STATES)) {
-    factory = /** @type {anychart.core.ui.LabelsFactory} */(this.normal_.labels());
+    factory = this.getLabelsFactory();
     stateFactoriesEnabled = /** @type {boolean} */(
         this.normal_.minLabels().enabled() || this.normal_.maxLabels().enabled() ||
         this.hovered_.labels().enabled() || this.selected_.labels().enabled() ||
