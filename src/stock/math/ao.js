@@ -32,20 +32,20 @@ anychart.stockModule.math.ao.initContext = function(opt_fastPeriod, opt_slowPeri
   var fastMAContext, slowMAContext, maCalculate;
 
   if (maType == anychart.enums.MovingAverageType.SMA) {
-    fastMAContext = anychart.stockModule.math.sma.initContext(fastPeriod);
-    slowMAContext = anychart.stockModule.math.sma.initContext(slowPeriod);
+    fastMAContext = anychart.stockModule.math.sma.initContext;
+    slowMAContext = anychart.stockModule.math.sma.initContext;
     maCalculate = anychart.stockModule.math.sma.calculate;
   } else {
-    fastMAContext = anychart.stockModule.math.ema.initContext(fastPeriod);
-    slowMAContext = anychart.stockModule.math.ema.initContext(slowPeriod);
+    fastMAContext = anychart.stockModule.math.ema.initContext;
+    slowMAContext = anychart.stockModule.math.ema.initContext;
     maCalculate = anychart.stockModule.math.ema.calculate;
   }
 
   return {
-    fastMAContext: fastMAContext,
-    slowMAContext: slowMAContext,
+    fastMAContext: fastMAContext(fastPeriod),
+    slowMAContext: slowMAContext(slowPeriod),
     maCalculate: maCalculate,
-    maType: opt_maType,
+    maType: maType,
     /**
      * @this {anychart.stockModule.math.ao.Context}
      */
@@ -85,8 +85,9 @@ anychart.stockModule.math.ao.calculate = function(context, high, low) {
   if (isNaN(high) || isNaN(low)) {
     return NaN;
   } else {
-    var fastMA = /** @type {number} */ context.maCalculate(context.fastMAContext, (high + low) / 2);
-    var slowMA = /** @type {number} */ context.maCalculate(context.slowMAContext, (high + low) / 2);
+    var medianPrice = (high + low) / 2;
+    var fastMA = /** @type {number} */ (context.maCalculate(context.fastMAContext, medianPrice));
+    var slowMA = /** @type {number} */ (context.maCalculate(context.slowMAContext, medianPrice));
     return fastMA - slowMA;
   }
 };
