@@ -50,7 +50,7 @@ anychart.stockModule.indicators.AO.prototype.createComputer = function(mapping) 
 
 /** @inheritDoc */
 anychart.stockModule.indicators.AO.prototype.createNameForSeries = function(seriesId, series) {
-  return 'AO(' + this.fastPeriod_ + ',' + this.slowPeriod_ + ')';
+  return 'AO(' + this.fastPeriod_ + ', ' + this.slowPeriod_ + ')';
 };
 
 
