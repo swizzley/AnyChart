@@ -59,11 +59,6 @@ anychart.core.series.Base = function(chart, plot, type, config) {
    */
   this.plot = plot;
 
-  /**
-   * Auto values of settings set by external controller.
-   * @type {!Object}
-   */
-  this.autoSettings = {};
   this.autoSettings['pointWidth'] = '90%';
   this.autoSettings['isVertical'] = this.chart.isVertical();
   this.autoSettings['minPointLength'] = 0;
@@ -3350,16 +3345,16 @@ anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
   //   this.rootLayer.clip(clipElement);
   // }
   if (this.supportsLabels()) {
-    domElement = this.normal_.labels().getDomElement();
-    if (domElement) domElement.clip(clipElement);
+    // domElement = this.normal_.labels().getDomElement();
+    // if (domElement) domElement.clip(clipElement);
   }
   if (this.supportsMarkers()) {
     // var domElement = this.normal_.markers().getDomElement();
     // if (domElement) domElement.clip(clipElement);
   }
   if (this.supportsOutliers()) {
-    domElement = this.normal_.outlierMarkers().getDomElement();
-    if (domElement) domElement.clip(clipElement);
+    // domElement = this.normal_.outlierMarkers().getDomElement();
+    // if (domElement) domElement.clip(clipElement);
   }
 };
 

@@ -88,6 +88,7 @@ goog.addDependency('../../../../src/core/ChartWithSeries.js', ['anychart.core.Ch
 goog.addDependency('../../../../src/core/GridBase.js', ['anychart.core.GridBase'], ['acgraph', 'anychart.color', 'anychart.core.IAxis', 'anychart.core.IStandaloneBackend', 'anychart.core.VisualBase', 'anychart.core.reporting', 'anychart.core.settings', 'anychart.core.utils.Padding', 'anychart.enums', 'anychart.scales'], {});
 goog.addDependency('../../../../src/core/ICenterContentChart.js', ['anychart.core.ICenterContentChart'], [], {});
 goog.addDependency('../../../../src/core/IShapeManagerUser.js', ['anychart.core.IShapeManagerUser'], ['anychart.core.settings.IObjectWithSettings'], {});
+goog.addDependency('../../../../src/core/Label.js', ['anychart.core.Label'], ['acgraph.math', 'anychart.core.IStandaloneBackend', 'anychart.core.VisualBase', 'anychart.core.reporting', 'anychart.core.settings', 'anychart.core.ui.Background', 'anychart.core.utils.Factory', 'anychart.core.utils.Padding', 'anychart.core.utils.TokenParser', 'anychart.enums', 'anychart.math.Rect', 'goog.array', 'goog.math.Coordinate'], {});
 goog.addDependency('../../../../src/core/NoDataSettings.js', ['anychart.core.NoDataSettings'], ['anychart.core.Base'], {});
 goog.addDependency('../../../../src/core/Point.js', ['anychart.core.Point'], [], {});
 goog.addDependency('../../../../src/core/SeparateChart.js', ['anychart.core.SeparateChart'], ['anychart.core.Chart', 'anychart.core.ui.Legend', 'anychart.enums'], {});
@@ -101,7 +102,7 @@ goog.addDependency('../../../../src/core/axisMarkers/PathBase.js', ['anychart.co
 goog.addDependency('../../../../src/core/axisMarkers/Range.js', ['anychart.core.axisMarkers.Range', 'anychart.standalones.axisMarkers.Range'], ['acgraph', 'anychart.color', 'anychart.core.axisMarkers.PathBase'], {});
 goog.addDependency('../../../../src/core/axisMarkers/Text.js', ['anychart.core.axisMarkers.Text', 'anychart.standalones.axisMarkers.Text'], ['anychart.core.axisMarkers.TextBase'], {});
 goog.addDependency('../../../../src/core/axisMarkers/TextBase.js', ['anychart.core.axisMarkers.TextBase'], ['acgraph.math', 'anychart.core.Axis', 'anychart.core.IStandaloneBackend', 'anychart.core.reporting', 'anychart.core.ui.Background', 'anychart.core.ui.LabelBase', 'anychart.core.utils.Padding', 'anychart.enums', 'anychart.math.Rect', 'anychart.utils', 'goog.math'], {});
-goog.addDependency('../../../../src/core/core.js', ['anychart.core.I3DProvider', 'anychart.core.IAxis', 'anychart.core.IChart', 'anychart.core.IChartWithAnnotations', 'anychart.core.IGroupingProvider', 'anychart.core.IPlot', 'anychart.core.IStandaloneBackend'], ['goog.events.Listenable'], {});
+goog.addDependency('../../../../src/core/core.js', ['anychart.core.I3DProvider', 'anychart.core.IAxis', 'anychart.core.IChart', 'anychart.core.IChartWithAnnotations', 'anychart.core.IFactoryElement', 'anychart.core.IGroupingProvider', 'anychart.core.IPlot', 'anychart.core.IStandaloneBackend'], ['anychart.core.utils.Factory', 'goog.events.Listenable'], {});
 goog.addDependency('../../../../src/core/core.module.js', ['anychart.core.entry'], ['anychart', 'anychart.data', 'anychart.format', 'anychart.palettes', 'anychart.scales'], {});
 goog.addDependency('../../../../src/core/defaultTheme.js', ['anychart.core.defaultTheme'], ['anychart.color', 'anychart.format', 'anychart.math', 'anychart.utils'], {});
 goog.addDependency('../../../../src/core/drawers/Area.js', ['anychart.core.drawers.Area'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], {});
@@ -165,6 +166,7 @@ goog.addDependency('../../../../src/core/utils/Connector.js', ['anychart.core.ut
 goog.addDependency('../../../../src/core/utils/Crossing.js', ['anychart.core.utils.Crossing'], ['anychart.core.Base'], {});
 goog.addDependency('../../../../src/core/utils/DrawingPlanIterator.js', ['anychart.core.utils.DrawingPlanIterator'], ['anychart.data.Iterator'], {});
 goog.addDependency('../../../../src/core/utils/Error.js', ['anychart.core.utils.Error', 'anychart.core.utils.ISeriesWithError'], ['anychart.core.Base', 'anychart.core.reporting', 'anychart.enums', 'anychart.utils'], {});
+goog.addDependency('../../../../src/core/utils/Factory.js', ['anychart.core.utils.Factory'], ['acgraph.math', 'anychart.core.VisualBase', 'anychart.enums', 'anychart.math.Rect', 'goog.array', 'goog.math.Coordinate'], {});
 goog.addDependency('../../../../src/core/utils/GlobalTooltipContainer.js', ['anychart.core.utils.GlobalTooltipContainer'], ['anychart.core.utils.LocalTooltipContainer', 'goog.dom.BufferedViewportSizeMonitor', 'goog.dom.ViewportSizeMonitor'], {});
 goog.addDependency('../../../../src/core/utils/IInteractiveSeries.js', ['anychart.core.utils.IInteractiveSeries'], [], {});
 goog.addDependency('../../../../src/core/utils/Interactivity.js', ['anychart.core.utils.Interactivity'], ['anychart.core.Base'], {});

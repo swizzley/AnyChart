@@ -453,6 +453,12 @@ anychart.core.Base = function() {
   this.themeSettings = {};
 
   /**
+   * Auto values of settings set by external controller.
+   * @type {!Object}
+   */
+  this.autoSettings = {};
+
+  /**
    * Descriptors meta.
    * @type {!Object.<string, anychart.core.settings.PropertyDescriptorMeta>}
    */

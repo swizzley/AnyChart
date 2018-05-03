@@ -8,9 +8,11 @@ goog.provide('anychart.core.I3DProvider');
 goog.provide('anychart.core.IAxis');
 goog.provide('anychart.core.IChart');
 goog.provide('anychart.core.IChartWithAnnotations');
+goog.provide('anychart.core.IFactoryElement');
 goog.provide('anychart.core.IGroupingProvider');
 goog.provide('anychart.core.IPlot');
 goog.provide('anychart.core.IStandaloneBackend');
+goog.require('anychart.core.utils.Factory');
 goog.require('goog.events.Listenable');
 goog.forwardDeclare('anychart.core.series.TypeConfig');
 
@@ -344,6 +346,14 @@ anychart.core.IStandaloneBackend.prototype.invalidateParentBounds = function() {
  * @return {boolean} Depends or not.
  */
 anychart.core.IStandaloneBackend.prototype.dependsOnContainerSize = function() {};
+
+
+//endregion
+//region IFactoryElement
+/**
+ * @interface
+ */
+anychart.core.IFactoryElement = function() {};
 
 
 //endregion

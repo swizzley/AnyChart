@@ -149,11 +149,6 @@ anychart.core.ui.Title = function() {
    */
   this.transformation_ = null;
 
-  /**
-   * Auto values of settings set by external controller.
-   * @type {!Object}
-   */
-  this.autoSettings = {};
   this.autoSettings['orientation'] = anychart.enums.Orientation.TOP;
 
 

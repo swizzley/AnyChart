@@ -1,16 +1,7 @@
 //region --- Requiring and Providing
-goog.provide('anychart.core.ui.LabelsFactory');
-goog.provide('anychart.core.ui.LabelsFactory.Label');
-goog.provide('anychart.standalones.LabelsFactory');
-goog.provide('anychart.standalones.LabelsFactory.Label');
+goog.provide('anychart.core.utils.Factory');
 goog.require('acgraph.math');
-goog.require('anychart.core.IStandaloneBackend');
 goog.require('anychart.core.VisualBase');
-goog.require('anychart.core.reporting');
-goog.require('anychart.core.settings');
-goog.require('anychart.core.ui.Background');
-goog.require('anychart.core.utils.Padding');
-goog.require('anychart.core.utils.TokenParser');
 goog.require('anychart.enums');
 goog.require('anychart.math.Rect');
 goog.require('goog.array');
@@ -24,11 +15,10 @@ goog.require('goog.math.Coordinate');
  * Any individual label can be changed after all labels are displayed.
  * @param {Function} ctor .
  * @constructor
- * @extends {anychart.core.Base}
- * @implements {anychart.core.IStandaloneBackend}
+ * @extends {anychart.core.VisualBase}
  */
-anychart.core.ui.LabelsFactory = function(ctor) {
-  anychart.core.ui.LabelsFactory.base(this, 'constructor');
+anychart.core.utils.Factory = function(ctor) {
+  anychart.core.utils.Factory.base(this, 'constructor');
 
   /**
    * Factory elements constructor.
@@ -46,12 +36,12 @@ anychart.core.ui.LabelsFactory = function(ctor) {
 
   /**
    * Labels Array.
-   * @type {Array.<anychart.core.ui.LabelsFactory.Label>}
+   * @type {Array.<anychart.core.utils.Factory.Label>}
    * @private
    */
   this.elements_;
 };
-goog.inherits(anychart.core.ui.LabelsFactory, anychart.core.Base);
+goog.inherits(anychart.core.utils.Factory, anychart.core.VisualBase);
 
 
 //region --- Class const
@@ -59,7 +49,7 @@ goog.inherits(anychart.core.ui.LabelsFactory, anychart.core.Base);
  * Supported consistency states.
  * @type {number}
  */
-anychart.core.ui.LabelsFactory.prototype.SUPPORTED_SIGNALS =
+anychart.core.utils.Factory.prototype.SUPPORTED_SIGNALS =
     anychart.core.Base.prototype.SUPPORTED_SIGNALS |
     anychart.Signal.NEEDS_REDRAW;
 
@@ -68,7 +58,7 @@ anychart.core.ui.LabelsFactory.prototype.SUPPORTED_SIGNALS =
  * Supported consistency states.
  * @type {number}
  */
-anychart.core.ui.LabelsFactory.prototype.SUPPORTED_CONSISTENCY_STATES =
+anychart.core.utils.Factory.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.core.Base.prototype.SUPPORTED_CONSISTENCY_STATES |
     anychart.ConsistencyState.APPEARANCE;
 
@@ -78,7 +68,7 @@ anychart.core.ui.LabelsFactory.prototype.SUPPORTED_CONSISTENCY_STATES =
  * @const {Object.<number>}
  * @private
  */
-anychart.core.ui.LabelsFactory.HANDLED_EVENT_TYPES_ = {
+anychart.core.utils.Factory.HANDLED_EVENT_TYPES_ = {
   /** Click. */
   'click': 0x01,
 
@@ -126,15 +116,15 @@ anychart.core.ui.LabelsFactory.HANDLED_EVENT_TYPES_ = {
  * @type {number}
  * @private
  */
-anychart.core.ui.LabelsFactory.HANDLED_EVENT_TYPES_CAPTURE_SHIFT_ = 12;
+anychart.core.utils.Factory.HANDLED_EVENT_TYPES_CAPTURE_SHIFT_ = 12;
 
 
 /**
  * Factory to measure plain text with styles.
  * NOTE: Do not export!
- * @type {?anychart.core.ui.LabelsFactory}
+ * @type {?anychart.core.utils.Factory}
  */
-anychart.core.ui.LabelsFactory.measureTextFactory = null;
+anychart.core.utils.Factory.measureTextFactory = null;
 
 
 //endregion
@@ -143,7 +133,7 @@ anychart.core.ui.LabelsFactory.measureTextFactory = null;
  * Returns DOM element.
  * @return {acgraph.vector.Layer}
  */
-anychart.core.ui.LabelsFactory.prototype.getDomElement = function() {
+anychart.core.utils.Factory.prototype.getDomElement = function() {
   return this.layer_;
 };
 
@@ -152,7 +142,7 @@ anychart.core.ui.LabelsFactory.prototype.getDomElement = function() {
  * Gets labels factory root layer;
  * @return {acgraph.vector.Layer}
  */
-anychart.core.ui.LabelsFactory.prototype.getRootLayer = function() {
+anychart.core.utils.Factory.prototype.getRootLayer = function() {
   return this.layer_;
 };
 
@@ -162,9 +152,9 @@ anychart.core.ui.LabelsFactory.prototype.getRootLayer = function() {
 /**
  * Clears an array of labels.
  * @param {number=} opt_index If set, removes only the label that is in passed index.
- * @return {anychart.core.ui.LabelsFactory} Returns itself for chaining.
+ * @return {anychart.core.utils.Factory} Returns itself for chaining.
  */
-anychart.core.ui.LabelsFactory.prototype.clear = function(opt_index) {
+anychart.core.utils.Factory.prototype.clear = function(opt_index) {
   if (!this.freeToUseLabelsPool_)
     this.freeToUseLabelsPool_ = [];
 
@@ -198,9 +188,9 @@ anychart.core.ui.LabelsFactory.prototype.clear = function(opt_index) {
 /**
  * Returns label by index (if there is such label).
  * @param {number} index Label index.
- * @return {anychart.core.ui.LabelsFactory.Label} Already existing label.
+ * @return {anychart.core.utils.Factory.Label} Already existing label.
  */
-anychart.core.ui.LabelsFactory.prototype.getElement = function(index) {
+anychart.core.utils.Factory.prototype.getElement = function(index) {
   index = +index;
   return this.elements_ && this.elements_[index] ? this.elements_[index] : null;
 };
@@ -210,18 +200,18 @@ anychart.core.ui.LabelsFactory.prototype.getElement = function(index) {
  * Labels count
  * @return {number}
  */
-anychart.core.ui.LabelsFactory.prototype.elementsCount = function() {
+anychart.core.utils.Factory.prototype.elementsCount = function() {
   return this.elements_ ? this.elements_.length : 0;
 };
 
 
 /**
- * Creates new instance of anychart.core.ui.LabelsFactory.Label, saves it in the factory
+ * Creates new instance of anychart.core.utils.Factory.Label, saves it in the factory
  * and returns it.
  * @param {number=} opt_index Label index.
- * @return {!anychart.core.ui.LabelsFactory.Label} Returns new label instance.
+ * @return {!anychart.core.utils.Factory.Label} Returns new label instance.
  */
-anychart.core.ui.LabelsFactory.prototype.add = function(opt_index) {
+anychart.core.utils.Factory.prototype.add = function(opt_index) {
   var elem, index;
   if (!goog.isDef(this.elements_)) this.elements_ = [];
 
@@ -246,6 +236,7 @@ anychart.core.ui.LabelsFactory.prototype.add = function(opt_index) {
       index = this.elements_.length - 1;
     }
     elem.setIndex(index);
+    elem.setFactory(this);
   }
 
   elem.resumeSignalsDispatching(false);
@@ -256,26 +247,26 @@ anychart.core.ui.LabelsFactory.prototype.add = function(opt_index) {
 
 /**
  * @protected
- * @return {anychart.core.ui.LabelsFactory.Label}
+ * @return {anychart.core.utils.Factory.Label}
  */
-anychart.core.ui.LabelsFactory.prototype.createElement = function() {
-  return new this.elementsCtor_(this);
+anychart.core.utils.Factory.prototype.createElement = function() {
+  return new this.elementsCtor_();
 };
 
 
 //endregion
 //region --- Drawing
 /** @inheritDoc */
-anychart.core.ui.LabelsFactory.prototype.remove = function() {
+anychart.core.utils.Factory.prototype.remove = function() {
   if (this.layer_) this.layer_.parent(null);
 };
 
 
 /**
  * Labels drawing.
- * @return {anychart.core.ui.LabelsFactory} Returns itself for chaining.
+ * @return {anychart.core.utils.Factory} Returns itself for chaining.
  */
-anychart.core.ui.LabelsFactory.prototype.draw = function() {
+anychart.core.utils.Factory.prototype.draw = function() {
   if (this.isDisposed())
     return this;
 
@@ -318,7 +309,7 @@ anychart.core.ui.LabelsFactory.prototype.draw = function() {
  * @param {number=} opt_cacheIndex Label index.
  * @return {*}
  */
-anychart.core.ui.LabelsFactory.prototype.callFormat = function(formatter, provider, opt_cacheIndex) {
+anychart.core.utils.Factory.prototype.callFormat = function(formatter, provider, opt_cacheIndex) {
   if (goog.isString(formatter))
     formatter = anychart.core.utils.TokenParser.getInstance().getFormat(formatter);
   if (!this.formatCallsCache_)
@@ -343,9 +334,9 @@ anychart.core.ui.LabelsFactory.prototype.callFormat = function(formatter, provid
 /**
  * Drops tet formatter calls cache.
  * @param {number=} opt_index
- * @return {anychart.core.ui.LabelsFactory} Self for chaining.
+ * @return {anychart.core.utils.Factory} Self for chaining.
  */
-anychart.core.ui.LabelsFactory.prototype.dropCallsCache = function(opt_index) {
+anychart.core.utils.Factory.prototype.dropCallsCache = function(opt_index) {
   if (!goog.isDef(opt_index)) {
     this.formatCallsCache_ = {};
   } else {
@@ -365,8 +356,8 @@ anychart.core.ui.LabelsFactory.prototype.dropCallsCache = function(opt_index) {
 //
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
-anychart.core.ui.LabelsFactory.prototype.makeBrowserEvent = function(e) {
-  var res = anychart.core.ui.LabelsFactory.base(this, 'makeBrowserEvent', e);
+anychart.core.utils.Factory.prototype.makeBrowserEvent = function(e) {
+  var res = anychart.core.utils.Factory.base(this, 'makeBrowserEvent', e);
   var target = res['domTarget'];
   var tag;
   while (anychart.utils.instanceOf(target, acgraph.vector.Element)) {
@@ -383,7 +374,7 @@ anychart.core.ui.LabelsFactory.prototype.makeBrowserEvent = function(e) {
 //endregion
 //region --- Setup & Dispose
 /** @inheritDoc */
-anychart.core.ui.LabelsFactory.prototype.disposeInternal = function() {
+anychart.core.utils.Factory.prototype.disposeInternal = function() {
   goog.disposeAll(
       this.elements_,
       this.freeToUseLabelsPool_,
@@ -391,77 +382,8 @@ anychart.core.ui.LabelsFactory.prototype.disposeInternal = function() {
 
   this.elements_ = null;
   this.freeToUseLabelsPool_ = null;
-  this.measureCustomLabel_ = null;
   this.layer_ = null;
 
-  anychart.core.ui.LabelsFactory.base(this, 'disposeInternal');
-};
-
-
-/** @inheritDoc */
-anychart.core.ui.LabelsFactory.prototype.serialize = function() {
-  var json = anychart.core.ui.LabelsFactory.base(this, 'serialize');
-  if (!goog.isDef(json['enabled'])) delete json['enabled'];
-
-  var val;
-  if (this.hasOwnOption('background')) {
-    val = this.background().serialize();
-    if (!goog.object.isEmpty(val))
-      json['background'] = val;
-  }
-  if (this.hasOwnOption('padding')) {
-    val = this.padding().serialize();
-    if (!goog.object.isEmpty(val))
-      json['padding'] = val;
-  }
-
-  var adjustFontSize = json['adjustFontSize'];
-  if (!(adjustFontSize && (goog.isDef(adjustFontSize['width']) || goog.isDef(adjustFontSize['height']))))
-    delete json['adjustFontSize'];
-
-  anychart.core.settings.serialize(this, this.TEXT_DESCRIPTORS, json, 'Labels factory label text');
-  anychart.core.settings.serialize(this, this.SIMPLE_PROPS_DESCRIPTORS, json, 'Labels factory label props');
-
-  return json;
-};
-
-
-/** @inheritDoc */
-anychart.core.ui.LabelsFactory.prototype.setupByJSON = function(config, opt_default) {
-  var enabledState = this.enabled();
-  anychart.core.ui.LabelsFactory.base(this, 'setupByJSON', config, opt_default);
-  if (opt_default) {
-    anychart.core.settings.deserialize(this.themeSettings, this.TEXT_DESCRIPTORS, config);
-    anychart.core.settings.deserialize(this.themeSettings, this.SIMPLE_PROPS_DESCRIPTORS, config);
-    if ('enabled' in config) this.themeSettings['enabled'] = config['enabled'];
-  } else {
-    anychart.core.settings.deserialize(this, this.TEXT_DESCRIPTORS, config);
-    anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
-    this.enabled('enabled' in config ? config['enabled'] : enabledState);
-  }
-
-  var propName = 'background';
-  if (propName in config) {
-    var background = this.background();
-    if (opt_default) {
-      background.setupInternal(!!opt_default, config[propName]);
-    } else {
-      this.background(config[propName]);
-    }
-    this.themeSettings[propName] = background.themeSettings;
-    this.ownSettings[propName] = background.ownSettings;
-  }
-
-  propName = 'padding';
-  if (propName in config) {
-    var padding = this.padding();
-    if (opt_default) {
-      padding.setupInternal(!!opt_default, config[propName]);
-    } else {
-      this.padding(config[propName]);
-    }
-    this.themeSettings[propName] = padding.themeSettings;
-    this.ownSettings[propName] = padding.ownSettings;
-  }
+  anychart.core.utils.Factory.base(this, 'disposeInternal');
 };
 //endregion

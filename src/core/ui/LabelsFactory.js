@@ -89,12 +89,6 @@ anychart.core.ui.LabelsFactory = function() {
     'disablePointerEvents'
   ];
 
-  /**
-   * Auto values of settings set by external controller.
-   * @type {!Object}
-   */
-  this.autoSettings = {};
-
   this.adjustFontSizeMode('different');
 
   this.resumeSignalsDispatching(false);
@@ -1192,12 +1186,6 @@ anychart.core.ui.LabelsFactory.Label = function() {
    * @private
    */
   this.states_ = {};
-
-  /**
-   * Auto values of settings set by external controller.
-   * @type {!Object}
-   */
-  this.autoSettings = {};
 
   /**
    * Default drawing plan.
