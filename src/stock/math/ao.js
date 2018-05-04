@@ -29,19 +29,19 @@ anychart.stockModule.math.ao.initContext = function(opt_fastPeriod, opt_slowPeri
   var slowPeriod = anychart.utils.normalizeToNaturalNumber(opt_slowPeriod, 34, false);
   var maType = anychart.enums.normalizeMovingAverageType(opt_maType, anychart.enums.MovingAverageType.SMA);
 
-  var MAContext, maCalculate;
+  var maContext, maCalculate;
 
   if (maType == anychart.enums.MovingAverageType.SMA) {
-    MAContext = anychart.stockModule.math.sma.initContext;
+    maContext = anychart.stockModule.math.sma.initContext;
     maCalculate = anychart.stockModule.math.sma.calculate;
   } else {
-    MAContext = anychart.stockModule.math.ema.initContext;
+    maContext = anychart.stockModule.math.ema.initContext;
     maCalculate = anychart.stockModule.math.ema.calculate;
   }
 
   return {
-    fastMAContext: MAContext(fastPeriod),
-    slowMAContext: MAContext(slowPeriod),
+    fastMAContext: maContext(fastPeriod),
+    slowMAContext: maContext(slowPeriod),
     maCalculate: maCalculate,
     maType: maType,
     /**
@@ -83,7 +83,7 @@ anychart.stockModule.math.ao.calculate = function(context, high, low) {
   if (isNaN(high) || isNaN(low)) {
     return NaN;
   } else {
-    var price = (high + low) / 2;
+    var price = /** @type {number} */ ((high + low) / 2);
     var fastMA = /** @type {number} */ (context.maCalculate(context.fastMAContext, price));
     var slowMA = /** @type {number} */ (context.maCalculate(context.slowMAContext, price));
     return fastMA - slowMA;
