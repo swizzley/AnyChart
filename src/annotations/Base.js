@@ -109,26 +109,28 @@ anychart.annotationsModule.Base = function(chartController) {
    */
   this.markersSupported = true;
 
+  /**
+   * @type {anychart.core.utils.Factory}
+   * @private
+   */
+  this.markersFactory_ = new anychart.core.utils.Factory(function () {
+    return new anychart.core.Marker(true);
+  }, true);
+
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.BASE_DESCRIPTORS_META);
 
   var normalMap = {};
   anychart.core.settings.createDescriptorsMeta(normalMap, this.getNormalDescriptorsMeta());
   this.normal_ = new anychart.core.StateSettings(this, normalMap, anychart.PointState.NORMAL);
-  var markersConstructor = function() {
-    return new anychart.core.ui.MarkersFactory(true, true);
-  };
-  this.normal_.setOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR, markersConstructor);
   this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK);
 
   var hoveredMap = {};
   anychart.core.settings.createDescriptorsMeta(hoveredMap, this.getHoveredDescriptorsMeta());
   this.hovered_ = new anychart.core.StateSettings(this, hoveredMap, anychart.PointState.HOVER);
-  this.hovered_.setOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR, markersConstructor);
 
   var selectedMap = {};
   anychart.core.settings.createDescriptorsMeta(selectedMap, this.getSelectedDescriptorsMeta());
   this.selected_ = new anychart.core.StateSettings(this, selectedMap, anychart.PointState.SELECT);
-  this.selected_.setOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR, markersConstructor);
 };
 goog.inherits(anychart.annotationsModule.Base, anychart.core.VisualBaseWithBounds);
 anychart.core.settings.populateAliases(anychart.annotationsModule.Base, ['markers'], 'normal');
@@ -853,13 +855,13 @@ anychart.annotationsModule.Base.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.ANNOTATIONS_MARKERS)) {
     if (this.markersSupported) {
-      var factory = /** @type {anychart.core.ui.MarkersFactory} */(this.normal().markers());
-      var stateFactoriesEnabled = /** @type {boolean} */(this.hovered().markers().enabled() || /** @type {anychart.core.ui.MarkersFactory} */(this.selected().markers()).enabled());
+      var factory = this.markersFactory_;
+      var normalSettingsEnabled = this.normal().markers().enabled();
+      var stateFactoriesEnabled = /** @type {boolean} */(this.hovered().markers().enabled() || /** @type {anychart.core.Marker} */(this.selected().markers()).enabled());
       factory.suspendSignalsDispatching();
-      if ((factory.enabled() !== false) || stateFactoriesEnabled) {
+      if ((normalSettingsEnabled !== false) || stateFactoriesEnabled) {
         factory.container(this.rootLayer);
         factory.clear();
-        factory.parentBounds(this.pixelBoundsCache);
         factory.setAutoZIndex(anychart.annotationsModule.Base.MARKERS_ZINDEX);
         this.drawMarkers_(this.state);
       } else {
@@ -911,9 +913,9 @@ anychart.annotationsModule.Base.prototype.checkDrawingNeeded = function() {
 anychart.annotationsModule.Base.prototype.remove = function() {
   if (this.rootLayer)
     this.rootLayer.remove();
-  var markers = this.normal().markers();
-  markers.remove();
-  markers.invalidate(anychart.ConsistencyState.CONTAINER);
+  var factory = this.markersFactory_;
+  factory.remove();
+  factory.invalidate(anychart.ConsistencyState.CONTAINER);
 };
 
 
@@ -1155,45 +1157,46 @@ anychart.annotationsModule.Base.prototype.setMarkerCursor = goog.nullFunction;
  * @private
  */
 anychart.annotationsModule.Base.prototype.drawMarkers_ = function(state) {
-  var mainFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.normal().markers());
+  var factory = this.markersFactory_;
 
+  var normalState = /** @type {anychart.core.Marker} */(this.normal().markers());
   var stateFactory;
   state = anychart.core.utils.InteractivityState.clarifyState(state);
-
   switch (state) {
     case anychart.PointState.HOVER:
-      stateFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.hovered().markers());
+      stateFactory = /** @type {anychart.core.Marker} */(this.hovered().markers());
       break;
     case anychart.PointState.SELECT:
-      stateFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.selected().markers());
+      stateFactory = /** @type {anychart.core.Marker} */(this.selected().markers());
       break;
     default:
       stateFactory = null;
       break;
   }
 
-  var isDraw = (!stateFactory || goog.isNull(stateFactory.enabled())) ?
-      mainFactory.enabled() :
-      stateFactory.enabled();
-
+  var isDraw = (!stateFactory || goog.isNull(stateFactory.enabled())) ? factory.enabled() : stateFactory.enabled();
   if (isDraw) {
     var positionProviders = this.createPositionProviders();
     for (var i = 0; i < positionProviders.length; i++) {
       var positionProvider = positionProviders[i];
-      var element = mainFactory.getMarker(/** @type {number} */(i));
-      if (element) {
-        element.positionProvider(positionProvider);
-      } else {
-        element = mainFactory.add(positionProvider, i);
-      }
+      var element = factory.getElement(/** @type {number} */(i));
+      if (!element)
+        element = factory.add(i);
+      element.positionProvider(positionProvider);
       element.resetSettings();
-      element.currentMarkersFactory(stateFactory || mainFactory);
-      element.setSettings();
-      element.draw();
+      element.parentBounds(this.pixelBoundsCache);
+      element.settings(anychart.utils.extractSettings([
+        stateFactory, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+        normalState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+        stateFactory, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
+        normalState, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
+        stateFactory, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+        normalState, anychart.utils.ExtractSettingModes.THEME_SETTINGS
+      ]));
       this.setMarkerCursor(element, i);
     }
   } else {
-    mainFactory.clear();
+    factory.clear();
   }
 };
 
@@ -1303,7 +1306,8 @@ anychart.annotationsModule.Base.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.Base.prototype.setupByJSON = function(config, opt_default) {
   anychart.annotationsModule.Base.base(this, 'setupByJSON', config, opt_default);
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, config);
+
+  anychart.core.settings.deserialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, config, opt_default);
 
   this.normal_.setupInternal(!!opt_default, config);
   this.normal_.setupInternal(!!opt_default, config['normal']);

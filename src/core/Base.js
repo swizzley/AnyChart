@@ -212,6 +212,7 @@ anychart.ConsistencyState = {
   LEGEND_DRAG: 1 << 11,
   //---------------------------------- MARKERS FACTORY STATES (VB) ---------------------------------
   MARKERS_FACTORY_HANDLERS: 1 << 6,
+  MARKERS_FACTORY_CLIP: 1 << 7,
   //---------------------------------- PAGINATOR STATES (VB) ---------------------------------
   PAGINATOR_BACKGROUND: 1 << 6,
   //---------------------------------- SCROLLBAR STATES (VB) ---------------------------------

@@ -181,6 +181,12 @@ anychart.stockModule.Series.prototype.chartHasLabelOverrides = function() {
 };
 
 
+/** @inheritDoc */
+anychart.stockModule.Series.prototype.chartHasMarkerOverrides = function() {
+  return false;
+};
+
+
 //endregion
 //region Working with data
 //----------------------------------------------------------------------------------------------------------------------

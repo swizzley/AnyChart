@@ -14,11 +14,18 @@ goog.require('goog.math.Coordinate');
  * Class for creation of sets of similar labels and management of such sets.
  * Any individual label can be changed after all labels are displayed.
  * @param {Function} ctor .
+ * @param {boolean=} opt_isNonInteractive
  * @constructor
  * @extends {anychart.core.VisualBase}
  */
-anychart.core.utils.Factory = function(ctor) {
+anychart.core.utils.Factory = function(ctor, opt_isNonInteractive) {
   anychart.core.utils.Factory.base(this, 'constructor');
+
+  /**
+   * If the factory is allowed to listen and intercept events.
+   * @type {boolean}
+   */
+  this.isInteractive = !opt_isNonInteractive;
 
   /**
    * Factory elements constructor.
@@ -170,7 +177,7 @@ anychart.core.utils.Factory.prototype.clear = function(opt_index) {
 /**
  * Returns label by index (if there is such label).
  * @param {number} index Label index.
- * @return {anychart.core.utils.Factory.Label} Already existing label.
+ * @return {anychart.core.IFactoryElement} Already existing label.
  */
 anychart.core.utils.Factory.prototype.getElement = function(index) {
   index = +index;
@@ -232,7 +239,7 @@ anychart.core.utils.Factory.prototype.add = function(opt_index) {
  * @return {anychart.core.utils.Factory.Label}
  */
 anychart.core.utils.Factory.prototype.createElement = function() {
-  return new this.elementsCtor_();
+  return this.elementsCtor_();
 };
 
 
@@ -254,7 +261,8 @@ anychart.core.utils.Factory.prototype.draw = function() {
 
   if (!this.layer_) {
     this.layer_ = acgraph.layer();
-    this.bindHandlersToGraphics(this.layer_);
+    if (this.isInteractive)
+      this.bindHandlersToGraphics(this.layer_);
   }
 
   var stage = this.container() ? this.container().getStage() : null;

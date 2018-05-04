@@ -1,6 +1,7 @@
 goog.provide('anychart.core.StateSettings');
 goog.require('anychart.core.Base');
 goog.require('anychart.core.Label');
+goog.require('anychart.core.Marker');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.settings.IObjectWithSettings');
 goog.require('anychart.core.ui.Background');
@@ -151,12 +152,12 @@ anychart.core.StateSettings.CIRCULAR_LABELS_CONSTRUCTOR = function() {
 
 
 /**
- * Default labels factory constructor.
+ * Default markers factory constructor.
  * @this {*}
- * @return {anychart.core.ui.MarkersFactory}
+ * @return {anychart.core.Marker}
  */
 anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR = function() {
-  return new anychart.core.ui.MarkersFactory();
+  return new anychart.core.Marker();
 };
 
 
@@ -533,7 +534,7 @@ anychart.core.StateSettings.prototype.lowerLabels = function(opt_value) {
  */
 anychart.core.StateSettings.prototype.markers = function(opt_value) {
   if (!this.markers_) {
-    var markersFactoryConstructor = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR)) || anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR;
+    var markersFactoryConstructor = /** @type {anychart.core.Marker} */ (this.getOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR)) || anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR;
     var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
     this.markers_ = markersFactoryConstructor();
     afterInitCallback.call(this.stateHolder, this.markers_);
@@ -552,12 +553,12 @@ anychart.core.StateSettings.prototype.markers = function(opt_value) {
 /**
  * Outlier markers.
  * @param {(Object|boolean|null|string)=} opt_value
- * @return {anychart.core.StateSettings|anychart.core.ui.MarkersFactory}
+ * @return {anychart.core.StateSettings|anychart.core.Marker}
  */
 anychart.core.StateSettings.prototype.outlierMarkers = function(opt_value) {
   if (!this.outlierMarkers_) {
     var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
-    this.outlierMarkers_ = new anychart.core.ui.MarkersFactory();
+    this.outlierMarkers_ = new anychart.core.Marker();
     afterInitCallback.call(this.stateHolder, this.outlierMarkers_);
   }
 

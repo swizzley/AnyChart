@@ -55,16 +55,16 @@ anychart.circularGaugeModule.AxisTicks = function() {
 
   /**
    * In this class ticks are markers. Its control by MarkersFactory.
-   * @type {!anychart.core.ui.MarkersFactory}
+   * @type {!anychart.core.Marker}
    * @private
    */
-  this.ticks_ = new anychart.core.ui.MarkersFactory();
-  this.ticks_.positionFormatter(anychart.utils.DEFAULT_FORMATTER);
-  this.ticks_.size(10);
-  this.ticks_.anchor(anychart.enums.Anchor.CENTER);
-  this.ticks_.offsetX(0);
-  this.ticks_.offsetY(0);
-  this.ticks_.rotation(0);
+  this.ticks_ = new anychart.core.Marker();
+  this.ticks_.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
+  this.ticks_.themeSettings['size'] =  10;
+  this.ticks_.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
+  this.ticks_.themeSettings['offsetX'] =  0;
+  this.ticks_.themeSettings['offsetY'] =  0;
+  this.ticks_.themeSettings['rotation'] =  0;
   this.ticks_.setParentEventTarget(this);
 
   /**
@@ -304,24 +304,24 @@ anychart.circularGaugeModule.AxisTicks.prototype.startDrawing = function() {
   this.ticks_.type(this.type_);
 
   if (!this.hatchFillElement_ && !anychart.utils.isNone(this.hatchFill_)) {
-    this.hatchFillElement_ = new anychart.core.ui.MarkersFactory();
-    this.hatchFillElement_.positionFormatter(anychart.utils.DEFAULT_FORMATTER);
-    this.hatchFillElement_.size(10);
-    this.hatchFillElement_.anchor(anychart.enums.Anchor.CENTER);
-    this.hatchFillElement_.offsetX(0);
-    this.hatchFillElement_.offsetY(0);
-    this.hatchFillElement_.rotation(0);
+    this.hatchFillElement_ = new anychart.core.Marker();
+    this.hatchFillElement_.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
+    this.hatchFillElement_.themeSettings['size'] =  10;
+    this.hatchFillElement_.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
+    this.hatchFillElement_.themeSettings['offsetX'] =  0;
+    this.hatchFillElement_.themeSettings['offsetY'] =  0;
+    this.hatchFillElement_.themeSettings['rotation'] =  0;
     this.hatchFillElement_.container(/** @type {acgraph.vector.ILayer} */(this.container()));
     this.hatchFillElement_.zIndex(anychart.circularGaugeModule.Axis.ZINDEX_TICK_HATCH_FILL);
   }
 
   if (this.hatchFillElement_) {
     this.hatchFillElement_.clear();
-    this.hatchFillElement_.disablePointerEvents(true);
-    this.hatchFillElement_.size(this.pixLength_ / 2);
-    this.hatchFillElement_.type(this.type_);
-    this.hatchFillElement_.fill(this.hatchFill_);
-    this.hatchFillElement_.stroke(null);
+    this.hatchFillElement_.setOption('disablePointerEvents', true);
+    this.hatchFillElement_.setOption('size', this.pixLength_ / 2);
+    this.hatchFillElement_.setOption('type', this.type_);
+    this.hatchFillElement_.setOption('fill', this.hatchFill_);
+    this.hatchFillElement_.setOption('stroke', null);
   }
 };
 

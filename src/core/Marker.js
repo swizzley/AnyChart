@@ -23,9 +23,15 @@ goog.require('goog.math.Coordinate');
  * @extends {anychart.core.VisualBase}
  * @implements {anychart.core.IFactoryElement}
  */
-anychart.core.Marker = function() {
+anychart.core.Marker = function(opt_crispEdges) {
   anychart.core.Marker.base(this, 'constructor');
   delete this.themeSettings['enabled'];
+
+  /**
+   * If the markers factory should try to draw markers crisply by passing an additional param to the drawers.
+   * @type {boolean}
+   */
+  this.crispEdges = !!opt_crispEdges;
 
   /**
    * Label index.
@@ -33,13 +39,6 @@ anychart.core.Marker = function() {
    * @private
    */
   this.index_;
-
-  /**
-   * Label layer
-   * @type {acgraph.vector.Layer}
-   * @private
-   */
-  this.layer_;
 
   /**
    * @type {acgraph.vector.Element}
@@ -58,23 +57,24 @@ anychart.core.Marker = function() {
    * @type {Array.<anychart.core.Marker|Object>}
    * @private
    */
-  this.settings_ = [];
+  this.settings_ = [this.ownSettings, this.autoSettings, this.themeSettings];
 
   this.resetSettings();
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
-    ['format', anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.LABELS_FACTORY_CACHE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['positionFormatter', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['position', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['anchor', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['offsetX', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['offsetY', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['connectorStroke', anychart.ConsistencyState.LABELS_FACTORY_CONNECTOR, anychart.Signal.NEEDS_REDRAW],
-    ['rotation', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['width', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['height', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['clip', anychart.ConsistencyState.LABELS_FACTORY_CLIP, anychart.Signal.NEEDS_REDRAW],
-    ['enabled', anychart.ConsistencyState.ENABLED, anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW]
+    ['positionFormatter', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['position', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['anchor', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['offsetX', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['offsetY', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['type', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['rotation', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['size', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
+    ['fill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
+    ['stroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
+    ['clip', anychart.ConsistencyState.MARKERS_FACTORY_CLIP, anychart.Signal.NEEDS_REDRAW],
+    ['enabled', anychart.ConsistencyState.ENABLED, anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW],
+    ['disablePointerEvents', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW]
   ]);
 };
 goog.inherits(anychart.core.Marker, anychart.core.VisualBase);
@@ -88,7 +88,8 @@ goog.inherits(anychart.core.Marker, anychart.core.VisualBase);
  */
 anychart.core.Marker.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.core.VisualBase.prototype.SUPPORTED_CONSISTENCY_STATES |
-    anychart.ConsistencyState.APPEARANCE;
+    anychart.ConsistencyState.APPEARANCE |
+    anychart.ConsistencyState.MARKERS_FACTORY_CLIP;
 
 
 /**
@@ -96,41 +97,18 @@ anychart.core.Marker.prototype.SUPPORTED_CONSISTENCY_STATES =
  * @private
  */
 anychart.core.Marker.settingsFieldsForMerge_ = [
-  'background',
-  'padding',
-  'height',
-  'width',
-  'offsetY',
-  'offsetX',
+  'positionFormatter',
   'position',
   'anchor',
+  'offsetX',
+  'offsetY',
+  'type',
   'rotation',
-  'format',
-  'positionFormatter',
-  'minFontSize',
-  'maxFontSize',
+  'size',
+  'fill',
+  'stroke',
   'clip',
-  'connectorStroke',
-  'adjustFontSize',
-  'useHtml',
-  'fontSize',
-  'fontWeight',
-  'fontFamily',
-  'fontColor',
-  'textDirection',
-  'wordWrap',
-  'wordBreak',
-  'fontOpacity',
-  'fontDecoration',
-  'fontStyle',
-  'fontVariant',
-  'letterSpacing',
-  'lineHeight',
-  'textIndent',
-  'vAlign',
-  'hAlign',
-  'textOverflow',
-  'selectable',
+  'enabled',
   'disablePointerEvents'
 ];
 
@@ -201,18 +179,19 @@ anychart.core.Marker.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   var map = {};
 
   anychart.core.settings.createDescriptors(map, [
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'format', anychart.core.settings.stringOrFunctionNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'positionFormatter', anychart.core.settings.stringOrFunctionNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'position', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'anchor', anychart.core.ui.LabelsFactory.anchorNoAutoNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offsetX', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offsetY', anychart.core.settings.asIsNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'connectorStroke', anychart.core.settings.strokeNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'type', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'rotation', anychart.core.settings.numberNormalizer],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'width', anychart.core.settings.numberOrPercentNormalizer],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'height', anychart.core.settings.numberOrPercentNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'size', anychart.core.settings.numberNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fill', anychart.core.settings.fillNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'stroke', anychart.core.settings.strokeNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'clip', anychart.core.settings.asIsNormalizer],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'enabled', anychart.core.settings.boolOrNullNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'enabled', anychart.core.settings.boolOrNullNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'disablePointerEvents', anychart.core.settings.booleanNormalizer]
   ]);
 
   return map;
@@ -220,11 +199,6 @@ anychart.core.Marker.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
 anychart.core.settings.populate(anychart.core.Marker, anychart.core.Marker.prototype.SIMPLE_PROPS_DESCRIPTORS);
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Internal settings.
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Returns label index.
  * @return {number}
@@ -254,7 +228,7 @@ anychart.core.Marker.prototype.positionProvider = function(opt_value) {
   if (goog.isDef(opt_value)) {
     if (this.positionProvider_ != opt_value) {
       this.positionProvider_ = opt_value;
-      this.invalidate(anychart.ConsistencyState.LABELS_FACTORY_POSITION, anychart.Signal.BOUNDS_CHANGED);
+      this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.BOUNDS_CHANGED);
     }
     return this;
   } else {
@@ -263,19 +237,72 @@ anychart.core.Marker.prototype.positionProvider = function(opt_value) {
 };
 
 
-//endregion
-//region --- IObjectWithSettings implementation
+//----------------------------------------------------------------------------------------------------------------------
+//
+//  Auto settings.
+//
+//----------------------------------------------------------------------------------------------------------------------
 /**
- * Updating local settings for complex settings.
+ * Auto type settings.
+ * @param {string=} opt_value Auto rotation angle.
+ * @return {string|anychart.core.Marker}
  */
-anychart.core.Marker.prototype.updateComplexSettings = function() {
-  if (this.background_)
-    this.ownSettings['background'] = this.background_.ownSettings;
-  if (this.padding_)
-    this.ownSettings['padding'] = this.padding_.ownSettings;
+anychart.core.Marker.prototype.autoType = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.autoSettings['type'] !== opt_value) {
+      this.autoSettings['type'] = opt_value;
+      if (!goog.isDef(this.ownSettings['type']))
+        this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+    }
+    return this;
+  } else {
+    return this.autoSettings['type'];
+  }
 };
 
 
+/**
+ * Auto fill settings.
+ * @param {acgraph.vector.Fill=} opt_value .
+ * @return {!anychart.core.Marker|acgraph.vector.Fill} .
+ */
+anychart.core.Marker.prototype.autoFill = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    var value = acgraph.vector.normalizeFill(opt_value);
+    if (this.autoSettings['fill'] !== value) {
+      this.autoSettings['fill'] = value;
+      if (!goog.isDef(this.ownSettings['fill']))
+        this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.autoSettings['fill'];
+  }
+};
+
+
+/**
+ * Auto stroke settings.
+ * @param {acgraph.vector.Stroke=} opt_value .
+ * @return {!anychart.core.Marker|acgraph.vector.Stroke} .
+ */
+anychart.core.Marker.prototype.autoStroke = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    var value = anychart.core.settings.strokeSimpleNormalizer(opt_value);
+    if (this.autoSettings['stroke'] !== value) {
+      this.autoSettings['stroke'] = value;
+      if (!goog.isDef(this.ownSettings['stroke']))
+        this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.autoSettings['stroke'];
+  }
+};
+
+
+//endregion
+//region --- IObjectWithSettings implementation
 /** @inheritDoc */
 anychart.core.Marker.prototype.hasOwnOption = function(name) {
   return goog.isDefAndNotNull(this.ownSettings[name]);
@@ -288,7 +315,6 @@ anychart.core.Marker.prototype.hasOwnOption = function(name) {
  * @return {*}
  */
 anychart.core.Marker.prototype.getOption = function(name) {
-  this.updateComplexSettings();
   return this.ownSettings[name];
 };
 
@@ -299,7 +325,6 @@ anychart.core.Marker.prototype.getOption = function(name) {
  * @return {*}
  */
 anychart.core.Marker.prototype.getOwnAndAutoOption = function(name) {
-  this.updateComplexSettings();
   return this.ownSettings[name];
 };
 
@@ -538,257 +563,42 @@ anychart.core.Marker.prototype.getMergedSettings = function() {
 
 
 //endregion
-//region --- Measuring and calculations
-/**
- * Adjust font size by width/height.
- * @param {number} originWidth
- * @param {number} originHeight
- * @param {number} minFontSize
- * @param {number} maxFontSize
- * @param {boolean} adjustByWidth
- * @param {boolean} adjustByHeight
- * @return {number}
- */
-anychart.core.Marker.prototype.calculateFontSize = function(originWidth, originHeight, minFontSize, maxFontSize, adjustByWidth, adjustByHeight) {
-  /** @type {acgraph.vector.Text} */
-  var text = this.createSizeMeasureElement_();
-
-  var evaluator = function(fontSize) {
-    text.fontSize(fontSize);
-    var bounds = text.getBounds();
-    var width = bounds.width;
-    var height = bounds.height;
-    var res;
-    if (adjustByWidth && (width > originWidth) || adjustByHeight && (height > originHeight)) {
-      res = -1;
-    } else if (adjustByWidth && (width == originWidth) || adjustByHeight && (height == originHeight)) {
-      res = 0;
-    } else {
-      res = 1;
-    }
-    return res;
-  };
-
-  var fonts = goog.array.range(minFontSize, maxFontSize + 1);
-  var res = goog.array.binarySelect(fonts, evaluator);
-  if (res < 0) {
-    res = ~res - 1;
-  }
-  return fonts[goog.math.clamp(res, 0, fonts.length)];
-};
-
-
-/**
- * Creates and returns size measure element.
- * @return {!acgraph.vector.Text}
- * @private
- */
-anychart.core.Marker.prototype.createSizeMeasureElement_ = function() {
-  var mergedSettings = this.getMergedSettings();
-
-  var isHtml = mergedSettings['useHtml'];
-  var formatProvider = this.formatProvider();
-  if (this.hasInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CACHE)) {
-    this.factory_.dropCallsCache(this.getIndex());
-    this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CACHE);
-  }
-  var text = this.factory_.callFormat(mergedSettings['format'], formatProvider, this.getIndex());
-
-  if (!this.fontSizeMeasureElement_) {
-    this.fontSizeMeasureElement_ = acgraph.text();
-    this.fontSizeMeasureElement_.attr('aria-hidden', 'true');
-  }
-
-  if (isHtml) this.fontSizeMeasureElement_.htmlText(goog.isDef(text) ? String(text) : '');
-  else this.fontSizeMeasureElement_.text(goog.isDef(text) ? String(text) : '');
-
-  this.iterateSettings_(function(state, settings, index) {
-    var isInit = index == 0;
-    if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(settings, anychart.core.Marker)) {
-      this.applyTextSettings.call(settings, this.fontSizeMeasureElement_, isInit);
-    } else {
-      this.applyTextSettings(this.fontSizeMeasureElement_, isInit, settings);
-    }
-  }, true);
-
-  return this.fontSizeMeasureElement_;
-};
-
-
-//endregion
 //region --- Drawing
 /**
  * Resets label to the initial state, but leaves DOM elements intact, but without the parent.
  */
 anychart.core.Marker.prototype.clear = function() {
   this.resetSettings();
-  if (this.layer_) {
-    this.layer_.parent(null);
-    this.layer_.removeAllListeners();
+  if (this.markerElement_) {
+    this.markerElement_.parent(null);
+    this.markerElement_.removeAllListeners();
   }
   this.invalidate(anychart.ConsistencyState.CONTAINER);
 };
 
 
 /**
- * Label drawing.
- * @param {anychart.math.Rect} bounds Outter label bounds.
- * @param {anychart.math.Rect} parentBounds Parent bounds.
- */
-anychart.core.Marker.prototype.drawLabel = function(bounds, parentBounds) {
-  var positionFormatter = this.mergedSettings['positionFormatter'];
-  var isTextByPath = !!this.textElement.path();
-  var anchor = isTextByPath ?
-      anychart.enums.Anchor.CENTER :
-      anychart.core.ui.LabelsFactory.anchorNoAutoNormalizer(this.mergedSettings['anchor']) || anychart.enums.Anchor.LEFT_TOP;
-
-  var isVertical = this.autoVertical();
-
-  var offsetX = this.mergedSettings['offsetX'];
-  var offsetY = this.mergedSettings['offsetY'];
-
-  var parentWidth = 0, parentHeight = 0;
-  if (parentBounds) {
-    parentWidth = parentBounds.width;
-    parentHeight = parentBounds.height;
-  }
-
-  var positionProvider = this.positionProvider();
-  var formattedPosition = goog.object.clone(positionFormatter.call(positionProvider, positionProvider));
-  var position = new goog.math.Coordinate(formattedPosition['x'], formattedPosition['y']);
-
-  var connectorPoint = positionProvider && positionProvider['connectorPoint'];
-  if (this.connector) {
-    this.connector.clear();
-    this.connector.setTransformationMatrix(1, 0, 0, 1, 0, 0);
-  }
-  if (connectorPoint) {
-    if (!this.connector) {
-      this.connector = this.layer_.path();
-      this.connector.disableStrokeScaling(true);
-    }
-    this.connector.stroke(this.mergedSettings['connectorStroke']);
-    var formattedConnectorPosition = goog.object.clone(positionFormatter.call(connectorPoint, connectorPoint));
-    this.connector.moveTo(position.x, position.y).lineTo(formattedConnectorPosition['x'], formattedConnectorPosition['y']);
-  }
-
-  var anchorCoordinate = anychart.utils.getCoordinateByAnchor(
-      new anychart.math.Rect(0, 0, bounds.width, bounds.height), anchor);
-
-  position.x -= anchorCoordinate.x;
-  position.y -= anchorCoordinate.y;
-
-  var offsetXNormalized = goog.isDef(offsetX) ? anychart.utils.normalizeSize(/** @type {number|string} */(offsetX), parentWidth) : 0;
-  var offsetYNormalized = goog.isDef(offsetY) ? anychart.utils.normalizeSize(/** @type {number|string} */(offsetY), parentHeight) : 0;
-
-  if (isVertical)
-    anychart.utils.applyOffsetByAnchor(position, anchor, offsetYNormalized, offsetXNormalized);
-  else
-    anychart.utils.applyOffsetByAnchor(position, anchor, offsetXNormalized, offsetYNormalized);
-
-  bounds.left = position.x;
-  bounds.top = position.y;
-
-  this.textElement.x(/** @type {number} */(this.textX + position.x)).y(/** @type {number} */(this.textY + position.y));
-};
-
-
-/**
- * Connector drawing.
- */
-anychart.core.Marker.prototype.drawConnector = function() {
-  var positionProvider = this.positionProvider();
-  var positionFormatter = this.mergedSettings['positionFormatter'];
-  var formattedPosition = goog.object.clone(positionFormatter.call(positionProvider, positionProvider));
-  var position = new goog.math.Coordinate(formattedPosition['x'], formattedPosition['y']);
-
-  var connectorPoint = positionProvider && positionProvider['connectorPoint'];
-  if (this.connector) {
-    this.connector.clear();
-    this.connector.setTransformationMatrix(1, 0, 0, 1, 0, 0);
-  }
-  if (connectorPoint) {
-    if (!this.connector) {
-      this.connector = this.layer_.path();
-      this.connector.disableStrokeScaling(true);
-    }
-    this.connector.stroke(this.mergedSettings['connectorStroke']);
-    var formattedConnectorPosition = goog.object.clone(positionFormatter.call(connectorPoint, connectorPoint));
-    this.connector.moveTo(position.x, position.y).lineTo(formattedConnectorPosition['x'], formattedConnectorPosition['y']);
-  }
-};
-
-
-/**
- * Applies text settings to text element.
- * @param {!acgraph.vector.Text} textElement Text element to apply settings to.
- * @param {boolean} isInitial - Whether is initial operation.
- * @param {Object=} opt_settings .
- * @this {anychart.core.Marker|anychart.core.ui.LabelsFactory}
- */
-anychart.core.Marker.prototype.applyTextSettings = function(textElement, isInitial, opt_settings) {
-  var textVal, useHtml, text;
-  var target = goog.isDef(opt_settings) ?
-      function(value) { return opt_settings[value]; } :
-      anychart.utils.instanceOf(this, anychart.core.Marker) ?
-          this.getOwnOption :
-          anychart.core.ui.LabelsFactory.prototype.getOwnAndAutoOption;
-
-  textVal = target.call(this, 'text');
-  useHtml = target.call(this, 'useHtml');
-
-  if (isInitial || goog.isDef(textVal) || goog.isDef(useHtml)) {
-    text = /** @type {string} */(textVal);
-    if (useHtml) {
-      textElement.htmlText(text);
-    } else {
-      textElement.text(text);
-    }
-  }
-
-  textElement.fontSize(/** @type {number|string} */ (target.call(this, 'fontSize')));
-  textElement.fontFamily(/** @type {string} */ (target.call(this, 'fontFamily')));
-  textElement.color(/** @type {string} */ (target.call(this, 'fontColor')));
-  textElement.direction(/** @type {string} */ (target.call(this, 'textDirection')));
-  textElement.wordWrap(/** @type {string} */ (target.call(this, 'wordWrap')));
-  textElement.wordBreak(/** @type {string} */ (target.call(this, 'wordBreak')));
-  textElement.opacity(/** @type {number} */ (target.call(this, 'fontOpacity')));
-  textElement.decoration(/** @type {string} */ (target.call(this, 'fontDecoration')));
-  textElement.fontStyle(/** @type {string} */ (target.call(this, 'fontStyle')));
-  textElement.fontVariant(/** @type {string} */ (target.call(this, 'fontVariant')));
-  textElement.fontWeight(/** @type {number|string} */ (target.call(this, 'fontWeight')));
-  textElement.letterSpacing(/** @type {number|string} */ (target.call(this, 'letterSpacing')));
-  textElement.lineHeight(/** @type {number|string} */ (target.call(this, 'lineHeight')));
-  textElement.textIndent(/** @type {number} */ (target.call(this, 'textIndent')));
-  textElement.vAlign(/** @type {string} */ (target.call(this, 'vAlign')));
-  textElement.hAlign(/** @type {string} */ (target.call(this, 'hAlign')));
-  textElement.textOverflow(/** @type {string} */ (target.call(this, 'textOverflow')));
-  textElement.selectable(/** @type {boolean} */ (target.call(this, 'selectable')));
-  textElement.disablePointerEvents(/** @type {boolean} */ (target.call(this, 'disablePointerEvents')));
-};
-
-
-/**
- * Label drawing.
- * @return {anychart.core.Marker} Returns self for chaining.
+ * Marker drawing.
+ * @return {anychart.core.Marker}
  */
 anychart.core.Marker.prototype.draw = function() {
-  var factory = this.factory_;
-  var mergedSettings;
+  if (this.isDisposed())
+    return this;
 
-  if (!this.layer_) this.layer_ = acgraph.layer();
-  this.layer_.tag = this.index_;
+  if (!this.markerElement_)
+    this.markerElement_ = acgraph.path();
+  this.markerElement_.tag = this.getIndex();
 
   var enabled = this.getFinalSettings('enabled');
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.ENABLED)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.ENABLED)) {
     if (!enabled) {
-      if (this.layer_) this.layer_.parent(null);
+      this.markerElement_.parent(null);
       this.markConsistent(anychart.ConsistencyState.ALL);
       return this;
     } else {
-      if (this.container() && !this.layer_.parent())
-        this.layer_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
+      if (this.container())
+        this.markerElement_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
       this.markConsistent(anychart.ConsistencyState.ENABLED);
     }
   }
@@ -796,279 +606,86 @@ anychart.core.Marker.prototype.draw = function() {
   if (!enabled)
     return this;
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.CONTAINER)) {
-    if (this.container())
-      this.layer_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
+  if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
+    if (enabled) {
+      if (this.container())
+        this.markerElement_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
+    }
     this.markConsistent(anychart.ConsistencyState.CONTAINER);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
-    this.layer_.zIndex(/** @type {number} */(this.zIndex()));
+    this.markerElement_.zIndex(/** @type {number} */(this.zIndex()));
     this.markConsistent(anychart.ConsistencyState.Z_INDEX);
   }
 
-  if (this.hasInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CACHE)) {
-    factory.dropCallsCache(this.getIndex());
-    this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CACHE);
-  }
+  if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
+    var settings = this.getMergedSettings();
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
-    this.updateComplexSettings();
-    this.dropMergedSettings();
-    mergedSettings = this.getMergedSettings();
-
-    var formatProvider = this.formatProvider();
-    var text = factory.callFormat(mergedSettings['format'], formatProvider, this.getIndex());
-
-    this.layer_.setTransformationMatrix(1, 0, 0, 1, 0, 0);
-
-    var backgroundJson, isBackgroundEnabled;
-    var bgSettings = mergedSettings['background'];
-    if (anychart.utils.instanceOf(bgSettings, anychart.core.ui.Background)) {
-      if (bgSettings.enabled() || (this.backgroundElement_ && this.backgroundElement_.enabled()))
-        backgroundJson = bgSettings.serialize();
-    } else {
-      backgroundJson = bgSettings;
-    }
-    if (goog.isObject(backgroundJson) && backgroundJson && !('enabled' in backgroundJson))
-      backgroundJson['enabled'] = false;
-
-    isBackgroundEnabled = goog.isString(backgroundJson) ||
-        goog.isBoolean(backgroundJson) ||
-        (backgroundJson && backgroundJson['enabled']);
-
-    if (isBackgroundEnabled || this.backgroundElement_) {
-      if (!this.backgroundElement_) {
-        this.backgroundElement_ = new anychart.core.ui.Background();
-        this.backgroundElement_.zIndex(0);
-        this.backgroundElement_.container(this.layer_);
-      }
-      if (this.initBgSettings)
-        this.backgroundElement_.setup(anychart.utils.instanceOf(this.initBgSettings, anychart.core.ui.Background) ? this.initBgSettings.serialize() : this.initBgSettings);
-      this.backgroundElement_.setup(backgroundJson);
-      this.backgroundElement_.draw();
-    } else if (bgSettings) {
-      this.initBgSettings = bgSettings;
-    }
-
-    this.getTextElement();
+    var drawer = goog.isString(settings['type']) ?
+        anychart.utils.getMarkerDrawer(settings['type']) :
+        settings['type'];
 
     //define parent bounds
     var parentWidth, parentHeight;
-    this.finalParentBounds = /** @type {anychart.math.Rect} */(this.iterateSettings_(function(state, settings) {
-      if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory)) {
-        var parentBounds = settings.parentBounds();
-        if (parentBounds)
-          return parentBounds;
-      }
-    }, true));
-
-    if (!this.finalParentBounds) {
-      if (factory.container()) {
-        this.finalParentBounds = factory.container().getBounds();
-      } else {
-        this.finalParentBounds = anychart.math.rect(0, 0, 0, 0);
-      }
-    }
-    if (this.finalParentBounds) {
-      parentWidth = this.finalParentBounds.width;
-      parentHeight = this.finalParentBounds.height;
+    var parentBounds = /** @type {anychart.math.Rect} */(this.parentBounds());
+    if (parentBounds) {
+      parentWidth = parentBounds.width;
+      parentHeight = parentBounds.height;
     }
 
-    var isHtml = this.mergedSettings['useHtml'];
+    this.markerElement_.clear();
 
-    this.textElement.width(null);
-    this.textElement.height(null);
+    var anchor = /** @type {anychart.enums.Anchor} */(anychart.enums.normalizeAnchor(settings['anchor']));
 
-    if (isHtml) this.textElement.htmlText(goog.isDef(text) ? String(text) : '');
-    else this.textElement.text(goog.isDef(text) ? String(text) : '');
+    var strokeThickness = anychart.utils.extractThickness(/** @type {acgraph.vector.Stroke} */(settings['stroke']));
+    if (this.crispEdges)
+      drawer.call(this, this.markerElement_, 0, 0, settings['size'], strokeThickness);
+    else
+      drawer.call(this, this.markerElement_, 0, 0, settings['size']);
+    var markerBounds = this.markerElement_.getBoundsWithoutTransform();
 
-    this.applyTextSettings(this.textElement, true, mergedSettings);
+    var positionProvider = this.positionProvider();
+    var formattedPosition = goog.object.clone(settings['positionFormatter'].call(positionProvider, positionProvider));
+    var position = new goog.math.Coordinate(formattedPosition['x'], formattedPosition['y']);
+    var anchorCoordinate = anychart.utils.getCoordinateByAnchor(new anychart.math.Rect(0, 0, markerBounds.width, markerBounds.height), anchor);
 
-    //define is width and height set from settings
-    var isWidthSet = !goog.isNull(mergedSettings['width']);
-    var isHeightSet = !goog.isNull(mergedSettings['height']);
+    position.x -= anchorCoordinate.x;
+    position.y -= anchorCoordinate.y;
 
-    /** @type  {anychart.math.Rect} */
-    var outerBounds = new anychart.math.Rect(0, 0, 0, 0);
-    //calculate text width and outer width
+    var offsetXNorm = goog.isDef(settings['offsetX']) ?
+        anychart.utils.normalizeSize(/** @type {string|number} */(settings['offsetX']), parentWidth) : 0;
+    var offsetYNorm = goog.isDef(settings['offsetY']) ?
+        anychart.utils.normalizeSize(/** @type {string|number} */(settings['offsetY']), parentHeight) : 0;
 
-    var padding;
-    if (anychart.utils.instanceOf(mergedSettings['padding'], anychart.core.utils.Padding)) {
-      padding = mergedSettings['padding'];
-    } else if (goog.isObject(mergedSettings['padding']) || goog.isNumber(mergedSettings['padding']) || goog.isString(mergedSettings['padding'])) {
-      padding = new anychart.core.utils.Padding();
-      padding.setup(mergedSettings['padding']);
-    }
+    anychart.utils.applyOffsetByAnchor(position, anchor, offsetXNorm, offsetYNorm);
 
-    var autoWidth;
-    var autoHeight;
-    var textElementBounds;
+    markerBounds.left = position.x + markerBounds.width / 2;
+    markerBounds.top = position.y + markerBounds.height / 2;
 
-    var width, textWidth;
-    if (isWidthSet) {
-      width = Math.ceil(anychart.utils.normalizeSize(/** @type {number|string} */(mergedSettings['width']), parentWidth));
-      if (padding) {
-        textWidth = padding.tightenWidth(width);
-        this.textX = anychart.utils.normalizeSize(padding.getOption('left'), width);
-      } else {
-        this.textX = 0;
-        textWidth = width;
-      }
-      outerBounds.width = width;
-      autoWidth = false;
-    } else {
-      //we should ask text element about bounds only after text format and text settings are applied
-      textElementBounds = this.textElement.getBounds();
-      width = textElementBounds.width;
-      if (padding) {
-        outerBounds.width = padding.widenWidth(width);
-        this.textX = anychart.utils.normalizeSize(padding.getOption('left'), outerBounds.width);
-      } else {
-        this.textX = 0;
-        outerBounds.width = width;
-      }
-      autoWidth = true;
-    }
+    this.markerElement_.clear();
+    if (this.crispEdges)
+      drawer.call(this, this.markerElement_, markerBounds.left, markerBounds.top, settings['size'], strokeThickness);
+    else
+      drawer.call(this, this.markerElement_, markerBounds.left, markerBounds.top, settings['size']);
 
-    if (goog.isDef(textWidth)) this.textElement.width(textWidth);
+    console.log(settings);
 
-    //calculate text height and outer height
-    var height, textHeight;
-    if (isHeightSet) {
-      height = Math.ceil(anychart.utils.normalizeSize(/** @type {number|string} */(mergedSettings['height']), parentHeight));
-      if (padding) {
-        textHeight = padding.tightenHeight(height);
-        this.textY = anychart.utils.normalizeSize(padding.getOption('top'), height);
-      } else {
-        this.textY = 0;
-        textHeight = height;
-      }
-      outerBounds.height = height;
-      autoHeight = false;
-    } else {
-      //we should ask text element about bounds only after text format and text settings are applied
-      textElementBounds = this.textElement.getBounds();
-      height = textElementBounds.height;
-      if (padding) {
-        outerBounds.height = padding.widenHeight(height);
-        this.textY = anychart.utils.normalizeSize(padding.getOption('top'), outerBounds.height);
-      } else {
-        this.textY = 0;
-        outerBounds.height = height;
-      }
-      autoHeight = true;
-    }
+    this.markerElement_.fill(settings['fill']);
+    this.markerElement_.stroke(settings['stroke']);
 
-    if (goog.isDef(textHeight)) this.textElement.height(textHeight);
+    //clear all transform of element
+    this.markerElement_.setTransformationMatrix(1, 0, 0, 1, 0, 0);
+    //Sets rotation.
+    this.markerElement_.setRotation(/** @type {number} */(settings['rotation'] || 0),
+        position.x + anchorCoordinate.x, position.y + anchorCoordinate.y);
 
-    var canAdjustByWidth = !autoWidth;
-    var canAdjustByHeight = !autoHeight;
-    var needAdjust = ((canAdjustByWidth && mergedSettings['adjustByHeight']) || (canAdjustByHeight && mergedSettings['adjustByHeight']));
-
-    if (needAdjust) {
-      var calculatedFontSize;
-      if (factory.adjustFontSizeMode() == anychart.enums.AdjustFontSizeMode.DIFFERENT) {
-        calculatedFontSize = this.calculateFontSize(
-            textWidth,
-            textHeight,
-            mergedSettings['minFontSize'],
-            mergedSettings['maxFontSize'],
-            mergedSettings['adjustByWidth'],
-            mergedSettings['adjustByHeight']);
-      } else {
-        calculatedFontSize = this.iterateSettings_(function(state, settings) {
-          if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory)) {
-            if (goog.isDef(settings.autoSettings['fontSize']))
-              return settings.autoSettings['fontSize'];
-          }
-        }, true);
-      }
-
-      this.suspendSignalsDispatching();
-
-      this.textElement.fontSize(/** @type {number|string} */(calculatedFontSize));
-
-      //need fix outer bounds after applying adjust font size
-      if (isWidthSet) {
-        width = Math.ceil(anychart.utils.normalizeSize(/** @type {number|string} */(mergedSettings['width']), parentWidth));
-        outerBounds.width = width;
-      } else {
-        //we should ask text element about bounds only after text format and text settings are applied
-        textElementBounds = this.textElement.getBounds();
-        width = textElementBounds.width;
-        if (padding) {
-          outerBounds.width = padding.widenWidth(width);
-        } else {
-          outerBounds.width = width;
-        }
-      }
-
-      if (isHeightSet) {
-        height = Math.ceil(anychart.utils.normalizeSize(/** @type {number|string} */(mergedSettings['height']), parentHeight));
-        outerBounds.height = height;
-      } else {
-        //we should ask text element about bounds only after text format and text settings are applied
-        textElementBounds = this.textElement.getBounds();
-        height = textElementBounds.height;
-        if (padding) {
-          outerBounds.height = padding.widenHeight(height);
-        } else {
-          outerBounds.height = height;
-        }
-      }
-
-      this.resumeSignalsDispatching(false);
-    }
-    this.bounds_ = outerBounds;
-
-    this.invalidate(anychart.ConsistencyState.LABELS_FACTORY_POSITION);
-    this.markConsistent(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS);
+    this.markConsistent(anychart.ConsistencyState.APPEARANCE);
   }
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_POSITION)) {
-    this.drawLabel(this.bounds_, this.finalParentBounds);
+  this.markConsistent(anychart.ConsistencyState.BOUNDS);
 
-    if (isBackgroundEnabled) {
-      this.backgroundElement_.parentBounds(this.bounds_);
-      this.backgroundElement_.draw();
-    }
-
-    var coordinateByAnchor = anychart.utils.getCoordinateByAnchor(this.bounds_, this.mergedSettings['anchor']);
-    this.layer_.setRotation(/** @type {number} */(this.mergedSettings['rotation']), coordinateByAnchor.x, coordinateByAnchor.y);
-
-    this.invalidate(anychart.ConsistencyState.LABELS_FACTORY_CONNECTOR);
-    this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_POSITION);
-  }
-
-  if (this.hasInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CONNECTOR)) {
-    this.drawConnector();
-    this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CONNECTOR);
-  }
-
-  if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CLIP)) {
-    if (this.layer_)
-      this.layer_.clip(this.mergedSettings['clip']);
-    this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CLIP);
-  }
   return this;
-};
-
-
-/**
- * Returns the textElement.
- * @return {!acgraph.vector.Text}
- */
-anychart.core.Marker.prototype.getTextElement = function() {
-  if (!this.textElement) {
-    this.textElement = acgraph.text();
-    this.textElement.attr('aria-hidden', 'true');
-    this.textElement.zIndex(1);
-    if (!this.layer_) this.layer_ = acgraph.layer();
-    this.textElement.parent(this.layer_);
-    this.textElement.disablePointerEvents(true);
-  }
-  return this.textElement;
 };
 
 
@@ -1077,24 +694,8 @@ anychart.core.Marker.prototype.getTextElement = function() {
 /** @inheritDoc */
 anychart.core.Marker.prototype.serialize = function() {
   var json = anychart.core.Marker.base(this, 'serialize');
-  var val;
-  if (goog.isDef(this.getOwnOption('background'))) {
-    val = this.background().serialize();
-    if (!goog.object.isEmpty(val))
-      json['background'] = val;
-  }
-  if (goog.isDef(this.getOwnOption('padding'))) {
-    val = this.padding().serialize();
-    if (!goog.object.isEmpty(val))
-      json['padding'] = val;
-  }
 
-  anychart.core.settings.serialize(this, this.TEXT_DESCRIPTORS, json, 'Labels factory label text');
-  anychart.core.settings.serialize(this, this.SIMPLE_PROPS_DESCRIPTORS, json, 'Labels factory label props');
-
-  var adjustFontSize = json['adjustFontSize'];
-  if (!(adjustFontSize && (goog.isDef(adjustFontSize['width']) || goog.isDef(adjustFontSize['height']))))
-    delete json['adjustFontSize'];
+  anychart.core.settings.serialize(this, this.SIMPLE_PROPS_DESCRIPTORS, json, 'Marker factory props');
 
   if (!this.hasOwnOption('enabled'))
     delete json['enabled'];
@@ -1107,53 +708,22 @@ anychart.core.Marker.prototype.serialize = function() {
 anychart.core.Marker.prototype.setupByJSON = function(config, opt_default) {
   var enabledState = this.getOption('enabled');
 
-  anychart.core.settings.deserialize(this, this.TEXT_DESCRIPTORS, config);
-  anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
+  anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config, opt_default);
 
   anychart.core.Marker.base(this, 'setupByJSON', config, opt_default);
 
-  if (!goog.isDef(config['enabled'])) delete this.ownSettings['enabled'];
-  this.setOption('enabled', 'enabled' in config ? config['enabled'] : enabledState);
-
-  var propName = 'background';
-  if (propName in config) {
-    var background = this.background();
-    if (opt_default) {
-      background.setupInternal(!!opt_default, config[propName]);
-    } else {
-      this.background(config[propName]);
-    }
-    this.themeSettings[propName] = background.themeSettings;
-    this.ownSettings[propName] = background.ownSettings;
+  if (opt_default) {
+    if ('enabled' in config) this.themeSettings['enabled'] = config['enabled'];
+  } else {
+    this.enabled('enabled' in config ? config['enabled'] : enabledState);
   }
 
-  propName = 'padding';
-  if (propName in config) {
-    var padding = this.padding();
-    if (opt_default) {
-      padding.setupInternal(!!opt_default, config[propName]);
-    } else {
-      this.padding(config[propName]);
-    }
-    this.themeSettings[propName] = padding.themeSettings;
-    this.ownSettings[propName] = padding.ownSettings;
-  }
 };
 
 
 /** @inheritDoc */
 anychart.core.Marker.prototype.disposeInternal = function() {
-  goog.disposeAll(
-      this.background_,
-      this.padding_,
-      this.backgroundElement_,
-      this.textElement,
-      this.layer_);
-
-  this.backgroundElement_ = null;
-  this.textElement = null;
-  this.background_ = null;
-  this.padding_ = null;
+  goog.dispose(this.layer_);
 
   anychart.core.Marker.base(this, 'disposeInternal');
 };
@@ -1166,53 +736,18 @@ anychart.core.Marker.prototype.disposeInternal = function() {
 (function() {
   var proto = anychart.core.Marker.prototype;
   proto['getIndex'] = proto.getIndex;
-  proto['padding'] = proto.padding;
-  proto['background'] = proto.background;
   proto['clear'] = proto.clear;
-  proto['measureWithText'] = proto.measureWithText;
   proto['draw'] = proto.draw;
-  // proto['autoAnchor'] = proto.autoAnchor;//don't public
-  // proto['autoRotation'] = proto.autoRotation;//don't public
-  // proto['rotation'] = proto.rotation;
-  // proto['textFormatter'] = proto.textFormatter;
+
   // proto['positionFormatter'] = proto.positionFormatter;
   // proto['position'] = proto.position;
   // proto['anchor'] = proto.anchor;
   // proto['offsetX'] = proto.offsetX;
   // proto['offsetY'] = proto.offsetY;
-  // proto['connectorStroke'] = proto.connectorStroke;
-  // proto['width'] = proto.width;
-  // proto['height'] = proto.height;
-  // proto['enabled'] = proto.enabled;
-  // proto['adjustFontSize'] = proto.adjustFontSize;
-  // proto['minFontSize'] = proto.minFontSize;
-  // proto['maxFontSize'] = proto.maxFontSize;
-})();
-//endregion//region --- Exports
-//exports
-(function() {
-  var proto = anychart.core.Marker.prototype;
-  proto['getIndex'] = proto.getIndex;
-  proto['padding'] = proto.padding;
-  proto['background'] = proto.background;
-  proto['clear'] = proto.clear;
-  proto['measureWithText'] = proto.measureWithText;
-  proto['draw'] = proto.draw;
-  // proto['autoAnchor'] = proto.autoAnchor;//don't public
-  // proto['autoRotation'] = proto.autoRotation;//don't public
   // proto['rotation'] = proto.rotation;
-  // proto['textFormatter'] = proto.textFormatter;
-  // proto['positionFormatter'] = proto.positionFormatter;
-  // proto['position'] = proto.position;
-  // proto['anchor'] = proto.anchor;
-  // proto['offsetX'] = proto.offsetX;
-  // proto['offsetY'] = proto.offsetY;
-  // proto['connectorStroke'] = proto.connectorStroke;
-  // proto['width'] = proto.width;
-  // proto['height'] = proto.height;
-  // proto['enabled'] = proto.enabled;
-  // proto['adjustFontSize'] = proto.adjustFontSize;
-  // proto['minFontSize'] = proto.minFontSize;
-  // proto['maxFontSize'] = proto.maxFontSize;
+  // proto['type'] = proto.type;
+  // proto['size'] = proto.size;
+  // proto['fill'] = proto.fill;
+  // proto['stroke'] = proto.stroke;
 })();
 //endregion

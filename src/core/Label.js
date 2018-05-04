@@ -243,11 +243,23 @@ anychart.core.Label.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
 
+  /**
+   * Special anchor normalizer that doesn't accept 'auto' and returns undefined in that case.
+   * @param {*} value
+   * @return {anychart.enums.Anchor|undefined}
+   */
+  var anchorNoAutoNormalizer = function (value) {
+    var res = anychart.enums.normalizeAnchor(value, anychart.enums.Anchor.AUTO);
+    if (res == anychart.enums.Anchor.AUTO)
+      res = undefined;
+    return res;
+  };
+
   anychart.core.settings.createDescriptors(map, [
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'format', anychart.core.settings.stringOrFunctionNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'positionFormatter', anychart.core.settings.stringOrFunctionNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'position', anychart.core.settings.asIsNormalizer],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'anchor', anychart.core.ui.LabelsFactory.anchorNoAutoNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'anchor', anchorNoAutoNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offsetX', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offsetY', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.MULTI_ARG, 'connectorStroke', anychart.core.settings.strokeNormalizer],
@@ -435,7 +447,6 @@ anychart.core.Label.prototype.autoVertical = function(opt_value) {
     var value = !!opt_value;
     if (this.autoSettings['vertical'] !== value) {
       this.autoSettings['vertical'] = value;
-      if (!goog.isDef(this.autoSettings['vertical']))
         this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.BOUNDS_CHANGED);
     }
     return this;
@@ -999,7 +1010,8 @@ anychart.core.Label.prototype.draw = function() {
   var factory = this.factory_;
   var mergedSettings;
 
-  if (!this.layer_) this.layer_ = acgraph.layer();
+  if (!this.layer_)
+    this.layer_ = acgraph.layer();
   this.layer_.tag = this.index_;
 
   var enabled = this.getFinalSettings('enabled');

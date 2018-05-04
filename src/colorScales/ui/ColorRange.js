@@ -6,7 +6,7 @@ goog.require('anychart.colorScalesModule.Ordinal');
 goog.require('anychart.colorScalesModule.ui.ColorRangeTicks');
 goog.require('anychart.core.Axis');
 goog.require('anychart.core.IStandaloneBackend');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.Marker');
 goog.require('anychart.format.Context');
 goog.require('anychart.math.Rect');
 
@@ -144,12 +144,12 @@ anychart.colorScalesModule.ui.ColorRange.prototype.length = function(opt_value) 
 
 /**
  * Set/get color range marker.
- * @param {(anychart.core.ui.MarkersFactory.Marker|Object)=} opt_value Marker or marker settings.
- * @return {anychart.core.ui.MarkersFactory.Marker|anychart.colorScalesModule.ui.ColorRange} Color range marker.
+ * @param {(anychart.core.Marker|Object)=} opt_value Marker or marker settings.
+ * @return {anychart.core.Marker|anychart.colorScalesModule.ui.ColorRange} Color range marker.
  */
 anychart.colorScalesModule.ui.ColorRange.prototype.marker = function(opt_value) {
   if (!this.marker_) {
-    this.marker_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.marker_ = new anychart.core.Marker();
     this.marker_.positionProvider({value: {x: 0, y: 0}});
     this.marker_.listenSignals(this.markerInvalidated_, this);
   }
@@ -513,8 +513,9 @@ anychart.colorScalesModule.ui.ColorRange.prototype.getMarkerSpace_ = function() 
     var orientation = /** @type {anychart.enums.Orientation} */(this.orientation());
     markerSpace = this.marker_.size() * 2;
 
-    var offsetX = goog.isDef(this.marker_.offsetX()) ? this.marker_.offsetX() : 0;
-    var offsetY = goog.isDef(this.marker_.offsetY()) ? this.marker_.offsetY() : 0;
+    var offsetX = this.marker_.getOption('offsetX') || 0;
+    var offsetY = this.marker_.getOption('offsetY') || 0;
+
     switch (orientation) {
       case anychart.enums.Orientation.TOP:
         markerSpace += offsetY;
@@ -722,35 +723,35 @@ anychart.colorScalesModule.ui.ColorRange.prototype.showMarker = function(value) 
 
       var orientation = this.orientation();
       var x, y, rotation;
+      var size = this.marker_.getOption('size');
       switch (orientation) {
         case anychart.enums.Orientation.TOP:
           x = lineBounds.left + lineBounds.width * ratio;
-          y = lineBounds.top + lineBounds.height + this.marker_.size();
+          y = lineBounds.top + lineBounds.height + size;
           rotation = 180;
           break;
         case anychart.enums.Orientation.BOTTOM:
           x = lineBounds.left + lineBounds.width * ratio;
-          y = lineBounds.top - this.marker_.size();
+          y = lineBounds.top - size;
           rotation = 0;
           break;
         case anychart.enums.Orientation.LEFT:
-          x = lineBounds.left + lineBounds.width + this.marker_.size();
+          x = lineBounds.left + lineBounds.width + size;
           y = lineBounds.top + lineBounds.height - (lineBounds.height * ratio);
           rotation = 90;
           break;
         case anychart.enums.Orientation.RIGHT:
-          x = lineBounds.left - this.marker_.size();
+          x = lineBounds.left - size;
           y = lineBounds.top + lineBounds.height - (lineBounds.height * ratio);
           rotation = -90;
           break;
       }
 
-      this.marker_
-          .suspendSignalsDispatching()
-          .rotation(rotation)
-          .positionProvider({'value': {x: x, y: y}})
-          .resumeSignalsDispatching(false)
-          .draw();
+      this.marker_.suspendSignalsDispatching();
+      this.marker_.setOption('rotation', rotation);
+      this.marker_.positionProvider({'value': {x: x, y: y}});
+      this.marker_.resumeSignalsDispatching(false);
+      this.marker_.draw();
       this.marker_.getDomElement().visible(true);
     }
   }

@@ -2,7 +2,7 @@ goog.provide('anychart.circularGaugeModule.pointers.Marker');
 goog.require('acgraph');
 goog.require('anychart.circularGaugeModule.pointers.Base');
 goog.require('anychart.core.reporting');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.Marker');
 goog.require('anychart.enums');
 goog.require('anychart.utils');
 
@@ -23,15 +23,15 @@ anychart.circularGaugeModule.pointers.Marker = function() {
     ['type', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
   ]);
 
-  this.domElement = new anychart.core.ui.MarkersFactory();
+  this.domElement = new anychart.core.Marker();
   // defaults that was deleted form MarkersFactory
   this.domElement.setParentEventTarget(this);
-  this.domElement.positionFormatter(anychart.utils.DEFAULT_FORMATTER);
-  this.domElement.size(10);
-  this.domElement.anchor(anychart.enums.Anchor.CENTER);
-  this.domElement.offsetX(0);
-  this.domElement.offsetY(0);
-  this.domElement.rotation(0);
+  this.domElement.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
+  this.domElement.themeSettings['size'] =  10;
+  this.domElement.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
+  this.domElement.themeSettings['offsetX'] =  0;
+  this.domElement.themeSettings['offsetY'] =  0;
+  this.domElement.themeSettings['rotation'] =  0;
 };
 goog.inherits(anychart.circularGaugeModule.pointers.Marker, anychart.circularGaugeModule.pointers.Base);
 
@@ -96,23 +96,22 @@ anychart.circularGaugeModule.pointers.Marker.prototype.draw = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.GAUGE_HATCH_FILL)) {
     var fill = /** @type {acgraph.vector.PatternFill|acgraph.vector.HatchFill} */(this.hatchFill());
     if (!this.hatchFillElement && !anychart.utils.isNone(fill)) {
-      this.hatchFillElement = new anychart.core.ui.MarkersFactory();
-      this.hatchFillElement.positionFormatter(anychart.utils.DEFAULT_FORMATTER);
-      this.hatchFillElement.size(10);
-      this.hatchFillElement.anchor(anychart.enums.Anchor.CENTER);
-      this.hatchFillElement.offsetX(0);
-      this.hatchFillElement.offsetY(0);
-      this.hatchFillElement.rotation(0);
+      this.hatchFillElement = new anychart.core.Marker();
+      this.hatchFillElement.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
+      this.hatchFillElement.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
+      this.hatchFillElement.themeSettings['offsetX'] =  0;
+      this.hatchFillElement.themeSettings['offsetY'] =  0;
+      this.hatchFillElement.themeSettings['rotation'] =  0;
       this.hatchFillElement.container(/** @type {acgraph.vector.ILayer} */(this.container()));
       this.hatchFillElement.zIndex(/** @type {number} */(this.zIndex() + 1));
     }
 
     if (this.hatchFillElement) {
-      this.hatchFillElement.disablePointerEvents(true);
-      this.hatchFillElement.fill(fill);
-      this.hatchFillElement.stroke(null);
-      this.hatchFillElement.size(this.pixSize_);
-      this.hatchFillElement.type(type);
+      this.hatchFillElement.themeSettings['disablePointerEvents'] = true;
+      this.hatchFillElement.themeSettings['fill'] = fill;
+      this.hatchFillElement.themeSettings['stroke'] = null;
+      this.hatchFillElement.themeSettings['size'] = this.pixSize_;
+      this.hatchFillElement.themeSettings['type'] = type;
 
       this.invalidate(anychart.ConsistencyState.BOUNDS);
     }
@@ -174,16 +173,15 @@ anychart.circularGaugeModule.pointers.Marker.prototype.draw = function() {
     //we shouldn't opening secret for mere mortals
     this.contextProvider['angle'] = goog.math.standardAngle(angle - anychart.circularGaugeModule.Chart.DEFAULT_START_ANGLE);
 
-
-    this.domElement.size(this.pixSize_);
-    this.domElement.type(type);
+    this.domElement.setOption('size', this.pixSize_);
+    this.domElement.setOption('type', type);
 
     var marker = this.domElement.add({'value': {'x': x, 'y': y}}, 0);
     marker.rotation(angle + 90);
 
     if (this.hatchFillElement) {
-      this.hatchFillElement.size(this.pixSize_);
-      this.hatchFillElement.type(type);
+      this.hatchFillElement.setOption('size', this.pixSize_);
+      this.hatchFillElement.setOption('type', type);
 
       var hatchFill = this.hatchFillElement.add({'value': {'x': x, 'y': y}}, 0);
       hatchFill.rotation(angle + 90);
