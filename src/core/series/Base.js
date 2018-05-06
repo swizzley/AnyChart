@@ -2151,7 +2151,7 @@ anychart.core.series.Base.prototype.prepareFactory = function(factory, enabled, 
  * @param {anychart.data.IRowInfo} point
  * @param {anychart.PointState|number} state
  * @param {boolean} callDraw
- * @return {anychart.core.ui.MarkersFactory.Marker|anychart.core.ui.LabelsFactory.Label|null}
+ * @return {anychart.core.IFactoryElement|null}
  * @protected
  */
 anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryGetters, chartFactoryGetters, overrideNames, hasPointOverrides, isLabel, positionYs, point, state, callDraw) {
@@ -2385,8 +2385,8 @@ anychart.core.series.Base.prototype.resolveAutoAnchor = function(position, rotat
 
 /**
  * Checks if label bounds intersect series bounds and flips autoAnchor if needed.
- * @param {anychart.core.ui.LabelsFactory} factory
- * @param {anychart.core.ui.LabelsFactory.Label} label
+ * @param {anychart.core.utils.Factory} factory
+ * @param {anychart.core.Label} label
  */
 anychart.core.series.Base.prototype.checkBoundsCollision = function(factory, label) {
   var bounds = anychart.math.Rect.fromCoordinateBox(factory.measureWithTransform(label, undefined, {'anchor': label.autoAnchor()}));
@@ -2409,17 +2409,17 @@ anychart.core.series.Base.prototype.checkBoundsCollision = function(factory, lab
 /**
  * Setups label drawing plan.
  * @param {anychart.core.Label} label
- * @param {anychart.core.ui.LabelsFactory} chartNormal
- * @param {anychart.core.ui.LabelsFactory} seriesNormal
+ * @param {anychart.core.Label} chartNormal
+ * @param {anychart.core.Label} seriesNormal
  * @param {*} pointNormal
- * @param {anychart.core.ui.LabelsFactory} chartState
- * @param {anychart.core.ui.LabelsFactory} seriesState
+ * @param {anychart.core.Label} chartState
+ * @param {anychart.core.Label} seriesState
  * @param {*} pointState
- * @param {anychart.core.ui.LabelsFactory} chartExtremumNormal
- * @param {anychart.core.ui.LabelsFactory} seriesExtremumNormal
+ * @param {anychart.core.Label} chartExtremumNormal
+ * @param {anychart.core.Label} seriesExtremumNormal
  * @param {*} pointExtremumNormal
- * @param {anychart.core.ui.LabelsFactory} chartExtremumState
- * @param {anychart.core.ui.LabelsFactory} seriesExtremumState
+ * @param {anychart.core.Label} chartExtremumState
+ * @param {anychart.core.Label} seriesExtremumState
  * @param {*} pointExtremumState
  */
 anychart.core.series.Base.prototype.setupLabelDrawingPlan = function(label,
@@ -2428,25 +2428,68 @@ anychart.core.series.Base.prototype.setupLabelDrawingPlan = function(label,
                                                                      chartExtremumNormal, seriesExtremumNormal, pointExtremumNormal,
                                                                      chartExtremumState, seriesExtremumState, pointExtremumState) {
   label.settings(anychart.utils.extractSettings([
+    //own state
     pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
     seriesState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
     chartExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
     chartState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+    //own normal
     pointExtremumNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     seriesExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
     seriesNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
     chartExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
     chartNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-    seriesExtremumState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-    seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-    chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    //auto
     label, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
     seriesNormal, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
     chartNormal, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
+    //theme state
+    seriesExtremumState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    //theme normal
     seriesExtremumNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    seriesNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    chartNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS
+  ]));
+};
+
+
+
+
+/**
+ * Setups marker drawing plan.
+ * @param {anychart.core.Marker} element
+ * @param {*} chartNormal
+ * @param {*} seriesNormal
+ * @param {*} pointNormal
+ * @param {*} chartState
+ * @param {*} seriesState
+ * @param {*} pointState
+ */
+anychart.core.series.Base.prototype.setupMarkerDrawingPlan = function(element,
+                                                                     chartNormal, seriesNormal, pointNormal,
+                                                                     chartState, seriesState, pointState) {
+  element.settings(anychart.utils.extractSettings([
+    //own state
+    pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
+    seriesState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+    chartState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+    //own normal
+    pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
+    seriesNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+    chartNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+    //auto
+    element, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
+    seriesNormal, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
+    chartNormal, anychart.utils.ExtractSettingModes.AUTO_SETTINGS,
+    //theme state
+    seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+    //theme normal
     seriesNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
     chartNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS
   ]));
@@ -2478,9 +2521,9 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
   element.resetSettings();
 
   settings.unshift(element);
-  this.setupLabelDrawingPlan.apply(this, settings);
 
   if (formatProvider) {
+    this.setupLabelDrawingPlan.apply(this, settings);
     var label = /** @type {anychart.core.Label} */(element);
     var anchor = label.getFinalSettings('anchor');
     label.autoVertical(/** @type {boolean} */ (this.getOption('isVertical')));
@@ -2488,6 +2531,8 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
       label.autoAnchor(this.resolveAutoAnchor(opt_position, Number(label.getFinalSettings('rotation')) || 0));
       this.checkBoundsCollision(/** @type {anychart.core.utils.Factory} */(mainFactory), label);
     }
+  } else {
+    this.setupMarkerDrawingPlan.apply(this, settings);
   }
 
   if (callDraw)
@@ -2647,7 +2692,9 @@ anychart.core.series.Base.prototype.getMarkerFill = function() {
  * @protected
  */
 anychart.core.series.Base.prototype.getMarkerStroke = function() {
-  return /** @type {acgraph.vector.Stroke} */(anychart.color.darken(/** @type {acgraph.vector.Fill} */(this.normal_.markers().fill())));
+  var normalMarkersSettings = /** @type {anychart.core.Marker} */(this.normal_.markers());
+  var fill = /** @type {acgraph.vector.Fill} */(normalMarkersSettings.getFinalSettings('fill'));
+  return /** @type {acgraph.vector.Stroke} */(anychart.color.darken(fill));
 };
 
 

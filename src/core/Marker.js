@@ -367,7 +367,7 @@ anychart.core.Marker.prototype.resetSettings = function() {
 
   this.ownSettings = {};
   this.autoSettings = {};
-  this.settings_ = null;
+  this.settings_ = [this.ownSettings, this.autoSettings, this.themeSettings];
 
   this.dropMergedSettings();
 };
@@ -376,31 +376,11 @@ anychart.core.Marker.prototype.resetSettings = function() {
 /**
  * Returns final value of settings with passed name.
  * @param {string} value Name of settings.
+ * @param {boolean=} opt_forceMerging Force merging settings.
  * @return {*} settings value.
  */
-anychart.core.Marker.prototype.getFinalSettings = function(value) {
-  if (value == 'adjustFontSize') {
-    var adjustByWidth = this.resolveSetting_(value, function(value) {
-      return value.width;
-    });
-    var adjustByHeight = this.resolveSetting_(value, function(value) {
-      return value.height;
-    });
-    return {width: adjustByWidth, height: adjustByHeight};
-  } else {
-    var finalSetting = this.resolveSetting_(value);
-    var result;
-    if (value == 'padding') {
-      result = new anychart.core.utils.Padding();
-      result.setup(finalSetting);
-    } else if (value == 'background') {
-      result = new anychart.core.ui.Background();
-      result.setup(finalSetting);
-    } else {
-      result = finalSetting;
-    }
-    return result;
-  }
+anychart.core.Marker.prototype.getFinalSettings = function(value, opt_forceMerging) {
+  return this.mergedSettings && !opt_forceMerging ? this.mergedSettings[value] : this.resolveSetting_(value);
 };
 
 
@@ -418,26 +398,27 @@ anychart.core.Marker.prototype.iterateSettings_ = function(processor, opt_invert
 
   var result = void 0;
   var settings = this.settings();
+  if (settings) {
+    iterator(settings, function(state, i) {
+      var stateSettings = goog.isString(state) ? state == 'auto' ? this.autoSettings : this.states_[state] : state;
 
-  iterator(settings, function(state, i) {
-    var stateSettings = goog.isString(state) ? state == 'auto' ? this.autoSettings : this.states_[state] : state;
+      if (!stateSettings)
+        return;
 
-    if (!stateSettings)
-      return;
-
-    var processedSetting = processor.call(this, state, stateSettings, i, opt_field, opt_handler);
-    if (goog.isDef(processedSetting)) {
-      if (goog.typeOf(processedSetting) == 'object') {
-        if (goog.isDefAndNotNull(result)) {
-          opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
+      var processedSetting = processor.call(this, state, stateSettings, i, opt_field, opt_handler);
+      if (goog.isDef(processedSetting)) {
+        if (goog.typeOf(processedSetting) == 'object') {
+          if (goog.isDefAndNotNull(result)) {
+            opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
+          } else {
+            result = goog.object.clone(processedSetting);
+          }
         } else {
-          result = goog.object.clone(processedSetting);
+          result = processedSetting;
         }
-      } else {
-        result = processedSetting;
       }
-    }
-  }, this);
+    }, this);
+  }
 
   return result;
 };
@@ -668,8 +649,6 @@ anychart.core.Marker.prototype.draw = function() {
       drawer.call(this, this.markerElement_, markerBounds.left, markerBounds.top, settings['size'], strokeThickness);
     else
       drawer.call(this, this.markerElement_, markerBounds.left, markerBounds.top, settings['size']);
-
-    console.log(settings);
 
     this.markerElement_.fill(settings['fill']);
     this.markerElement_.stroke(settings['stroke']);
