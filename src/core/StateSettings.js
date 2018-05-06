@@ -400,7 +400,7 @@ anychart.core.StateSettings.prototype.getState = function() {
 /**
  * Labels.
  * @param {(Object|boolean|null)=} opt_value
- * @return {anychart.core.StateSettings|anychart.core.ui.LabelsFactory|anychart.core.ui.CircularLabelsFactory}
+ * @return {anychart.core.StateSettings|anychart.core.Label|anychart.core.ui.CircularLabelsFactory}
  */
 anychart.core.StateSettings.prototype.labels = function(opt_value) {
   if (!this.labels_) {
@@ -497,7 +497,7 @@ anychart.core.StateSettings.prototype.headers = function(opt_value) {
 /**
  * Upper labels (tasks).
  * @param {(Object|boolean|null)=} opt_value
- * @return {anychart.core.StateSettings|anychart.core.ui.LabelsFactory}
+ * @return {anychart.core.StateSettings|anychart.core.Label}
  */
 anychart.core.StateSettings.prototype.upperLabels = function(opt_value) {
   return this.labels(opt_value);
@@ -507,7 +507,7 @@ anychart.core.StateSettings.prototype.upperLabels = function(opt_value) {
 /**
  * Lower labels (tasks).
  * @param {(Object|boolean|null)=} opt_value
- * @return {anychart.core.StateSettings|anychart.core.ui.LabelsFactory}
+ * @return {anychart.core.StateSettings|anychart.core.Label}
  */
 anychart.core.StateSettings.prototype.lowerLabels = function(opt_value) {
   if (!this.lowerLabels_) {
@@ -530,7 +530,7 @@ anychart.core.StateSettings.prototype.lowerLabels = function(opt_value) {
 /**
  * Markers.
  * @param {(Object|boolean|null|string)=} opt_value
- * @return {anychart.core.StateSettings|anychart.core.ui.MarkersFactory}
+ * @return {anychart.core.StateSettings|anychart.core.Marker}
  */
 anychart.core.StateSettings.prototype.markers = function(opt_value) {
   if (!this.markers_) {

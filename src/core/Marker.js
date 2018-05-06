@@ -178,10 +178,14 @@ anychart.core.Marker.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
 
+  function anchorNormalizer(value) {
+    return goog.isNull(value) ? value : anychart.enums.normalizeAnchor(value);
+  }
+
   anychart.core.settings.createDescriptors(map, [
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'positionFormatter', anychart.core.settings.stringOrFunctionNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'position', anychart.core.settings.asIsNormalizer],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'anchor', anychart.core.ui.LabelsFactory.anchorNoAutoNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'anchor', anchorNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offsetX', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'offsetY', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'type', anychart.core.settings.asIsNormalizer],
@@ -301,6 +305,25 @@ anychart.core.Marker.prototype.autoStroke = function(opt_value) {
 };
 
 
+/**
+ * Auto stroke settings.
+ * @param {acgraph.vector.Stroke=} opt_value .
+ * @return {!anychart.core.Marker|acgraph.vector.Stroke} .
+ */
+anychart.core.Marker.prototype.autoClip = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.autoSettings['clip'] !== opt_value) {
+      this.autoSettings['clip'] = opt_value;
+      if (!goog.isDef(this.ownSettings['clip']))
+        this.invalidate(anychart.ConsistencyState.MARKERS_FACTORY_CLIP, anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.autoSettings['clip'];
+  }
+};
+
+
 //endregion
 //region --- IObjectWithSettings implementation
 /** @inheritDoc */
@@ -407,7 +430,7 @@ anychart.core.Marker.prototype.iterateSettings_ = function(processor, opt_invert
 
       var processedSetting = processor.call(this, state, stateSettings, i, opt_field, opt_handler);
       if (goog.isDef(processedSetting)) {
-        if (goog.typeOf(processedSetting) == 'object') {
+        if (goog.typeOf(processedSetting) == 'object' && opt_field != 'clip') {
           if (goog.isDefAndNotNull(result)) {
             opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
           } else {
@@ -472,18 +495,9 @@ anychart.core.Marker.defaultSettingsProcessor_ = function(state, settings, index
       setting = settings.getOwnAndAutoOption(field);
     }
   } else if (goog.typeOf(settings) == 'object') {
-    if (field == 'adjustFontSize') {
-      setting = anychart.core.Marker.normalizeAdjustFontSize(settings[field]);
-    } else {
-      setting = settings[field];
-      if (field == 'enabled' && goog.isNull(setting))
-        setting = undefined;
-    }
-  }
-  if (setting) {
-    if (goog.isFunction(setting.serialize)) {
-      setting = setting.serialize();
-    }
+    setting = settings[field];
+    if (field == 'enabled' && goog.isNull(setting))
+      setting = undefined;
   }
   if (opt_handler && goog.isDef(setting))
     setting = opt_handler(setting);
@@ -516,30 +530,21 @@ anychart.core.Marker.prototype.dropMergedSettings = function() {
  * @return {!Object}
  */
 anychart.core.Marker.prototype.getMergedSettings = function() {
-  var settings = this.settings();
-  if (settings.length == 1) {
-    this.mergedSettings = settings[0];
-  }
-
-  if (this.mergedSettings)
-    return goog.object.clone(this.mergedSettings);
-
-  var fields = anychart.core.Marker.settingsFieldsForMerge_;
-  var mergedSettings = {};
-  for (var i = 0, len = fields.length; i < len; i++) {
-    var field = fields[i];
-    var finalSettings = this.getFinalSettings(field);
-
-    if (field == 'adjustFontSize') {
-      mergedSettings['adjustByWidth'] = finalSettings.width;
-      mergedSettings['adjustByHeight'] = finalSettings.height;
+  if (!this.mergedSettings) {
+    var settings = this.settings();
+    if (settings.length == 1) {
+      this.mergedSettings = settings[0];
     } else {
-      mergedSettings[field] = finalSettings;
+      var fields = anychart.core.Marker.settingsFieldsForMerge_;
+      var mergedSettings = {};
+      for (var i = 0, len = fields.length; i < len; i++) {
+        var field = fields[i];
+        mergedSettings[field] = this.getFinalSettings(field);
+      }
+      this.mergedSettings = mergedSettings;
     }
   }
-
-  this.mergedSettings = mergedSettings;
-  return goog.object.clone(this.mergedSettings);
+  return this.mergedSettings;
 };
 
 
@@ -570,6 +575,7 @@ anychart.core.Marker.prototype.draw = function() {
     this.markerElement_ = acgraph.path();
   this.markerElement_.tag = this.getIndex();
 
+  var settings;
   var enabled = this.getFinalSettings('enabled');
 
   if (this.hasInvalidationState(anychart.ConsistencyState.ENABLED)) {
@@ -601,7 +607,7 @@ anychart.core.Marker.prototype.draw = function() {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
-    var settings = this.getMergedSettings();
+    settings = this.getMergedSettings();
 
     var drawer = goog.isString(settings['type']) ?
         anychart.utils.getMarkerDrawer(settings['type']) :
@@ -660,6 +666,14 @@ anychart.core.Marker.prototype.draw = function() {
         position.x + anchorCoordinate.x, position.y + anchorCoordinate.y);
 
     this.markConsistent(anychart.ConsistencyState.APPEARANCE);
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.MARKERS_FACTORY_CLIP)) {
+    settings = this.getMergedSettings();
+    if (goog.isDef(settings['clip'])) {
+      this.markerElement_.clip(settings['clip']);
+    }
+    this.markConsistent(anychart.ConsistencyState.MARKERS_FACTORY_CLIP);
   }
 
   this.markConsistent(anychart.ConsistencyState.BOUNDS);
