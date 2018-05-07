@@ -308,6 +308,10 @@ anychart.core.series.Base = function(chart, plot, type, config) {
     ['isVertical',
       anychart.ConsistencyState.SERIES_POINTS,
       anychart.Signal.NEEDS_RECALCULATION | anychart.Signal.NEEDS_REDRAW,
+      anychart.core.drawers.Capabilities.ANY],
+    ['clip',
+      anychart.ConsistencyState.SERIES_CLIP,
+      anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.ANY]
   ]);
 
@@ -706,7 +710,8 @@ anychart.core.series.Base.prototype.applyDefaultsToElements = function(defaults,
     opt_reapplyClip = opt_default;
 
   if (!!opt_reapplyClip) {
-    this.clip(defaults['clip']);
+    if (defaults['clip'] != this.getOption('clip'))
+      this.invalidate(anychart.ConsistencyState.SERIES_CLIP, anychart.Signal.NEEDS_REDRAW);
     this.zIndex(defaults['zIndex']);
   }
 
@@ -1636,33 +1641,6 @@ anychart.core.series.Base.prototype.drawError = function(point) {
         error.draw(false, isVertical);
         break;
     }
-  }
-};
-
-
-//endregion
-//region --- Working with clip
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Working with clip
-//
-//----------------------------------------------------------------------------------------------------------------------
-/**
- * Clipping settings
- * @param {(boolean|anychart.math.Rect)=} opt_value [False, if series is created manually.<br/>True, if created via chart
- *    Enable/disable series clip.
- * @return {anychart.core.series.Base|boolean|anychart.math.Rect} .
- */
-anychart.core.series.Base.prototype.clip = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    if (goog.isNull(opt_value)) opt_value = false;
-    if (this.clip_ != opt_value) {
-      this.clip_ = opt_value;
-      this.invalidate(anychart.ConsistencyState.SERIES_CLIP, anychart.Signal.NEEDS_REDRAW);
-    }
-    return this;
-  } else {
-    return this.clip_;
   }
 };
 
@@ -3314,36 +3292,37 @@ anychart.core.series.Base.prototype.calcFullClipBounds = function() {
  * @param {anychart.math.Rect=} opt_customClip Custom temporary clip to apply.
  */
 anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
-  var clip = opt_customClip || this.clip_;
-  if (goog.isBoolean(clip)) {
-    if (clip) {
-      clip = this.calcFullClipBounds();
-    } else {
-      clip = null;
-    }
+  var ownClip = /** @type {boolean|anychart.core.Rect} */(this.getOwnOption('clip'));
+  var clip = opt_customClip ||  /** @type {boolean|anychart.core.Rect} */(this.getOption('clip'));
+  var clipShape = clip;
+  if (goog.isBoolean(clipShape)) {
+     clipShape = this.calcFullClipBounds();
   }
-  var clipElement, domElement;
-  if (clip) {
-    if (!this.clipElement_)
-      this.clipElement_ = acgraph.clip();
-    this.clipElement_.shape(clip);
-    clipElement = this.clipElement_;
-  } else {
-    clipElement = null;
-  }
+
+  if (!this.clipElement_)
+    this.clipElement_ = acgraph.clip();
+  this.clipElement_.shape(clipShape);
+
+  var seriesClip = clip ? this.clipElement_ : null;
+
   if (this.check(anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT)) {
-    this.shapeManager.applyClip(clipElement);
+    this.shapeManager.applyClip(seriesClip);
   } else {
-    this.rootLayer.clip(clipElement);
+    this.rootLayer.clip(seriesClip);
   }
   if (this.supportsLabels()) {
-    // this.normal_.labels().autoClip(clipElement);
+    console.log('ownClip', ownClip);
+    this.normal_.labels()
+        .autoClipElement(this.clipElement_)
+        .autoClip(ownClip);
   }
   if (this.supportsMarkers()) {
-    this.normal_.markers().autoClip(clipElement);
+    this.normal_.markers()
+        .autoClipElement(this.clipElement_)
+        .autoClip(ownClip);
   }
   if (this.supportsOutliers()) {
-    this.normal_.outlierMarkers().autoClip(clipElement);
+    this.normal_.outlierMarkers().autoClipElement(this.clipElement_);
   }
 };
 
@@ -4322,7 +4301,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'connectMissingPoints', anychart.core.settings.booleanNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'displayNegative', anychart.core.settings.booleanNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'stepDirection', anychart.enums.normalizeStepDirection],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'isVertical', anychart.core.settings.boolOrNullNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'isVertical', anychart.core.settings.boolOrNullNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'clip', anychart.core.settings.asIsNormalizer]
   ]);
 
   return map;
@@ -4433,7 +4413,6 @@ anychart.core.series.Base.prototype.setupByJSON = function(config, opt_default) 
   this.autoIndex(config['autoIndex']);
   this.name(config['name']);
   this.meta(config['meta']);
-  this.clip(config['clip']);
   this.a11y(config['a11y']);
 
   this.normal_.setupInternal(!!opt_default, config);
@@ -4441,7 +4420,7 @@ anychart.core.series.Base.prototype.setupByJSON = function(config, opt_default) 
   this.hovered_.setupInternal(!!opt_default, config['hovered']);
   this.selected_.setupInternal(!!opt_default, config['selected']);
 
-  anychart.core.settings.deserialize(this, anychart.core.series.Base.PROPERTY_DESCRIPTORS, config);
+  anychart.core.settings.deserialize(this, anychart.core.series.Base.PROPERTY_DESCRIPTORS, config, opt_default);
 
   this.applyDefaultsToElements(config, false, opt_default);
 };
@@ -4591,7 +4570,7 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
 
   proto['tooltip'] = proto.tooltip;
   proto['legendItem'] = proto.legendItem;
-  proto['clip'] = proto.clip;
+  // proto['clip'] = proto.clip;
   proto['error'] = proto.error;
 
   proto['transformX'] = proto.transformX;

@@ -1652,9 +1652,10 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'mode': 'chart-elements'
     },
     'normal': {
-      'labels': {'enabled': false},
+      'labels': {'enabled': false, 'clip': false},
       'minLabels': {'enabled': null},
-      'maxLabels': {'enabled': null}
+      'maxLabels': {'enabled': null},
+      'markers': {'clip': false},
     },
     'hovered': {
       'labels': {'enabled': null},

@@ -306,20 +306,37 @@ anychart.core.Marker.prototype.autoStroke = function(opt_value) {
 
 
 /**
- * Auto stroke settings.
- * @param {acgraph.vector.Stroke=} opt_value .
- * @return {!anychart.core.Marker|acgraph.vector.Stroke} .
+ * Auto clip element settings.
+ * @param {(acgraph.vector.Clip|acgraph.vector.Element|anychart.math.Rect|boolean)=} opt_value .
+ * @return {!anychart.core.Marker|acgraph.vector.Clip|acgraph.vector.Element} .
  */
 anychart.core.Marker.prototype.autoClip = function(opt_value) {
   if (goog.isDef(opt_value)) {
     if (this.autoSettings['clip'] !== opt_value) {
       this.autoSettings['clip'] = opt_value;
-      if (!goog.isDef(this.ownSettings['clip']))
-        this.invalidate(anychart.ConsistencyState.MARKERS_FACTORY_CLIP, anychart.Signal.BOUNDS_CHANGED);
+      this.invalidate(anychart.ConsistencyState.MARKERS_FACTORY_CLIP, anychart.Signal.BOUNDS_CHANGED);
     }
     return this;
   } else {
     return this.autoSettings['clip'];
+  }
+};
+
+
+/**
+ * Auto clip element settings.
+ * @param {(acgraph.vector.Clip|acgraph.vector.Element|anychart.math.Rect)=} opt_value .
+ * @return {!anychart.core.Marker|acgraph.vector.Clip|acgraph.vector.Element} .
+ */
+anychart.core.Marker.prototype.autoClipElement = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.autoSettings['clipElement'] !== opt_value) {
+      this.autoSettings['clipElement'] = opt_value;
+      this.invalidate(anychart.ConsistencyState.MARKERS_FACTORY_CLIP, anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.autoSettings['clipElement'];
   }
 };
 
@@ -423,14 +440,12 @@ anychart.core.Marker.prototype.iterateSettings_ = function(processor, opt_invert
   var settings = this.settings();
   if (settings) {
     iterator(settings, function(state, i) {
-      var stateSettings = goog.isString(state) ? state == 'auto' ? this.autoSettings : this.states_[state] : state;
-
-      if (!stateSettings)
+      if (!state)
         return;
 
-      var processedSetting = processor.call(this, state, stateSettings, i, opt_field, opt_handler);
+      var processedSetting = processor.call(this, state, i, opt_field, opt_handler);
       if (goog.isDef(processedSetting)) {
-        if (goog.typeOf(processedSetting) == 'object' && opt_field != 'clip') {
+        if (goog.typeOf(processedSetting) == 'object' && !anychart.utils.instanceOf(processedSetting, goog.Disposable)) {
           if (goog.isDefAndNotNull(result)) {
             opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
           } else {
@@ -476,15 +491,14 @@ anychart.core.Marker.normalizeAdjustFontSize = function(opt_value) {
 
 /**
  * Default function for processing settings.
- * @param {*} state
- * @param {anychart.core.ui.LabelsFactory|anychart.core.Marker|Object} settings
+ * @param {anychart.core.Marker|Object} settings
  * @param {number} index
  * @param {string} field
  * @param {Function=} opt_handler
  * @return {*}
  * @private
  */
-anychart.core.Marker.defaultSettingsProcessor_ = function(state, settings, index, field, opt_handler) {
+anychart.core.Marker.defaultSettingsProcessor_ = function(settings, index, field, opt_handler) {
   var setting;
 
   if (anychart.utils.instanceOf(settings, anychart.core.Marker)) {
@@ -670,9 +684,25 @@ anychart.core.Marker.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.MARKERS_FACTORY_CLIP)) {
     settings = this.getMergedSettings();
-    if (goog.isDef(settings['clip'])) {
-      this.markerElement_.clip(settings['clip']);
+    var clipSettings = settings['clip'];
+
+    var clip = null;
+    if (goog.isDef(clipSettings) && clipSettings) {
+      if (anychart.utils.instanceOf(clipSettings, acgraph.vector.Element)) {
+        clip = clipSettings;
+      } else {
+        clip = /** @type {anychart.math.Rect} */(this.iterateSettings_(function(settings, index, field) {
+          var parentBounds;
+          if (anychart.utils.instanceOf(settings, anychart.core.Marker)) {
+            parentBounds = settings[field]();
+          } else if (goog.typeOf(settings) == 'object') {
+            parentBounds = settings[field];
+          }
+          return parentBounds;
+        }, true, 'clipElement'));
+      }
     }
+    this.markerElement_.clip(clip);
     this.markConsistent(anychart.ConsistencyState.MARKERS_FACTORY_CLIP);
   }
 
