@@ -5,7 +5,7 @@ goog.provide('anychart.standalones.ResourceTimeline');
 goog.require('acgraph.vector.Path');
 goog.require('anychart.core.IStandaloneBackend');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.Marker');
 goog.require('anychart.ganttBaseModule.TimeLineHeader');
 goog.require('anychart.ganttModule.BaseGrid');
 goog.require('anychart.ganttModule.Scale');
@@ -46,7 +46,7 @@ anychart.ganttModule.TimeLine = function(opt_controller, opt_isResources) {
 
   /**
    * Labels factory.
-   * @type {anychart.core.ui.MarkersFactory}
+   * @type {anychart.core.Marker}
    * @private
    */
   this.markersFactory_ = null;
@@ -1982,17 +1982,17 @@ anychart.ganttModule.TimeLine.prototype.labels = function(opt_value) {
 /**
  * Markers factory getter/setter.
  * @param {Object=} opt_value - Value to be set.
- * @return {anychart.ganttModule.TimeLine|anychart.core.ui.MarkersFactory} - Current value or itself for method chaining.
+ * @return {anychart.ganttModule.TimeLine|anychart.core.Marker} - Current value or itself for method chaining.
  */
 anychart.ganttModule.TimeLine.prototype.markers = function(opt_value) {
   if (!this.markersFactory_) {
-    this.markersFactory_ = new anychart.core.ui.MarkersFactory();
+    this.markersFactory_ = new anychart.core.Marker();
     this.markersFactory_.setParentEventTarget(this);
   }
 
   if (goog.isDef(opt_value)) {
     var redraw = true;
-    if (anychart.utils.instanceOf(opt_value, anychart.core.ui.MarkersFactory)) {
+    if (anychart.utils.instanceOf(opt_value, anychart.core.Marker)) {
       this.markersFactory_.setup(opt_value.serialize());
     } else if (goog.isObject(opt_value)) {
       this.markersFactory_.setup(opt_value);
@@ -3738,8 +3738,9 @@ anychart.ganttModule.TimeLine.prototype.drawMarkers_ = function(dataItem, totalT
             var left = Math.round(this.pixelBoundsCache.left + this.pixelBoundsCache.width * ratio);
             var top = Math.round(totalTop + (itemHeight - height) / 2);
 
-            var markerEl = this.markers().add({value: {x: left, y: top}});
+            var markerEl = this.markers().add();
             markerEl
+                .positionProvider({value: {x: left, y: top}})
                 .size(height / 2)
                 .setup(marker);
           }

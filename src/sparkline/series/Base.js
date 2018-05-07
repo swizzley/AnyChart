@@ -273,17 +273,19 @@ anychart.sparklineModule.series.Base.prototype.startDrawing = function() {
   labels.parentBounds(/** @type {anychart.math.Rect} */(this.getPixelBounds()));
 
   var markers = this.chart.getMarkersInternal();
+  var markersFactory = markers.getFactory();
+
   markers.suspendSignalsDispatching();
 
   var fillColor = this.getMarkerFill();
-  markers.setAutoFill(fillColor);
+  markers.autoFill(fillColor);
 
   var strokeColor = /** @type {acgraph.vector.Stroke} */(this.getMarkerStroke());
-  markers.setAutoStroke(strokeColor);
+  markers.autoStroke(strokeColor);
 
-  markers.clear();
-  markers.container(/** @type {acgraph.vector.ILayer} */(this.container()));
-  markers.parentBounds(this.pixelBoundsCache);
+  markersFactory.clear();
+  markersFactory.container(/** @type {acgraph.vector.ILayer} */(this.container()));
+  markersFactory.parentBounds(this.pixelBoundsCache);
 };
 
 
@@ -298,16 +300,17 @@ anychart.sparklineModule.series.Base.prototype.startDrawing = function() {
 anychart.sparklineModule.series.Base.prototype.finalizeDrawing = function() {
   var clip;
   var markers = this.chart.getMarkersInternal();
-  markers.draw();
+  var markersFactory = markers.getFactory();
+  markersFactory.draw();
 
-  clip = /** @type {!anychart.math.Rect} */(goog.isBoolean(this.chart.clip()) ?
-      this.chart.clip() ?
-          this.chart.getPixelBounds() :
-          'none' :
-      this.chart.clip());
-
-  var markerDOM = markers.getDomElement();
-  if (markerDOM) markerDOM.clip(/** @type {anychart.math.Rect} */(clip));
+  // clip = /** @type {!anychart.math.Rect} */(goog.isBoolean(this.chart.clip()) ?
+  //     this.chart.clip() ?
+  //         this.chart.getPixelBounds() :
+  //         'none' :
+  //     this.chart.clip());
+  //
+  // var markerDOM = markers.getDomElement();
+  // if (markerDOM) markerDOM.clip(/** @type {anychart.math.Rect} */(clip));
 
   markers.resumeSignalsDispatching(false);
   markers.markConsistent(anychart.ConsistencyState.ALL);

@@ -8,7 +8,7 @@ goog.require('anychart.core.axisMarkers.Text');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.Marker');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
 goog.require('anychart.data.Set');
@@ -90,6 +90,7 @@ anychart.sparklineModule.Chart = function(opt_data, opt_csvSettings) {
 
   /**
    * Series default settings.
+   * defaults that was deleted form MarkersFactory
    * @type {Object}
    * @private
    */
@@ -98,20 +99,18 @@ anychart.sparklineModule.Chart = function(opt_data, opt_csvSettings) {
   /** @inheritDoc */
   this.allowCreditsDisabling = true;
 
+  this.markersFactory_ = new anychart.core.utils.Factory(function() {
+    return new anychart.core.Marker();
+  });
+  this.markersFactory_.setAutoZIndex(anychart.sparklineModule.Chart.ZINDEX_MARKER);
+  this.markersFactory_.setParentEventTarget(this);
+
   /**
-   * @type {!anychart.core.ui.MarkersFactory}
+   * @type {!anychart.core.Marker}
    * @private
    */
-  this.markersInternal_ = new anychart.core.ui.MarkersFactory();
-  // defaults that was deleted form MarkersFactory
-  this.markersInternal_.positionFormatter(anychart.utils.DEFAULT_FORMATTER);
-  this.markersInternal_.size(10);
-  this.markersInternal_.anchor(anychart.enums.Anchor.CENTER);
-  this.markersInternal_.offsetX(0);
-  this.markersInternal_.offsetY(0);
-  this.markersInternal_.rotation(0);
-  this.markersInternal_.setParentEventTarget(this);
-  this.markersInternal_.setAutoZIndex(anychart.sparklineModule.Chart.ZINDEX_MARKER);
+  this.markersInternal_ = new anychart.core.Marker();
+  this.markersInternal_.setFactory(this.markersFactory_);
 
   /**
    * @type {!anychart.core.ui.LabelsFactory}
@@ -600,7 +599,7 @@ anychart.sparklineModule.Chart.DEFAULT_HATCH_FILL_TYPE = acgraph.vector.HatchFil
  * @private
  */
 anychart.sparklineModule.Chart.MARKERS_FIELD_NAMES_FOR_MERGE_ = [
-  'enabled', 'position', 'anchor', 'offsetX', 'offsetY', 'type', 'size', 'fill', 'stroke'];
+  'enabled', 'position', 'anchor', 'offsetX', 'offsetY', 'type', 'size', 'fill', 'stroke', 'positionFormatter'];
 
 
 /**
@@ -1510,7 +1509,7 @@ anychart.sparklineModule.Chart.prototype.getFinalHatchFill = function(usePointSe
 
 /**
  * Merge factory settings.
- * @param {Array.<anychart.core.ui.MarkersFactory|anychart.core.ui.MarkersFactory.Marker|
+ * @param {Array.<anychart.core.Marker|
  * anychart.core.ui.LabelsFactory|anychart.core.ui.LabelsFactory.Label|Object>} settings Array of marker settings.
  * @param {Array.<string>} fields Entries fields to merge.
  * @return {Object} Object with merged settings.
@@ -1543,7 +1542,7 @@ anychart.sparklineModule.Chart.prototype.mergeFactorySettings_ = function(settin
 
 /**
  * Merge factory settings.
- * @param {Array.<anychart.core.ui.MarkersFactory|anychart.core.ui.MarkersFactory.Marker|
+ * @param {Array.<anychart.core.Marker|
  * anychart.core.ui.LabelsFactory|anychart.core.ui.LabelsFactory.Label|Object>} settings Array of marker settings.
  * @param {Array.<string>} fields Entries fields to merge.
  * @return {Object} Object with merged settings.
@@ -1577,11 +1576,11 @@ anychart.sparklineModule.Chart.prototype.mergeFactorySettingsEasy_ = function(se
 /**
  * Getter/setter for markers.
  * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
+ * @return {!(anychart.core.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
  */
 anychart.sparklineModule.Chart.prototype.markers = function(opt_value) {
   if (!this.markers_) {
-    this.markers_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.markers_ = new anychart.core.Marker();
     this.registerDisposable(this.markers_);
     this.markers_.listenSignals(this.markersInvalidated_, this);
   }
@@ -1599,11 +1598,11 @@ anychart.sparklineModule.Chart.prototype.markers = function(opt_value) {
 /**
  * Getter/setter for negativeMarkers.
  * @param {(Object|boolean|null|string)=} opt_value Data negative markers settings.
- * @return {!(anychart.core.ui.MarkersFactory.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
+ * @return {!(anychart.core.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
  */
 anychart.sparklineModule.Chart.prototype.negativeMarkers = function(opt_value) {
   if (!this.negativeMarkers_) {
-    this.negativeMarkers_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.negativeMarkers_ = new anychart.core.Marker();
     this.registerDisposable(this.negativeMarkers_);
     this.negativeMarkers_.listenSignals(this.markersInvalidated_, this);
   }
@@ -1621,11 +1620,11 @@ anychart.sparklineModule.Chart.prototype.negativeMarkers = function(opt_value) {
 /**
  * Getter/setter for firstMarkers.
  * @param {(Object|boolean|null|string)=} opt_value Data first markers settings.
- * @return {!(anychart.core.ui.MarkersFactory.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
+ * @return {!(anychart.core.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
  */
 anychart.sparklineModule.Chart.prototype.firstMarkers = function(opt_value) {
   if (!this.firstMarkers_) {
-    this.firstMarkers_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.firstMarkers_ = new anychart.core.Marker();
     this.registerDisposable(this.firstMarkers_);
     this.firstMarkers_.listenSignals(this.markersInvalidated_, this);
   }
@@ -1643,11 +1642,11 @@ anychart.sparklineModule.Chart.prototype.firstMarkers = function(opt_value) {
 /**
  * Getter/setter for lastMarkers.
  * @param {(Object|boolean|null|string)=} opt_value Data last markers settings.
- * @return {!(anychart.core.ui.MarkersFactory.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
+ * @return {!(anychart.core.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
  */
 anychart.sparklineModule.Chart.prototype.lastMarkers = function(opt_value) {
   if (!this.lastMarkers_) {
-    this.lastMarkers_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.lastMarkers_ = new anychart.core.Marker();
     this.registerDisposable(this.lastMarkers_);
     this.lastMarkers_.listenSignals(this.markersInvalidated_, this);
   }
@@ -1665,11 +1664,11 @@ anychart.sparklineModule.Chart.prototype.lastMarkers = function(opt_value) {
 /**
  * Getter/setter for maxMarkers.
  * @param {(Object|boolean|null|string)=} opt_value Data max markers settings.
- * @return {!(anychart.core.ui.MarkersFactory.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
+ * @return {!(anychart.core.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
  */
 anychart.sparklineModule.Chart.prototype.maxMarkers = function(opt_value) {
   if (!this.maxMarkers_) {
-    this.maxMarkers_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.maxMarkers_ = new anychart.core.Marker();
     this.registerDisposable(this.maxMarkers_);
     this.maxMarkers_.listenSignals(this.markersInvalidated_, this);
   }
@@ -1687,11 +1686,11 @@ anychart.sparklineModule.Chart.prototype.maxMarkers = function(opt_value) {
 /**
  * Getter/setter for minMarkers.
  * @param {(Object|boolean|null|string)=} opt_value Data min markers settings.
- * @return {!(anychart.core.ui.MarkersFactory.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
+ * @return {!(anychart.core.Marker|anychart.sparklineModule.Chart)} Markers instance or itself for chaining call.
  */
 anychart.sparklineModule.Chart.prototype.minMarkers = function(opt_value) {
   if (!this.minMarkers_) {
-    this.minMarkers_ = new anychart.core.ui.MarkersFactory.Marker();
+    this.minMarkers_ = new anychart.core.Marker();
     this.registerDisposable(this.minMarkers_);
     this.minMarkers_.listenSignals(this.markersInvalidated_, this);
   }
@@ -1708,7 +1707,7 @@ anychart.sparklineModule.Chart.prototype.minMarkers = function(opt_value) {
 
 /**
  * Returns markers factory.
- * @return {!anychart.core.ui.MarkersFactory}
+ * @return {!anychart.core.Marker}
  */
 anychart.sparklineModule.Chart.prototype.getMarkersInternal = function() {
   return this.markersInternal_;
@@ -1718,7 +1717,7 @@ anychart.sparklineModule.Chart.prototype.getMarkersInternal = function() {
 /**
  * Method that gets final marker for the current point, with all fallbacks taken into account.
  * @param {boolean} usePointSettings If point settings should count too (iterator questioning).
- * @return {?anychart.core.ui.MarkersFactory.Marker} .
+ * @return {?anychart.core.Marker} .
  */
 anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSettings) {
   var iterator = this.getIterator();
@@ -1767,6 +1766,8 @@ anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSetti
   var markers = this.markers();
   var defaultMarkers = this.seriesDefaults_['markers'];
 
+  debugger;
+
   var autoFill = this.getFinalFill(true);
   var autoColor = {'fill': autoFill, 'stroke': anychart.color.darken(autoFill)};
 
@@ -1780,21 +1781,18 @@ anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSetti
   finalSettings = this.mergeFactorySettingsEasy_([finalSettings, finalDefaultSettings],
       anychart.sparklineModule.Chart.MARKERS_FIELD_NAMES_FOR_MERGE_);
 
-  var marker = this.markersInternal_.getMarker(index);
+  var marker = this.markersFactory_.getElement(index);
   var res = null;
   if (finalSettings['enabled']) {
     var position = finalSettings['position'] || this.markersInternal_.position();
     var positionProvider = this.series_.createPositionProvider(/** @type {anychart.enums.Position|string} */(position));
 
-    if (marker) {
-      marker.positionProvider(positionProvider);
-    } else {
-      marker = this.markersInternal_.add(positionProvider, index);
+    if (!marker) {
+      marker = this.markersFactory_ .add(index);
     }
-
+    marker.positionProvider(positionProvider);
     marker.resetSettings();
-    marker.currentMarkersFactory(this.markersInternal_);
-    marker.setSettings(/** @type {Object} */(finalSettings));
+    marker.settings([finalSettings]);
     res = marker;
   } else if (marker) {
     marker.clear();

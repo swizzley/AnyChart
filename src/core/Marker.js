@@ -136,6 +136,15 @@ anychart.core.Marker.prototype.setFactory = function(value) {
 
 
 /**
+ * Root factory.
+ * @return {anychart.core.utils.Factory} .
+ */
+anychart.core.Marker.prototype.getFactory = function() {
+  return this.factory_;
+};
+
+
+/**
  * Label settings.
  * @param {Array.<anychart.core.Marker|Object>=} opt_value Set of settings.
  * @return {Array.<anychart.core.Marker|Object>} .

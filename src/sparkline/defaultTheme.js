@@ -15,7 +15,8 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
     'margin': 0,
     'padding': 0,
     'hatchFill': null,
-    'markers': {},
+    'markers': {
+    },
 
     'firstMarkers': {
       'fill': '#64b5f6'
@@ -104,7 +105,13 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
           'anchor': 'center',
           'type': 'circle',
           'size': 1.8,
-          'stroke': 'none'
+          'stroke': 'none',
+          'offsetX': 0,
+          'offsetY': 0,
+          'rotation': 0,
+          'positionFormatter': function() {
+            return this['value'];
+          }
         },
         'hoverMarkers': {
           'enabled': true

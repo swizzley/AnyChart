@@ -3311,7 +3311,6 @@ anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
     this.rootLayer.clip(seriesClip);
   }
   if (this.supportsLabels()) {
-    console.log('ownClip', ownClip);
     this.normal_.labels()
         .autoClipElement(this.clipElement_)
         .autoClip(ownClip);
