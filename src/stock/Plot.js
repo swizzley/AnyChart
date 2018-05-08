@@ -432,6 +432,35 @@ anychart.stockModule.Plot.prototype.getStat = function(key) {
 
 
 //endregion
+//region --- Testers
+/**
+ * Tester if the series has outlierMarkers() method.
+ * @return {boolean}
+ */
+anychart.stockModule.Plot.prototype.supportsOutliers = function() {
+  return false;
+};
+
+
+/**
+ * Tester if the series has markers() method.
+ * @return {boolean}
+ */
+anychart.stockModule.Plot.prototype.supportsMarkers = function() {
+  return false;
+};
+
+
+/**
+ * Tester if the series has labels() method.
+ * @return {boolean}
+ */
+anychart.stockModule.Plot.prototype.supportsLabels = function() {
+  return false;
+};
+
+
+//endregion
 //region Series-related methods
 /**
  * Creates and returns a new area series.

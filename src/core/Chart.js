@@ -343,6 +343,33 @@ anychart.core.Chart.prototype.isChart = function() {
 };
 
 
+/**
+ * Tester if the series has outlierMarkers() method.
+ * @return {boolean}
+ */
+anychart.core.Chart.prototype.supportsOutliers = function() {
+  return false;
+};
+
+
+/**
+ * Tester if the series has markers() method.
+ * @return {boolean}
+ */
+anychart.core.Chart.prototype.supportsMarkers = function() {
+  return false;
+};
+
+
+/**
+ * Tester if the series has labels() method.
+ * @return {boolean}
+ */
+anychart.core.Chart.prototype.supportsLabels = function() {
+  return false;
+};
+
+
 //endregion
 //region --- Infrastructure
 //------------------------------------------------------------------------------

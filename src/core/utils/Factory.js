@@ -13,19 +13,12 @@ goog.require('goog.math.Coordinate');
 /**
  * Class for creation of sets of similar labels and management of such sets.
  * Any individual label can be changed after all labels are displayed.
- * @param {Function} ctor .
- * @param {boolean=} opt_isNonInteractive
+ * @param {function():anychart.core.IFactoryElement=} ctor .
  * @constructor
  * @extends {anychart.core.VisualBase}
  */
-anychart.core.utils.Factory = function(ctor, opt_isNonInteractive) {
+anychart.core.utils.Factory = function(ctor) {
   anychart.core.utils.Factory.base(this, 'constructor');
-
-  /**
-   * If the factory is allowed to listen and intercept events.
-   * @type {boolean}
-   */
-  this.isInteractive = !opt_isNonInteractive;
 
   /**
    * Factory elements constructor.
@@ -39,11 +32,11 @@ anychart.core.utils.Factory = function(ctor, opt_isNonInteractive) {
    * @type {acgraph.vector.Layer}
    * @private
    */
-  this.layer_ = null;
+  this.layer = null;
 
   /**
    * Labels Array.
-   * @type {Array.<anychart.core.utils.Factory.Label>}
+   * @type {Array.<anychart.core.IFactoryElement>}
    * @private
    */
   this.elements_;
@@ -123,7 +116,7 @@ anychart.core.utils.Factory.measureTextFactory = null;
  * @return {acgraph.vector.Layer}
  */
 anychart.core.utils.Factory.prototype.getDomElement = function() {
-  return this.layer_;
+  return this.layer;
 };
 
 
@@ -132,7 +125,9 @@ anychart.core.utils.Factory.prototype.getDomElement = function() {
  * @return {acgraph.vector.Layer}
  */
 anychart.core.utils.Factory.prototype.getRootLayer = function() {
-  return this.layer_;
+  if (!this.layer)
+    this.layer = acgraph.layer();
+  return this.layer;
 };
 
 
@@ -195,10 +190,10 @@ anychart.core.utils.Factory.prototype.elementsCount = function() {
 
 
 /**
- * Creates new instance of anychart.core.utils.Factory.Label, saves it in the factory
+ * Creates new instance of anychart.core.IFactoryElement, saves it in the factory
  * and returns it.
  * @param {number=} opt_index Label index.
- * @return {!anychart.core.utils.Factory.Label} Returns new label instance.
+ * @return {!anychart.core.IFactoryElement} Returns new label instance.
  */
 anychart.core.utils.Factory.prototype.add = function(opt_index) {
   var elem, index;
@@ -236,7 +231,7 @@ anychart.core.utils.Factory.prototype.add = function(opt_index) {
 
 /**
  * @protected
- * @return {anychart.core.utils.Factory.Label}
+ * @return {anychart.core.IFactoryElement}
  */
 anychart.core.utils.Factory.prototype.createElement = function() {
   return this.elementsCtor_();
@@ -247,7 +242,7 @@ anychart.core.utils.Factory.prototype.createElement = function() {
 //region --- Drawing
 /** @inheritDoc */
 anychart.core.utils.Factory.prototype.remove = function() {
-  if (this.layer_) this.layer_.parent(null);
+  if (this.layer) this.layer.parent(null);
 };
 
 
@@ -259,11 +254,7 @@ anychart.core.utils.Factory.prototype.draw = function() {
   if (this.isDisposed())
     return this;
 
-  if (!this.layer_) {
-    this.layer_ = acgraph.layer();
-    if (this.isInteractive)
-      this.bindHandlersToGraphics(this.layer_);
-  }
+  var rootElement = this.getRootLayer();
 
   var stage = this.container() ? this.container().getStage() : null;
   var manualSuspend = stage && !stage.isSuspended();
@@ -272,73 +263,25 @@ anychart.core.utils.Factory.prototype.draw = function() {
   if (this.elements_) {
     goog.array.forEach(this.elements_, function(elem) {
       if (elem) {
-        elem.container(this.layer_);
+        elem.container(rootElement);
         elem.draw();
       }
     }, this);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
-    this.layer_.zIndex(/** @type {number} */(this.zIndex()));
+    rootElement.zIndex(/** @type {number} */(this.zIndex()));
     this.markConsistent(anychart.ConsistencyState.Z_INDEX);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
-    this.layer_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
+    rootElement.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
     this.markConsistent(anychart.ConsistencyState.CONTAINER);
   }
 
   this.markConsistent(anychart.ConsistencyState.ALL);
 
   if (manualSuspend) stage.resume();
-  return this;
-};
-
-
-//endregion
-//region --- Format calls management
-/**
- * Calls text formatter in scope of provider, or returns value from cache.
- * @param {Function|string} formatter Text formatter function.
- * @param {*} provider Provider for text formatter.
- * @param {number=} opt_cacheIndex Label index.
- * @return {*}
- */
-anychart.core.utils.Factory.prototype.callFormat = function(formatter, provider, opt_cacheIndex) {
-  if (goog.isString(formatter))
-    formatter = anychart.core.utils.TokenParser.getInstance().getFormat(formatter);
-  if (!this.formatCallsCache_)
-    this.formatCallsCache_ = {};
-  if (goog.isDefAndNotNull(opt_cacheIndex)) {
-    if (!goog.isDef(this.formatCallsCache_[opt_cacheIndex])) {
-      if (goog.isDef(provider) && provider['series']) {
-        var series = /** @type {{getIterator: Function}} */ (provider['series']);
-        var iterator = series.getIterator();
-        if (goog.isFunction(iterator.select))
-          iterator.select(goog.isDef(provider['index']) ? provider['index'] : opt_cacheIndex);
-      }
-      this.formatCallsCache_[opt_cacheIndex] = formatter.call(provider, provider);
-    }
-
-    return this.formatCallsCache_[opt_cacheIndex];
-  }
-  return formatter.call(provider, provider);
-};
-
-
-/**
- * Drops tet formatter calls cache.
- * @param {number=} opt_index
- * @return {anychart.core.utils.Factory} Self for chaining.
- */
-anychart.core.utils.Factory.prototype.dropCallsCache = function(opt_index) {
-  if (!goog.isDef(opt_index)) {
-    this.formatCallsCache_ = {};
-  } else {
-    if (this.formatCallsCache_ && goog.isDef(this.formatCallsCache_[opt_index])) {
-      delete this.formatCallsCache_[opt_index];
-    }
-  }
   return this;
 };
 
@@ -373,11 +316,11 @@ anychart.core.utils.Factory.prototype.disposeInternal = function() {
   goog.disposeAll(
       this.elements_,
       this.freeToUseLabelsPool_,
-      this.layer_);
+      this.layer);
 
   this.elements_ = null;
   this.freeToUseLabelsPool_ = null;
-  this.layer_ = null;
+  this.layer = null;
 
   anychart.core.utils.Factory.base(this, 'disposeInternal');
 };

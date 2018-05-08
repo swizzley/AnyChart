@@ -99,9 +99,7 @@ anychart.sparklineModule.Chart = function(opt_data, opt_csvSettings) {
   /** @inheritDoc */
   this.allowCreditsDisabling = true;
 
-  this.markersFactory_ = new anychart.core.utils.Factory(function() {
-    return new anychart.core.Marker();
-  });
+  this.markersFactory_ = new anychart.core.utils.MarkersFactory();
   this.markersFactory_.setAutoZIndex(anychart.sparklineModule.Chart.ZINDEX_MARKER);
   this.markersFactory_.setParentEventTarget(this);
 

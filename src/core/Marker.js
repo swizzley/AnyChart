@@ -128,7 +128,7 @@ anychart.core.Marker.prototype.getDomElement = function() {
 //region --- States
 /**
  * Root factory.
- * @param {anychart.core.utils.Factory} value .
+ * @param {anychart.core.utils.MarkersFactory} value .
  */
 anychart.core.Marker.prototype.setFactory = function(value) {
   this.factory_ = value;
@@ -137,7 +137,7 @@ anychart.core.Marker.prototype.setFactory = function(value) {
 
 /**
  * Root factory.
- * @return {anychart.core.utils.Factory} .
+ * @return {anychart.core.utils.MarkersFactory} .
  */
 anychart.core.Marker.prototype.getFactory = function() {
   return this.factory_;

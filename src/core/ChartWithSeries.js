@@ -180,6 +180,26 @@ anychart.core.ChartWithSeries.ZINDEX_LINE_SERIES = 31;
 
 
 //endregion
+//region --- Testers
+/** @inheritDoc */
+anychart.core.ChartWithSeries.prototype.supportsOutliers = function() {
+  return true;
+};
+
+
+/** @inheritDoc */
+anychart.core.ChartWithSeries.prototype.supportsMarkers = function() {
+  return true;
+};
+
+
+/** @inheritDoc */
+anychart.core.ChartWithSeries.prototype.supportsLabels = function() {
+  return true;
+};
+
+
+//endregion
 //region --- Series infrastructure methods
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1349,5 +1369,3 @@ anychart.core.ChartWithSeries.prototype.disposeInternal = function() {
   proto['selected'] = proto.selected;
   proto['isVertical'] = proto.isVertical;
 })();
-
-

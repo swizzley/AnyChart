@@ -144,10 +144,10 @@ anychart.core.StateSettings.DEFAULT_LABELS_CONSTRUCTOR = function() {
 /**
  * Circular labels factory constructor.
  * @this {*}
- * @return {anychart.core.ui.CircularLabelsFactory}
+ * @return {anychart.core.CircularLabel}
  */
 anychart.core.StateSettings.CIRCULAR_LABELS_CONSTRUCTOR = function() {
-  return new anychart.core.ui.CircularLabelsFactory();
+  return new anychart.core.CircularLabel();
 };
 
 

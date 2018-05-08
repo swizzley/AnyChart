@@ -20,7 +20,9 @@ goog.require('anychart.core.ui.Tooltip');
 goog.require('anychart.core.utils.Error');
 goog.require('anychart.core.utils.ISeriesWithError');
 goog.require('anychart.core.utils.InteractivityState');
+goog.require('anychart.core.utils.LabelsFactory');
 goog.require('anychart.core.utils.LegendItemSettings');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.core.utils.Padding');
 goog.require('anychart.core.utils.SeriesA11y');
 goog.require('anychart.core.utils.TokenParser');
@@ -2363,7 +2365,7 @@ anychart.core.series.Base.prototype.resolveAutoAnchor = function(position, rotat
 
 /**
  * Checks if label bounds intersect series bounds and flips autoAnchor if needed.
- * @param {anychart.core.utils.Factory} factory
+ * @param {anychart.core.utils.LabelsFactory} factory
  * @param {anychart.core.Label} label
  */
 anychart.core.series.Base.prototype.checkBoundsCollision = function(factory, label) {
@@ -2507,7 +2509,7 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
     label.autoVertical(/** @type {boolean} */ (this.getOption('isVertical')));
     if (goog.isDef(opt_position) && anchor == anychart.enums.Anchor.AUTO) {
       label.autoAnchor(this.resolveAutoAnchor(opt_position, Number(label.getFinalSettings('rotation')) || 0));
-      this.checkBoundsCollision(/** @type {anychart.core.utils.Factory} */(mainFactory), label);
+      this.checkBoundsCollision(/** @type {anychart.core.utils.LabelsFactory} */(mainFactory), label);
     }
   } else {
     this.setupMarkerDrawingPlan.apply(this, settings);
@@ -2528,11 +2530,11 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Labels factory getter/creator.
- * @return {anychart.core.utils.Factory} .
+ * @return {anychart.core.utils.LabelsFactory} .
  */
 anychart.core.series.Base.prototype.getLabelsFactory = function() {
   if (!this.labelsFactory_) {
-    this.labelsFactory_ = new anychart.core.utils.Factory(function () {return new anychart.core.Label()});
+    this.labelsFactory_ = new anychart.core.utils.LabelsFactory();
   }
   return this.labelsFactory_;
 };
@@ -2602,11 +2604,11 @@ anychart.core.series.Base.prototype.additionalLabelsInitialize = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Labels factory getter/creator.
- * @return {anychart.core.utils.Factory} .
+ * @return {anychart.core.utils.MarkersFactory} .
  */
 anychart.core.series.Base.prototype.getMarkersFactory = function() {
   if (!this.markersFactory_) {
-    this.markersFactory_ = new anychart.core.utils.Factory(function () {return new anychart.core.Marker()});
+    this.markersFactory_ = new anychart.core.utils.MarkersFactory();
   }
   return this.markersFactory_;
 };
@@ -2685,11 +2687,11 @@ anychart.core.series.Base.prototype.getMarkerStroke = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Labels factory getter/creator.
- * @return {anychart.core.utils.Factory} .
+ * @return {anychart.core.utils.MarkersFactory} .
  */
 anychart.core.series.Base.prototype.getOutlierMarkersFactory = function() {
   if (!this.outlierMarkersFactory_) {
-    this.outlierMarkersFactory_ = new anychart.core.utils.Factory(function () {return new anychart.core.Marker()});
+    this.outlierMarkersFactory_ = new anychart.core.utils.MarkersFactory();
   }
   return this.outlierMarkersFactory_;
 };
@@ -3017,9 +3019,11 @@ anychart.core.series.Base.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_LABELS | COMMON_STATES)) {
     factory = this.getLabelsFactory();
+    var plotLabelsEnabled = this.plot.supportsLabels() && (this.plot.normal_.labels().enabled() ||
+    this.plot.hovered_.labels().enabled() || this.plot.selected_.labels().enabled());
+
     stateSettingsEnabled = /** @type {boolean} */(
-        this.chart.normal_.labels().enabled() ||
-        this.chart.hovered_.labels().enabled() || this.chart.selected_.labels().enabled() ||
+        plotLabelsEnabled ||
         this.normal_.labels().enabled() ||
         this.normal_.minLabels().enabled() || this.normal_.maxLabels().enabled() ||
         this.hovered_.labels().enabled() || this.selected_.labels().enabled() ||

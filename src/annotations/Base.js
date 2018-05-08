@@ -110,10 +110,10 @@ anychart.annotationsModule.Base = function(chartController) {
   this.markersSupported = true;
 
   /**
-   * @type {anychart.core.utils.Factory}
+   * @type {anychart.core.utils.MarkersFactory}
    * @private
    */
-  this.markersFactory_ = new anychart.core.utils.Factory(function () {
+  this.markersFactory_ = new anychart.core.utils.MarkersFactory(function () {
     return new anychart.core.Marker(true);
   }, true);
 

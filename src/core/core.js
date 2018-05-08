@@ -177,6 +177,27 @@ anychart.core.IPlot.prototype.getXAxisByIndex = function(index) {};
 anychart.core.IPlot.prototype.getYAxisByIndex = function(index) {};
 
 
+/**
+ * Tester if the series has outlierMarkers() method.
+ * @return {boolean}
+ */
+anychart.core.IPlot.prototype.supportsOutliers = function() {};
+
+
+/**
+ * Tester if the series has markers() method.
+ * @return {boolean}
+ */
+anychart.core.IPlot.prototype.supportsMarkers = function() {};
+
+
+/**
+ * Tester if the series has labels() method.
+ * @return {boolean}
+ */
+anychart.core.IPlot.prototype.supportsLabels = function() {};
+
+
 
 //endregion
 //region I3DProvider

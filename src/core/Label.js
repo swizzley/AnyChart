@@ -65,7 +65,7 @@ anychart.core.Label = function() {
    * @type {Array.<anychart.core.Label|Object>}
    * @private
    */
-  this.settings_ = [];
+  this.settings_ = [this.ownSettings, this.autoSettings, this.themeSettings];
 
   this.resetSettings();
 
@@ -185,7 +185,7 @@ anychart.core.Label.prototype.getConnectorElement = function() {
 //region --- States
 /**
  * Root factory.
- * @param {anychart.core.utils.Factory} value .
+ * @param {anychart.core.utils.LabelsFactory} value .
  */
 anychart.core.Label.prototype.setFactory = function(value) {
   this.factory_ = value;
@@ -498,7 +498,6 @@ anychart.core.Label.prototype.autoClipElement = function(opt_value) {
 };
 
 
-
 //----------------------------------------------------------------------------------------------------------------------
 //
 //  Providers.
@@ -619,7 +618,7 @@ anychart.core.Label.prototype.resetSettings = function() {
 
   this.ownSettings = {};
   this.autoSettings = {};
-  this.settings_ = null;
+  this.settings_ = [this.ownSettings, this.autoSettings, this.themeSettings];
 
   this.dropMergedSettings();
 };
