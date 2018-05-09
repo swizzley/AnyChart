@@ -157,7 +157,9 @@ anychart.core.Label.settingsFieldsForMerge_ = [
   'hAlign',
   'textOverflow',
   'selectable',
-  'disablePointerEvents'
+  'disablePointerEvents',
+  'zIndex',
+  'enabled'
 ];
 
 
@@ -189,6 +191,15 @@ anychart.core.Label.prototype.getConnectorElement = function() {
  */
 anychart.core.Label.prototype.setFactory = function(value) {
   this.factory_ = value;
+};
+
+
+/**
+ * Root factory.
+ * @return {anychart.core.utils.LabelsFactory} value .
+ */
+anychart.core.Label.prototype.getFactory = function() {
+  return this.factory_;
 };
 
 
@@ -498,6 +509,54 @@ anychart.core.Label.prototype.autoClipElement = function(opt_value) {
 };
 
 
+/**
+ * Sets current ajust font size calculated for current bounds.
+ * @param {null|string|number} value Adjusted font size.
+ * @return {anychart.core.Label} Itself for chaining call.
+ */
+anychart.core.Label.prototype.autoFontSize = function(value) {
+  var needInvalidate = this.getOption('fontSize') != value;
+  if (goog.isNull(value)) {
+    delete this.autoSettings['fontSize'];
+  } else {
+    this.autoSettings['fontSize'] = value;
+  }
+  if (needInvalidate)
+    this.invalidate(anychart.ConsistencyState.BOUNDS);
+
+  return this;
+};
+
+
+/**
+ * Sets labels color that parent series have set for it.
+ * @param {string} value Auto color distributed by the series.
+ * @return {anychart.core.Label} Itself for chaining call.
+ */
+anychart.core.Label.prototype.autoFontColor = function(value) {
+  var needInvalidate = this.getOption('fontColor') != value;
+  if (goog.isNull(value)) {
+    delete this.autoSettings['fontColor'];
+  } else {
+    this.autoSettings['fontColor'] = value;
+  }
+  if (needInvalidate)
+    this.invalidate(anychart.ConsistencyState.BOUNDS);
+
+  return this;
+};
+
+
+/**
+ * Helper method.
+ * @return {boolean} is adjustment enabled.
+ */
+anychart.core.Label.prototype.adjustEnabled = function() {
+  var adjustFontSize = this.getFinalSettings('adjustFontSize');
+  return !!adjustFontSize && (adjustFontSize['width'] || adjustFontSize['height']);
+};
+
+
 //----------------------------------------------------------------------------------------------------------------------
 //
 //  Providers.
@@ -565,7 +624,10 @@ anychart.core.Label.prototype.hasOwnOption = function(name) {
  */
 anychart.core.Label.prototype.getOption = function(name) {
   this.updateComplexSettings();
-  return this.ownSettings[name];
+  return goog.isDefAndNotNull(this.ownSettings[name]) ?
+      this.ownSettings[name] :
+      goog.isDefAndNotNull(this.autoSettings[name]) ?
+          this.autoSettings[name] : this.themeSettings[name];
 };
 
 
@@ -627,10 +689,13 @@ anychart.core.Label.prototype.resetSettings = function() {
 /**
  * Returns final value of settings with passed name.
  * @param {string} value Name of settings.
+ * @param {boolean=} opt_forceMerging Force merging settings.
  * @return {*} settings value.
  */
-anychart.core.Label.prototype.getFinalSettings = function(value) {
-  if (value == 'adjustFontSize') {
+anychart.core.Label.prototype.getFinalSettings = function(value, opt_forceMerging) {
+  if (this.mergedSettings) {
+    return this.mergedSettings[value];
+  } else if (value == 'adjustFontSize') {
     var adjustByWidth = this.resolveSetting_(value, function(value) {
       return value.width;
     });
@@ -736,7 +801,7 @@ anychart.core.Label.defaultSettingsProcessor_ = function(settings, index, field,
       var result = settings[field]();
       setting = !goog.isNull(result) ? result : undefined;
     } else {
-      setting = settings.getOwnAndAutoOption(field);
+      setting = settings != this ? settings.getFinalSettings(field) : this.getOption(field);
     }
   } else if (goog.typeOf(settings) == 'object') {
     if (field == 'adjustFontSize') {
@@ -1049,7 +1114,11 @@ anychart.core.Label.prototype.draw = function() {
     this.layer_ = acgraph.layer();
   this.layer_.tag = this.index_;
 
-  var enabled = this.getFinalSettings('enabled');
+  this.updateComplexSettings();
+  this.dropMergedSettings();
+  mergedSettings = this.getMergedSettings();
+
+  var enabled = mergedSettings['enabled'];
 
   if (this.checkInvalidationState(anychart.ConsistencyState.ENABLED)) {
     if (!enabled) {
@@ -1073,7 +1142,7 @@ anychart.core.Label.prototype.draw = function() {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
-    this.layer_.zIndex(/** @type {number} */(this.zIndex()));
+    this.layer_.zIndex(/** @type {number} */(mergedSettings['zIndex']));
     this.markConsistent(anychart.ConsistencyState.Z_INDEX);
   }
 
@@ -1083,10 +1152,6 @@ anychart.core.Label.prototype.draw = function() {
   }
 
   if (this.checkInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
-    this.updateComplexSettings();
-    this.dropMergedSettings();
-    mergedSettings = this.getMergedSettings();
-
     var formatProvider = this.formatProvider();
     var text = factory.callFormat(mergedSettings['format'], formatProvider, this.getIndex());
 

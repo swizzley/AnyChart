@@ -19,6 +19,8 @@ anychart.core.utils.LabelsFactory = function(opt_ctor) {
       this,
       'constructor',
       opt_ctor || anychart.core.utils.LabelsFactory.DEFAULT_CONSTRUCTOR);
+
+  this.adjustFontSizeMode_  = 'different';
 };
 goog.inherits(anychart.core.utils.LabelsFactory, anychart.core.utils.Factory);
 
@@ -78,6 +80,25 @@ anychart.core.utils.LabelsFactory.prototype.dropCallsCache = function(opt_index)
     }
   }
   return this;
+};
+
+
+//endregion
+//region --- Adjust font size mode
+/**
+ * @param {(anychart.enums.AdjustFontSizeMode|string)=} opt_value Adjust font size mode to set.
+ * @return {anychart.enums.AdjustFontSizeMode|anychart.core.utils.LabelsFactory}
+ */
+anychart.core.utils.LabelsFactory.prototype.adjustFontSizeMode = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    opt_value = anychart.enums.normalizeAdjustFontSizeMode(opt_value);
+    if (this.adjustFontSizeMode_ != opt_value) {
+      this.adjustFontSizeMode_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  }
+  return this.adjustFontSizeMode_;
 };
 
 

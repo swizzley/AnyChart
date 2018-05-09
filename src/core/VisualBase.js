@@ -366,8 +366,8 @@ anychart.core.VisualBase.prototype.zIndex = function(opt_value) {
   }
   return /** @type {number} */(this.hasOwnOption('zIndex') ?
       this.ownSettings['zIndex'] :
-      goog.isDef(this.autoZIndex) ?
-          this.autoZIndex : this.themeSettings['zIndex']);
+      goog.isDef(this.autoSettings['zIndex']) ?
+          this.autoSettings['zIndex'] : this.themeSettings['zIndex']);
 };
 
 
@@ -376,7 +376,7 @@ anychart.core.VisualBase.prototype.zIndex = function(opt_value) {
  * @param {number} value
  */
 anychart.core.VisualBase.prototype.setAutoZIndex = function(value) {
-  this.autoZIndex = value;
+  this.autoSettings['zIndex'] = value;
 };
 
 

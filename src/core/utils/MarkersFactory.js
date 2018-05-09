@@ -40,6 +40,12 @@ anychart.core.utils.MarkersFactory.DEFAULT_CONSTRUCTOR = function() {
 
 
 //endregion
+//region --- Infrastructure
+/** @inheritDoc */
+anychart.core.utils.MarkersFactory.prototype.dropCallsCache = goog.nullFunction;
+
+
+//endregion
 //region --- Dom elements
 /** @inheritDoc */
 anychart.core.utils.MarkersFactory.prototype.getRootLayer = function() {

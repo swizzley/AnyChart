@@ -155,8 +155,13 @@ anychart.core.utils.CircularLabelsFactory.prototype.getDimensionInternal = funct
 
   if (parentBounds || (!isNaN(factoryCx) && !isNaN(factoryCy))) {
     //bounds
-    var parentX = parentBounds.left;
-    var parentY = parentBounds.top;
+    var parentX, parentY;
+    if (parentBounds) {
+      parentX = parentBounds.left;
+      parentY = parentBounds.top;
+    } else {
+      parentX = parentY = 0;
+    }
 
     cx = isNaN(factoryCx) ? parentX + parentWidth / 2 : factoryCx;
     cy = isNaN(factoryCy) ? parentY + parentHeight / 2 : factoryCy;
@@ -235,7 +240,7 @@ anychart.core.utils.CircularLabelsFactory.prototype.measureWithTransform = funct
     anchor = goog.isDef(opt_settings) && opt_settings['anchor'] || anchor;
   }
 
-  var bounds = this.getDimension(formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex);
+  var bounds = this.getDimension(defaultSettings, formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex);
 
   var rotationAngle = /** @type {number} */(rotation);
   var point = anychart.utils.getCoordinateByAnchor(bounds, /** @type {anychart.enums.Anchor} */(anchor));

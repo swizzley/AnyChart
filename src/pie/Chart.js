@@ -2048,11 +2048,7 @@ anychart.pieModule.Chart.prototype.updateBounds = function() {
   labels.parentRadius(this.radiusValue_);
   labels.startAngle(/** @type {number} */ (this.getOption('startAngle')));
   labels.sweepAngle(360);
-  labels.parentBounds(this.pieBounds_);
   labels.resumeSignalsDispatching(false);
-
-  this.hovered().labels()
-      .parentBounds(this.pieBounds_);
 };
 
 
@@ -2204,8 +2200,9 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
       var themePart = this.isOutsideLabels() ?
           anychart.getFullTheme('pie.outsideLabels') :
           anychart.getFullTheme('pie.insideLabels');
-      // this.labels().autoColor(themePart['autoColor']);
+      this.labels().autoFontColor(themePart['autoColor']);
       this.labels()['disablePointerEvents'](themePart['disablePointerEvents']);
+      this.labelsFactory_.zIndex(this.labels().zIndex());
       if (this.isOutsideLabels()) {
         if (this.recalculateBounds_) {
           this.radiusValue_ = this.originalRadiusValue_;
@@ -2619,7 +2616,9 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
     this.measureLabel_.resetSettings();
     this.measureLabel_.settings([statePointLabel, pointLabel, normalSettings]);
 
-    var bounds = this.labelsFactory_.measureWithTransform(this.labels().getMergedSettings(), this.measureLabel_, null, null, index);
+    var defaultSettings = this.labels().getMergedSettings();
+    // defaultSettings['parentBounds'] = this.pieBounds_;
+    var bounds = this.labelsFactory_.measureWithTransform(defaultSettings, this.measureLabel_, null, null, index);
 
     var singlePiePoint = ((iterator.getRowsCount() == 1 || sweep == 360) && !this.innerRadiusValue_);
     var notIntersectStartLine = singlePiePoint || !anychart.math.checkRectIntersectionWithSegment(ax, ay, cx, cy, bounds);
@@ -2649,7 +2648,6 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
     label.positionProvider(positionProvider);
 
     label.resetSettings();
-    label.currentLabelsFactory(/** @type {anychart.core.ui.LabelsFactory} */(stateSettings));
     label.settings([label, statePointLabel, pointLabel, stateSettings, normalSettings]);
 
     //todo: this shit should be reworked when labelsFactory will be reworked
