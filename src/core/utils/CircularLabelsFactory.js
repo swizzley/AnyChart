@@ -1,9 +1,11 @@
 //region --- Requiring and Providing
 goog.provide('anychart.core.utils.CircularLabelsFactory');
+goog.provide('anychart.core.utils.CircularLabelsFactory.Label');
 goog.require('acgraph.math');
-goog.require('anychart.core.CircularLabel');
 goog.require('anychart.core.utils.LabelsFactory');
+goog.require('anychart.core.utils.LabelsFactory.Label');
 goog.require('anychart.enums');
+goog.require('anychart.math.Rect');
 //endregion
 
 
@@ -26,7 +28,7 @@ goog.inherits(anychart.core.utils.CircularLabelsFactory, anychart.core.utils.Lab
 
 //region --- Static props
 anychart.core.utils.CircularLabelsFactory.DEFAULT_CONSTRUCTOR = function() {
-  return new anychart.core.CircularLabel();
+  return new anychart.core.utils.CircularLabelsFactory.Label();
 };
 
 
@@ -211,12 +213,13 @@ anychart.core.utils.CircularLabelsFactory.prototype.measureWithoutAutoRotate = f
 
 
 /** @inheritDoc */
-anychart.core.utils.CircularLabelsFactory.prototype.measureWithTransform = function(defaultSettings, formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex) {
+anychart.core.utils.CircularLabelsFactory.prototype.measureWithTransform = function(formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex) {
+  var defaultSettings = opt_settings || {};
   var angle;
   var rotation = defaultSettings['rotation'] || 0;
   var anchor = defaultSettings['anchor'] || 'center';
 
-  if (anychart.utils.instanceOf(formatProviderOrLabel, anychart.core.CircularLabel)) {
+  if (anychart.utils.instanceOf(formatProviderOrLabel, anychart.core.utils.CircularLabelsFactory.Label)) {
     angle = (formatProviderOrLabel.positionProvider() ? formatProviderOrLabel.positionProvider()['value']['angle'] : 0) || 0;
     rotation = formatProviderOrLabel.getRotation(angle);
     anchor = formatProviderOrLabel.getFinalSettings('anchor');
@@ -240,7 +243,7 @@ anychart.core.utils.CircularLabelsFactory.prototype.measureWithTransform = funct
     anchor = goog.isDef(opt_settings) && opt_settings['anchor'] || anchor;
   }
 
-  var bounds = this.getDimension(defaultSettings, formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex);
+  var bounds = this.getDimension(formatProviderOrLabel, opt_positionProvider, opt_settings, opt_cacheIndex);
 
   var rotationAngle = /** @type {number} */(rotation);
   var point = anychart.utils.getCoordinateByAnchor(bounds, /** @type {anychart.enums.Anchor} */(anchor));
@@ -253,3 +256,101 @@ anychart.core.utils.CircularLabelsFactory.prototype.measureWithTransform = funct
 };
 //endregion
 
+
+
+/**
+ * @constructor
+ * @extends {anychart.core.Label}
+ */
+anychart.core.utils.CircularLabelsFactory.Label = function() {
+  anychart.core.utils.CircularLabelsFactory.Label.base(this, 'constructor');
+};
+goog.inherits(anychart.core.utils.CircularLabelsFactory.Label, anychart.core.utils.LabelsFactory.Label);
+
+
+//region --- Drawing
+/**
+ * Returns angle for labels.
+ * @param {number} angle Label angle position.
+ * @return {number} final rotation angle.
+ */
+anychart.core.utils.CircularLabelsFactory.Label.prototype.getRotation = function(angle) {
+  var currentRotation = /** @type {number} */(this.getFinalSettings('rotation'));
+  var autoRotate = this.getFinalSettings('autoRotate');
+  if (autoRotate) {
+    if (angle > 0 && angle < 180)
+      return currentRotation + angle + 270;
+    else
+      return currentRotation + angle + 90;
+  } else {
+    return currentRotation;
+  }
+};
+
+
+/** @inheritDoc */
+anychart.core.utils.CircularLabelsFactory.Label.prototype.drawLabel = function(bounds, parentBounds) {
+  var positionFormatter = this.mergedSettings['positionFormatter'];
+  var isTextByPath = !!this.textElement.path();
+  var anchor = isTextByPath ?
+      anychart.enums.Anchor.CENTER :
+      anychart.core.ui.LabelsFactory.anchorNoAutoNormalizer(this.mergedSettings['anchor']) || anychart.enums.Anchor.LEFT_TOP;
+
+  var offsetX = this.mergedSettings['offsetX'] || 0;
+  var offsetY = this.mergedSettings['offsetY'] || 0;
+
+  var factory = /** @type {anychart.core.ui.CircularLabelsFactory} */(this.getFactory());
+
+  var positionProvider = this.positionProvider();
+  var formattedPosition = goog.object.clone(positionFormatter.call(positionProvider, positionProvider));
+  var angle = formattedPosition['angle'];
+  var radius = formattedPosition['radius'];
+  var radiusY = goog.isDef(formattedPosition['radiusY']) ? formattedPosition['radiusY'] : radius;
+  var cx = 0;
+  var cy = 0;
+  var factoryCx = factory.cx();
+  var factoryCy = factory.cy();
+  var factorySweepAngle = /** @type {number} */(factory.sweepAngle());
+  var factoryParentRadius = /** @type {number} */(factory.parentRadius());
+
+  if (parentBounds || (!isNaN(factoryCx) && !isNaN(factoryCy))) {
+    //bounds
+    var parentX = parentBounds.left;
+    var parentY = parentBounds.top;
+    var parentWidth = parentBounds.width;
+    var parentHeight = parentBounds.height;
+
+    cx = isNaN(factoryCx) ? parentX + parentWidth / 2 : factoryCx;
+    cy = isNaN(factoryCy) ? parentY + parentHeight / 2 : factoryCy;
+
+    var sweepAngle = goog.isDefAndNotNull(factorySweepAngle) ? factorySweepAngle : 360;
+
+    var offsetRadius = goog.isDef(factoryParentRadius) && !isNaN(factoryParentRadius) ?
+        anychart.utils.normalizeSize(offsetY, factoryParentRadius) :
+        parentBounds ?
+            anychart.utils.normalizeSize(offsetY, Math.min(parentWidth, parentHeight) / 2) :
+            0;
+
+    angle += anychart.utils.normalizeSize(offsetX, sweepAngle);
+    radius += offsetRadius;
+    radiusY += offsetRadius;
+  }
+
+  var x = cx + goog.math.angleDx(angle, radius);
+  var y = cy + goog.math.angleDy(angle, radiusY);
+
+  var anchorCoordinate = anychart.utils.getCoordinateByAnchor(
+      new anychart.math.Rect(0, 0, bounds.width, bounds.height), anchor);
+
+  x -= anchorCoordinate.x;
+  y -= anchorCoordinate.y;
+
+  this.textX += x;
+  this.textY += y;
+  bounds.left = /** @type {number} */(x);
+  bounds.top = /** @type {number} */(y);
+
+  this.mergedSettings['rotation'] = this.getRotation(angle);
+  this.textElement.x(/** @type {number} */(this.textX)).y(/** @type {number} */(this.textY));
+};
+//endregion
