@@ -1261,8 +1261,6 @@ anychart.pieModule.Chart.prototype.labelsInvalidated_ = function(event) {
     signal |= anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW;
   }
 
-  console.log(state, signal);
-
   this.invalidate(state, signal);
 };
 
@@ -2431,6 +2429,7 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
   var enabled, customSettings, wasNoLabel, anchor;
   var formatProvider = this.createFormatProvider(true);
   var positionProvider = this.createPositionProvider();
+
   if (isDraw) {
     if (wasNoLabel = !label) {
       label = /** @type {anychart.core.utils.CircularLabelsFactory.Label} */(this.labelsFactory_.add(index));
@@ -2449,7 +2448,8 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
     anchor = iterator.meta('anchor');
     if (goog.isDef(anchor))
       customSettings['anchor'] = anchor;
-    label.settings([customSettings]);
+
+    label.settings().unshift(customSettings);
 
     if (!wasNoLabel)
       label.draw();
@@ -2468,6 +2468,7 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
     anchor = iterator.meta('anchor');
     if (goog.isDef(anchor))
       customSettings['anchor'] = anchor;
+
     label.settings([customSettings]);
   }
   if (opt_updateConnector)
@@ -2624,8 +2625,6 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
 
     var bounds = this.labelsFactory_.measureWithTransform(this.measureLabel_, null, null, index);
 
-    console.log(bounds);
-
     var singlePiePoint = ((iterator.getRowsCount() == 1 || sweep == 360) && !this.innerRadiusValue_);
     var notIntersectStartLine = singlePiePoint || !anychart.math.checkRectIntersectionWithSegment(ax, ay, cx, cy, bounds);
     var notIntersectEndLine = singlePiePoint || !anychart.math.checkRectIntersectionWithSegment(cx, cy, bx, by, bounds);
@@ -2646,8 +2645,6 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
       goog.isNull(labelEnabled) ?
           normalSettings.enabled() :
           labelEnabled;
-
-  console.log(isDraw, isFitToSlice);
 
   if (isDraw && isFitToSlice) {
     if (!label)

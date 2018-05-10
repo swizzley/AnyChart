@@ -126,10 +126,11 @@ anychart.core.utils.LabelsFactory.prototype.getDimension = function(formatProvid
   var parentHeight;
   var formatProvider;
   var positionProvider;
-  var defaultSettings = opt_settings || {};
+
+  var isLabel = anychart.utils.instanceOf(formatProviderOrLabel, anychart.core.utils.LabelsFactory.Label);
 
   //define parent bounds
-  var parentBounds = /** @type {anychart.math.Rect} */(defaultSettings['parentBounds']);
+  var parentBounds = /** @type {anychart.math.Rect} */(isLabel ? formatProviderOrLabel.parentBounds() : opt_settings || opt_settings['parentBounds']);
   if (parentBounds) {
     parentWidth = parentBounds.width;
     parentHeight = parentBounds.height;
@@ -167,38 +168,28 @@ anychart.core.utils.LabelsFactory.prototype.getDimension = function(formatProvid
     measureLabel = this.measureCustomLabel_;
     textElement = this.measureTextElement_;
 
+    var labelSettings = [];
     if (anychart.utils.instanceOf(formatProviderOrLabel, anychart.core.utils.LabelsFactory.Label)) {
       var label = (/** @type {anychart.core.ui.Label} */(formatProviderOrLabel));
-      measureLabel.setup(label.getMergedSettings());
+      labelSettings.push(label.getMergedSettings());
       formatProvider = label.formatProvider();
       positionProvider = opt_positionProvider || label.positionProvider() || {'value': {'x': 0, 'y': 0}};
     } else {
       formatProvider = formatProviderOrLabel;
       positionProvider = opt_positionProvider || {'value': {'x': 0, 'y': 0}};
     }
-    measureLabel.setup(opt_settings);
+    labelSettings.unshift(opt_settings);
+    measureLabel.settings(labelSettings);
+
     isHtml = measureLabel.getFinalSettings('useHtml');
-    if (!goog.isDef(isHtml))
-      isHtml = defaultSettings['useHtml'];
+    padding = measureLabel.getFinalSettings('padding');
+    widthSettings = measureLabel.getFinalSettings('width') || 0;
+    heightSettings = measureLabel.getFinalSettings('height') || 0;
+    offsetY = /** @type {number|string} */(measureLabel.getFinalSettings('offsetY')) || 0;
+    offsetX = /** @type {number|string} */(measureLabel.getFinalSettings('offsetX')) || 0;
+    anchor = /** @type {string} */(measureLabel.getFinalSettings('anchor'));
+    format = /** @type {Function|string} */(measureLabel.getFinalSettings('format'));
 
-    var labelPadding = !goog.object.isEmpty(measureLabel.ownSettings['padding']) || !goog.object.isEmpty(measureLabel.themeSettings['padding']) ?
-        measureLabel.padding() : void 0;
-
-    padding = labelPadding || defaultSettings['padding'] || null;
-    widthSettings = measureLabel.getFinalSettings('width');
-
-    if (!goog.isDef(widthSettings))
-      widthSettings = defaultSettings['width'] || 0;
-    heightSettings = measureLabel.getFinalSettings('height');
-    if (!goog.isDef(heightSettings))
-      heightSettings = defaultSettings['height'] || 0;
-
-    offsetY = /** @type {number|string} */(measureLabel.getFinalSettings('offsetY')) || defaultSettings['offsetY'] || 0;
-    offsetX = /** @type {number|string} */(measureLabel.getFinalSettings('offsetX')) || defaultSettings['offsetX'] || 0;
-    anchor = /** @type {string} */(measureLabel.getFinalSettings('anchor') || defaultSettings['anchor']);
-    format = /** @type {Function|string} */(measureLabel.getFinalSettings('format')) || defaultSettings['format'];
-
-    measureLabel.applyTextSettings(textElement, true, defaultSettings);
     measureLabel.applyTextSettings(textElement, false);
   }
   if (!(anychart.utils.instanceOf(padding, anychart.core.utils.Padding)))
@@ -249,7 +240,8 @@ anychart.core.utils.LabelsFactory.prototype.getDimension = function(formatProvid
 
   if (goog.isDef(textHeight)) textElement.height(textHeight);
 
-  var formattedPosition = goog.object.clone(defaultSettings['positionFormatter'].call(positionProvider, positionProvider));
+  var positionFormatter = measureLabel.getFinalSettings('positionFormatter');
+  var formattedPosition = goog.object.clone(positionFormatter.call(positionProvider, positionProvider));
 
   return this.getDimensionInternal(outerBounds, formattedPosition, parentBounds, offsetX, offsetY, anchor);
 };
