@@ -1492,6 +1492,12 @@ anychart.pieModule.Chart.prototype.calculateOutsideLabels = function() {
       label.enabled(false);
     }
 
+    // var bounds = this.getLabelBounds(label);
+    // var ___name = 'label_' + index;
+    // if (!this[___name]) this[___name] = this.container().rect().zIndex(1000);
+    // this[___name].setBounds(bounds);
+
+
     if (allowOverlap) {
       if (label && label.enabled() != false) {
         index = label.getIndex();
@@ -1559,13 +1565,13 @@ anychart.pieModule.Chart.prototype.calculateOutsideLabels = function() {
 
   if (!allowOverlap) {
     //@todo (blackart) for debug purpose
-    // var ___name = 'cb_';
-    // if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('green');
-    // this[___name].setBounds(this.contentBounds);
-    //
-    // var ___name = 'ppb_';
-    // if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('blue');
-    // this[___name].setBounds(this.piePlotBounds_);
+    var ___name = 'cb_';
+    if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('green');
+    this[___name].setBounds(this.contentBounds);
+
+    var ___name = 'ppb_';
+    if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('blue');
+    this[___name].setBounds(this.piePlotBounds_);
 
     var labelsToCompare = [];
     goog.array.forEachRight(/** @type {Array} */(goog.object.getValues(/** @type {Object} */(explodeLevels))), function(explodeLevel) {
@@ -1706,6 +1712,7 @@ anychart.pieModule.Chart.prototype.calcDomain = function(labels, isRightSide, op
           iterator.select(index);
 
           bounds = this.getLabelBounds(label);
+
           if (opt_labelsForComparing) {
             var c_x0 = this.connectorAnchorCoords[index * 2];
             var c_y0 = this.connectorAnchorCoords[index * 2 + 1];
@@ -1783,6 +1790,10 @@ anychart.pieModule.Chart.prototype.calcDomain = function(labels, isRightSide, op
           }
 
           if (label.enabled() != false) {
+            var ___name = 'label_' + label.getIndex();
+            if (!this[___name]) this[___name] = this.container().rect().zIndex(1000);
+            this[___name].setBounds(bounds);
+            
             if (this.recalculateBounds_) {
               var boundsForCompare = opt_explode ? this.contentBounds : this.piePlotBounds_;
 
@@ -1848,7 +1859,7 @@ anychart.pieModule.Chart.prototype.domainDefragmentation = function(domain) {
             sourcePieLabelsDomains.push(tmpDomain);
             prevDomain = tmpDomain;
           }
-          var isRightSide = label['anchor']() == anychart.enums.Anchor.LEFT_CENTER;
+          var isRightSide = label.getMergedSettings('anchor') == anychart.enums.Anchor.LEFT_CENTER;
           tmpDomain = new anychart.pieModule.Chart.PieOutsideLabelsDomain(isRightSide, this, sourcePieLabelsDomains, domain.explode);
           tmpDomain.softAddLabel(label);
         } else {
@@ -2114,7 +2125,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
   this.calculate();
   this.labelsFactory_.dropCallsCache();
   var iterator = this.getIterator();
-  var pointState, value;
+  var pointState, value, i, len;
   var rowsCount = iterator.getRowsCount();
   var mode3d = /** @type {boolean} */ (this.getOption('mode3d'));
 
@@ -2205,6 +2216,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
       this.labels().autoFontColor(themePart['autoColor']);
       this.labels()['disablePointerEvents'](themePart['disablePointerEvents']);
       this.labelsFactory_.zIndex(this.labels().zIndex());
+
       if (this.isOutsideLabels()) {
         if (this.recalculateBounds_) {
           this.radiusValue_ = this.originalRadiusValue_;
@@ -2216,7 +2228,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
           var iteration = 5;
           var error = 10;
           //todo (blackart) for debug purpose
-          // console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
+          console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
 
           for (; this.labelsRadiusOffset_ && isFinite(this.labelsRadiusOffset_) && iteration && Math.abs(this.labelsRadiusOffset_) > error;) {
             this.updateBounds();
@@ -2233,7 +2245,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
             this.calculateOutsideLabels();
             iteration--;
             //todo (blackart) for debug purpose
-            // console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
+            console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
           }
 
           this.invalidate(anychart.ConsistencyState.BOUNDS);
@@ -2318,7 +2330,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
 
     var connectorStroke = /** @type {acgraph.vector.Stroke} */ (this.getOption('connectorStroke'));
     if (this.drawnConnectors_) {
-      for (var i = 0; i < this.drawnConnectors_.length; i++) {
+      for (i = 0; i < this.drawnConnectors_.length; i++) {
         var conn = this.drawnConnectors_[i];
         if (conn)
           conn.stroke(connectorStroke);
@@ -2426,7 +2438,7 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
               normalSettings.enabled() :
           labelEnabled;
 
-  var enabled, customSettings, wasNoLabel, anchor;
+  var wasNoLabel;
   var formatProvider = this.createFormatProvider(true);
   var positionProvider = this.createPositionProvider();
 
@@ -2438,38 +2450,30 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
           .positionProvider(positionProvider)
     }
 
-    // save enabled setting for label
-    enabled = label.getFinalSettings('enabled');
-
     label.resetSettings();
-    label.settings([statePointLabel, pointLabel, statSettings, normalSettings]);
+    label.settings([
+      {'anchor': iterator.meta('anchor')},
+      label.ownSettings,
+      statePointLabel,
+      pointLabel,
+      statSettings,
+      normalSettings]);
 
-    customSettings = {'enabled': enabled};
-    anchor = iterator.meta('anchor');
-    if (goog.isDef(anchor))
-      customSettings['anchor'] = anchor;
-
-    label.settings().unshift(customSettings);
-
+    label.getMergedSettings();
+    
     if (!wasNoLabel)
       label.draw();
 
   } else if (label) {
-    enabled = label.getFinalSettings('enabled');
     label.clear();
-    label.settings([{'enabled': enabled}]);
   } else {
     label = /** @type {anychart.core.utils.CircularLabelsFactory.Label} */(this.labelsFactory_.add(index));
     label
         .formatProvider(formatProvider)
         .positionProvider(positionProvider);
 
-    customSettings = {'enabled': false};
-    anchor = iterator.meta('anchor');
-    if (goog.isDef(anchor))
-      customSettings['anchor'] = anchor;
-
-    label.settings([customSettings]);
+    label.enabled(false);
+    label.settings([{'anchor': iterator.meta('anchor')}, label.ownSettings]);
   }
   if (opt_updateConnector)
     this.updateConnector_(/** @type {anychart.core.utils.CircularLabelsFactory.Label}*/(label), isDraw);
@@ -2653,7 +2657,7 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
     label.positionProvider(positionProvider);
 
     label.resetSettings();
-    label.settings([label, statePointLabel, pointLabel, stateSettings, normalSettings]);
+    label.settings([label.ownSettings, statePointLabel, pointLabel, stateSettings, normalSettings]);
 
     //todo: this shit should be reworked when labelsFactory will be reworked
     //if usual label isn't disabled and not drawn then it doesn't have container and hover label doesn't know nothing

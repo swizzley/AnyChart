@@ -183,8 +183,8 @@ anychart.core.utils.LabelsFactory.prototype.getDimension = function(formatProvid
 
     isHtml = measureLabel.getFinalSettings('useHtml');
     padding = measureLabel.getFinalSettings('padding');
-    widthSettings = measureLabel.getFinalSettings('width') || 0;
-    heightSettings = measureLabel.getFinalSettings('height') || 0;
+    widthSettings = measureLabel.getFinalSettings('width') || null;
+    heightSettings = measureLabel.getFinalSettings('height') || null;
     offsetY = /** @type {number|string} */(measureLabel.getFinalSettings('offsetY')) || 0;
     offsetX = /** @type {number|string} */(measureLabel.getFinalSettings('offsetX')) || 0;
     anchor = /** @type {string} */(measureLabel.getFinalSettings('anchor'));
@@ -660,6 +660,10 @@ anychart.core.utils.LabelsFactory.Label.prototype.getFinalSettings = function(va
 };
 
 
+/** @inheritDoc */
+anychart.core.utils.LabelsFactory.Label.prototype.getOption = anychart.core.utils.LabelsFactory.Label.prototype.getFinalSettings;
+
+
 /**
  * Drawing plans iterator.
  * @param {Function} processor .
@@ -897,6 +901,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.createSizeMeasureElement_ = fu
  * Resets label to the initial state, but leaves DOM elements intact, but without the parent.
  */
 anychart.core.utils.LabelsFactory.Label.prototype.clear = function() {
+  this.ownSettings = {};
   this.resetSettings();
   if (this.layer_) {
     this.layer_.parent(null);
