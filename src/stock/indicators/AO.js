@@ -36,7 +36,7 @@ anychart.stockModule.indicators.AO = function(args) {
    */
   this.maType_ = anychart.enums.normalizeMovingAverageType(args[4], anychart.enums.MovingAverageType.SMA);
 
-  this.declareSeries('main', args[5]);
+  this.declareSeries('main', args[5], anychart.enums.StockSeriesType.STICK);
   this.init();
 };
 goog.inherits(anychart.stockModule.indicators.AO, anychart.stockModule.indicators.Base);
@@ -60,7 +60,9 @@ anychart.stockModule.indicators.AO.prototype.createNameForSeries = function(seri
  * @return {anychart.stockModule.indicators.AO|anychart.stockModule.Series}
  */
 anychart.stockModule.indicators.AO.prototype.series = function(opt_type) {
-  return /** @type {anychart.stockModule.indicators.AO|anychart.stockModule.Series} */(this.seriesInternal('main', opt_type));
+  return /** @type {anychart.stockModule.indicators.AO|anychart.stockModule.Series} */(
+      this.seriesInternal('main', opt_type)
+  );
 };
 
 
