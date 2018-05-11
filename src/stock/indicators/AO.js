@@ -30,7 +30,7 @@ anychart.stockModule.indicators.AO = function(args) {
   this.slowPeriod_ = anychart.utils.normalizeToNaturalNumber(args[3], 34, false);
 
   /**
-   * K smooth type.
+   * MA type.
    * @type {anychart.enums.MovingAverageType}
    * @private
    */
