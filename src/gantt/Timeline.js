@@ -3585,7 +3585,7 @@ anychart.ganttModule.TimeLine.prototype.getInteractivityEvent = function(event) 
     var ratio = Math.abs(bounds.left - event.offsetX) / (bounds.width);
     var timestamp = this.scale().ratioToTimestamp(ratio);
 
-    var domTarget = event.domTarget;
+    var domTarget = /** @type {goog.events.Event} */ (event)['domTarget'];
     var elType;
     if (domTarget && domTarget.tag && goog.isDef(domTarget.tag.type)) {
       elType = domTarget.tag.type;

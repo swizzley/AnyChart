@@ -5,6 +5,7 @@ goog.require('anychart.compatibility');
 goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.Background');
+goog.require('anychart.core.ui.HTMLTooltip');
 goog.require('anychart.core.ui.Label');
 goog.require('anychart.core.ui.Separator');
 goog.require('anychart.core.ui.Title');
@@ -134,6 +135,12 @@ anychart.core.ui.Tooltip = function(capability) {
    */
   this.tooltipContainer_ = null;
 
+  /**
+   * HTML-tooltip.
+   * @type {anychart.core.ui.HTMLTooltip}
+   */
+  this.htmlTooltip = null;
+
   anychart.utils.tooltipsRegistry[String(goog.getUid(this))] = this;
 
   anychart.core.settings.createTextPropertiesDescriptorsMeta(this.descriptorsMeta,
@@ -143,6 +150,12 @@ anychart.core.ui.Tooltip = function(capability) {
       anychart.Signal.NEEDS_REDRAW,
       this.resetBoundsCache);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['useHtml', //this overrides 'useHtml' of TEXT_PROPERTY_DESCRIPTORS
+      anychart.core.ui.Tooltip.TOOLTIP_BOUNDS_STATE | anychart.ConsistencyState.CONTAINER,
+      anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_UPDATE_TOOLTIP,
+      void 0,
+      this.beforeUseHtmlHook
+    ],
     ['width',
       anychart.core.ui.Tooltip.TOOLTIP_BOUNDS_STATE,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
@@ -238,7 +251,8 @@ anychart.core.ui.Tooltip.TOOLTIP_BOUNDS_STATE =
  */
 anychart.core.ui.Tooltip.prototype.SUPPORTED_SIGNALS =
     anychart.core.VisualBase.prototype.SUPPORTED_SIGNALS |
-    anychart.Signal.ENABLED_STATE_CHANGED;
+    anychart.Signal.ENABLED_STATE_CHANGED |
+    anychart.Signal.NEEDS_UPDATE_TOOLTIP; //This signal literally means that HTML-tooltip must be used.
 
 
 /**
@@ -629,11 +643,34 @@ anychart.core.ui.Tooltip.prototype.getTooltipContainer = function() {
 
 //endregion
 //region -- Internal public API (not exported).
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Internal public API (not exported).
-//
-//----------------------------------------------------------------------------------------------------------------------
+/**
+ * @inheritDoc
+ */
+anychart.core.ui.Tooltip.prototype.checkDrawingNeeded = function() {
+  if (this.isConsistent() || this.isDisposed())
+    return false;
+
+  if (!this.enabled()) {
+    if (this.hasInvalidationState(anychart.ConsistencyState.ENABLED)) {
+      this.remove();
+      this.markConsistent(anychart.ConsistencyState.ENABLED);
+      this.invalidate(anychart.ConsistencyState.CONTAINER);
+    }
+    return false;
+  } else if (this.getOption('useHtml')) {
+
+  } else if (!this.container()) {
+    this.remove(); // It should be removed if it was drawn.
+    this.markConsistent(anychart.ConsistencyState.CONTAINER);
+    if (!this.originalContainer_)
+      anychart.core.reporting.error(anychart.enums.ErrorCode.CONTAINER_NOT_SET);
+    return false;
+  }
+  this.markConsistent(anychart.ConsistencyState.ENABLED);
+  return true;
+};
+
+
 /**
  * Draw tooltip.
  * @return {anychart.core.ui.Tooltip}
@@ -641,7 +678,8 @@ anychart.core.ui.Tooltip.prototype.getTooltipContainer = function() {
 anychart.core.ui.Tooltip.prototype.draw = function() {
   this.updateForceInvalidation();
 
-  if (!this.checkDrawingNeeded())
+  debugger;
+  if (!this.getOption('useHtml') && !this.checkDrawingNeeded())
     return this;
 
   var background = /** @type {anychart.core.ui.Background} */(this.background());
@@ -777,7 +815,7 @@ anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, cli
     this.hideChildTooltips_([this.tooltipInUse_]);
   }
 
-  if (!this.tooltipInUse_.getRootLayer_().parent()) {
+  if ((this.getOption('useHtml') && this.tooltipInUse_.htmlTooltip.container()) || !this.tooltipInUse_.getRootLayer_().parent()) {
     this.tooltipInUse_.invalidate(anychart.ConsistencyState.CONTAINER);
   }
   this.setContainerToTooltip_(this.tooltipInUse_);
@@ -921,6 +959,9 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
 
   tooltip['x'](x);
   tooltip['y'](y);
+  if (tooltip.getOption('useHtml')) {
+    tooltip.htmlTooltip.updatePosition();
+  }
 };
 
 
@@ -1329,6 +1370,9 @@ anychart.core.ui.Tooltip.prototype.hideSelf = function(opt_force, opt_event) {
 
 /** @inheritDoc */
 anychart.core.ui.Tooltip.prototype.remove = function() {
+  if (this.getOption('useHtml')) {
+    this.htmlTooltip.remove();
+  }
   this.getRootLayer_().parent(null);
 };
 
@@ -1879,11 +1923,15 @@ anychart.core.ui.Tooltip.prototype.setContainerToTooltip_ = function(tooltip) {
         }
 
         tooltip.tooltipContainer_ = tc;
-        tooltip.getRootLayer_().parent(/** @type {acgraph.vector.ILayer} */ (tooltip.container()));
         var stage = container.getStage();
         var wrapper = stage.getDomWrapper();
-        tc.container(wrapper);
-        tc.allocTooltip(tooltip);
+        if (tooltip.getOption('useHtml')) {
+          tooltip.htmlTooltip.container(wrapper);
+        } else {
+          tooltip.getRootLayer_().parent(/** @type {acgraph.vector.ILayer} */ (tooltip.container()));
+          tc.container(wrapper);
+          tc.allocTooltip(tooltip);
+        }
         tooltip.markConsistent(anychart.ConsistencyState.CONTAINER);
       }
 
@@ -2194,6 +2242,22 @@ anychart.core.ui.Tooltip.prototype.check = function(flags) {
 /** @inheritDoc */
 anychart.core.ui.Tooltip.prototype.isResolvable = function() {
   return true;
+};
+
+
+//endregion
+//region -- HTML treating.
+/**
+ * 'useHtml' before invalidation hook.
+ */
+anychart.core.ui.Tooltip.prototype.beforeUseHtmlHook = function() {
+  if (this.getOption('useHtml')) {
+    if (!this.htmlTooltip)
+      this.htmlTooltip = new anychart.core.ui.HTMLTooltip(this);
+  } else {
+    if (this.htmlTooltip)
+      this.htmlTooltip.remove();
+  }
 };
 
 
