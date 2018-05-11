@@ -1224,6 +1224,8 @@ anychart.pieModule.Chart.prototype.getLabelBounds = function(label) {
   if (!this.labelsBoundsCache_) this.labelsBoundsCache_ = [];
   var index = label.getIndex();
   if (!this.labelsBoundsCache_[index]) {
+    console.log(this.labels());
+
     var bounds = this.labelsFactory_.measureWithTransform(label, null, this.labels().getOptions());
     this.labelsBoundsCache_[index] = anychart.math.Rect.fromCoordinateBox(bounds);
   }
