@@ -23,6 +23,7 @@ goog.require('goog.math.Coordinate');
  * @constructor
  * @extends {anychart.core.VisualBase}
  * @implements {anychart.core.IFactoryElement}
+ * @implements {anychart.core.settings.IObjectWithSettings}
  */
 anychart.core.Label = function() {
   anychart.core.Label.base(this, 'constructor');
@@ -357,16 +358,10 @@ anychart.core.Label.prototype.hasOwnOption = function(name) {
 
 
 /**
- * @override
- * @param {string} name
- * @return {*}
+ * @return {Array.<Object>}
  */
-anychart.core.Label.prototype.getOption = function(name) {
-  this.updateComplexSettings();
-  return goog.isDefAndNotNull(this.ownSettings[name]) ?
-      this.ownSettings[name] :
-      goog.isDefAndNotNull(this.autoSettings[name]) ?
-          this.autoSettings[name] : this.themeSettings[name];
+anychart.core.Label.prototype.getResolutionChain = function() {
+  return [this.ownSettings, this.autoSettings, this.themeSettings];
 };
 
 
@@ -381,23 +376,63 @@ anychart.core.Label.prototype.getOptions = function() {
   var settingsNames = anychart.core.utils.LabelsFactory.Label.settingsFieldsForMerge;
   for (var i = 0, len = settingsNames.length; i < len; i++) {
     var name = settingsNames[i];
-    result[name] = goog.isDefAndNotNull(this.ownSettings[name]) ?
-        this.ownSettings[name] :
-        goog.isDefAndNotNull(this.autoSettings[name]) ?
-            this.autoSettings[name] : this.themeSettings[name];
+
+    var finalSettings = this.getOption(name);
+
+    if (name == 'adjustFontSize') {
+      result['adjustByWidth'] = finalSettings.width;
+      result['adjustByHeight'] = finalSettings.height;
+    } else {
+      result[name] = finalSettings;
+    }
   }
-  return result;
+  return this.mergedSettings = result;
 };
 
 
 /**
- * Returns own and auto option value.
- * @param {string} name
+ * @override
+ * @param {string} value
  * @return {*}
  */
-anychart.core.Label.prototype.getOwnAndAutoOption = function(name) {
-  this.updateComplexSettings();
-  return this.ownSettings[name];
+anychart.core.Label.prototype.getOption = function(value) {
+  // if (this.mergedSettings) {
+  //   return this.mergedSettings[value];
+  // }
+
+  if (value == 'adjustFontSize') {
+    var adjustByWidth = this.resolveOption(value, function(value) {
+      return value.width;
+    });
+    var adjustByHeight = this.resolveOption(value, function(value) {
+      return value.height;
+    });
+    return {width: adjustByWidth, height: adjustByHeight};
+  } else {
+    // var finalSetting = this.resolveOption(value);
+    // var result;
+    // if (value == 'padding') {
+    //   result = new anychart.core.utils.Padding();
+    //   result.setup(finalSetting);
+    // } else if (value == 'background') {
+    //   result = new anychart.core.ui.Background();
+    //   result.setup(finalSetting);
+    // } else {
+    //   result = finalSetting;
+    // }
+    return this.resolveOption(value);
+  }
+};
+
+
+/**
+ * Settings resolver.
+ * @param {string} field .
+ * @param {Function=} opt_handler .
+ * @return {*}
+ */
+anychart.core.Label.prototype.resolveOption = function(field, opt_handler) {
+  return anychart.core.utils.LabelsFactory.Label.iterateSettings(this.getResolutionChain(), field, opt_handler);
 };
 
 

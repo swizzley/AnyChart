@@ -530,12 +530,19 @@ anychart.core.utils.LabelsFactory.Label.prototype.settings = function(opt_value)
   if (goog.isDef(opt_value)) {
     this.settings_ = opt_value ? goog.array.slice(opt_value, 0) : opt_value;
 
-    this.invalidate(
-        anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
+    this.invalidate(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
         anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW);
   }
 
   return this.settings_;
+};
+
+
+/**
+ * @return {Array.<anychart.core.utils.LabelsFactory.Label|Object>}
+ */
+anychart.core.utils.LabelsFactory.Label.prototype.getResolutionChain = function() {
+  return this.settings();
 };
 
 
@@ -545,12 +552,12 @@ anychart.core.utils.LabelsFactory.Label.prototype.settings = function(opt_value)
  * @return {boolean} .
  */
 anychart.core.utils.LabelsFactory.Label.prototype.checkInvalidationState = function(state) {
-  return /** @type {boolean} */(this.iterateSettings_(function(stateOrStateName, settings) {
-    if (anychart.utils.instanceOf(settings, anychart.core.utils.LabelsFactory.Label)) {
-      if (settings.hasInvalidationState(state))
+  return /** @type {boolean} */(anychart.core.utils.LabelsFactory.Label.iterateSettings(this.settings(), function(setting) {
+    if (anychart.utils.instanceOf(setting, anychart.core.utils.LabelsFactory.Label)) {
+      if (setting.hasInvalidationState(state))
         return true;
     }
-  }, true) || this.hasInvalidationState(state));
+  }) || this.hasInvalidationState(state));
 };
 
 
@@ -636,15 +643,15 @@ anychart.core.utils.LabelsFactory.Label.prototype.getFinalSettings = function(va
   if (this.mergedSettings) {
     return this.mergedSettings[value];
   } else if (value == 'adjustFontSize') {
-    var adjustByWidth = this.resolveSetting_(value, function(value) {
+    var adjustByWidth = this.resolveOption(value, function(value) {
       return value.width;
     });
-    var adjustByHeight = this.resolveSetting_(value, function(value) {
+    var adjustByHeight = this.resolveOption(value, function(value) {
       return value.height;
     });
     return {width: adjustByWidth, height: adjustByHeight};
   } else {
-    var finalSetting = this.resolveSetting_(value);
+    var finalSetting = this.resolveOption(value);
     var result;
     if (value == 'padding') {
       result = new anychart.core.utils.Padding();
@@ -662,43 +669,6 @@ anychart.core.utils.LabelsFactory.Label.prototype.getFinalSettings = function(va
 
 /** @inheritDoc */
 anychart.core.utils.LabelsFactory.Label.prototype.getOption = anychart.core.utils.LabelsFactory.Label.prototype.getFinalSettings;
-
-
-/**
- * Drawing plans iterator.
- * @param {Function} processor .
- * @param {boolean=} opt_invert .
- * @param {string=} opt_field .
- * @param {Function=} opt_handler .
- * @return {*}
- * @private
- */
-anychart.core.utils.LabelsFactory.Label.prototype.iterateSettings_ = function(processor, opt_invert, opt_field, opt_handler) {
-  var iterator = opt_invert ? goog.array.forEachRight : goog.array.forEach;
-
-  var result = void 0;
-  var settings = this.settings();
-
-  iterator(settings, function(state, i) {
-    if (!state)
-      return;
-
-    var processedSetting = processor.call(this, state, i, opt_field, opt_handler);
-    if (goog.isDef(processedSetting)) {
-      if (goog.typeOf(processedSetting) == 'object' && !anychart.utils.instanceOf(processedSetting, goog.Disposable)) {
-        if (goog.isDefAndNotNull(result)) {
-          opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
-        } else {
-          result = goog.object.clone(processedSetting);
-        }
-      } else {
-        result = processedSetting;
-      }
-    }
-  }, this);
-
-  return result;
-};
 
 
 /**
@@ -729,15 +699,53 @@ anychart.core.utils.LabelsFactory.Label.normalizeAdjustFontSize = function(opt_v
 
 
 /**
+ * Iterate settings.
+ * @param {Array=} settings .
+ * @param {string=} opt_field .
+ * @param {Function=} opt_handler .
+ * @param {Function} opt_processor .
+ * @param {boolean=} opt_invert .
+ * @return {*}
+ */
+anychart.core.utils.LabelsFactory.Label.iterateSettings = function(settings, opt_field, opt_handler, opt_processor, opt_invert) {
+  var invert = goog.isDef(opt_invert) ? opt_invert : true;
+  var settingsIterator = invert ? goog.array.forEachRight : goog.array.forEach;
+  var processor = opt_processor || anychart.core.utils.LabelsFactory.Label.defaultSettingsProcessor;
+
+  var result = void 0;
+
+  settingsIterator(settings, function(setting, i) {
+    if (!setting)
+      return;
+
+    var processedSetting = processor(setting, i, opt_field, opt_handler);
+
+    if (goog.isDef(processedSetting)) {
+      if (goog.typeOf(processedSetting) == 'object' && !anychart.utils.instanceOf(processedSetting, goog.Disposable)) {
+        if (goog.isDefAndNotNull(result)) {
+          opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
+        } else {
+          result = goog.object.clone(processedSetting);
+        }
+      } else {
+        result = processedSetting;
+      }
+    }
+  });
+
+  return result;
+};
+
+
+/**
  * Default function for processing settings.
  * @param {anychart.core.utils.LabelsFactory.Label|Object} settings
  * @param {number} index
  * @param {string} field
  * @param {Function=} opt_handler
  * @return {*}
- * @private
  */
-anychart.core.utils.LabelsFactory.Label.defaultSettingsProcessor_ = function(settings, index, field, opt_handler) {
+anychart.core.utils.LabelsFactory.Label.defaultSettingsProcessor = function(settings, index, field, opt_handler) {
   var setting;
 
   if (anychart.utils.instanceOf(settings, anychart.core.Label)) {
@@ -772,10 +780,9 @@ anychart.core.utils.LabelsFactory.Label.defaultSettingsProcessor_ = function(set
  * @param {string} field
  * @param {Function=} opt_handler
  * @return {*}
- * @private
  */
-anychart.core.utils.LabelsFactory.Label.prototype.resolveSetting_ = function(field, opt_handler) {
-  return this.iterateSettings_(anychart.core.utils.LabelsFactory.Label.defaultSettingsProcessor_, true, field, opt_handler);
+anychart.core.utils.LabelsFactory.Label.prototype.resolveOption = function(field, opt_handler) {
+  return anychart.core.utils.LabelsFactory.Label.iterateSettings(this.getResolutionChain(), field, opt_handler);
 };
 
 
@@ -882,14 +889,14 @@ anychart.core.utils.LabelsFactory.Label.prototype.createSizeMeasureElement_ = fu
   if (isHtml) this.fontSizeMeasureElement_.htmlText(goog.isDef(text) ? String(text) : '');
   else this.fontSizeMeasureElement_.text(goog.isDef(text) ? String(text) : '');
 
-  this.iterateSettings_(function(state, settings, index) {
+  anychart.core.utils.LabelsFactory.Label.iterateSettings(this.settings(), void 0, void 0, function(state, settings, index) {
     var isInit = index == 0;
     if (anychart.utils.instanceOf(settings, anychart.core.utils.LabelsFactory.Label)) {
       this.applyTextSettings.call(settings, this.fontSizeMeasureElement_, isInit);
     } else {
       this.applyTextSettings(this.fontSizeMeasureElement_, isInit, settings);
     }
-  }, true);
+  });
 
   return this.fontSizeMeasureElement_;
 };
@@ -1054,6 +1061,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.applyTextSettings = function(t
 anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
   var factory = this.factory_;
   var mergedSettings;
+  var iterateSettings = anychart.core.utils.LabelsFactory.Label.iterateSettings;
 
   if (!this.layer_)
     this.layer_ = acgraph.layer();
@@ -1064,7 +1072,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
 
   var enabled = mergedSettings['enabled'];
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.ENABLED)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.ENABLED)) {
     if (!enabled) {
       if (this.layer_) this.layer_.parent(null);
       this.markConsistent(anychart.ConsistencyState.ALL);
@@ -1079,7 +1087,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
   if (!enabled)
     return this;
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.CONTAINER)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
     if (this.container())
       this.layer_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
     this.markConsistent(anychart.ConsistencyState.CONTAINER);
@@ -1095,7 +1103,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
     this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CACHE);
   }
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
     var formatProvider = this.formatProvider();
     var text = factory.callFormat(mergedSettings['format'], formatProvider, this.getIndex());
 
@@ -1134,13 +1142,13 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
 
     //define parent bounds
     var parentWidth, parentHeight;
-    this.finalParentBounds = /** @type {anychart.math.Rect} */(this.iterateSettings_(function(state, settings) {
-      if (anychart.utils.instanceOf(settings, anychart.core.utils.LabelsFactory.Label/**/)) {
+    this.finalParentBounds = /** @type {anychart.math.Rect} */(iterateSettings(this.settings(), void 0, void 0, function(setting) {
+      if (anychart.utils.instanceOf(setting, anychart.core.utils.LabelsFactory.Label/**/)) {
         var parentBounds = settings.parentBounds();
         if (parentBounds)
           return parentBounds;
       }
-    }, true));
+    }));
 
     if (!this.finalParentBounds) {
       if (factory.container()) {
@@ -1256,10 +1264,10 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
             mergedSettings['adjustByWidth'],
             mergedSettings['adjustByHeight']);
       } else {
-        calculatedFontSize = this.iterateSettings_(function(state, settings) {
-          if (anychart.utils.instanceOf(settings, anychart.core.utils.LabelsFactory.Label)) {
-            if (goog.isDef(settings.autoSettings['fontSize']))
-              return settings.autoSettings['fontSize'];
+        calculatedFontSize = iterateSettings(this.settings(), void 0, function(setting) {
+          if (anychart.utils.instanceOf(setting, anychart.core.utils.LabelsFactory.Label)) {
+            if (goog.isDef(setting.autoSettings['fontSize']))
+              return setting.autoSettings['fontSize'];
           }
         }, true);
       }
@@ -1305,7 +1313,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
     this.markConsistent(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS);
   }
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_POSITION)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_POSITION)) {
     this.drawLabel(this.bounds_, this.finalParentBounds);
 
     if (isBackgroundEnabled) {
@@ -1325,7 +1333,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
     this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CONNECTOR);
   }
 
-  if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CLIP)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CLIP)) {
     var settings = this.getMergedSettings();
     var clipSettings = settings['clip'];
 
@@ -1334,7 +1342,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
       if (anychart.utils.instanceOf(clipSettings, acgraph.vector.Element)) {
         clip = clipSettings;
       } else {
-        clip = /** @type {anychart.math.Rect} */(this.iterateSettings_(function(settings, index, field) {
+        clip = /** @type {anychart.math.Rect} */(iterateSettings(this.settings(), 'clipElement', void 0, function(settings, index, field) {
           var parentBounds;
           if (anychart.utils.instanceOf(settings, anychart.core.utils.LabelsFactory.Label)) {
             parentBounds = settings[field]();
@@ -1342,7 +1350,7 @@ anychart.core.utils.LabelsFactory.Label.prototype.draw = function() {
             parentBounds = settings[field];
           }
           return parentBounds;
-        }, true, 'clipElement'));
+        }));
       }
     }
     this.layer_.clip(clip);
