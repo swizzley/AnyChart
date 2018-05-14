@@ -194,6 +194,17 @@ anychart.core.ui.HTMLTooltip.prototype.titleText = function(opt_value) {
  * Updates tooltip position.
  * @return {anychart.core.ui.HTMLTooltip}
  */
+anychart.core.ui.HTMLTooltip.prototype.updateTexts = function() {
+  this.titleText(/** @type {string} */ (this.tooltip_.title().autoText()));
+  this.contentText(/** @type {string} */ (this.tooltip_.contentInternal().text()));
+  return this;
+};
+
+
+/**
+ * Updates tooltip position.
+ * @return {anychart.core.ui.HTMLTooltip}
+ */
 anychart.core.ui.HTMLTooltip.prototype.updatePosition = function() {
   goog.style.setPosition(this.getElement(),
       /** @type {number} */ (this.tooltip_.getOption('x')),
@@ -223,6 +234,7 @@ anychart.core.ui.HTMLTooltip.prototype.visible = function(opt_value) {
  * @return {!goog.math.Size}
  */
 anychart.core.ui.HTMLTooltip.prototype.getSize = function() {
+  console.log('Gettings tooltip size');
   return goog.style.getSize(this.getElement());
 };
 
@@ -233,13 +245,15 @@ anychart.core.ui.HTMLTooltip.prototype.getSize = function() {
  * @return {anychart.core.ui.HTMLTooltip|Element}
  */
 anychart.core.ui.HTMLTooltip.prototype.container = function(opt_value) {
-  if (this.container_ != opt_value) {
-    if (goog.isNull(opt_value)) {
-      this.remove();
-    } else {
-      this.container_ = /** @type {Element} */ (opt_value);
-      goog.dom.appendChild(this.container_, this.getElement());
-      return this;
+  if (goog.isDef(opt_value)) {
+    if (this.container_ != opt_value) {
+      if (goog.isNull(opt_value)) {
+        this.remove();
+      } else {
+        this.container_ = /** @type {Element} */ (opt_value);
+        goog.dom.appendChild(this.container_, this.getElement());
+        return this;
+      }
     }
   }
   return this.container_;
@@ -252,6 +266,7 @@ anychart.core.ui.HTMLTooltip.prototype.container = function(opt_value) {
 anychart.core.ui.HTMLTooltip.prototype.remove = function() {
   if (this.baseDiv_) {
     goog.dom.removeNode(this.baseDiv_);
+    this.container_ = null;
   }
 };
 
