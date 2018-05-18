@@ -1225,9 +1225,14 @@ anychart.core.ui.Tooltip.prototype.getFormattedTitle = function(contextProvider)
  */
 anychart.core.ui.Tooltip.prototype.getFormattedContent_ = function(contextProvider, opt_useUnionFormatter) {
   if (this.getOption('displayMode') === anychart.enums.TooltipDisplayMode.SEPARATED) {
-    var dataSource = contextProvider.storage_.dataSource;
-    var pointIndex = dataSource.currentIndex;
-    this.isMissing_ = dataSource.data_[pointIndex].meta.missing !== 0;
+    var currentPoint = contextProvider.storage_.dataSource.currentPoint_;
+
+    //this check is required for stock charts
+    if (goog.isDef(currentPoint)) {
+      this.isMissing_ = currentPoint.meta.missing !== 0;
+    } else {
+      this.isMissing_ = true;
+    }
   }
 
   contextProvider.values()['valuePrefix'] = {
