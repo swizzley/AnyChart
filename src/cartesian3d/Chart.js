@@ -539,53 +539,48 @@ anychart.cartesian3dModule.Chart.prototype.createTextMarkerInstance = function()
  * Set zIndex for point.
  * @param {anychart.core.series.Cartesian} series
  * @param {number} yPosition
- * @param {number}  directIndex
+ * @param {number} maxY
  * @private
  */
-anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, directIndex) {
-
+anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, maxY) {
   var iterator = series.getIterator();
-  var isXinverted = this.xScale().inverted();
-  var isYinverted = this.yScale().inverted();
-  var isVertical = !!series.getOption('isVertical');
-  var value = iterator.get('value');
+  var value = anychart.utils.toNumber(iterator.get('value'));
   var xPos = iterator.getIndex();
   var yPos = yPosition + 1;
   var zPos = yPos;
-  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 10;
+  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER;
   var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
 
-  xPos = isXinverted ? iterator.getRowsCount() - xPos : xPos + 1;
-  if (isYinverted) {
+  xPos = this.xScale().inverted() ? iterator.getRowsCount() - xPos : xPos + 1;
+
+  if (this.yScale().inverted()) {
     yPos = -yPos;
   }
-
-  if (value < 0) {
+  if (0 > value) {
     yPos = -yPos;
   }
-
-  if (isVertical) {
+  if (this.getOption('zDistribution')) {
+    zIndex += inc * zPos;
+  }
+  if (!!series.getOption('isVertical')) {
     var swap = xPos;
     xPos = yPos;
     yPos = swap;
-
+    var xOffset = (1 - (1 / Math.abs(xPos)));
     if (xPos > 0) {
-      inc *= yPos + (1 - (1 / Math.abs(xPos)));
+      inc *= yPos + xOffset;
       zIndex += inc;
     } else {
-      inc *= (directIndex - yPos) + (1 - (1 / Math.abs(xPos)));
+      inc *= (maxY - yPos) + xOffset;
       zIndex -= inc;
     }
   } else {
     inc *= xPos;
     zIndex += inc;
   }
-  if (this.getOption('zDistribution')) {
-    zIndex += zPos;
-  }
-  console.log('Zindex: ' + zIndex + ' (x:y:z) ' + xPos + ':' + yPos + ":" + zPos + ' value: ' + value);
+
   iterator.meta('zIndex', zIndex);
-  iterator.meta('directIndex', 1);
+  iterator.meta('directIndex', xPos * yPos);
 };
 
 
