@@ -134,13 +134,6 @@ anychart.core.ui.Tooltip = function(capability) {
    */
   this.tooltipContainer_ = null;
 
-  /**
-   * Is the tooltip for missing point.
-   * @type {boolean}
-   * @private
-   */
-  this.isMissing_ = false;
-
   anychart.utils.tooltipsRegistry[String(goog.getUid(this))] = this;
 
   anychart.core.settings.createTextPropertiesDescriptorsMeta(this.descriptorsMeta,
@@ -651,11 +644,6 @@ anychart.core.ui.Tooltip.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
-  if (this.getOption('displayMode') === anychart.enums.TooltipDisplayMode.SEPARATED && this.isMissing_) {
-    this.remove();
-    return this;
-  }
-
   var background = /** @type {anychart.core.ui.Background} */(this.background());
   var title = this.title();
   var separator = /** @type {anychart.core.ui.Separator} */(this.separator());
@@ -1055,8 +1043,6 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
     var series = point['series'];
     var tooltip = series.tooltip();
 
-    // console.log('Shows separated tooltip');
-
     if (!tooltip.enabled())
       break;
 
@@ -1091,14 +1077,17 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
  * @param {Object=} opt_tooltipContextLoad
  */
 anychart.core.ui.Tooltip.prototype.showForSeriesPoints = function(points, clientX, clientY, hoveredSeries, opt_useUnionAsSingle, opt_tooltipContextLoad) {
-
-  // console.log('showForSeriesPoints');
-
   if ((this.tooltipContainer_ && !this.tooltipContainer_.isLocal()) &&
       this.tooltipContainer_.selectable() && !this.check(anychart.core.ui.Tooltip.Capabilities.CAN_CHANGE_DISPLAY_MODE))
     return;
 
   if (goog.array.isEmpty(points)) return;
+  for (var i = 0; i < points.length; i++) {
+    if (points[i].nearestPointToCursor.distance == Infinity) {
+      points.splice(i, 1);
+      i--;
+    }
+  }
   this.updateForceInvalidation();
 
   var dispMode = this.getOption('displayMode');
@@ -1224,17 +1213,6 @@ anychart.core.ui.Tooltip.prototype.getFormattedTitle = function(contextProvider)
  * @private
  */
 anychart.core.ui.Tooltip.prototype.getFormattedContent_ = function(contextProvider, opt_useUnionFormatter) {
-  if (this.getOption('displayMode') === anychart.enums.TooltipDisplayMode.SEPARATED) {
-    var currentPoint = contextProvider.storage_.dataSource.currentPoint_;
-
-    //this check is required for stock charts
-    if (goog.isDef(currentPoint)) {
-      this.isMissing_ = currentPoint.meta.missing !== 0;
-    } else {
-      this.isMissing_ = true;
-    }
-  }
-
   contextProvider.values()['valuePrefix'] = {
     value: this.getOption('valuePrefix') || '',
     type: anychart.enums.TokenType.STRING
