@@ -67,6 +67,7 @@ anychart.core.drawers.Column.prototype.requiredShapes = (function() {
 /** @inheritDoc */
 anychart.core.drawers.Column.prototype.drawSubsequentPoint = function(point, state) {
   var shapes = /** @type {Object.<acgraph.vector.Path>} */(this.shapesManager.getShapesGroup(state));
+
   this.drawPointShape(point, shapes['path'], shapes['hatchFill']);
 };
 
