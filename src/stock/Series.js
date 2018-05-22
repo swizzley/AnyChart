@@ -300,21 +300,46 @@ anychart.stockModule.Series.prototype.considerMetaEmpty = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_baseColor, opt_ignorePointSettings) {
+  // var source = opt_baseColor || this.getOption('color') || 'blue';
+  // if (this.supportsPointSettings()) {
+    // var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
+    // return {
+    //   'index': iterator.getIndex(),
+    //   'sourceColor': source,
+    //   'iterator': iterator,
+    //   'series': this,
+    //   'plot': this.plot,
+    //   'chart': this.chart
+    // };
+  // }
+  // return {
+  //   'sourceColor': source
+  // };
+
+  if (!this.pointProvider_)
+    this.pointProvider_ = new anychart.format.Context();
+
+  var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
+  this.pointProvider_
+      .dataSource(iterator)
+      .statisticsSources([this.getPoint(iterator.getIndex()), this]);
+
   var source = opt_baseColor || this.getOption('color') || 'blue';
-  if (this.supportsPointSettings()) {
-    var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
-    return {
-      'index': iterator.getIndex(),
-      'sourceColor': source,
-      'iterator': iterator,
-      'series': this,
-      'plot': this.plot,
-      'chart': this.chart
-    };
-  }
-  return {
-    'sourceColor': source
+  var x = iterator.getX();
+  var name = goog.isDef(iterator.get('name')) ? iterator.get('name') : x;
+  var values = {
+    'x': {value: x, type: anychart.enums.TokenType.DATE_TIME},
+    'value': {value: iterator.get('value'), type: anychart.enums.TokenType.NUMBER},
+    'index': {value: iterator.getIndex(), type: anychart.enums.TokenType.NUMBER},
+    'sourceColor': {value: source, type: anychart.enums.TokenType.UNKNOWN},
+    'iterator': {value: iterator, type: anychart.enums.TokenType.UNKNOWN},
+    'plot': {value: this.plot, type: anychart.enums.TokenType.UNKNOWN},
+    'chart': {value: this, type: anychart.enums.TokenType.UNKNOWN},
+    'name': {value: name, type: anychart.enums.TokenType.STRING},
+    'isIntersection': {value: !!iterator.meta('isIntersection'), type: anychart.enums.TokenType.STRING}
   };
+
+  return this.pointProvider_.propagate(values);
 };
 
 
