@@ -538,47 +538,54 @@ anychart.cartesian3dModule.Chart.prototype.createTextMarkerInstance = function()
 /**
  * Set zIndex for point.
  * @param {anychart.core.series.Cartesian} series
- * @param {number} directIndex
+ * @param {number} yPosition
+ * @param {number}  directIndex
  * @private
  */
-anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, directIndex) {
+anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, directIndex) {
+
   var iterator = series.getIterator();
-  var inc = directIndex * anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER;
-  var value = anychart.utils.toNumber(iterator.get('value'));
+  var isXinverted = this.xScale().inverted();
+  var isYinverted = this.yScale().inverted();
+  var isVertical = !!series.getOption('isVertical');
+  var value = iterator.get('value');
+  var xPos = iterator.getIndex();
+  var yPos = yPosition + 1;
+  var zPos = yPos;
+  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 10;
   var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
-  var yMult = this.yScale().inverted() ? -1 : 1;
-  var xMult = this.xScale().inverted() ? 1 : -1;
 
-
-  if (value >= 0) {
-    if (/** @type {boolean} */(series.getOption('isVertical'))) {
-      if (!series.planIsStacked()) {
-        if (this.getOption('zDistribution')) {
-          zIndex += inc;
-        } else {
-          zIndex -= (inc * xMult * yMult);
-        }
-      } else {
-        zIndex += (inc * yMult);
-      }
-    } else {
-      zIndex += (inc * yMult);
-    }
-
-  } else if (value < 0) {
-    if (/** @type {boolean} */(series.getOption('isVertical'))) {
-      zIndex -= (inc * xMult * yMult);
-    } else {
-      if (!series.planIsStacked()) {
-        zIndex += inc;
-      } else {
-        zIndex -= (inc * yMult);
-      }
-    }
+  xPos = isXinverted ? iterator.getRowsCount() - xPos : xPos + 1;
+  if (isYinverted) {
+    yPos = -yPos;
   }
 
+  if (value < 0) {
+    yPos = -yPos;
+  }
+
+  if (isVertical) {
+    var swap = xPos;
+    xPos = yPos;
+    yPos = swap;
+
+    if (xPos > 0) {
+      inc *= yPos + (1 - (1 / Math.abs(xPos)));
+      zIndex += inc;
+    } else {
+      inc *= (directIndex - yPos) + (1 - (1 / Math.abs(xPos)));
+      zIndex -= inc;
+    }
+  } else {
+    inc *= xPos;
+    zIndex += inc;
+  }
+  if (this.getOption('zDistribution')) {
+    zIndex += zPos;
+  }
+  console.log('Zindex: ' + zIndex + ' (x:y:z) ' + xPos + ':' + yPos + ":" + zPos + ' value: ' + value);
   iterator.meta('zIndex', zIndex);
-  iterator.meta('directIndex', directIndex);
+  iterator.meta('directIndex', 1);
 };
 
 
@@ -601,7 +608,7 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
         if (series.isDiscreteBased()) {
           var iterator = series.getResetIterator();
           while (iterator.advance()) {
-            this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i);
+            this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length);
           }
         } else if (series.supportsStack()) {
           this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
