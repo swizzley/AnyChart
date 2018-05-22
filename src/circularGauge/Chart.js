@@ -153,7 +153,7 @@ anychart.circularGaugeModule.Chart.prototype.rawData_;
 
 /**
  *
- * @type {!anychart.data.Iterator}
+ * @type {?anychart.data.Iterator}
  * @private
  */
 anychart.circularGaugeModule.Chart.prototype.iterator_;
@@ -322,6 +322,7 @@ anychart.circularGaugeModule.Chart.prototype.data = function(opt_value, opt_csvS
     if (this.rawData_ !== opt_value) {
       this.rawData_ = opt_value;
       goog.dispose(this.parentViewToDispose_); // disposing a view created by the series if any;
+      this.iterator_ = null; // reset iterator
       if (anychart.utils.instanceOf(opt_value, anychart.data.View))
         this.parentView_ = this.parentViewToDispose_ = opt_value.derive(); // deriving a view to avoid interference with other view users
       else if (anychart.utils.instanceOf(opt_value, anychart.data.Set))
@@ -524,7 +525,8 @@ anychart.circularGaugeModule.Chart.prototype.createPointerByType_ = function(typ
 
     var count = isKnob ? this.knobCounter_++ : this.pointerCounter_++;
 
-    var pointerZIndex = anychart.circularGaugeModule.Chart.ZINDEX_POINTER + anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER * count;
+    var pointerZIndex = isKnob ? anychart.circularGaugeModule.Chart.ZINDEX_KNOB : anychart.circularGaugeModule.Chart.ZINDEX_POINTER;
+    pointerZIndex += anychart.circularGaugeModule.Chart.ZINDEX_MULTIPLIER * count;
 
     instance.autoIndex(index);
     instance.autoDataIndex(count);
@@ -652,6 +654,8 @@ anychart.circularGaugeModule.Chart.prototype.removeAllPointers = function() {
     this.knobs_ = [];
     this.markers_ = [];
     this.needles_ = [];
+    this.pointerCounter_ = 0;
+    this.knobCounter_ = 0;
     goog.disposeAll(pointers);
     this.invalidate(anychart.ConsistencyState.GAUGE_POINTERS |
         anychart.ConsistencyState.GAUGE_SCALE,
@@ -1370,6 +1374,7 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
       axis.scale().finishAutoCalc();
     });
 
+    this.invalidatePointerBounds();
     this.invalidate(anychart.ConsistencyState.GAUGE_AXES);
     this.invalidate(anychart.ConsistencyState.GAUGE_AXIS_MARKERS);
     this.markConsistent(anychart.ConsistencyState.GAUGE_SCALE);
@@ -1390,10 +1395,7 @@ anychart.circularGaugeModule.Chart.prototype.drawContent = function(bounds) {
       if (axis) axis.invalidate(anychart.ConsistencyState.BOUNDS);
     }
 
-    for (i = 0, len = pointers.length; i < len; i++) {
-      pointer = pointers[i];
-      if (pointer) pointer.invalidate(anychart.ConsistencyState.BOUNDS);
-    }
+    this.invalidatePointerBounds();
 
     for (i = 0, len = this.ranges_.length; i < len; i++) {
       range = this.ranges_[i];
