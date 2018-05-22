@@ -1083,7 +1083,7 @@ anychart.core.ui.Tooltip.prototype.showForSeriesPoints = function(points, client
 
   if (goog.array.isEmpty(points)) return;
   for (var i = 0; i < points.length; i++) {
-    if (points[i].nearestPointToCursor.distance == Infinity) {
+    if (goog.isDef(points[i]['nearestPointToCursor']) && points[i]['nearestPointToCursor']['distance'] == Infinity) {
       points.splice(i, 1);
       i--;
     }
