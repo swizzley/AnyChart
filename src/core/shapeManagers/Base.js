@@ -55,6 +55,12 @@ anychart.core.shapeManagers.Base = function(series, config, interactive, opt_sha
   this.addInterctivityInfo = interactive;
 
   /**
+   *
+   * @type {Object}
+   */
+  this.colors = {};
+
+  /**
    * Used shapes by type.
    * @type {!Object.<string, !Array.<acgraph.vector.Shape>>}
    */
@@ -310,6 +316,12 @@ anychart.core.shapeManagers.Base.prototype.getShapesGroup = function(state, opt_
   } else {
     indexOrGlobal = true;
   }
+  // if (this.series.getType() == 'column') {
+  //   console.log(names);
+  //   debugger;
+  // }
+
+
   for (var name in names) {
     var descriptor = names[name];
     if (descriptor.shapeType == anychart.enums.ShapeType.NONE && opt_shape) {

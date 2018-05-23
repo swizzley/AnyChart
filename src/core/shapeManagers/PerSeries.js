@@ -19,10 +19,10 @@ anychart.core.shapeManagers.PerSeries = function(series, config, interactive, op
 
   /**
    * Shapes.
-   * @type {?Object.<string, acgraph.vector.Shape>}
+   * @type {?Object.<string, Object.<name, acgraph.vector.Shape>>}
    * @private
    */
-  this.shapes_ = null;
+  this.shapes_ = {};
 
   /**
    * All shape groups, if there are more than one group.
@@ -43,50 +43,72 @@ anychart.core.shapeManagers.PerSeries.prototype.setupInteractivity = function(sh
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.clearShapes = function() {
   anychart.core.shapeManagers.PerSeries.base(this, 'clearShapes');
-  this.shapes_ = null;
-  this.prevShapes_ = null;
+  this.shapes_ = {};
+  // this.prevShapes_ = null;
+};
+
+
+anychart.core.shapeManagers.PerSeries.prototype.getPointColorHash = function(state, opt_only) {
+  var names = opt_only || this.defs;
+
+  var hash = '';
+  for (var name in names) {
+    var descriptor = this.defs[name];
+    var fill = /** @type {acgraph.vector.Fill|acgraph.vector.PatternFill} */(descriptor.fill(this.series, state));
+    var stroke = /** @type {acgraph.vector.Fill|acgraph.vector.PatternFill} */(descriptor.stroke(this.series, state));
+
+    hash += anychart.color.hash(fill) + anychart.color.hash(stroke);
+  }
+
+  return hash;
 };
 
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.getShapesGroup = function(state, opt_only, opt_baseZIndex, opt_shape) {
+  var hash = this.getPointColorHash(state, opt_only);
+
+  this.currentShapes = this.shapes_[hash];
   // we generate all shapes for the first time, because we cannot afford to vary the set
-  if (!this.shapes_) {
-    this.shapes_ = anychart.core.shapeManagers.PerSeries.base(this, 'getShapesGroup', state, null);
+  if (!this.currentShapes) {
+    this.currentShapes = this.shapes_[hash] = anychart.core.shapeManagers.PerSeries.base(this, 'getShapesGroup', state, null);
   }
-  return this.shapes_;
+
+  return this.currentShapes;
 };
 
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.addShapesGroup = function(state) {
-  if (this.shapes_) {
-    if (this.prevShapes_) {
-      this.prevShapes_.push(this.shapes_);
-    } else {
-      this.prevShapes_ = [this.shapes_];
-    }
-    this.shapes_ = null;
-  }
+  // if (this.shapes_) {
+  //   if (this.prevShapes_) {
+  //     this.prevShapes_.push(this.shapes_);
+  //   } else {
+  //     this.prevShapes_ = [this.shapes_];
+  //   }
+  //   this.shapes_ = null;
+  // }
   return this.getShapesGroup(state);
 };
 
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.updateZIndex = function(newBaseZIndex) {
-  if (this.prevShapes_) {
-    anychart.core.shapeManagers.PerSeries.base(this, 'updateZIndex', newBaseZIndex, this.prevShapes_);
-  }
-  anychart.core.shapeManagers.PerSeries.base(this, 'updateZIndex', newBaseZIndex, this.shapes_);
+  // if (this.prevShapes_) {
+  //   anychart.core.shapeManagers.PerSeries.base(this, 'updateZIndex', newBaseZIndex, this.prevShapes_);
+  // }
+  anychart.core.shapeManagers.PerSeries.base(this, 'updateZIndex', newBaseZIndex, this.currentShapes);
 };
 
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.updateColors = function(state, opt_shapesGroup) {
-  if (this.prevShapes_) {
-    anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, this.prevShapes_);
-  }
-  anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, this.shapes_);
+  // if (this.prevShapes_) {
+  //   anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, this.prevShapes_);
+  // }
+  goog.object.forEach(this.shapes_, function(shapes) {
+    anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, shapes);
+  }, this)
 };
 
 
