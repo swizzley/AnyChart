@@ -538,8 +538,8 @@ anychart.cartesian3dModule.Chart.prototype.createTextMarkerInstance = function()
 /**
  * Set zIndex for point.
  * @param {anychart.core.series.Cartesian} series
- * @param {number} yPosition
- * @param {number} maxY
+ * @param {number} yPosition current y postion
+ * @param {number} maxY maximum y value
  * @private
  */
 anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, maxY) {
@@ -548,25 +548,22 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var xPos = iterator.getIndex();
   var yPos = yPosition + 1;
   var zPos = yPos;
-  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER;
+  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 1000;
   var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
 
   xPos = this.xScale().inverted() ? iterator.getRowsCount() - xPos : xPos + 1;
 
-  if (this.yScale().inverted()) {
-    yPos = -yPos;
-  }
-  if (0 > value) {
+  if (this.yScale().inverted() ^ 0 > value) {
     yPos = -yPos;
   }
   if (this.getOption('zDistribution')) {
     zIndex += inc * zPos;
   }
-  if (!!series.getOption('isVertical')) {
+  if (series.getOption('isVertical')) {
     var swap = xPos;
     xPos = yPos;
     yPos = swap;
-    var xOffset = (1 - (1 / Math.abs(xPos)));
+    var xOffset = (1 - (1 / Math.abs(xPos))); //Calculation x offset that greater then previous and less or equal 1
     if (xPos > 0) {
       inc *= yPos + xOffset;
       zIndex += inc;
