@@ -1909,16 +1909,21 @@ anychart.enums.StockIndicatorTypes = {
   CMF: 'cmf',
   DMI: 'dmi',
   EMA: 'ema',
+  HA: 'ha',
   KDJ: 'kdj',
+  KELTNER_CHANNELS: 'keltner-channels',
   MACD: 'macd',
   MFI: 'mfi',
   MMA: 'mma',
   MOMENTUM: 'momentum',
+  OBV: 'obv',
   PSAR: 'psar',
   ROC: 'roc',
   RSI: 'rsi',
   SMA: 'sma',
   STOCHASTIC: 'stochastic',
+  TRIX: 'trix',
+  VOLUME_MA: 'volume-ma',
   WILLIAMS_R: 'williams-r'
 };
 
@@ -5032,3 +5037,24 @@ anychart.enums.normalizeTimeTrackingMode = function(value) {
       anychart.enums.TimeTrackingMode.ACTIVITY_PER_RESOURCE));
 };
 //endregion
+
+
+/**
+ * Axis markers scale range mode.
+ * @enum {string}
+ */
+anychart.enums.ScaleRangeMode = {
+  NONE: 'none',
+  CONSIDER: 'consider'
+};
+
+
+/**
+ * Normalizes scale range mode string.
+ * @param {*} value
+ * @return {anychart.enums.ScaleRangeMode}
+ */
+anychart.enums.normalizeScaleRangeMode = function(value) {
+  return /** @type {anychart.enums.ScaleRangeMode} */ (anychart.enums.normalize(anychart.enums.ScaleRangeMode, value,
+      anychart.enums.ScaleRangeMode.NONE));
+};

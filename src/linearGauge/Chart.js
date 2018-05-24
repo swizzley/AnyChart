@@ -97,6 +97,24 @@ anychart.linearGaugeModule.Chart.prototype.SUPPORTED_CONSISTENCY_STATES =
 //endregion
 //region --- PROPERTIES ---
 /**
+ * Link to incoming raw data.
+ * Used to avoid data reapplication on same data sets.
+ * NOTE: If is disposable entity, should be disposed from the source, not from this class.
+ * @type {?(anychart.data.View|anychart.data.Set|Array|string)}
+ * @private
+ */
+anychart.linearGaugeModule.Chart.prototype.rawData_;
+
+
+/**
+ *
+ * @type {?anychart.data.Iterator}
+ * @private
+ */
+anychart.linearGaugeModule.Chart.prototype.iterator_;
+
+
+/**
  * Map of pointers constructors by type.
  * @type {Object.<string, Function>}
  */
@@ -571,7 +589,9 @@ anychart.linearGaugeModule.Chart.prototype.data = function(opt_value, opt_csvSet
  */
 anychart.linearGaugeModule.Chart.prototype.invalidatePointers = function() {
   for (var i = this.pointers_.length; i--;)
-    this.pointers_[i].invalidate(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.GAUGE_POINTER_LABELS);
+    this.pointers_[i].invalidate(anychart.ConsistencyState.APPEARANCE |
+        anychart.ConsistencyState.GAUGE_POINTER_LABELS |
+        anychart.ConsistencyState.GAUGE_COLOR_SCALE); // this is for led pointer
 };
 
 
@@ -1200,19 +1220,21 @@ anychart.linearGaugeModule.Chart.prototype.serialize = function() {
   var axes = [];
   for (i = 0; i < this.axes_.length; i++) {
     var axis = this.axes_[i];
-    config = axis.serialize();
-    scale = axis.scale();
-    if (scale) {
-      uid = goog.getUid(scale);
-      if (!scalesIds[uid]) {
-        scalesIds[uid] = scale.serialize();
-        scales.push(scalesIds[uid]);
-        config['scale'] = scales.length - 1;
-      } else {
-        config['scale'] = goog.array.indexOf(scales, scalesIds[uid]);
+    if (axis) {
+      config = axis.serialize();
+      scale = axis.scale();
+      if (scale) {
+        uid = goog.getUid(scale);
+        if (!scalesIds[uid]) {
+          scalesIds[uid] = scale.serialize();
+          scales.push(scalesIds[uid]);
+          config['scale'] = scales.length - 1;
+        } else {
+          config['scale'] = goog.array.indexOf(scales, scalesIds[uid]);
+        }
       }
+      axes.push(config);
     }
-    axes.push(config);
   }
   if (axes.length)
     json['axes'] = axes;
@@ -1398,6 +1420,9 @@ anychart.linearGaugeModule.Chart.prototype.pointerInvalidated_ = function(e) {
   }
   if (e.hasSignal(anychart.Signal.NEED_UPDATE_LEGEND)) {
     state |= anychart.ConsistencyState.CHART_LEGEND;
+  }
+  if (e.hasSignal(anychart.Signal.NEEDS_RECALCULATION)) {
+    state |= anychart.ConsistencyState.GAUGE_SCALE;
   }
   this.invalidate(state, signal);
 };
