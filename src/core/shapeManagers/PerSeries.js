@@ -103,12 +103,15 @@ anychart.core.shapeManagers.PerSeries.prototype.updateZIndex = function(newBaseZ
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.updateColors = function(state, opt_shapesGroup) {
+  debugger
   // if (this.prevShapes_) {
   //   anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, this.prevShapes_);
   // }
-  goog.object.forEach(this.shapes_, function(shapes) {
-    anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, shapes);
-  }, this)
+
+  var hash = this.getPointColorHash(state);
+  // anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, this.shapes_[hash]);
+
+  anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, this.currentShapes);
 };
 
 
