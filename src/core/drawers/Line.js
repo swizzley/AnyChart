@@ -95,16 +95,24 @@ anychart.core.drawers.Line.prototype.drawMissingPoint = function(point, state) {
 };
 
 
+anychart.core.drawers.Line.prototype.calcCrossPoint = function() {
+
+};
+
+
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState);
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['stroke']), this.isVertical, x, y);
+  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, x, y);
   if (isNaN(this.firstPointX)) {
     this.firstPointX = x;
     this.firstPointY = y;
   }
+
+  this.prevX = x;
+  this.prevY = y;
 };
 
 
@@ -113,7 +121,34 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
   var shapes = this.shapesManager.getShapesGroup(this.seriesState);
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['stroke']), this.isVertical, x, y);
+
+  if (shapes != this.currentShapes) {
+    var crossX, crossY;
+    var colorScale = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(this.series.colorScale());
+    if (!colorScale) {
+      crossX = this.prevX + (x - this.prevX) / 2;
+      crossY = this.prevY + (y - this.prevY) / 2;
+    } else {
+      var value = point.get(this.valueFieldName);
+      var key = point.getX();
+      var range = colorScale.getRangeByValue(value);
+
+      var xRatio = this.series.getXScale().transform(key);
+      var yRatio = this.series.yScale().transform(value);
+
+      // console.log(xRatio, yRatio);
+
+      crossX = this.prevX + (x - this.prevX) / 2;
+      crossY = this.prevY + (y - this.prevY) / 2;
+    }
+    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, crossX, crossY);
+    this.currentShapes = shapes;
+    anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, crossX, crossY);
+  }
+  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, x, y);
+
+  this.prevX = x;
+  this.prevY = y;
 };
 
 

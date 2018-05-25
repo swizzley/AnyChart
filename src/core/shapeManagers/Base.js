@@ -316,11 +316,6 @@ anychart.core.shapeManagers.Base.prototype.getShapesGroup = function(state, opt_
   } else {
     indexOrGlobal = true;
   }
-  // if (this.series.getType() == 'column') {
-  //   console.log(names);
-  //   debugger;
-  // }
-
 
   for (var name in names) {
     var descriptor = names[name];

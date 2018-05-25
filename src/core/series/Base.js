@@ -436,7 +436,8 @@ anychart.core.series.Base.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.ConsistencyState.SERIES_CLIP |
     anychart.ConsistencyState.SERIES_POINTS |
     anychart.ConsistencyState.SERIES_SHAPE_MANAGER |
-    anychart.ConsistencyState.A11Y;
+    anychart.ConsistencyState.A11Y |
+    anychart.ConsistencyState.SERIES_COLOR_SCALE;
 
 
 /**
@@ -1935,12 +1936,51 @@ anychart.core.series.Base.prototype.tooltip = function(opt_value) {
 
 
 //endregion
-//region --- Color resolution
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Color resolution
-//
-//----------------------------------------------------------------------------------------------------------------------
+//region --- Coloring
+/**
+ * Color scale.
+ * @param {(anychart.colorScalesModule.Linear|anychart.colorScalesModule.Ordinal|Object|anychart.enums.ScaleTypes)=} opt_value Scale to set.
+ * @return {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear|anychart.core.series.Base} Default
+ * chart color scale value or itself for method chaining.
+ */
+anychart.core.series.Base.prototype.colorScale = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (goog.isNull(opt_value) && this.colorScale_) {
+      this.colorScale_ = null;
+      this.invalidate(anychart.ConsistencyState.SERIES_COLOR_SCALE,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_COLOR_RANGE);
+    } else {
+      var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null,
+          anychart.scales.Base.ScaleTypes.COLOR_SCALES, null, this.colorScaleInvalidated_, this);
+      if (val) {
+        var dispatch = this.colorScale_ == val;
+        this.colorScale_ = val;
+        this.colorScale_.resumeSignalsDispatching(dispatch);
+        if (!dispatch) {
+          this.invalidate(anychart.ConsistencyState.SERIES_COLOR_SCALE,
+              anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_COLOR_RANGE);
+        }
+      }
+    }
+    return this;
+  }
+  return this.colorScale_;
+};
+
+
+/**
+ * Chart scale invalidation handler.
+ * @param {anychart.SignalEvent} event Event.
+ * @private
+ */
+anychart.core.series.Base.prototype.colorScaleInvalidated_ = function(event) {
+  if (event.hasSignal(anychart.Signal.NEEDS_RECALCULATION | anychart.Signal.NEEDS_REAPPLICATION)) {
+    this.invalidate(anychart.ConsistencyState.SERIES_COLOR_SCALE,
+        anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_COLOR_RANGE);
+  }
+};
+
+
 /**
  * Returns color resolution context.
  * This context is used to resolve a fill or stroke set as a function for current point.
@@ -3392,6 +3432,21 @@ anychart.core.series.Base.prototype.updateColors = function() {
  * This function is supposed to react on data changes.
  */
 anychart.core.series.Base.prototype.prepareData = function() {
+  if (this.hasInvalidationState(anychart.ConsistencyState.MAP_COLOR_SCALE)) {
+    if (this.colorScale_) {
+      var refNames = this.getYValueNames();
+      var iterator = this.getResetIterator();
+
+      this.colorScale_.startAutoCalc();
+      while (iterator.advance()) {
+        var value = iterator.get(refNames[1]);
+        this.colorScale_.extendDataRange(value);
+      }
+      this.colorScale_.finishAutoCalc();
+    }
+
+    this.markConsistent(anychart.ConsistencyState.MAP_COLOR_SCALE);
+  }
 };
 
 
