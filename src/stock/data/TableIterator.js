@@ -141,22 +141,16 @@ anychart.stockModule.data.TableIterator.prototype.advance = function() {
 };
 
 
-/**
- * Returns current item.
- * @return {anychart.stockModule.data.TableRow}
- */
+/** @inheritDoc */
 anychart.stockModule.data.TableIterator.prototype.current = function() {
   return this.current_;
 };
 
 
-/**
- * "Selects" iterator to row.
- * @param {anychart.stockModule.data.TableRow} row Row to select to.
- */
+/** @inheritDoc */
 anychart.stockModule.data.TableIterator.prototype.specialSelect = function(row) {
   if (goog.isDef(row)) {
-    this.current_ = row;
+    this.current_ = /** @type {anychart.stockModule.data.TableRow} */(row);
     this.currentExists_ = true;
   }
 };

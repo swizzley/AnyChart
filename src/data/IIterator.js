@@ -30,3 +30,17 @@ anychart.data.IIterator.prototype.advance = function() {};
  * @return {number}
  */
 anychart.data.IIterator.prototype.getRowsCount = function() {};
+
+
+/**
+ * "Selects" iterator to row.
+ * @param {*} row .
+ */
+anychart.data.IIterator.prototype.specialSelect = function(row) {};
+
+
+/**
+ * Returns current item.
+ * @return {*} .
+ */
+anychart.data.IIterator.prototype.current = function() {};
