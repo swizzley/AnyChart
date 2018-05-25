@@ -758,6 +758,10 @@ anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, cli
     return;
   }
 
+  if (firstPoint['nearestPointToCursor'] && !isFinite(firstPoint['nearestPointToCursor']['distance'])) {
+    return;
+  }
+
   // for compile_each (gantt, bullet)
   if (!goog.isDef(firstSeries.createTooltipContextProvider)) {
     return;
@@ -961,6 +965,10 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
         if (!series.enabled() || !tooltip.enabled())
           continue;
 
+        if (point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance'])) {
+          continue;
+        }
+
         // for compile_each (gantt, bullet)
         if (!goog.isDef(series.createTooltipContextProvider)) {
           return;
@@ -1040,6 +1048,10 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
   this.hideSelf();
   for (var i = 0; i < points.length; i++) {
     var point = points[i];
+
+    if (point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance'])) {
+      continue;
+    }
     var series = point['series'];
     var tooltip = series.tooltip();
 
@@ -1081,13 +1093,7 @@ anychart.core.ui.Tooltip.prototype.showForSeriesPoints = function(points, client
       this.tooltipContainer_.selectable() && !this.check(anychart.core.ui.Tooltip.Capabilities.CAN_CHANGE_DISPLAY_MODE))
     return;
 
-  if (goog.array.isEmpty(points)) return;
-  for (var i = 0; i < points.length; i++) {
-    if (goog.isDef(points[i]['nearestPointToCursor']) && points[i]['nearestPointToCursor']['distance'] == Infinity) {
-      points.splice(i, 1);
-      i--;
-    }
-  }
+  if (!points.length) return;
   this.updateForceInvalidation();
 
   var dispMode = this.getOption('displayMode');
