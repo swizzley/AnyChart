@@ -16,6 +16,7 @@ goog.require('anychart.format.Context');
 goog.require('anychart.math.Rect');
 
 goog.require('goog.async.Delay');
+goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.object');
 
@@ -844,10 +845,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
   var allowLeaveStage = tooltip.getOption('allowLeaveStage');
   var allowLeaveScreen = tooltip.getOption('allowLeaveScreen');
   var allowLeaveChart = tooltip.getOption('allowLeaveChart');
-  var offsetX = /** @type {number} */ (tooltip.getOption('offsetX'));
-  var offsetY = /** @type {number} */ (tooltip.getOption('offsetY'));
+  var isHtml = tooltip.getOption('useHtml');
+
+  var offsetX = isHtml ? 0 : /** @type {number} */ (tooltip.getOption('offsetX'));
+  var offsetY = isHtml ? 0 : /** @type {number} */ (tooltip.getOption('offsetY'));
 
   var position = /** @type {anychart.enums.Position} */(tooltip.getOption('position'));
+  var mBox = isHtml ? tooltip.htmlTooltip.getMarginBox() : new goog.math.Box(0, 0, 0, 0);
 
   switch (positionMode) {
     case anychart.enums.TooltipPositionMode.FLOAT:
@@ -873,6 +877,12 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
       break;
   }
 
+  var limit;
+  var limitLeft = -Infinity;
+  var limitTop = -Infinity;
+  var limitRight = Infinity;
+  var limitBottom = Infinity;
+
   if (!allowLeaveScreen) {
     // Set position for get actual pixel bounds.
     tooltip['x'](x);
@@ -886,23 +896,31 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
       Local stage has bounds equal to container,
       global stage has bounds of screen.
      */
-    pixelBounds = tooltip.getPixelBounds();
+    pixelBounds = isHtml ? tooltip.htmlTooltip.getBounds() : tooltip.getPixelBounds();
     var windowBox = goog.dom.getViewportSize();
 
-    if (pixelBounds.left - offsetX + addOffsetX < 0) {
-      x -= pixelBounds.left - offsetX + addOffsetX;
+    if (pixelBounds.left - offsetX + addOffsetX + mBox.left < 0) {
+      limit = -mBox.left - addOffsetX + offsetX;
+      x = Math.max(limit, limitLeft);
+      limitLeft = x;
     }
 
-    if (pixelBounds.top - offsetY + addOffsetY < 0) {
-      y -= pixelBounds.top - offsetY + addOffsetY;
+    if (pixelBounds.top - offsetY + addOffsetY + mBox.top < 0) {
+      limit = - mBox.top - addOffsetY - mBox.top;
+      y = Math.max(limit, limitTop);
+      limitTop = y;
     }
 
-    if (pixelBounds.getRight() - offsetX + addOffsetX > windowBox.width) {
-      x -= pixelBounds.getRight() - offsetX + addOffsetX - windowBox.width;
+    if (pixelBounds.getRight() + offsetX + addOffsetX + mBox.left > windowBox.width) {
+      limit = windowBox.width - offsetX - pixelBounds.width - addOffsetX - mBox.left;
+      x = Math.min(limit, limitRight);
+      limitRight = x;
     }
 
-    if (pixelBounds.getBottom() - offsetY + addOffsetY > windowBox.height) {
-      y -= pixelBounds.getBottom() - offsetY + addOffsetY - windowBox.height;
+    if (pixelBounds.getBottom() + offsetY + addOffsetY + mBox.top > windowBox.height) {
+      limit = windowBox.height - offsetY - pixelBounds.height - addOffsetY - mBox.top;
+      y = Math.min(limit, limitBottom);
+      limitBottom = y;
     }
   }
 
@@ -911,22 +929,30 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
     tooltip['x'](x);
     tooltip['y'](y);
 
-    pixelBounds = tooltip.getPixelBounds();
+    pixelBounds = isHtml ? tooltip.htmlTooltip.getBounds() : tooltip.getPixelBounds();
 
-    if (pixelBounds.left < offsetX) {
-      x -= pixelBounds.left - offsetX;
+    if (pixelBounds.left + mBox.left < offsetX) {
+      limit = stageBounds.left - mBox.left;
+      x = Math.max(limit, limitLeft);
+      limitLeft = x;
     }
 
-    if (pixelBounds.top < offsetY) {
-      y -= pixelBounds.top - offsetY;
+    if (pixelBounds.top + mBox.top < offsetY) {
+      limit = stageBounds.top - mBox.top;
+      y = Math.max(limit, limitTop);
+      limitTop = y;
     }
 
-    if (pixelBounds.getRight() > stageBounds.width + offsetX) {
-      x -= pixelBounds.getRight() - stageBounds.width - offsetX;
+    if (pixelBounds.getRight() + offsetX + mBox.left > stageBounds.width) {
+      limit = stageBounds.width - offsetX - pixelBounds.width - mBox.left;
+      x = Math.min(limit, limitRight);
+      limitRight = x;
     }
 
-    if (pixelBounds.getBottom() > stageBounds.height + offsetY) {
-      y -= pixelBounds.getBottom() - stageBounds.height - offsetY;
+    if (pixelBounds.getBottom() + offsetY + mBox.top > stageBounds.height) {
+      limit = stageBounds.height - offsetY - pixelBounds.height - mBox.top;
+      y = Math.min(limit, limitBottom);
+      limitBottom = y;
     }
   }
 
@@ -935,28 +961,36 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
     tooltip['x'](x);
     tooltip['y'](y);
 
-    pixelBounds = tooltip.getPixelBounds();
+    pixelBounds = isHtml ? tooltip.htmlTooltip.getBounds() : tooltip.getPixelBounds();
 
-    if (pixelBounds.left < pixelBoundsInStage.left + offsetX) {
-      x -= pixelBounds.left - offsetX - pixelBoundsInStage.left;
+    if (pixelBounds.left + mBox.left + offsetX < pixelBoundsInStage.left) {
+      limit = pixelBoundsInStage.left - mBox.left - offsetX;
+      x = Math.max(limit, limitLeft);
+      // limitLeft = x;
     }
 
-    if (pixelBounds.top < pixelBoundsInStage.top + offsetY) {
-      y -= pixelBounds.top - offsetY - pixelBoundsInStage.top;
+    if (pixelBounds.top + mBox.top + offsetY < pixelBoundsInStage.top) {
+      limit = pixelBoundsInStage.top - mBox.top - offsetY;
+      y = Math.max(limit, limitTop);
+      // limitTop = y;
     }
 
-    if (pixelBounds.getRight() > pixelBoundsInStage.getRight() + offsetX) {
-      x -= pixelBounds.getRight() - offsetX - pixelBoundsInStage.getRight();
+    if (pixelBounds.getRight() + mBox.right + offsetX > pixelBoundsInStage.getRight()) {
+      limit = pixelBoundsInStage.getRight() - pixelBounds.width - offsetX - mBox.left;
+      x = Math.min(limit, limitRight);
+      // limitRight = x;
     }
 
-    if (pixelBounds.getBottom() > pixelBoundsInStage.getBottom() + offsetY) {
-      y -= pixelBounds.getBottom() - offsetY - pixelBoundsInStage.getBottom();
+    if (pixelBounds.getBottom() + mBox.bottom + offsetY > pixelBoundsInStage.getBottom()) {
+      limit = pixelBoundsInStage.getBottom() - pixelBounds.height - offsetY - mBox.bottom;
+      y = Math.min(limit, limitBottom);
+      // limitBottom = y;
     }
   }
 
   tooltip['x'](x);
   tooltip['y'](y);
-  if (tooltip.getOption('useHtml')) {
+  if (isHtml) {
     tooltip.htmlTooltip.updatePosition();
   }
 };
@@ -1030,7 +1064,10 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
       unionContext['allPoints'] = {value: allPoints, type: anychart.enums.TokenType.UNKNOWN};
     }
 
-    if (!unionContext['formattedValues'].value.length) {
+    if (unionContext['formattedValues'].value.length) {
+      var sep = this.tooltipInUse_.getOption('useHtml') ? '<br/>' : '\n';
+      unionContext['joinedFormattedValues'] = {value: unionContext['formattedValues'].value.join(sep), type: anychart.enums.TokenType.STRING};
+    } else {
       return;
     }
 
@@ -1050,6 +1087,8 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
 
     var unionContextProvider = new anychart.format.Context(unionContext);
     unionContextProvider.statisticsSources(statisticsSources);
+    if (hoveredSeries)
+      unionContextProvider.dataSource(hoveredSeries.getIterator());
     unionContextProvider.propagate();
 
     this.tooltipInUse_.contentInternal().text(this.getFormattedContent_(unionContextProvider, true));
@@ -1540,170 +1579,167 @@ anychart.core.ui.Tooltip.prototype.hideChildTooltips_ = function(opt_ignoreToolt
  * @private
  */
 anychart.core.ui.Tooltip.prototype.calculateContentBounds_ = function() {
-  if (!this.contentBounds_) {
-    if (this.getOption('useHtml')) {
-      var size = this.htmlTooltip.getSize();
-      this.contentBounds_ = new anychart.math.Rect(0, 0, size.width, size.height);
-    } else {
-      this.contentInternal().suspendSignalsDispatching();
-      this.applyTextSettings();
-      this.contentInternal().resumeSignalsDispatching(false);
+  if (this.getOption('useHtml')) {
+    this.contentBounds_ = this.htmlTooltip.getBounds();
+  } else if (!this.contentBounds_) {
+    this.contentInternal().suspendSignalsDispatching();
+    this.applyTextSettings();
+    this.contentInternal().resumeSignalsDispatching(false);
 
-      var tooltipWidth = /** @type {(null|number|string|undefined)} */ (this.getOption('width'));
-      var tooltipHeight = /** @type {(null|number|string|undefined)} */ (this.getOption('height'));
+    var tooltipWidth = /** @type {(null|number|string|undefined)} */ (this.getOption('width'));
+    var tooltipHeight = /** @type {(null|number|string|undefined)} */ (this.getOption('height'));
 
-      var boundsProvider = this.chart_ || this.containerProvider();
-      var pixelBounds = boundsProvider.getPixelBounds();
+    var boundsProvider = this.chart_ || this.containerProvider();
+    var pixelBounds = boundsProvider.getPixelBounds();
 
-      var tooltipPixelWidth = anychart.utils.normalizeSize(tooltipWidth, pixelBounds.width);
-      var tooltipPixelHeight = anychart.utils.normalizeSize(tooltipHeight, pixelBounds.height);
+    var tooltipPixelWidth = anychart.utils.normalizeSize(tooltipWidth, pixelBounds.width);
+    var tooltipPixelHeight = anychart.utils.normalizeSize(tooltipHeight, pixelBounds.height);
 
-      var widthIsSet = !isNaN(tooltipPixelWidth);
-      var heightIsSet = !isNaN(tooltipPixelHeight);
+    var widthIsSet = !isNaN(tooltipPixelWidth);
+    var heightIsSet = !isNaN(tooltipPixelHeight);
 
-      var result = new anychart.math.Rect(0, 0, 0, 0);
+    var result = new anychart.math.Rect(0, 0, 0, 0);
 
-      var separatorBounds;
-      var tmpWidth = null;
-      var tmpHeight = null;
+    var separatorBounds;
+    var tmpWidth = null;
+    var tmpHeight = null;
 
-      var title = /** @type {anychart.core.ui.Title} */(this.title());
-      var separator = /** @type {anychart.core.ui.Separator} */(this.separator());
-      var content = /** @type {anychart.core.ui.Label} */(this.contentInternal());
+    var title = /** @type {anychart.core.ui.Title} */(this.title());
+    var separator = /** @type {anychart.core.ui.Separator} */(this.separator());
+    var content = /** @type {anychart.core.ui.Label} */(this.contentInternal());
 
-      title.suspendSignalsDispatching();
-      separator.suspendSignalsDispatching();
-      content.suspendSignalsDispatching();
+    title.suspendSignalsDispatching();
+    separator.suspendSignalsDispatching();
+    content.suspendSignalsDispatching();
 
-      var tWidth, tHeight;
-      if (!widthIsSet || !heightIsSet) { //auto width and height calculation.
-        if (title.enabled()) {
-          if (acgraph.type() == acgraph.StageType.SVG) {
-            title.parentBounds(null);
+    var tWidth, tHeight;
+    if (!widthIsSet || !heightIsSet) { //auto width and height calculation.
+      if (title.enabled()) {
+        if (acgraph.type() == acgraph.StageType.SVG) {
+          title.parentBounds(null);
+        } else {
+          title.parentBounds(this.chart_ && this.chart_.container() ? this.chart_.container().getStage().getBounds() : null);
+        }
+        var titleWidth = title.getOption('width');
+        var titleHasOwnWidth = goog.isDefAndNotNull(title.getOwnOption('width'));
+        var titleHeight = title.getOption('height');
+        var titleHasOwnHeight = goog.isDefAndNotNull(title.getOwnOption('height'));
+
+        if (anychart.utils.isPercent(titleWidth)) {
+          tmpWidth = /** @type {number|string|null} */(titleWidth);
+          if (widthIsSet) {
+            tWidth = this.padding().tightenWidth(tooltipPixelWidth);
+            title['width'](tWidth);
           } else {
-            title.parentBounds(this.chart_ && this.chart_.container() ? this.chart_.container().getStage().getBounds() : null);
+            title['width'](null); //resetting title width.
           }
-          var titleWidth = title.getOption('width');
-          var titleHasOwnWidth = goog.isDefAndNotNull(title.getOwnOption('width'));
-          var titleHeight = title.getOption('height');
-          var titleHasOwnHeight = goog.isDefAndNotNull(title.getOwnOption('height'));
+        }
 
-          if (anychart.utils.isPercent(titleWidth)) {
-            tmpWidth = /** @type {number|string|null} */(titleWidth);
-            if (widthIsSet) {
-              tWidth = this.padding().tightenWidth(tooltipPixelWidth);
-              title['width'](tWidth);
-            } else {
-              title['width'](null); //resetting title width.
-            }
-          }
-
-          if (anychart.utils.isPercent(titleHeight)) {
-            tmpHeight = /** @type {number|string|null} */(titleHeight);
-            if (heightIsSet) {
-              tHeight = this.padding().tightenHeight(tooltipPixelHeight);
-              title['height'](tHeight);
-            } else {
-              title['height'](null);
-            }
-          }
-
-          var titleBounds = title.getContentBounds();
-          result.width = tooltipPixelWidth || Math.max(result.width, titleBounds.width);
-          if (titleHasOwnWidth) {
-            title['width'](tmpWidth);
+        if (anychart.utils.isPercent(titleHeight)) {
+          tmpHeight = /** @type {number|string|null} */(titleHeight);
+          if (heightIsSet) {
+            tHeight = this.padding().tightenHeight(tooltipPixelHeight);
+            title['height'](tHeight);
           } else {
-            delete title.ownSettings['width'];
+            title['height'](null);
           }
-          if (titleHasOwnHeight) {
-            title['height'](tmpHeight);
+        }
+
+        var titleBounds = title.getContentBounds();
+        result.width = tooltipPixelWidth || Math.max(result.width, titleBounds.width);
+        if (titleHasOwnWidth) {
+          title['width'](tmpWidth);
+        } else {
+          delete title.ownSettings['width'];
+        }
+        if (titleHasOwnHeight) {
+          title['height'](tmpHeight);
+        } else {
+          delete title.ownSettings['height'];
+        }
+        tmpWidth = null;
+        tmpHeight = null;
+        if (!heightIsSet)
+          result.height += titleBounds.height;
+      }
+
+      if (content.enabled()) {
+        var parentContent = this.parent_ ? this.parent_.contentInternal() : null;
+        var parentContentWidth = parentContent ? parentContent.width() : void 0;
+        var parentContentHeight = parentContent ? parentContent.height() : void 0;
+
+        content.parentBounds(null);
+        var contentWidth = content.width() || parentContentWidth;
+        var contentHeight = content.height() || parentContentHeight;
+
+        if (anychart.utils.isPercent(contentWidth)) {
+          tmpWidth = /** @type {number|string|null} */(contentWidth);
+          if (widthIsSet) {
+            tWidth = this.padding().tightenWidth(tooltipPixelWidth);
+            content.width(tWidth);
           } else {
-            delete title.ownSettings['height'];
+            content.width(null); //resetting content width.
           }
+        }
+
+        if (anychart.utils.isPercent(contentHeight)) {
+          tmpHeight = /** @type {number|string|null} */(contentHeight);
+          if (heightIsSet) {
+            tHeight = this.padding().tightenHeight(tooltipPixelHeight);
+            content.height(tHeight);
+          } else {
+            content.height(null); //resetting content height.
+          }
+        }
+
+        var contentBounds = content.getContentBounds();
+        result.width = tooltipPixelWidth || Math.max(result.width, contentBounds.width);
+        if (tmpWidth) {
+          content.width(tmpWidth);
           tmpWidth = null;
+        }
+        if (tmpHeight) {
+          content.height(tmpHeight);
           tmpHeight = null;
-          if (!heightIsSet)
-            result.height += titleBounds.height;
         }
-
-        if (content.enabled()) {
-          var parentContent = this.parent_ ? this.parent_.contentInternal() : null;
-          var parentContentWidth = parentContent ? parentContent.width() : void 0;
-          var parentContentHeight = parentContent ? parentContent.height() : void 0;
-
-          content.parentBounds(null);
-          var contentWidth = content.width() || parentContentWidth;
-          var contentHeight = content.height() || parentContentHeight;
-
-          if (anychart.utils.isPercent(contentWidth)) {
-            tmpWidth = /** @type {number|string|null} */(contentWidth);
-            if (widthIsSet) {
-              tWidth = this.padding().tightenWidth(tooltipPixelWidth);
-              content.width(tWidth);
-            } else {
-              content.width(null); //resetting content width.
-            }
-          }
-
-          if (anychart.utils.isPercent(contentHeight)) {
-            tmpHeight = /** @type {number|string|null} */(contentHeight);
-            if (heightIsSet) {
-              tHeight = this.padding().tightenHeight(tooltipPixelHeight);
-              content.height(tHeight);
-            } else {
-              content.height(null); //resetting content height.
-            }
-          }
-
-          var contentBounds = content.getContentBounds();
-          result.width = tooltipPixelWidth || Math.max(result.width, contentBounds.width);
-          if (tmpWidth) {
-            content.width(tmpWidth);
-            tmpWidth = null;
-          }
-          if (tmpHeight) {
-            content.height(tmpHeight);
-            tmpHeight = null;
-          }
-          if (!heightIsSet)
-            result.height += contentBounds.height;
-        }
-
-        // fix for title and content .width('100%');
-        if (title.enabled()) {
-          title.parentBounds(new anychart.math.Rect(0, 0, result.width, titleBounds.height));
-        }
-        if (content.enabled()) {
-          content.parentBounds(new anychart.math.Rect(0, 0, result.width, contentBounds.height));
-        }
-
-        if (separator.enabled()) {
-          separator.parentBounds((title.enabled() || content.enabled()) ? result : null);
-          separatorBounds = separator.getContentBounds();
-          result.width = tooltipPixelWidth || Math.max(result.width, separatorBounds.width);
-          if (!heightIsSet)
-            result.height += separatorBounds.height;
-        }
+        if (!heightIsSet)
+          result.height += contentBounds.height;
       }
 
-      result = this.padding().widenBounds(result);
-      if (widthIsSet) {
-        result.width = tooltipPixelWidth;
+      // fix for title and content .width('100%');
+      if (title.enabled()) {
+        title.parentBounds(new anychart.math.Rect(0, 0, result.width, titleBounds.height));
+      }
+      if (content.enabled()) {
+        content.parentBounds(new anychart.math.Rect(0, 0, result.width, contentBounds.height));
       }
 
-      if (heightIsSet) {
-        result.height = tooltipPixelHeight;
+      if (separator.enabled()) {
+        separator.parentBounds((title.enabled() || content.enabled()) ? result : null);
+        separatorBounds = separator.getContentBounds();
+        result.width = tooltipPixelWidth || Math.max(result.width, separatorBounds.width);
+        if (!heightIsSet)
+          result.height += separatorBounds.height;
       }
-
-      result.left = 0;
-      result.top = 0;
-
-      this.contentBounds_ = result;
-
-      title.resumeSignalsDispatching(false);
-      separator.resumeSignalsDispatching(false);
-      content.resumeSignalsDispatching(false);
     }
+
+    result = this.padding().widenBounds(result);
+    if (widthIsSet) {
+      result.width = tooltipPixelWidth;
+    }
+
+    if (heightIsSet) {
+      result.height = tooltipPixelHeight;
+    }
+
+    result.left = 0;
+    result.top = 0;
+
+    this.contentBounds_ = result;
+
+    title.resumeSignalsDispatching(false);
+    separator.resumeSignalsDispatching(false);
+    content.resumeSignalsDispatching(false);
   }
 };
 
@@ -1766,8 +1802,11 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
   var allowLeaveStage = tooltip.getOption('allowLeaveStage');
   var allowLeaveScreen = tooltip.getOption('allowLeaveScreen');
   var allowLeaveChart = tooltip.getOption('allowLeaveChart');
-  var offsetX = /** @type {number} */ (tooltip.getOption('offsetX'));
-  var offsetY = /** @type {number} */ (tooltip.getOption('offsetY'));
+  var isHtml = tooltip.getOption('useHtml');
+
+  var offsetX = isHtml ? 0 : /** @type {number} */ (tooltip.getOption('offsetX'));
+  var offsetY = isHtml ? 0 : /** @type {number} */ (tooltip.getOption('offsetY'));
+  var mBox = isHtml ? tooltip.htmlTooltip.getMarginBox() : new goog.math.Box(0, 0, 0, 0);
 
   if (positionMode == anychart.enums.TooltipPositionMode.FLOAT) {
     x = useGlobalCont ? clientX : clientX - stageOffset.x;
@@ -1785,6 +1824,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
     y = anchoredPositionCoordinate.y + (useGlobalCont ? stageOffset.y : 0);
   }
 
+  //TODO (A.Kudryavtsev): Refactor this!!! This code is totally the same as for single mode.
+  var limit;
+  var limitLeft = -Infinity;
+  var limitTop = -Infinity;
+  var limitRight = Infinity;
+  var limitBottom = Infinity;
+
   if (!allowLeaveScreen) {
     // Set position for get actual pixel bounds.
     tooltip['x'](x);
@@ -1793,24 +1839,31 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
     var addOffsetX = useGlobalCont ? 0 : stageOffset.x;
     var addOffsetY = useGlobalCont ? 0 : stageOffset.y;
 
-    pixelBounds = tooltip.getPixelBounds();
-
+    pixelBounds = isHtml ? tooltip.htmlTooltip.getBounds() : tooltip.getPixelBounds();
     var windowBox = goog.dom.getViewportSize();
 
-    if (pixelBounds.left - offsetX + addOffsetX < 0) {
-      x -= pixelBounds.left - offsetX + addOffsetX;
+    if (pixelBounds.left - offsetX + addOffsetX + mBox.left < 0) {
+      limit = -mBox.left - addOffsetX + offsetX;
+      x = Math.max(limit, limitLeft);
+      limitLeft = x;
     }
 
-    if (pixelBounds.top - offsetY + addOffsetY < 0) {
-      y -= pixelBounds.top - offsetY + addOffsetY;
+    if (pixelBounds.top - offsetY + addOffsetY + mBox.top < 0) {
+      limit = - mBox.top - addOffsetY - mBox.top;
+      y = Math.max(limit, limitTop);
+      limitTop = y;
     }
 
-    if (pixelBounds.getRight() - offsetX + addOffsetX > windowBox.width) {
-      x -= pixelBounds.getRight() - offsetX + addOffsetX - windowBox.width;
+    if (pixelBounds.getRight() + offsetX + addOffsetX + mBox.left > windowBox.width) {
+      limit = windowBox.width - offsetX - pixelBounds.width - addOffsetX - mBox.left;
+      x = Math.min(limit, limitRight);
+      limitRight = x;
     }
 
-    if (pixelBounds.getBottom() - offsetY + addOffsetY > windowBox.height) {
-      y -= pixelBounds.getBottom() - offsetY + addOffsetY - windowBox.height;
+    if (pixelBounds.getBottom() + offsetY + addOffsetY + mBox.top > windowBox.height) {
+      limit = windowBox.height - offsetY - pixelBounds.height - addOffsetY - mBox.top;
+      y = Math.min(limit, limitBottom);
+      limitBottom = y;
     }
   }
 
@@ -1818,22 +1871,30 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
     tooltip['x'](x);
     tooltip['y'](y);
 
-    pixelBounds = tooltip.getPixelBounds();
+    pixelBounds = isHtml ? tooltip.htmlTooltip.getBounds() : tooltip.getPixelBounds();
 
-    if (pixelBounds.left < offsetX) {
-      x -= pixelBounds.left - offsetX;
+    if (pixelBounds.left + mBox.left < offsetX) {
+      limit = stageBounds.left - mBox.left;
+      x = Math.max(limit, limitLeft);
+      limitLeft = x;
     }
 
-    if (pixelBounds.top < offsetY) {
-      y -= pixelBounds.top - offsetY;
+    if (pixelBounds.top + mBox.top < offsetY) {
+      limit = stageBounds.top - mBox.top;
+      y = Math.max(limit, limitTop);
+      limitTop = y;
     }
 
-    if (pixelBounds.getRight() > stageBounds.width + offsetX) {
-      x -= pixelBounds.getRight() - stageBounds.width - offsetX;
+    if (pixelBounds.getRight() + offsetX + mBox.left > stageBounds.width) {
+      limit = stageBounds.width - offsetX - pixelBounds.width - mBox.left;
+      x = Math.min(limit, limitRight);
+      limitRight = x;
     }
 
-    if (pixelBounds.getBottom() > stageBounds.height + offsetY) {
-      y -= pixelBounds.getBottom() - stageBounds.height - offsetY;
+    if (pixelBounds.getBottom() + offsetY + mBox.top > stageBounds.height) {
+      limit = stageBounds.height - offsetY - pixelBounds.height - mBox.top;
+      y = Math.min(limit, limitBottom);
+      limitBottom = y;
     }
   }
 
@@ -1841,27 +1902,38 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
     tooltip['x'](x);
     tooltip['y'](y);
 
-    pixelBounds = tooltip.getPixelBounds();
+    pixelBounds = isHtml ? tooltip.htmlTooltip.getBounds() : tooltip.getPixelBounds();
 
-    if (pixelBounds.left < pixelBoundsInStage.left + offsetX) {
-      x -= pixelBounds.left - offsetX - pixelBoundsInStage.left;
+    if (pixelBounds.left + mBox.left + offsetX < pixelBoundsInStage.left) {
+      limit = pixelBoundsInStage.left - mBox.left - offsetX;
+      x = Math.max(limit, limitLeft);
+      // limitLeft = x;
     }
 
-    if (pixelBounds.top < pixelBoundsInStage.top + offsetY) {
-      y -= pixelBounds.top - offsetY - pixelBoundsInStage.top;
+    if (pixelBounds.top + mBox.top + offsetY < pixelBoundsInStage.top) {
+      limit = pixelBoundsInStage.top - mBox.top - offsetY;
+      y = Math.max(limit, limitTop);
+      // limitTop = y;
     }
 
-    if (pixelBounds.getRight() > pixelBoundsInStage.getRight() + offsetX) {
-      x -= pixelBounds.getRight() - offsetX - pixelBoundsInStage.getRight();
+    if (pixelBounds.getRight() + mBox.right + offsetX > pixelBoundsInStage.getRight()) {
+      limit = pixelBoundsInStage.getRight() - pixelBounds.width - offsetX - mBox.left;
+      x = Math.min(limit, limitRight);
+      // limitRight = x;
     }
 
-    if (pixelBounds.getBottom() > pixelBoundsInStage.getBottom() + offsetY) {
-      y -= pixelBounds.getBottom() - offsetY - pixelBoundsInStage.getBottom();
+    if (pixelBounds.getBottom() + mBox.bottom + offsetY > pixelBoundsInStage.getBottom()) {
+      limit = pixelBoundsInStage.getBottom() - pixelBounds.height - offsetY - mBox.bottom;
+      y = Math.min(limit, limitBottom);
+      // limitBottom = y;
     }
   }
 
   tooltip['x'](x);
   tooltip['y'](y);
+  if (isHtml) {
+    tooltip.htmlTooltip.updatePosition();
+  }
 };
 
 
@@ -1910,13 +1982,17 @@ anychart.core.ui.Tooltip.prototype.setContainerToTooltip_ = function(tooltip) {
   if (tooltip.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
     var tc;
     if (tooltip.useGlobalContainer_() || acgraph.type() == acgraph.StageType.VML) {
-      tc = anychart.core.utils.GlobalTooltipContainer.getInstance();
-      if (this.tooltipContainer_ && this.tooltipContainer_.isLocal())
-        tooltip.tooltipContainer_.container(null);
-      tooltip.tooltipContainer_ = tc;
-      tooltip.tooltipContainer_.container(goog.dom.getDocument().body);
-      tc.allocTooltip(tooltip);
-      tooltip.getRootLayer_().parent(/** @type {acgraph.vector.ILayer} */ (tooltip.container()));
+      if (tooltip.getOption('useHtml')) {
+        tooltip.htmlTooltip.container(anychart.document.body);
+      } else {
+        tc = anychart.core.utils.GlobalTooltipContainer.getInstance();
+        if (this.tooltipContainer_ && this.tooltipContainer_.isLocal())
+          tooltip.tooltipContainer_.container(null);
+        tooltip.tooltipContainer_ = tc;
+        tooltip.tooltipContainer_.container(goog.dom.getDocument().body);
+        tc.allocTooltip(tooltip);
+        tooltip.getRootLayer_().parent(/** @type {acgraph.vector.ILayer} */ (tooltip.container()));
+      }
       tooltip.markConsistent(anychart.ConsistencyState.CONTAINER);
     } else {
       var container = this.getContainer_(tooltip);
@@ -2179,6 +2255,7 @@ anychart.core.ui.Tooltip.prototype.parent = function(opt_value) {
         this.padding().parent(this.parent_.padding());
         this.contentInternal().padding().parent(this.parent_.contentInternal().padding());
         this.parent_.childTooltipsMap[uid] = this;
+        this.beforeUseHtmlHook();
         this.parent_.listenSignals(this.parentInvalidated_, this);
       }
       //TODO (A.Kudryavtsev): Do we really need this invalidation?
@@ -2199,6 +2276,7 @@ anychart.core.ui.Tooltip.prototype.parentInvalidated_ = function(e) {
   var state = 0;
   var signal = 0;
 
+  this.beforeUseHtmlHook();
   if (e.hasSignal(anychart.Signal.BOUNDS_CHANGED) || e.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
     state |= anychart.core.ui.Tooltip.TOOLTIP_BOUNDS_STATE;
     signal |= anychart.Signal.BOUNDS_CHANGED;
@@ -2264,6 +2342,8 @@ anychart.core.ui.Tooltip.prototype.beforeUseHtmlHook = function() {
     if (this.htmlTooltip)
       this.htmlTooltip.remove();
   }
+  this.contentBounds_ = null;
+  this.instantPosition_ = null;
 };
 
 

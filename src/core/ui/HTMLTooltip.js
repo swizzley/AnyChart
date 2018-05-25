@@ -1,6 +1,7 @@
 goog.provide('anychart.core.ui.HTMLTooltip');
 
 //region -- Requirements.
+goog.require('anychart.math.Rect');
 goog.require('goog.Disposable');
 goog.require('goog.dom');
 
@@ -196,7 +197,13 @@ anychart.core.ui.HTMLTooltip.prototype.titleText = function(opt_value) {
  */
 anychart.core.ui.HTMLTooltip.prototype.updateTexts = function() {
   this.titleText(/** @type {string} */ (this.tooltip_.title().autoText()));
+  goog.style.setElementShown(this.titleDiv_, this.tooltip_.title()['enabled']());
+
+  goog.style.setElementShown(this.hr_, this.tooltip_.separator()['enabled']());
+
   this.contentText(/** @type {string} */ (this.tooltip_.contentInternal().text()));
+  goog.style.setElementShown(this.contentDiv_, this.tooltip_.contentInternal()['enabled']());
+
   return this;
 };
 
@@ -230,12 +237,13 @@ anychart.core.ui.HTMLTooltip.prototype.visible = function(opt_value) {
 
 
 /**
- * Sets pixel size.
- * @return {!goog.math.Size}
+ * Sets pixel bounds.
+ * @return {anychart.math.Rect}
  */
-anychart.core.ui.HTMLTooltip.prototype.getSize = function() {
-  console.log('Gettings tooltip size');
-  return goog.style.getSize(this.getElement());
+anychart.core.ui.HTMLTooltip.prototype.getBounds = function() {
+  var s = goog.style.getSize(this.getElement());
+  return new anychart.math.Rect(/** @type {number} */ (this.tooltip_.getOption('x')), /** @type {number} */ (this.tooltip_.getOption('y')),
+      s.width, s.height);
 };
 
 
@@ -268,6 +276,17 @@ anychart.core.ui.HTMLTooltip.prototype.remove = function() {
     goog.dom.removeNode(this.baseDiv_);
     this.container_ = null;
   }
+};
+
+
+//endregion
+//region -- Working with CSS.
+/**
+ * Gets html tooltip margins.
+ * @return {!goog.math.Box}
+ */
+anychart.core.ui.HTMLTooltip.prototype.getMarginBox = function() {
+  return goog.style.getMarginBox(this.getElement());
 };
 
 
