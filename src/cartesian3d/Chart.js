@@ -576,6 +576,10 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
     zIndex += inc;
   }
 
+  if (yPosition == maxY - 1) {
+    series.zIndex(zIndex);
+  }
+
   iterator.meta('zIndex', zIndex);
   iterator.meta('directIndex', xPos * yPos);
 };
