@@ -813,7 +813,7 @@ anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, cli
     this.hideChildTooltips_([this.tooltipInUse_]);
   }
 
-  if ((this.getOption('useHtml') && this.tooltipInUse_.htmlTooltip.container()) || !this.tooltipInUse_.getRootLayer_().parent()) {
+  if ((this.getOption('useHtml') && !this.tooltipInUse_.htmlTooltip.container()) || !this.tooltipInUse_.getRootLayer_().parent()) {
     this.tooltipInUse_.invalidate(anychart.ConsistencyState.CONTAINER);
   }
   this.setContainerToTooltip_(this.tooltipInUse_);
@@ -906,7 +906,7 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
     }
 
     if (pixelBounds.top - offsetY + addOffsetY + mBox.top < 0) {
-      limit = - mBox.top - addOffsetY - mBox.top;
+      limit = -mBox.top - addOffsetY - mBox.top;
       y = Math.max(limit, limitTop);
       limitTop = y;
     }
