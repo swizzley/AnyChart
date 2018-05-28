@@ -1013,7 +1013,8 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'lineCap': 'square'
     },
     'zIndex': 25.2,
-    'scale': 1
+    'scale': 1,
+    'scaleRangeMode': 'none'
   },
 
   'defaultTextMarkerSettings': {
@@ -1024,6 +1025,8 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'layout': null,
     'text': 'Text marker',
     'zIndex': 25.3,
+    'scale': 1,
+    'scaleRangeMode': 'none',
     'rotation': null
   },
 
@@ -1034,7 +1037,8 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'layout': null,
     'fill': anychart.core.defaultTheme.colorStrokeBright + ' 0.4',
     'zIndex': 25.1,
-    'scale': 1
+    'scale': 1,
+    'scaleRangeMode': 'none'
   },
 
   'defaultLegend': {
