@@ -3050,6 +3050,9 @@ anychart.core.series.Base.prototype.draw = function() {
   var factory, i, state, stateFactoriesEnabled;
   var labelsAreToBeRedrawn = false;
   var COMMON_STATES = anychart.ConsistencyState.CONTAINER | anychart.ConsistencyState.SERIES_POINTS;
+  var iterator = this.getResetIterator();
+
+  iterator.select(iterator.getRowsCount() - 1);
 
   // preparing to draw different series parts
   if (this.hasInvalidationState(COMMON_STATES)) {
@@ -3068,7 +3071,7 @@ anychart.core.series.Base.prototype.draw = function() {
     );
     if (this.prepareFactory(factory, stateFactoriesEnabled, this.planHasPointLabels(),
             anychart.core.series.Capabilities.SUPPORTS_LABELS, anychart.ConsistencyState.SERIES_LABELS)) {
-      factory.setAutoZIndex(/** @type {number} */(this.zIndex() + this.LABELS_ZINDEX + (this.planIsStacked() ? 1 : 0)));
+      factory.setAutoZIndex(/** @type {number} */(iterator.meta('zIndex') + this.LABELS_ZINDEX + (this.planIsStacked() ? 1 : 0)));
       // see DVF-2259
       factory.invalidate(anychart.ConsistencyState.Z_INDEX);
       if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
@@ -3090,7 +3093,7 @@ anychart.core.series.Base.prototype.draw = function() {
     stateFactoriesEnabled = /** @type {boolean} */(this.hovered_.markers().enabled() || this.selected_.markers().enabled());
     if (this.prepareFactory(factory, stateFactoriesEnabled, this.planHasPointMarkers(),
             anychart.core.series.Capabilities.SUPPORTS_MARKERS, anychart.ConsistencyState.SERIES_MARKERS)) {
-      factory.setAutoZIndex(/** @type {number} */(this.zIndex() + anychart.core.shapeManagers.MARKERS_ZINDEX + (this.planIsStacked() ? 1 : 0)));
+      factory.setAutoZIndex(/** @type {number} */(iterator.meta('zIndex') + anychart.core.shapeManagers.MARKERS_ZINDEX + (this.planIsStacked() ? 1 : 0)));
       if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
         elementsDrawers.push(this.drawMarker);
       factoriesToFinalize.push(factory);
@@ -3126,7 +3129,6 @@ anychart.core.series.Base.prototype.draw = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_POINTS)) {
     anychart.performance.start('Series drawing points');
     var columns = this.retrieveDataColumns();
-    var iterator;
     if (columns) {
       var yValueNames = this.getYValueNames();
       this.prepareMetaMakers(columns, yValueNames);

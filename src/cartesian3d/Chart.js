@@ -549,7 +549,7 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var yPos = yPosition + 1;
   var zPos = yPos;
   var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 1000;
-  var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES - 1;
+  var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
 
   xPos = this.xScale().inverted() ? iterator.getRowsCount() - xPos : xPos + 1;
 
