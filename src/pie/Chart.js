@@ -4717,7 +4717,7 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain = function(isRight, pie, domains
 
   /**
    * Domain labels.
-   * @type {Array.<anychart.core.utils.CircularLabelsFactory.Label>}
+   * @type {Array.<anychart.core.ui.CircularLabelsFactory.Label>}
    */
   this.labels = [];
 
