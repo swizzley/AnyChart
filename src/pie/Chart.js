@@ -5,14 +5,12 @@ goog.require('anychart.animations.AnimationSerialQueue');
 goog.require('anychart.color');
 goog.require('anychart.core.ICenterContentChart');
 goog.require('anychart.core.IShapeManagerUser');
-goog.require('anychart.core.CircularLabel');
 goog.require('anychart.core.SeparateChart');
 goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.Center');
-goog.require('anychart.core.utils.CircularLabelsFactory');
-goog.require('anychart.core.utils.CircularLabelsFactory.Label');
+goog.require('anychart.core.ui.CircularLabelsFactory');
 goog.require('anychart.core.ui.Tooltip');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
@@ -140,12 +138,6 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
   this.data(opt_data || null, opt_csvSettings);
 
   this.invalidate(anychart.ConsistencyState.ALL);
-
-  /**
-   * @type {anychart.core.utils.CircularLabelsFactory}
-   * @private
-   */
-  this.labelsFactory_ = new anychart.core.utils.CircularLabelsFactory();
 
   /**
    * @this {anychart.pieModule.Chart}
@@ -1217,18 +1209,14 @@ anychart.pieModule.Chart.prototype.labels = function(opt_value) {
 
 /**
  *
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label .
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label .
  * @return {anychart.math.Rect}
  */
 anychart.pieModule.Chart.prototype.getLabelBounds = function(label) {
   if (!this.labelsBoundsCache_) this.labelsBoundsCache_ = [];
   var index = label.getIndex();
-  if (!this.labelsBoundsCache_[index]) {
-    console.log(this.labels());
-
-    var bounds = this.labelsFactory_.measureWithTransform(label, null, this.labels().getOptions());
-    this.labelsBoundsCache_[index] = anychart.math.Rect.fromCoordinateBox(bounds);
-  }
+  if (!this.labelsBoundsCache_[index])
+    this.labelsBoundsCache_[index] = anychart.math.Rect.fromCoordinateBox(this.labels().measureWithTransform(label));
 
   return this.labelsBoundsCache_[index];
 };
@@ -1236,7 +1224,7 @@ anychart.pieModule.Chart.prototype.getLabelBounds = function(label) {
 
 /**
  * Drop label bounds cache.
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label Label to drop bounds.
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label Label to drop bounds.
  */
 anychart.pieModule.Chart.prototype.dropLabelBoundsCache = function(label) {
   var index = label.getIndex();
@@ -1494,12 +1482,6 @@ anychart.pieModule.Chart.prototype.calculateOutsideLabels = function() {
       label.enabled(false);
     }
 
-    // var bounds = this.getLabelBounds(label);
-    // var ___name = 'label_' + index;
-    // if (!this[___name]) this[___name] = this.container().rect().zIndex(1000);
-    // this[___name].setBounds(bounds);
-
-
     if (allowOverlap) {
       if (label && label.enabled() != false) {
         index = label.getIndex();
@@ -1567,13 +1549,13 @@ anychart.pieModule.Chart.prototype.calculateOutsideLabels = function() {
 
   if (!allowOverlap) {
     //@todo (blackart) for debug purpose
-    var ___name = 'cb_';
-    if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('green');
-    this[___name].setBounds(this.contentBounds);
-
-    var ___name = 'ppb_';
-    if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('blue');
-    this[___name].setBounds(this.piePlotBounds_);
+    // var ___name = 'cb_';
+    // if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('green');
+    // this[___name].setBounds(this.contentBounds);
+    //
+    // var ___name = 'ppb_';
+    // if (!this[___name]) this[___name] = this.container().rect().zIndex(1000).stroke('blue');
+    // this[___name].setBounds(this.piePlotBounds_);
 
     var labelsToCompare = [];
     goog.array.forEachRight(/** @type {Array} */(goog.object.getValues(/** @type {Object} */(explodeLevels))), function(explodeLevel) {
@@ -1610,9 +1592,9 @@ anychart.pieModule.Chart.prototype.calculateOutsideLabels = function() {
 
 /**
  * Calculate labels domain.
- * @param {Array.<anychart.core.utils.CircularLabelsFactory.Label>} labels .
+ * @param {Array.<anychart.core.ui.CircularLabelsFactory.Label>} labels .
  * @param {boolean} isRightSide .
- * @param {Array.<anychart.core.utils.CircularLabelsFactory.Label>=} opt_labelsForComparing .
+ * @param {Array.<anychart.core.ui.CircularLabelsFactory.Label>=} opt_labelsForComparing .
  * @param {number=} opt_explode .
  */
 anychart.pieModule.Chart.prototype.calcDomain = function(labels, isRightSide, opt_labelsForComparing, opt_explode) {
@@ -1714,7 +1696,6 @@ anychart.pieModule.Chart.prototype.calcDomain = function(labels, isRightSide, op
           iterator.select(index);
 
           bounds = this.getLabelBounds(label);
-
           if (opt_labelsForComparing) {
             var c_x0 = this.connectorAnchorCoords[index * 2];
             var c_y0 = this.connectorAnchorCoords[index * 2 + 1];
@@ -1792,10 +1773,6 @@ anychart.pieModule.Chart.prototype.calcDomain = function(labels, isRightSide, op
           }
 
           if (label.enabled() != false) {
-            var ___name = 'label_' + label.getIndex();
-            if (!this[___name]) this[___name] = this.container().rect().zIndex(1000);
-            this[___name].setBounds(bounds);
-            
             if (this.recalculateBounds_) {
               var boundsForCompare = opt_explode ? this.contentBounds : this.piePlotBounds_;
 
@@ -1861,7 +1838,7 @@ anychart.pieModule.Chart.prototype.domainDefragmentation = function(domain) {
             sourcePieLabelsDomains.push(tmpDomain);
             prevDomain = tmpDomain;
           }
-          var isRightSide = label.getMergedSettings('anchor') == anychart.enums.Anchor.LEFT_CENTER;
+          var isRightSide = label['anchor']() == anychart.enums.Anchor.LEFT_CENTER;
           tmpDomain = new anychart.pieModule.Chart.PieOutsideLabelsDomain(isRightSide, this, sourcePieLabelsDomains, domain.explode);
           tmpDomain.softAddLabel(label);
         } else {
@@ -2056,14 +2033,18 @@ anychart.pieModule.Chart.prototype.updateBounds = function() {
       this.radiusValue_ * 2,
       this.radiusValue_ * 2);
 
-  var labels = this.labelsFactory_;
+  var labels = this.labels();
   labels.suspendSignalsDispatching();
   labels.cx(this.cx);
   labels.cy(this.cy);
   labels.parentRadius(this.radiusValue_);
   labels.startAngle(/** @type {number} */ (this.getOption('startAngle')));
   labels.sweepAngle(360);
+  labels.parentBounds(this.pieBounds_);
   labels.resumeSignalsDispatching(false);
+
+  this.hovered().labels()
+      .parentBounds(this.pieBounds_);
 };
 
 
@@ -2125,9 +2106,9 @@ anychart.pieModule.Chart.prototype.chartsListener = function() {
  */
 anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
   this.calculate();
-  this.labelsFactory_.dropCallsCache();
+  this.labels().dropCallsCache();
   var iterator = this.getIterator();
-  var pointState, value, i, len;
+  var pointState, value;
   var rowsCount = iterator.getRowsCount();
   var mode3d = /** @type {boolean} */ (this.getOption('mode3d'));
 
@@ -2198,8 +2179,8 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.PIE_LABELS)) {
-    if (!this.labelsFactory_.container()) this.labelsFactory_.container(this.rootElement);
-    this.labelsFactory_.clear();
+    if (!this.labels().container()) this.labels().container(this.rootElement);
+    this.labels().clear();
     if (this.maxLabelIndexesArr_)
       this.maxLabelIndexesArr_.length = 0;
 
@@ -2215,10 +2196,8 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
       var themePart = this.isOutsideLabels() ?
           anychart.getFullTheme('pie.outsideLabels') :
           anychart.getFullTheme('pie.insideLabels');
-      this.labels().autoFontColor(themePart['autoColor']);
+      this.labels().setAutoColor(themePart['autoColor']);
       this.labels()['disablePointerEvents'](themePart['disablePointerEvents']);
-      this.labelsFactory_.zIndex(this.labels().zIndex());
-
       if (this.isOutsideLabels()) {
         if (this.recalculateBounds_) {
           this.radiusValue_ = this.originalRadiusValue_;
@@ -2230,14 +2209,14 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
           var iteration = 5;
           var error = 10;
           //todo (blackart) for debug purpose
-          console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
+          // console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
 
           for (; this.labelsRadiusOffset_ && isFinite(this.labelsRadiusOffset_) && iteration && Math.abs(this.labelsRadiusOffset_) > error;) {
             this.updateBounds();
 
             this.labelsRadiusOffset_ = Number.NEGATIVE_INFINITY;
 
-            this.labelsFactory_.clear();
+            this.labels().clear();
             if (this.connectorsLayer_) {
               this.connectorsLayer_.clear();
               if (mode3d)
@@ -2247,7 +2226,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
             this.calculateOutsideLabels();
             iteration--;
             //todo (blackart) for debug purpose
-            console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
+            // console.log('iteration:', iteration, 'labels offset:', this.labelsRadiusOffset_, 'maxLabel:', this.indexOfMaxLabel, 'label for drop:', this.lableToDrop );
           }
 
           this.invalidate(anychart.ConsistencyState.BOUNDS);
@@ -2263,8 +2242,8 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
       }
     }
 
-    this.labelsFactory_.draw();
-    this.labelsFactory_.getDomElement().clip(bounds);
+    this.labels().draw();
+    this.labels().getDomElement().clip(bounds);
 
     this.invalidate(anychart.ConsistencyState.APPEARANCE);
     this.markConsistent(anychart.ConsistencyState.PIE_LABELS);
@@ -2332,7 +2311,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
 
     var connectorStroke = /** @type {acgraph.vector.Stroke} */ (this.getOption('connectorStroke'));
     if (this.drawnConnectors_) {
-      for (i = 0; i < this.drawnConnectors_.length; i++) {
+      for (var i = 0; i < this.drawnConnectors_.length; i++) {
         var conn = this.drawnConnectors_[i];
         if (conn)
           conn.stroke(connectorStroke);
@@ -2394,7 +2373,7 @@ anychart.pieModule.Chart.prototype.drawContent = function(bounds) {
  * @private
  * @param {anychart.PointState|number} pointState Point state.
  * @param {boolean=} opt_updateConnector Whether to update connector or not.
- * @return {anychart.core.utils.CircularLabelsFactory.Label} Label.
+ * @return {anychart.core.ui.CircularLabelsFactory.Label} Label.
  */
 anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_updateConnector) {
   var iterator = this.getIterator();
@@ -2404,8 +2383,8 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
   var hovered = state == anychart.PointState.HOVER;
   var selected = state == anychart.PointState.SELECT;
 
-  var normalSettings = this.labels();
-  var statSettings = selected ? this.selected_.labels() : hovered ? this.hovered_.labels() : null;
+  var mainFactory = this.labels();
+  var stateFactory = selected ? this.selected_.labels() : hovered ? this.hovered_.labels() : null;
 
   var pointLabel = iterator.get('normal');
   pointLabel = goog.isDef(pointLabel) ? pointLabel['label'] : void 0;
@@ -2419,73 +2398,72 @@ anychart.pieModule.Chart.prototype.drawOutsideLabel_ = function(pointState, opt_
 
   var index = iterator.getIndex();
 
-  var label = /** @type {anychart.core.utils.CircularLabelsFactory.Label} */(this.labelsFactory_.getElement(index));
+  var label = mainFactory.getLabel(index);
 
   var labelEnabled = pointLabel && goog.isDef(pointLabel['enabled']) ? pointLabel['enabled'] : null;
   var stateLabelEnabled = statePointLabel && goog.isDef(statePointLabel['enabled']) ? statePointLabel['enabled'] : null;
 
   var isDraw = (hovered || selected) ?
       goog.isNull(stateLabelEnabled) ?
-          goog.isNull(statSettings.enabled()) ?
+          goog.isNull(stateFactory.enabled()) ?
               goog.isNull(labelEnabled) ?
                   (label && goog.isDef(label.enabled())) ?
                       label.enabled() :
-                      normalSettings.enabled() :
+                      mainFactory.enabled() :
                   labelEnabled :
-              statSettings.enabled() :
+              stateFactory.enabled() :
           stateLabelEnabled :
       goog.isNull(labelEnabled) ?
           (label && goog.isDef(label.enabled())) ?
               label.enabled() :
-              normalSettings.enabled() :
+              mainFactory.enabled() :
           labelEnabled;
 
+  var enabled;
   var wasNoLabel;
+  var anchor;
   var formatProvider = this.createFormatProvider(true);
   var positionProvider = this.createPositionProvider();
-
   if (isDraw) {
     if (wasNoLabel = !label) {
-      label = /** @type {anychart.core.utils.CircularLabelsFactory.Label} */(this.labelsFactory_.add(index));
-      label
-          .formatProvider(formatProvider)
-          .positionProvider(positionProvider)
+      label = mainFactory.add(formatProvider, positionProvider, index);
     }
 
-    label.resetSettings();
-    label.settings([
-      {'anchor': iterator.meta('anchor')},
-      label.ownSettings,
-      statePointLabel,
-      pointLabel,
-      statSettings,
-      normalSettings]);
+    // save enabled setting for label
+    enabled = label.enabled();
 
-    label.getMergedSettings();
-    
+    label.resetSettings();
+    label.currentLabelsFactory(/** @type {anychart.core.ui.LabelsFactory} */(stateFactory));
+    label.setSettings(/** @type {Object} */(pointLabel), /** @type {Object} */(statePointLabel));
+    label.enabled(/** @type {boolean} */(enabled));
+
+    anchor = iterator.meta('anchor');
+    if (goog.isDef(anchor))
+      label['anchor'](/** @type {string} */(anchor));
+
     if (!wasNoLabel)
       label.draw();
 
   } else if (label) {
+    enabled = label.enabled();
     label.clear();
+    label.enabled(/** @type {boolean} */(enabled));
   } else {
-    label = /** @type {anychart.core.utils.CircularLabelsFactory.Label} */(this.labelsFactory_.add(index));
-    label
-        .formatProvider(formatProvider)
-        .positionProvider(positionProvider);
-
+    label = mainFactory.add(formatProvider, positionProvider, index);
+    anchor = iterator.meta('anchor');
+    if (goog.isDef(anchor))
+      label['anchor'](/** @type {string} */(anchor));
     label.enabled(false);
-    label.settings([{'anchor': iterator.meta('anchor')}, label.ownSettings]);
   }
   if (opt_updateConnector)
-    this.updateConnector_(/** @type {anychart.core.utils.CircularLabelsFactory.Label}*/(label), isDraw);
-  return /** @type {anychart.core.utils.CircularLabelsFactory.Label}*/(label);
+    this.updateConnector_(/** @type {anychart.core.ui.CircularLabelsFactory.Label}*/(label), isDraw);
+  return /** @type {anychart.core.ui.CircularLabelsFactory.Label}*/(label);
 };
 
 
 /**
  * Draws connector line for label.
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label Label.
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label Label.
  * @param {acgraph.vector.Path} path Connector path element.
  */
 anychart.pieModule.Chart.prototype.drawConnectorLine = function(label, path) {
@@ -2553,7 +2531,7 @@ anychart.pieModule.Chart.prototype.updateConnector_ = function(label, show) {
  * @private
  * @param {anychart.PointState|number} pointState Point state.
  * @param {boolean=} opt_updateConnector Whether to update connector or not. Used only with outside labels.
- * @return {anychart.core.utils.CircularLabelsFactory.Label} Label.
+ * @return {anychart.core.ui.CircularLabelsFactory.Label} Label.
  */
 anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateConnector) {
   if (this.isOutsideLabels())
@@ -2566,8 +2544,8 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
 
   var iterator = this.getIterator();
 
-  var normalSettings = this.labels();
-  var stateSettings = selected ? this.selected_.labels() : hovered ? this.hovered_.labels() : null;
+  var mainFactory = this.labels();
+  var stateFactory = selected ? this.selected_.labels() : hovered ? this.hovered_.labels() : null;
 
   var pointLabel = iterator.get('normal');
   pointLabel = goog.isDef(pointLabel) ? pointLabel['label'] : void 0;
@@ -2580,7 +2558,7 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
       hovered ? anychart.utils.getFirstDefinedValue(statePointLabel, iterator.get('hoverLabel')) : null;
 
   var index = iterator.getIndex();
-  var label = this.labelsFactory_.getElement(index);
+  var label = mainFactory.getLabel(index);
 
   var labelEnabled = pointLabel && goog.isDef(pointLabel['enabled']) ? pointLabel['enabled'] : null;
   var stateLabelEnabled = statePointLabel && goog.isDef(statePointLabel['enabled']) ? statePointLabel['enabled'] : null;
@@ -2619,17 +2597,18 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
     var by = cy + (mode3d ? this.get3DYRadius(this.radiusValue_) : this.radiusValue_) * Math.sin(angle);
 
     if (!this.measureLabel_) {
-      this.measureLabel_ = new anychart.core.utils.CircularLabelsFactory.Label();
+      this.measureLabel_ = new anychart.core.ui.CircularLabelsFactory.Label();
     } else {
       this.measureLabel_.clear();
     }
-
     this.measureLabel_.formatProvider(formatProvider);
     this.measureLabel_.positionProvider(positionProvider);
     this.measureLabel_.resetSettings();
-    this.measureLabel_.settings([statePointLabel, pointLabel, normalSettings]);
+    this.measureLabel_.parentLabelsFactory(this.labels());
+    this.measureLabel_.currentLabelsFactory(mainFactory);
+    this.measureLabel_.setSettings(/** @type {Object} */(pointLabel), /** @type {Object} */(statePointLabel));
 
-    var bounds = this.labelsFactory_.measureWithTransform(this.measureLabel_, null, null, index);
+    var bounds = this.labels().measureWithTransform(this.measureLabel_, null, null, index);
 
     var singlePiePoint = ((iterator.getRowsCount() == 1 || sweep == 360) && !this.innerRadiusValue_);
     var notIntersectStartLine = singlePiePoint || !anychart.math.checkRectIntersectionWithSegment(ax, ay, cx, cy, bounds);
@@ -2642,38 +2621,41 @@ anychart.pieModule.Chart.prototype.drawLabel_ = function(pointState, opt_updateC
 
   var isDraw = isNotNormalState ?
       goog.isNull(stateLabelEnabled) ?
-          goog.isNull(stateSettings.enabled()) ?
+          goog.isNull(stateFactory.enabled()) ?
               goog.isNull(labelEnabled) ?
-                  normalSettings.enabled() :
+                  mainFactory.enabled() :
                   labelEnabled :
-              stateSettings.enabled() :
+              stateFactory.enabled() :
           stateLabelEnabled :
       goog.isNull(labelEnabled) ?
-          normalSettings.enabled() :
+          mainFactory.enabled() :
           labelEnabled;
 
   if (isDraw && isFitToSlice) {
-    if (!label)
-      label = this.labelsFactory_.add(index);
-    label.formatProvider(formatProvider);
-    label.positionProvider(positionProvider);
+    if (label) {
+      label.formatProvider(formatProvider);
+      label.positionProvider(positionProvider);
+    } else {
+      label = mainFactory.add(formatProvider, positionProvider, index);
+    }
 
     label.resetSettings();
-    label.settings([label.ownSettings, statePointLabel, pointLabel, stateSettings, normalSettings]);
+    label.currentLabelsFactory(/** @type {anychart.core.ui.LabelsFactory} */(stateFactory));
+    label.setSettings(/** @type {Object} */(pointLabel), /** @type {Object} */(statePointLabel));
 
     //todo: this shit should be reworked when labelsFactory will be reworked
     //if usual label isn't disabled and not drawn then it doesn't have container and hover label doesn't know nothing
     //about its DOM element and trying to apply itself setting to it. But nothing will happen because container is empty.
-    // if (hovered && !label.container() && normalSettings.getDomElement()) {
-    //   label.container(normalSettings.getDomElement());
-    //   if (!label.container().parent()) {
-    //     label.container().parent(/** @type {acgraph.vector.ILayer} */(normalSettings.container()));
-    //   }
-    // }
+    if (hovered && !label.container() && mainFactory.getDomElement()) {
+      label.container(mainFactory.getDomElement());
+      if (!label.container().parent()) {
+        label.container().parent(/** @type {acgraph.vector.ILayer} */(mainFactory.container()));
+      }
+    }
   } else if (label) {
-    this.labelsFactory_.clear(label.getIndex());
+    mainFactory.clear(label.getIndex());
   }
-  return /** @type {anychart.core.utils.CircularLabelsFactory.Label}*/(label);
+  return /** @type {anychart.core.ui.CircularLabelsFactory.Label}*/(label);
 };
 
 
@@ -4529,17 +4511,17 @@ anychart.pieModule.Chart.prototype.finalizePointAppearance = function(opt_value)
   if (explodeChanged) {
     if (this.isOutsideLabels()) {
       this.recalculateBounds_ = false;
-      this.labelsFactory_.suspendSignalsDispatching();
-      this.labelsFactory_.clear();
+      this.labels().suspendSignalsDispatching();
+      this.labels().clear();
       this.calculateOutsideLabels();
-      this.labelsFactory_.draw();
-      this.labelsFactory_.resumeSignalsDispatching(false);
+      this.labels().draw();
+      this.labels().resumeSignalsDispatching(false);
     } else {
-      this.labelsFactory_.draw();
+      this.labels().clear();
       iterator.select(currIndex);
     }
   } else {
-    this.labelsFactory_.draw();
+    this.labels().draw();
   }
 };
 
@@ -4779,14 +4761,14 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain = function(isRight, pie, domains
 
 /**
  * Dropped labels.
- * @type {Array.<anychart.core.utils.CircularLabelsFactory.Label>}
+ * @type {Array.<anychart.core.ui.CircularLabelsFactory.Label>}
  */
 anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.droppedLabels;
 
 
 /**
  * Adding label to domain with checks critical angles and intersection with other domains.
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label Adding label.
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label Adding label.
  */
 anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.addLabel = function(label) {
   if (label) {
@@ -4798,7 +4780,7 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.addLabel = function(la
 
 /**
  * Adding label to domain without any checks.
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label Adding label.
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label Adding label.
  */
 anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.softAddLabel = function(label) {
   if (label) {
@@ -4825,7 +4807,7 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.clearDroppedLabels = f
 
 /**
  * Drop label.
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label
  * @param {number} index Label index in domain labels array.
  */
 anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.dropLabel = function(label, index) {

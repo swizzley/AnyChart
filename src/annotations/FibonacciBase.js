@@ -55,12 +55,6 @@ anychart.annotationsModule.FibonacciBase = function(chartController) {
       anychart.annotationsModule.Base.getColorResolver('trend', anychart.enums.ColorType.STROKE, true));
 
   /**
-   * @type {anychart.core.utils.LabelsFactory}
-   * @private
-   */
-  this.labelsFactory_ = new anychart.core.utils.LabelsFactory();
-
-  /**
    * This is a flag that is setup in labels invalidation processing and that means that the labels should be redrawn
    * after processing
    * @type {boolean}
@@ -201,12 +195,11 @@ anychart.annotationsModule.FibonacciBase.prototype.resolveCustomPreDrawingStates
 
   if (this.hasInvalidationState(anychart.ConsistencyState.ANNOTATIONS_LABELS)) {
     this.shouldDrawLabels = false;
-    var factory = /** @type {anychart.core.utils.LabelsFactory} */(this.labelsFactory_);
-    var normalEnabledSettings = /** @type {anychart.core.Label} */(this.normal().labels());
-    var stateEnabledSettings = /** @type {boolean} */(this.hovered().labels().enabled() || /** @type {anychart.core.Label} */(this.selected().labels()).enabled());
+    var factory = /** @type {anychart.core.ui.LabelsFactory} */(this.normal().labels());
+    var stateFactoriesEnabled = /** @type {boolean} */(this.hovered().labels().enabled() || /** @type {anychart.core.ui.LabelsFactory} */(this.selected().labels()).enabled());
     factory.suspendSignalsDispatching();
     if (this.anchorsWithLastPoint == anychart.annotationsModule.AnchorSupport.TWO_POINTS &&
-        (normalEnabledSettings || stateEnabledSettings)) {
+        ((factory.enabled() !== false) || stateFactoriesEnabled)) {
       factory.container(this.rootLayer);
       factory.clear();
       factory.parentBounds(this.pixelBoundsCache);
@@ -248,34 +241,34 @@ anychart.annotationsModule.FibonacciBase.prototype.drawTwoPointsShape = function
     this.levelPaths[i].clear();
   }
 
-  var normalSettings = /** @type {anychart.core.Label} */(this.normal().labels());
-  var stateSettings;
+  var mainFactory = /** @type {anychart.core.ui.LabelsFactory} */(this.normal().labels());
+  var stateFactory;
   if (!!(this.state & anychart.PointState.SELECT)) {
-    stateSettings = /** @type {anychart.core.Label} */(this.selected().labels());
+    stateFactory = /** @type {anychart.core.ui.LabelsFactory} */(this.selected().labels());
   } else if (!!(this.state & anychart.PointState.HOVER)) {
-    stateSettings = /** @type {anychart.core.Label} */(this.hovered().labels());
+    stateFactory = /** @type {anychart.core.ui.LabelsFactory} */(this.hovered().labels());
   } else {
-    stateSettings = null;
+    stateFactory = null;
   }
 
-  var canDrawLabels = /** @type {boolean} */(this.shouldDrawLabels && (!stateSettings || goog.isNull(stateSettings.enabled())) ?
-      normalSettings.enabled() :
-      stateSettings.enabled());
+  var canDrawLabels = /** @type {boolean} */(this.shouldDrawLabels && (!stateFactory || goog.isNull(stateFactory.enabled())) ?
+      mainFactory.enabled() :
+      stateFactory.enabled());
 
-  normalSettings.suspendSignalsDispatching();
-  this.drawLevels(normalSettings, stateSettings, canDrawLabels);
+  mainFactory.suspendSignalsDispatching();
+  this.drawLevels(mainFactory, stateFactory, canDrawLabels);
   if (!canDrawLabels) {
-    normalSettings.clear();
+    mainFactory.clear();
   }
-  normalSettings.draw();
-  normalSettings.resumeSignalsDispatching(false);
+  mainFactory.draw();
+  mainFactory.resumeSignalsDispatching(false);
 };
 
 
 /**
  * Draws levels. If drawLabels is passed - should calculate format and position providers and call drawLabel().
- * @param {anychart.core.Label} mainFactory
- * @param {anychart.core.Label} stateFactory
+ * @param {anychart.core.ui.LabelsFactory} mainFactory
+ * @param {anychart.core.ui.LabelsFactory} stateFactory
  * @param {boolean} drawLabels
  */
 anychart.annotationsModule.FibonacciBase.prototype.drawLevels = function(mainFactory, stateFactory, drawLabels) {
@@ -294,8 +287,8 @@ anychart.annotationsModule.FibonacciBase.prototype.drawLevels = function(mainFac
  * @param {number} levelValue Level value.
  * @param {acgraph.vector.Path} path
  * @param {acgraph.vector.Path} hoverPath
- * @param {anychart.core.Label} mainFactory
- * @param {anychart.core.Label} stateFactory
+ * @param {anychart.core.ui.LabelsFactory} mainFactory
+ * @param {anychart.core.ui.LabelsFactory} stateFactory
  * @param {boolean} drawLabels
  * @param {number} strokeThickness
  */
@@ -408,28 +401,26 @@ anychart.annotationsModule.FibonacciBase.prototype.getValueFromPixX = function(p
 /**
  * Draws a label for passed providers and index.
  * @param {number} index
- * @param {anychart.core.Label} mainFactory
- * @param {anychart.core.Label} stateFactory
+ * @param {anychart.core.ui.LabelsFactory} mainFactory
+ * @param {anychart.core.ui.LabelsFactory} stateFactory
  * @param {*} formatProvider
  * @param {*} positionProvider
  * @param {anychart.enums.Anchor=} opt_autoAnchor
  */
 anychart.annotationsModule.FibonacciBase.prototype.drawLabel = function(index, mainFactory, stateFactory, formatProvider, positionProvider, opt_autoAnchor) {
   if (formatProvider && positionProvider) {
-    var element = this.labelsFactory_.getElement(/** @type {number} */(index));
-    if (!element)
-      element = this.labelsFactory_.add(index);
-
-    element.formatProvider(formatProvider);
-    element.positionProvider(positionProvider);
-
+    var element = mainFactory.getLabel(/** @type {number} */(index));
+    if (element) {
+      element.formatProvider(formatProvider);
+      element.positionProvider(positionProvider);
+    } else {
+      element = mainFactory.add(formatProvider, positionProvider, index);
+    }
     element.resetSettings();
-
+    element.currentLabelsFactory(stateFactory);
     if (opt_autoAnchor)
       element.autoAnchor(opt_autoAnchor);
-
     element.draw();
-
     var bounds = mainFactory.measureWithTransform(element);
     if (bounds && bounds.length) {
       var path = this.paths[1];

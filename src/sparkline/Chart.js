@@ -1764,8 +1764,6 @@ anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSetti
   var markers = this.markers();
   var defaultMarkers = this.seriesDefaults_['markers'];
 
-  debugger;
-
   var autoFill = this.getFinalFill(true);
   var autoColor = {'fill': autoFill, 'stroke': anychart.color.darken(autoFill)};
 

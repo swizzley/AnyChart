@@ -15,8 +15,7 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
     'margin': 0,
     'padding': 0,
     'hatchFill': null,
-    'markers': {
-    },
+    'markers': {},
 
     'firstMarkers': {
       'fill': '#64b5f6'
