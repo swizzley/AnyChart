@@ -110,9 +110,9 @@ anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
     this.firstPointX = x;
     this.firstPointY = y;
   }
-
-  this.prevX = x;
-  this.prevY = y;
+  // this.prevX = x;
+  // this.prevY = y;
+  this.prevPoint = point;
 };
 
 
@@ -124,22 +124,44 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
 
   if (shapes != this.currentShapes) {
     var crossX, crossY;
-    var colorScale = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(this.series.colorScale());
-    if (!colorScale) {
-      crossX = this.prevX + (x - this.prevX) / 2;
-      crossY = this.prevY + (y - this.prevY) / 2;
+    var prevX, prevY;
+
+    prevX = /** @type {number} */(this.prevPoint.meta('x'));
+    prevY = /** @type {number} */(this.prevPoint.meta('value'));
+
+    if (!point.meta('scaled_stroke')) {
+      crossX = prevX + (x - prevX) / 2;
+      crossY = prevY + (y - prevY) / 2;
     } else {
+      var colorScale = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(this.series.colorScale());
+
       var value = point.get(this.valueFieldName);
-      var key = point.getX();
-      var range = colorScale.getRangeByValue(value);
+      var prevValue = this.prevPoint.get(this.valueFieldName);
+      // var range = colorScale.getRangeByValue(value);
 
-      var xRatio = this.series.getXScale().transform(key);
-      var yRatio = this.series.yScale().transform(value);
+      var ranges = colorScale.getProcessedRanges();
+      // console.log(ranges);
 
-      // console.log(xRatio, yRatio);
+      var prevRangeIndex = colorScale.getIndexByValue(prevValue);
+      var rangeIndex = colorScale.getIndexByValue(value);
 
-      crossX = this.prevX + (x - this.prevX) / 2;
-      crossY = this.prevY + (y - this.prevY) / 2;
+      for (var start = prevRangeIndex, end = rangeIndex; start <= end; start++) {
+        var range = ranges[i];
+
+
+
+      }
+
+      var crossValue;
+      if (this.prevY > y) {
+        crossValue = range.start;
+      } else {
+        crossValue = range.end;
+      }
+
+      var yRatio = this.series.yScale().transform(crossValue);
+      crossY = this.series.applyRatioToBounds(yRatio, false);
+      crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
     }
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, crossX, crossY);
     this.currentShapes = shapes;

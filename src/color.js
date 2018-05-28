@@ -590,6 +590,24 @@ anychart.color.getNullColor = function() {
 
 
 /**
+ * Returns normalized null stroke or fill.
+ * @return {string}
+ */
+anychart.color.getSourceColor = function() {
+  return this['sourceColor'];
+};
+
+
+/**
+ * Returns normalized null stroke or fill.
+ * @return {string}
+ */
+anychart.color.getScaledColor = function() {
+  return this['scaledColor'];
+};
+
+
+/**
  * Returns final color or hatch fill for passed params.
  * @param {string} colorName
  * @param {!Function} normalizer
@@ -605,8 +623,9 @@ anychart.color.getNullColor = function() {
 anychart.color.getColor = function(colorName, normalizer, isHatchFill, canBeHoveredSelected, scrollerSelected, series, state, opt_ignorePointSettings, opt_ignoreColorScale) {
   var stateColor, context;
   state = anychart.core.utils.InteractivityState.clarifyState(state);
+  var iterator = series.getIterator();
   if (canBeHoveredSelected && (state != anychart.PointState.NORMAL)) {
-    stateColor = series.resolveOption(colorName, state, series.getIterator(), normalizer, scrollerSelected, void 0, opt_ignorePointSettings);
+    stateColor = series.resolveOption(colorName, state, iterator, normalizer, scrollerSelected, void 0, opt_ignorePointSettings);
     if (isHatchFill && stateColor === true)
       stateColor = normalizer(series.getAutoHatchFill());
     if (goog.isDef(stateColor)) {
@@ -619,9 +638,23 @@ anychart.color.getColor = function(colorName, normalizer, isHatchFill, canBeHove
     }
   }
   // we can get here only if state color is undefined or is a function
-  var color = series.resolveOption(colorName, 0, series.getIterator(), normalizer, scrollerSelected, void 0, opt_ignorePointSettings);
+
+  var color = series.resolveOption(colorName, 0, iterator, normalizer, scrollerSelected, void 0, opt_ignorePointSettings);
   if (isHatchFill && color === true)
     color = normalizer(series.getAutoHatchFill());
+
+  var colorScaleName = 'scaled_' + colorName;
+  if (goog.isString(color) && color.toLowerCase() == 'colorscale') {
+    var colorScale = series.colorScale && series.colorScale();
+    if (colorScale) {
+      color = anychart.color.getScaledColor;
+      iterator.meta(colorScaleName, true);
+    } else {
+      color = anychart.color.getSourceColor;
+    }
+  } else {
+    iterator.meta(colorScaleName, false);
+  }
   if (goog.isFunction(color)) {
     context = isHatchFill ?
         series.getHatchFillResolutionContext(opt_ignorePointSettings) :

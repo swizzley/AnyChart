@@ -288,13 +288,32 @@ anychart.core.series.Cartesian.prototype.getColorResolutionContext = function(op
   var source = opt_baseColor || this.getOption('color') || 'blue';
   if (this.supportsPointSettings()) {
     var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
-    return {
+    var colorScale = this.colorScale();
+    var ignoreColorScale = goog.isDef(opt_ignoreColorScale) && opt_ignoreColorScale;
+
+    var scaledColor;
+    var ctx = {
       'index': iterator.getIndex(),
       'sourceColor': source,
       'iterator': iterator,
       'series': this,
+      'colorScale': colorScale,
       'chart': this.chart
     };
+
+    if (colorScale && !ignoreColorScale) {
+      var value = /** @type {number} */(iterator.get(this.drawer.valueFieldName));
+      if (goog.isDef(value))
+        scaledColor = colorScale.valueToColor(value);
+
+      goog.object.extend(ctx, {
+        'scaledColor': scaledColor,
+        'colorScale': colorScale
+      });
+    }
+
+
+    return ctx;
   }
   return {
     'sourceColor': source

@@ -299,7 +299,7 @@ anychart.stockModule.Series.prototype.considerMetaEmpty = function() {
 //
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
-anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_baseColor, opt_ignorePointSettings) {
+anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_baseColor, opt_ignorePointSettings, opt_ignoreColorScale) {
   // var source = opt_baseColor || this.getOption('color') || 'blue';
   // if (this.supportsPointSettings()) {
     // var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
@@ -326,10 +326,11 @@ anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_b
 
   var source = opt_baseColor || this.getOption('color') || 'blue';
   var x = iterator.getX();
+  var value = iterator.get('value');
   var name = goog.isDef(iterator.get('name')) ? iterator.get('name') : x;
   var values = {
     'x': {value: x, type: anychart.enums.TokenType.DATE_TIME},
-    'value': {value: iterator.get('value'), type: anychart.enums.TokenType.NUMBER},
+    'value': {value: value, type: anychart.enums.TokenType.NUMBER},
     'index': {value: iterator.getIndex(), type: anychart.enums.TokenType.NUMBER},
     'sourceColor': {value: source, type: anychart.enums.TokenType.UNKNOWN},
     'iterator': {value: iterator, type: anychart.enums.TokenType.UNKNOWN},
@@ -338,6 +339,19 @@ anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_b
     'name': {value: name, type: anychart.enums.TokenType.STRING},
     'isIntersection': {value: !!iterator.meta('isIntersection'), type: anychart.enums.TokenType.STRING}
   };
+
+  var ignoreColorScale = goog.isDef(opt_ignoreColorScale) && opt_ignoreColorScale;
+  var colorScale = this.colorScale();
+  if (colorScale && !ignoreColorScale) {
+    var scaledColor;
+    if (goog.isDef(value))
+      scaledColor = colorScale.valueToColor(value);
+
+    goog.object.extend(values, {
+      'scaledColor': {value: scaledColor, type: anychart.enums.TokenType.UNKNOWN},
+      'colorScale': {value: colorScale, type: anychart.enums.TokenType.UNKNOWN}
+    });
+  }
 
   return this.pointProvider_.propagate(values);
 };
