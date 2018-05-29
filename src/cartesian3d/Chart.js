@@ -550,8 +550,9 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var zPos = yPos;
   var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 1000;
   var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
-
-  xPos = this.xScale().inverted() ? iterator.getRowsCount() - xPos : xPos + 1;
+  var isStacked = this.yScale().stackMode() != "none";
+  var isXInverted = this.xScale().inverted();
+  xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1;
 
   if (this.yScale().inverted() ^ 0 > value) {
     yPos = -yPos;
@@ -572,8 +573,14 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
       zIndex -= inc;
     }
   } else {
-    inc *= xPos;
-    zIndex += inc;
+      if(!isStacked && !this.getOption('zDistribution')) {
+        if (isXInverted) {
+          yPos = (maxY - Math.abs(yPos)) + 1;
+        }
+        xPos = (xPos * maxY) - maxY + Math.abs(yPos);
+      }
+      inc *= xPos;
+      zIndex += inc;
   }
 
   series.zIndex(zIndex);
