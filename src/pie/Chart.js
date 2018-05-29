@@ -2501,7 +2501,7 @@ anychart.pieModule.Chart.prototype.drawConnectorLine = function(label, path) {
 
 /**
  * Show or hide connector for label.
- * @param {anychart.core.utils.CircularLabelsFactory.Label} label Label.
+ * @param {anychart.core.ui.CircularLabelsFactory.Label} label Label.
  * @param {boolean} show Whether to show connector ot not for label.
  * @private
  */

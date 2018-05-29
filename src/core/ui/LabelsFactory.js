@@ -488,6 +488,40 @@ anychart.core.ui.LabelsFactory.prototype.setAutoColor = function(value) {
 };
 
 
+/**
+ * Auto clip element settings.
+ * @param {(acgraph.vector.Clip|acgraph.vector.Element|anychart.math.Rect|boolean)=} opt_value .
+ * @return {!anychart.core.ui.LabelsFactory|acgraph.vector.Clip|acgraph.vector.Element} .
+ */
+anychart.core.ui.LabelsFactory.prototype.autoClip = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.autoSettings['clip'] !== opt_value) {
+      this.autoSettings['clip'] = opt_value;
+      this.dispatchSignal(anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  }
+  return this.autoSettings['clip'];
+};
+
+
+/**
+ * Auto clip element settings.
+ * @param {(acgraph.vector.Clip|acgraph.vector.Element|anychart.math.Rect)=} opt_value .
+ * @return {!anychart.core.ui.LabelsFactory|acgraph.vector.Clip|acgraph.vector.Element} .
+ */
+anychart.core.ui.LabelsFactory.prototype.autoClipElement = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.autoSettings['clipElement'] !== opt_value) {
+      this.autoSettings['clipElement'] = opt_value;
+      this.dispatchSignal(anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  }
+  return this.autoSettings['clipElement'];
+};
+
+
 //endregion
 //region --- IObjectWithSettings implementation
 /**
@@ -1850,18 +1884,19 @@ anychart.core.ui.LabelsFactory.Label.prototype.getFinalSettings = function(value
 
 /**
  * Drawing plans iterator.
- * @param {Function} processor .
+ * @param {Function=} opt_processor .
  * @param {boolean=} opt_invert .
  * @param {string=} opt_field .
  * @param {Function=} opt_handler .
  * @return {*}
  * @private
  */
-anychart.core.ui.LabelsFactory.Label.prototype.iterateDrawingPlans_ = function(processor, opt_invert, opt_field, opt_handler) {
+anychart.core.ui.LabelsFactory.Label.prototype.iterateDrawingPlans_ = function(opt_processor, opt_invert, opt_field, opt_handler) {
   var iterator = opt_invert ? goog.array.forEachRight : goog.array.forEach;
 
   var result = void 0;
   var settings = this.getDrawingPlan();
+  var processor = opt_processor || anychart.core.ui.LabelsFactory.Label.defaultSettingsProcessor_;
 
   iterator(settings, function(state, i) {
     var stateSettings = goog.isString(state) ? state == 'auto' ? this.autoSettings : this.states_[state] : state;
@@ -1869,9 +1904,9 @@ anychart.core.ui.LabelsFactory.Label.prototype.iterateDrawingPlans_ = function(p
     if (!stateSettings)
       return;
 
-    var processedSetting = processor.call(this, state, stateSettings, i, opt_field, opt_handler);
+    var processedSetting = processor(state, stateSettings, i, opt_field, opt_handler);
     if (goog.isDef(processedSetting)) {
-      if (goog.typeOf(processedSetting) == 'object') {
+      if (goog.typeOf(processedSetting) == 'object' && !anychart.utils.instanceOf(processedSetting, goog.Disposable)) {
         if (goog.isDefAndNotNull(result)) {
           opt_invert ? goog.object.extend(result, processedSetting) : goog.object.extend(processedSetting, result);
         } else {
@@ -2528,8 +2563,28 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
   }
 
   if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CLIP)) {
-    if (this.layer_)
-      this.layer_.clip(this.mergedSettings['clip']);
+    var settings = this.getMergedSettings();
+    var clipSettings = settings['clip'];
+
+    var clip = null;
+    if (goog.isDef(clipSettings) && clipSettings) {
+      if (anychart.utils.instanceOf(clipSettings, acgraph.vector.Element)) {
+        clip = clipSettings;
+      } else {
+        clip = /** @type {anychart.math.Rect} */(this.iterateDrawingPlans_(function(settings) {
+          console.log(settings);
+          var clipElement;
+          if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory)) {
+            clipElement = settings['clipElement']();
+          } else if (goog.typeOf(settings) == 'object') {
+            clipElement = settings['clipElement'];
+          }
+          return clipElement;
+        }, true, 'clipElement'));
+      }
+    }
+
+    this.layer_.clip(clip);
     this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CLIP);
   }
   return this;
