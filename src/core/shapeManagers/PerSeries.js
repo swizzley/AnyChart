@@ -65,44 +65,17 @@ anychart.core.shapeManagers.PerSeries.prototype.getPointColorHash = function(sta
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.getShapesGroup = function(state, opt_only, opt_baseZIndex, opt_shape) {
   var hash = this.getPointColorHash(state, opt_only);
-  //
+
   this.currentShapes = this.shapes[hash];
-  // we generate all shapes for the first time, because we cannot afford to vary the set
   if (!this.currentShapes) {
+    var shapes = anychart.core.shapeManagers.PerSeries.base(this, 'getShapesGroup', state, opt_only);
     this.currentShapes = this.shapes[hash] = {
       row: this.series.getIterator().current(),
-      shapes: anychart.core.shapeManagers.PerSeries.base(this, 'getShapesGroup', state, null)
+      shapes: shapes
     };
   }
 
   return this.currentShapes.shapes;
-
-
-
-
-  // var res = {};
-  // var names = opt_only || this.defs;
-  // var atPoint = this.series.isDiscreteBased();
-  // var indexOrGlobal;
-  // if (atPoint) {
-  //   indexOrGlobal = this.series.getIterator().getIndex();
-  // } else {
-  //   indexOrGlobal = true;
-  // }
-  //
-  // names[]
-  //
-  // for (var name in names) {
-  //   var descriptor = names[name];
-  //   if (descriptor.shapeType == anychart.enums.ShapeType.NONE && opt_shape) {
-  //     if (anychart.utils.instanceOf(opt_shape, acgraph.vector.Shape))
-  //       res[name] = this.configureShape(name, state, indexOrGlobal, opt_baseZIndex || 0, opt_shape);
-  //   } else {
-  //     res[name] = this.createShape(name, state, indexOrGlobal, opt_baseZIndex || 0);
-  //   }
-  // }
-  // this.postProcessor(this.series, res, state);
-  // return res;
 };
 
 

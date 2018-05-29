@@ -102,22 +102,35 @@ anychart.core.drawers.Line.prototype.calcCrossPoint = function() {
 
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
-  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var currValue = point.get(this.series.getYValueNames()[0]);
+  var name = currValue < 0 ? 'negative' : 'stroke';
+  var shapeNames = {};
+  shapeNames[name] = true;
+
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, x, y);
+  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
   if (isNaN(this.firstPointX)) {
     this.firstPointX = x;
     this.firstPointY = y;
   }
   this.prevX = x;
   this.prevY = y;
+  this.prevValue = point.get(this.series.getYValueNames()[0]);
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var currValue = point.get(this.series.getYValueNames()[0]);
+  var name = currValue < 0 ? 'negative' : 'stroke';
+  var shapeNames = {};
+  shapeNames[name] = true;
+
+  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
@@ -127,44 +140,26 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
     prevX = /** @type {number} */(this.prevX);
     prevY = /** @type {number} */(this.prevY);
 
-    // console.log(point.meta('scaled_stroke'));
-
-    // if (!point.meta('scaled_stroke')) {
+    if (this.crossType == 'baseline' && (this.prevValue * currValue < 0)) {
+      var crossValue = 0;
+      var yRatio = this.series.yScale().transform(crossValue);
+      crossY = this.series.applyRatioToBounds(yRatio, false);
+      crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
+    } else {
       crossX = prevX + (x - prevX) / 2;
       crossY = prevY + (y - prevY) / 2;
-    // } else {
-    //   var colorScale = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */(this.series.colorScale());
-    //
-    //   // var value = point.get(this.valueFieldName);
-    //   // var prevValue = this.prevPoint.get(this.valueFieldName);
-    //   var range = colorScale.getRangeByValue(value);
-    //
-    //   // var ranges = colorScale.getProcessedRanges();
-    //   // console.log(ranges);
-    //
-    //   // var prevRangeIndex = colorScale.getIndexByValue(prevValue);
-    //   // var rangeIndex = colorScale.getIndexByValue(value);
-    //
-    //   var crossValue;
-    //   if (this.prevY > y) {
-    //     crossValue = range.start;
-    //   } else {
-    //     crossValue = range.end;
-    //   }
-    //
-    //   var yRatio = this.series.yScale().transform(crossValue);
-    //   crossY = this.series.applyRatioToBounds(yRatio, false);
-    //   crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
-    // }
+    }
 
-    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, crossX, crossY);
+    var prevName = this.prevValue < 0 ? 'negative' : 'stroke';
+    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevName]), this.isVertical, crossX, crossY);
     this.currentShapes = shapes;
-    anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, crossX, crossY);
+    anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, crossX, crossY);
   }
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes['stroke']), this.isVertical, x, y);
+  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
 
   this.prevX = x;
   this.prevY = y;
+  this.prevValue = currValue;
 };
 
 

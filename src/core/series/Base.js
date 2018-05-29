@@ -741,9 +741,23 @@ anychart.core.series.Base.prototype.applyConfig = function(config, opt_reapplyCl
  *
  */
 anychart.core.series.Base.prototype.createShapesConfig = function() {
-   this.config.shapesConfig = [
-    anychart.core.shapeManagers.pathStrokeConfig
-  ];
+   var config = [];
+
+   if (this.config.shapeManagerType == anychart.enums.ShapeManagerTypes.PER_SERIES) {
+     switch (this.config.drawerType) {
+       case anychart.enums.SeriesDrawerTypes.LINE:
+         if (goog.isDef(this.normal().getOption('negativeStroke'))) {
+           config.push(anychart.core.shapeManagers.pathNegativeStrokeConfig);
+           this.drawer.crossType = 'baseline';
+         } else {
+           this.drawer.crossType = 'normal';
+         }
+         config.push(anychart.core.shapeManagers.pathStrokeConfig);
+         break;
+     }
+   }
+
+  this.config.shapesConfig = config;
 };
 
 
