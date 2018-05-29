@@ -754,11 +754,7 @@ anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, cli
   var firstSeries = firstPoint['series'];
   this.tooltipInUse_ = opt_useUnionAsSingle ? this : firstSeries.tooltip();
 
-  if (!this.tooltipInUse_.enabled()) {
-    return;
-  }
-
-  if (firstPoint['nearestPointToCursor'] && !isFinite(firstPoint['nearestPointToCursor']['distance'])) {
+  if (!this.tooltipInUse_.enabled() || this.isPointMissing_(firstPoint)) {
     return;
   }
 
@@ -962,12 +958,8 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
       if (point) {
         var series = /** @type {anychart.core.series.Base} */ (point['series']);
         var tooltip = series.tooltip();
-        if (!series.enabled() || !tooltip.enabled())
+        if (!series.enabled() || !tooltip.enabled() || this.isPointMissing_(point))
           continue;
-
-        if (point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance'])) {
-          continue;
-        }
 
         // for compile_each (gantt, bullet)
         if (!goog.isDef(series.createTooltipContextProvider)) {
@@ -1048,15 +1040,11 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
   this.hideSelf();
   for (var i = 0; i < points.length; i++) {
     var point = points[i];
-
-    if (point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance'])) {
-      continue;
-    }
     var series = point['series'];
     var tooltip = series.tooltip();
 
-    if (!tooltip.enabled())
-      break;
+    if (!tooltip.enabled() || this.isPointMissing_(point))
+      continue;
 
     // for compile_each (gantt, bullet)
     if (!goog.isDef(series.createTooltipContextProvider)) {
@@ -1080,6 +1068,17 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
 
 
 /**
+ * Checks if the point is missing.
+ * @param {Object} point - the current series point.
+ * @return {boolean}
+ * @private
+ */
+anychart.core.ui.Tooltip.prototype.isPointMissing_ = function(point) {
+  return point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance']);
+};
+
+
+/**
  * Show tooltip base on points on series.
  * @param {Array} points
  * @param {number} clientX
@@ -1090,10 +1089,10 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
  */
 anychart.core.ui.Tooltip.prototype.showForSeriesPoints = function(points, clientX, clientY, hoveredSeries, opt_useUnionAsSingle, opt_tooltipContextLoad) {
   if ((this.tooltipContainer_ && !this.tooltipContainer_.isLocal()) &&
-      this.tooltipContainer_.selectable() && !this.check(anychart.core.ui.Tooltip.Capabilities.CAN_CHANGE_DISPLAY_MODE))
+      this.tooltipContainer_.selectable() && !this.check(anychart.core.ui.Tooltip.Capabilities.CAN_CHANGE_DISPLAY_MODE) &&
+      !points.length)
     return;
 
-  if (!points.length) return;
   this.updateForceInvalidation();
 
   var dispMode = this.getOption('displayMode');
