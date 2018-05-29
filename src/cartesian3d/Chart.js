@@ -582,8 +582,13 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
       inc *= xPos;
       zIndex += inc;
   }
+  if (!goog.isDef(series.zIndex())) {
+    series.zIndex(zIndex);
+  }
+  if (series.zIndex() < zIndex) {
+    series.zIndex(zIndex);
+  }
 
-  series.zIndex(zIndex);
   iterator.meta('zIndex', zIndex);
   iterator.meta('directIndex', xPos * yPos);
 };
