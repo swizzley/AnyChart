@@ -146,7 +146,11 @@ anychart.cartesianModule.Chart.prototype.seriesConfig = (function() {
     drawerType: anychart.enums.SeriesDrawerTypes.LINE,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
     shapesConfig: [
-      anychart.core.shapeManagers.pathStrokeConfig
+      anychart.core.shapeManagers.pathStrokeConfig,
+      anychart.core.shapeManagers.pathFallingStrokeConfig,
+      anychart.core.shapeManagers.pathRisingFillStrokeConfig,
+      anychart.core.shapeManagers.pathPositiveStrokeConfig,
+      anychart.core.shapeManagers.pathNegativeStrokeConfig
     ],
     secondaryShapesConfig: null,
     postProcessor: null,

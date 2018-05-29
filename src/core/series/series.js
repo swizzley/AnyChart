@@ -25,6 +25,7 @@ anychart.core.series.Capabilities = {
  * @typedef {{
  *   drawerType: anychart.enums.SeriesDrawerTypes,
  *   shapeManagerType: anychart.enums.ShapeManagerTypes,
+ *   variableShapeConfig: boolean,
  *   shapesConfig: !Array.<anychart.core.shapeManagers.ShapeConfig>,
  *   secondaryShapesConfig: (undefined|Array.<anychart.core.shapeManagers.ShapeConfig>),
  *   postProcessor: (undefined|function(anychart.core.series.Base, Object.<string, acgraph.vector.Shape>)),

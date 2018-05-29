@@ -738,6 +738,16 @@ anychart.core.series.Base.prototype.applyConfig = function(config, opt_reapplyCl
 
 
 /**
+ *
+ */
+anychart.core.series.Base.prototype.createShapesConfig = function() {
+   this.config.shapesConfig = [
+    anychart.core.shapeManagers.pathStrokeConfig
+  ];
+};
+
+
+/**
  * Recreates shape manager.
  */
 anychart.core.series.Base.prototype.recreateShapeManager = function() {
@@ -745,6 +755,9 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
   var smc = (this.config.shapeManagerType == anychart.enums.ShapeManagerTypes.PER_POINT) ?
       anychart.core.shapeManagers.PerPoint :
       anychart.core.shapeManagers.PerSeries;
+  if (this.config.variableShapeConfig) {
+    this.createShapesConfig();
+  }
   this.shapeManager = new smc(
       this,
       this.renderingSettings_.getShapesConfig(),
