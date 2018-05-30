@@ -754,7 +754,7 @@ anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, cli
   var firstSeries = firstPoint['series'];
   this.tooltipInUse_ = opt_useUnionAsSingle ? this : firstSeries.tooltip();
 
-  if (!this.tooltipInUse_.enabled() || this.isPointMissing_(firstPoint)) {
+  if (this.isTooltipShowing_(this.tooltipInUse_, firstPoint)) {
     return;
   }
 
@@ -958,7 +958,7 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
       if (point) {
         var series = /** @type {anychart.core.series.Base} */ (point['series']);
         var tooltip = series.tooltip();
-        if (!series.enabled() || !tooltip.enabled() || this.isPointMissing_(point))
+        if (!series.enabled() || this.isTooltipShowing_(tooltip, point))
           continue;
 
         // for compile_each (gantt, bullet)
@@ -1043,7 +1043,7 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
     var series = point['series'];
     var tooltip = series.tooltip();
 
-    if (!tooltip.enabled() || this.isPointMissing_(point))
+    if (this.isTooltipShowing_(tooltip, point))
       continue;
 
     // for compile_each (gantt, bullet)
@@ -1068,13 +1068,14 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
 
 
 /**
- * Checks if the point is missing.
+ * Checks if the tooltips is disabled for this series or the point is missing.
+ * @param {anychart.core.ui.Tooltip} tooltip
  * @param {Object} point - the current series point.
  * @return {boolean}
  * @private
  */
-anychart.core.ui.Tooltip.prototype.isPointMissing_ = function(point) {
-  return point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance']);
+anychart.core.ui.Tooltip.prototype.isTooltipShowing_ = function(tooltip, point) {
+  return !tooltip.enabled() || point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance']);
 };
 
 
