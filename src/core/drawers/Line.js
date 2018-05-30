@@ -85,6 +85,12 @@ anychart.core.drawers.Line.prototype.startDrawing = function(shapeManager) {
    * @protected
    */
   this.firstPointY = NaN;
+
+  /**
+   *
+   * @type {boolean}
+   */
+  this.hasNegativeColoring = goog.isDef(this.series.normal().getOption('negativeStroke'))
 };
 
 
@@ -107,7 +113,7 @@ anychart.core.drawers.Line.prototype.getShapeName = function(value) {
   var normal = this.series.normal();
   var name;
 
-  if (goog.isDef(normal.getOption('negativeStroke'))) {
+  if (this.hasNegativeColoring) {
     name = value < 0 ? 'negative' : 'stroke';
   } else if (goog.isDef(normal.getOption('risingStroke')) || goog.isDef(normal.getOption('fallingStroke'))) {
     name = value < this.prevValue ? 'falling' : value > this.prevValue ? 'rising' : 'stroke';
@@ -161,7 +167,7 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
     prevY = /** @type {number} */(this.prevY);
     prevName = this.prevShapeName;
 
-    if (name == 'negative' && (this.prevValue * currValue < 0)) {
+    if (this.hasNegativeColoring && (this.prevValue * currValue < 0)) {
       var crossValue = 0;
       var yRatio = this.series.yScale().transform(crossValue);
       crossY = this.series.applyRatioToBounds(yRatio, false);
