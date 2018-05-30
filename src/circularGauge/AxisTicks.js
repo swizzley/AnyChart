@@ -339,7 +339,7 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tick
   var x = cx + this.radius_ * Math.cos(angleRad);
   var y = cy + this.radius_ * Math.sin(angleRad);
 
-  var tick = this.ticks_.add({'value': {'x': x, 'y': y}});
+  var tick = this.ticks_.positionProvider({'value': {'x': x, 'y': y}});
   var rotation = /** @type {number} */(goog.isDef(tick.rotation()) ? tick.rotation() : goog.isDef(this.ticks_.rotation()) ? this.ticks_.rotation() : 0);
 
   this.contextProvider_['rotation'] = rotation + angle + 90;
