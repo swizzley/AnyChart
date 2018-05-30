@@ -149,7 +149,6 @@ anychart.cartesianModule.Chart.prototype.seriesConfig = (function() {
       anychart.core.shapeManagers.pathStrokeConfig,
       anychart.core.shapeManagers.pathFallingStrokeConfig,
       anychart.core.shapeManagers.pathRisingFillStrokeConfig,
-      anychart.core.shapeManagers.pathPositiveStrokeConfig,
       anychart.core.shapeManagers.pathNegativeStrokeConfig
     ],
     secondaryShapesConfig: null,

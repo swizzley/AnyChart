@@ -55,7 +55,7 @@ anychart.core.shapeManagers.PerSeries.prototype.getPointColorHash = function(sta
     var fill = /** @type {acgraph.vector.Fill} */(descriptor.fill(this.series, state));
     var stroke = /** @type {acgraph.vector.Stroke} */(descriptor.stroke(this.series, state));
 
-    hash += anychart.color.hash(fill) + anychart.color.hash(stroke);
+    hash += name + anychart.color.hash(fill) + anychart.color.hash(stroke);
   }
 
   return hash;

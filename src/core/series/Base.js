@@ -312,6 +312,10 @@ anychart.core.series.Base = function(chart, plot, type, config) {
     ['isVertical',
       anychart.ConsistencyState.SERIES_POINTS,
       anychart.Signal.NEEDS_RECALCULATION | anychart.Signal.NEEDS_REDRAW,
+      anychart.core.drawers.Capabilities.ANY],
+    ['baseLine',
+      anychart.ConsistencyState.SERIES_POINTS,
+      anychart.Signal.NEEDS_RECALCULATION | anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.ANY]
   ]);
 
@@ -340,84 +344,6 @@ anychart.core.settings.populateAliases(anychart.core.series.Base, [
   'type',
   'size'
 ], 'normal');
-
-
-
-/**
- * Z-index increment multiplier.
- * @type {number}
- */
-anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER = 0.00001;
-
-
-/**
- * Getter/setter for labels.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
- */
-anychart.core.series.Base.prototype.labels = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.normal_.labels(opt_value);
-    return this;
-  }
-  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.labels());
-};
-
-
-/**
- * Getter/setter for minLabels.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
- */
-anychart.core.series.Base.prototype.minLabels = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.normal_.minLabels(opt_value);
-    return this;
-  }
-  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.minLabels());
-};
-
-
-/**
- * Getter/setter for maxLabels.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
- */
-anychart.core.series.Base.prototype.maxLabels = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.normal_.maxLabels(opt_value);
-    return this;
-  }
-  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.maxLabels());
-};
-
-
-/**
- * Getter/setter for markers.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
- */
-anychart.core.series.Base.prototype.markers = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.normal_.markers(opt_value);
-    return this;
-  }
-  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.markers());
-};
-
-
-/**
- * Getter/setter for outlier markers.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
- */
-anychart.core.series.Base.prototype.outlierMarkers = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.normal_.outlierMarkers(opt_value);
-    return this;
-  }
-  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.outlierMarkers());
-};
 
 
 //region --- Class const
@@ -453,6 +379,13 @@ anychart.core.series.Base.prototype.SUPPORTED_SIGNALS =
 
 
 /**
+ * Z-index increment multiplier.
+ * @type {number}
+ */
+anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER = 0.00001;
+
+
+/**
  * Labels z-index.
  */
 anychart.core.series.Base.prototype.LABELS_ZINDEX = anychart.core.shapeManagers.LABELS_ZINDEX;
@@ -474,11 +407,6 @@ anychart.core.series.Base.prototype.TOKEN_ALIASES = (function() {
 
 //endregion
 //region --- Properties
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Properties
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Default hatch fill type.
  * @type {acgraph.vector.HatchFill.HatchFillType|string}
@@ -738,30 +666,6 @@ anychart.core.series.Base.prototype.applyConfig = function(config, opt_reapplyCl
 
 
 /**
- *
- */
-anychart.core.series.Base.prototype.createShapesConfig = function() {
-   var config = [];
-
-   if (this.config.shapeManagerType == anychart.enums.ShapeManagerTypes.PER_SERIES) {
-     switch (this.config.drawerType) {
-       case anychart.enums.SeriesDrawerTypes.LINE:
-         if (goog.isDef(this.normal().getOption('negativeStroke'))) {
-           this.drawer.crossType = 'baseline';
-         } else if (goog.isDef(this.normal().getOption('risingStroke')) || goog.isDef(this.normal().getOption('fallingStroke'))) {
-           this.drawer.crossType = 'rising-falling';
-         } else {
-           this.drawer.crossType = 'normal';
-         }
-         break;
-     }
-   }
-
-  this.config.shapesConfig = config;
-};
-
-
-/**
  * Recreates shape manager.
  */
 anychart.core.series.Base.prototype.recreateShapeManager = function() {
@@ -769,9 +673,6 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
   var smc = (this.config.shapeManagerType == anychart.enums.ShapeManagerTypes.PER_POINT) ?
       anychart.core.shapeManagers.PerPoint :
       anychart.core.shapeManagers.PerSeries;
-/*  if (this.config.variableShapeConfig) {
-    this.createShapesConfig();
-  }*/
   this.shapeManager = new smc(
       this,
       this.renderingSettings_.getShapesConfig(),
@@ -839,11 +740,6 @@ anychart.core.series.Base.prototype.rendererInvalidated_ = function(e) {
 
 //endregion
 //region --- Index/Id/Name/SeriesMeta
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Index/Id/Name
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Returns series index in chart.
  * @return {number}
@@ -950,11 +846,6 @@ anychart.core.series.Base.prototype.meta = function(opt_object_or_key, opt_value
 
 //endregion
 //region --- Support testers
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Support testers
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Checks if series supports passed capability.
  * @param {anychart.core.series.Capabilities|anychart.core.drawers.Capabilities|number} capability
@@ -1170,11 +1061,6 @@ anychart.core.series.Base.prototype.hasComplexZero = function() {
 
 //endregion
 //region --- Infrastructure
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Infrastructure
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Get point width in case of width-based series.
  * @return {number} Point width.
@@ -1441,11 +1327,6 @@ anychart.core.series.Base.prototype.getPoint = goog.abstractMethod;
 
 //endregion
 //region --- Working with data
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Working with data
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Returns NEW DETACHED data iterator. Advancing this iterator doesn't influence series iterator.
  * @return {!anychart.data.IIterator}
@@ -1538,11 +1419,6 @@ anychart.core.series.Base.prototype.scaleInvalidated = function(event) {
 
 //endregion
 //region --- Different public methods
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Different public methods
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Transforms x to pix coords.
  * @param {*} value
@@ -1583,11 +1459,6 @@ anychart.core.series.Base.prototype.rendering = function(opt_value) {
 
 //endregion
 //region --- Errors
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Errors
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Getter/Setter for an error for series.
  * @param {(Object|null|boolean|string)=} opt_value Error.
@@ -1731,11 +1602,6 @@ anychart.core.series.Base.prototype.drawError = function(point) {
 
 //endregion
 //region --- Working with clip
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Working with clip
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Clipping settings
  * @param {(boolean|anychart.math.Rect)=} opt_value [False, if series is created manually.<br/>True, if created via chart
@@ -1758,11 +1624,6 @@ anychart.core.series.Base.prototype.clip = function(opt_value) {
 
 //endregion
 //region --- Working with legend
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Working with legend
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Sets/Gets legend item setting for series.
  * @param {(Object)=} opt_value Legend item settings object.
@@ -1933,11 +1794,6 @@ anychart.core.series.Base.prototype.getLegendItemText = function(context) {
 
 //endregion
 //region --- Working with tooltip
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Working with tooltip
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Getter and setter for the tooltip.
  * @param {(Object|boolean|null)=} opt_value Tooltip settings.
@@ -2030,11 +1886,6 @@ anychart.core.series.Base.prototype.getHatchFillResolutionContext = goog.abstrac
 
 //endregion
 //region --- Settings resolution
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Settings resolution
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Normal state settings.
  * @param {!Object=} opt_value
@@ -2225,11 +2076,6 @@ anychart.core.series.Base.prototype.resolveOption = function(name, state, point,
 
 //endregion
 //region --- Factories optimization
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Factories optimization
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Returns container for factory.
  * @return {acgraph.vector.ILayer}
@@ -2674,11 +2520,48 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
 
 //endregion
 //region --- Labels
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Labels
-//
-//----------------------------------------------------------------------------------------------------------------------
+/**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.labels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.labels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.labels());
+};
+
+
+/**
+ * Getter/setter for minLabels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.minLabels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.minLabels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.minLabels());
+};
+
+
+/**
+ * Getter/setter for maxLabels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.maxLabels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.maxLabels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.maxLabels());
+};
+
+
 /**
  * Listener for labels invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
@@ -2736,11 +2619,20 @@ anychart.core.series.Base.prototype.additionalLabelsInitialize = function() {
 
 //endregion
 //region --- Markers
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Markers
-//
-//----------------------------------------------------------------------------------------------------------------------
+/**
+ * Getter/setter for markers.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.markers = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.markers(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.markers());
+};
+
+
 /**
  * Listener for markers invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
@@ -2800,11 +2692,20 @@ anychart.core.series.Base.prototype.getMarkerStroke = function() {
 
 //endregion
 //region --- Outliers
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Outliers
-//
-//----------------------------------------------------------------------------------------------------------------------
+/**
+ * Getter/setter for outlier markers.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.outlierMarkers = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.outlierMarkers(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.outlierMarkers());
+};
+
+
 /**
  * Listener for markers invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
@@ -2879,11 +2780,6 @@ anychart.core.series.Base.prototype.getPointIndexByOutlierIndex = function(marke
 
 //endregion
 //region --- Drawing plan related checkers
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Drawing plan related checkers
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Should return true if there is a point with a label defined in data.
  * @return {boolean}
@@ -2974,11 +2870,6 @@ anychart.core.series.Base.prototype.resetSharedStack = function() {
 
 //endregion
 //region --- Drawing points
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Drawing points
-//
-//----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.core.series.Base.prototype.remove = function() {
   if (this.check(anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT)) {
@@ -3450,11 +3341,6 @@ anychart.core.series.Base.prototype.updateColors = function() {
 
 //endregion
 //region --- Extracting data
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Extracting data
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * This function is supposed to react on data changes.
  */
@@ -3548,11 +3434,6 @@ anychart.core.series.Base.prototype.getPostLastPoint = function() {
 
 //endregion
 //region --- Data to Pixels transformation
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Data to Pixels transformation
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Applies passed ratio (usually transformed by a scale) to bounds where
  * series is drawn.
@@ -4028,7 +3909,8 @@ anychart.core.series.Base.prototype.prepareMetaMakers = function(yNames, yColumn
     this.metaMakers.push(this.makeOutliersMeta);
   }
   if (this.needsZero()) {
-    this.zeroYRatio = goog.math.clamp((scale && scale.transform(0, 0.5)) || 0, 0, 1);
+    var baseLine = /** @type {number} */(this.getOption('baseLine'));
+    this.zeroYRatio = goog.math.clamp((scale && scale.transform(baseLine, 0.5)) || baseLine, 0, 1);
     this.zeroY = this.applyAxesLinesSpace(this.applyRatioToBounds(this.zeroYRatio, false));
   }
 };
@@ -4075,11 +3957,6 @@ anychart.core.series.Base.prototype.makePointMeta = function(rowInfo, yNames, yC
 
 //endregion
 //region --- Format/Position providers generation
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Format/Position providers generation
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Creates statistics source to update the context.
  * @param {anychart.data.IRowInfo} rowInfo
@@ -4395,12 +4272,7 @@ anychart.core.series.Base.prototype.createPositionProvider = function(position, 
 
 
 //endregion
-//region --- Optimized Properties
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Optimized Properties
-//
-//----------------------------------------------------------------------------------------------------------------------
+//region --- Descriptors
 /**
  * Properties that should be defined in series.Base prototype.
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
@@ -4420,7 +4292,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'connectMissingPoints', anychart.core.settings.booleanNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'displayNegative', anychart.core.settings.booleanNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'stepDirection', anychart.enums.normalizeStepDirection],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'isVertical', anychart.core.settings.boolOrNullNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'isVertical', anychart.core.settings.boolOrNullNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'baseLine', anychart.core.settings.numberNormalizer]
   ]);
 
   return map;
@@ -4433,11 +4306,6 @@ anychart.core.settings.populate(anychart.core.series.Base, anychart.core.series.
 
 //endregion
 //region --- Statistics
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Statistics
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Series statistics.
  * @param {string=} opt_name Statistics parameter name.
@@ -4477,11 +4345,6 @@ anychart.core.series.Base.prototype.getStat = function(key) {
 
 //endregion
 //region --- Serialization/Deserialization/Dispose
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Serialization/Deserialization/Dispose
-//
-//----------------------------------------------------------------------------------------------------------------------
 // Fill and stroke settings are located here, but you should export them ONLY in series themselves.
 /**
  * @inheritDoc
@@ -4582,11 +4445,6 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
 
 //endregion
 //region --- These methods don't have non-exported versions
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  These methods don't have non-exported versions
-//
-//----------------------------------------------------------------------------------------------------------------------
 
 //fill
 //hoverFill

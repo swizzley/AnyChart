@@ -199,21 +199,6 @@ anychart.core.shapeManagers.pathNegativeStrokeConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
-anychart.core.shapeManagers.pathPositiveStrokeConfig = {
-  name: 'positive',
-  shapeType: anychart.enums.ShapeType.PATH,
-  fillName: null,
-  strokeName: 'positiveStroke',
-  canBeHoveredSelected: true,
-  isHatchFill: false,
-  zIndex: anychart.core.shapeManagers.STROKE_SHAPES_ZINDEX
-};
-
-
-/**
- * Template shape config for easy reusage.
- * @const {anychart.core.shapeManagers.ShapeConfig}
- */
 anychart.core.shapeManagers.pathStrokeTopZIndexConfig = {
   name: 'stroke',
   shapeType: anychart.enums.ShapeType.PATH,

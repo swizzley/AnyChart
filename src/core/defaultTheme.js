@@ -1418,6 +1418,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
           'valueErrorStroke': anychart.core.defaultTheme.returnDarkenSourceColor
         },
         'pointWidth': null,
+        'baseLine': 0,
         'connectMissingPoints': false,
         'a11y': {
           'enabled': false,
