@@ -747,12 +747,12 @@ anychart.core.series.Base.prototype.createShapesConfig = function() {
      switch (this.config.drawerType) {
        case anychart.enums.SeriesDrawerTypes.LINE:
          if (goog.isDef(this.normal().getOption('negativeStroke'))) {
-           config.push(anychart.core.shapeManagers.pathNegativeStrokeConfig);
            this.drawer.crossType = 'baseline';
+         } else if (goog.isDef(this.normal().getOption('risingStroke')) || goog.isDef(this.normal().getOption('fallingStroke'))) {
+           this.drawer.crossType = 'rising-falling';
          } else {
            this.drawer.crossType = 'normal';
          }
-         config.push(anychart.core.shapeManagers.pathStrokeConfig);
          break;
      }
    }
@@ -769,9 +769,9 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
   var smc = (this.config.shapeManagerType == anychart.enums.ShapeManagerTypes.PER_POINT) ?
       anychart.core.shapeManagers.PerPoint :
       anychart.core.shapeManagers.PerSeries;
-  if (this.config.variableShapeConfig) {
+/*  if (this.config.variableShapeConfig) {
     this.createShapesConfig();
-  }
+  }*/
   this.shapeManager = new smc(
       this,
       this.renderingSettings_.getShapesConfig(),

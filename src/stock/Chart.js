@@ -374,8 +374,13 @@ anychart.stockModule.Chart.prototype.createSeriesConfig = function(allowPointSet
   res[anychart.enums.StockSeriesType.LINE] = {
     drawerType: anychart.enums.SeriesDrawerTypes.LINE,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
-    variableShapeConfig: true,
-    shapesConfig: [],
+    // variableShapeConfig: true,
+    shapesConfig: [
+      anychart.core.shapeManagers.pathStrokeConfig,
+      anychart.core.shapeManagers.pathFallingStrokeConfig,
+      anychart.core.shapeManagers.pathRisingFillStrokeConfig,
+      anychart.core.shapeManagers.pathNegativeStrokeConfig
+    ],
     secondaryShapesConfig: null,
     postProcessor: null,
     capabilities: capabilities,

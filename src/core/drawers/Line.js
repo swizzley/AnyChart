@@ -100,17 +100,39 @@ anychart.core.drawers.Line.prototype.calcCrossPoint = function() {
 };
 
 
+/**
+ *
+ */
+anychart.core.drawers.Line.prototype.getShapeName = function(value) {
+  var normal = this.series.normal();
+  var name;
+
+  if (goog.isDef(normal.getOption('negativeStroke'))) {
+    name = value < 0 ? 'negative' : 'stroke';
+  } else if (goog.isDef(normal.getOption('risingStroke')) || goog.isDef(normal.getOption('fallingStroke'))) {
+    name = value < this.prevValue ? 'falling' : value > this.prevValue ? 'rising' : 'stroke';
+  } else {
+    name = 'stroke';
+  }
+
+  return name;
+};
+
+
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
-  var currValue = point.get(this.series.getYValueNames()[0]);
-  var name = currValue < 0 ? 'negative' : 'stroke';
+  var value = point.get(this.series.getYValueNames()[0]);
+  var name = this.getShapeName(value);
   var shapeNames = {};
   shapeNames[name] = true;
 
-  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, );
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
+
+  console.log(name);
+
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
   if (isNaN(this.firstPointX)) {
     this.firstPointX = x;
@@ -118,14 +140,15 @@ anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
   }
   this.prevX = x;
   this.prevY = y;
-  this.prevValue = point.get(this.series.getYValueNames()[0]);
+  this.prevValue = value;
+  this.prevShapeName = name;
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state) {
   var currValue = point.get(this.series.getYValueNames()[0]);
-  var name = currValue < 0 ? 'negative' : 'stroke';
+  var name = this.getShapeName(currValue);
   var shapeNames = {};
   shapeNames[name] = true;
 
@@ -135,22 +158,24 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
   var y = /** @type {number} */(point.meta('value'));
 
   if (shapes != this.currentShapes) {
-    var crossX, crossY;
-    var prevX, prevY;
+    var crossX, crossY, prevX, prevY, prevName;
     prevX = /** @type {number} */(this.prevX);
     prevY = /** @type {number} */(this.prevY);
+    prevName = this.prevShapeName;
 
-    if (this.crossType == 'baseline' && (this.prevValue * currValue < 0)) {
+    if (name == 'negative' && (this.prevValue * currValue < 0)) {
       var crossValue = 0;
       var yRatio = this.series.yScale().transform(crossValue);
       crossY = this.series.applyRatioToBounds(yRatio, false);
       crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
+    } else if (name == 'rising' || name == 'falling') {
+      crossX = prevX;
+      crossY = prevY;
     } else {
       crossX = prevX + (x - prevX) / 2;
       crossY = prevY + (y - prevY) / 2;
     }
 
-    var prevName = this.prevValue < 0 ? 'negative' : 'stroke';
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevName]), this.isVertical, crossX, crossY);
     this.currentShapes = shapes;
     anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, crossX, crossY);
@@ -160,6 +185,7 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
   this.prevX = x;
   this.prevY = y;
   this.prevValue = currValue;
+  this.prevShapeName = name;
 };
 
 
