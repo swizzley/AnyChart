@@ -126,12 +126,10 @@ anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
   var shapeNames = {};
   shapeNames[name] = true;
 
-  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, );
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
-
-  console.log(name);
 
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
   if (isNaN(this.firstPointX)) {

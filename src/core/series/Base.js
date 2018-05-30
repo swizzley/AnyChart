@@ -4700,4 +4700,5 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
   proto['getStat'] = proto.getStat;
 
   proto['rendering'] = proto.rendering;
+  proto['colorScale'] = proto.colorScale;
 })();
