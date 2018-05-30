@@ -752,9 +752,9 @@ anychart.core.ui.Tooltip.prototype.chart = function(opt_value) {
 anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, clientY, opt_useUnionAsSingle) {
   var firstPoint = points[0];
   var firstSeries = firstPoint['series'];
-  this.tooltipInUse_ = opt_useUnionAsSingle ? this : firstSeries.tooltip();
+  /** @type {anychart.core.ui.Tooltip} */ this.tooltipInUse_ = opt_useUnionAsSingle ? this : firstSeries.tooltip();
 
-  if (this.isTooltipShowing_(this.tooltipInUse_, firstPoint)) {
+  if (this.isTooltipEnabled_(this.tooltipInUse_, firstPoint)) {
     return;
   }
 
@@ -957,8 +957,8 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
       var point = points[i];
       if (point) {
         var series = /** @type {anychart.core.series.Base} */ (point['series']);
-        var tooltip = series.tooltip();
-        if (!series.enabled() || this.isTooltipShowing_(tooltip, point))
+        var tooltip = /** @type {anychart.core.ui.Tooltip} */ (series.tooltip());
+        if (!series.enabled() || this.isTooltipEnabled_(tooltip, point))
           continue;
 
         // for compile_each (gantt, bullet)
@@ -1041,9 +1041,9 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
   for (var i = 0; i < points.length; i++) {
     var point = points[i];
     var series = point['series'];
-    var tooltip = series.tooltip();
+    var tooltip = /** @type {anychart.core.ui.Tooltip} */ (series.tooltip());
 
-    if (this.isTooltipShowing_(tooltip, point))
+    if (this.isTooltipEnabled_(tooltip, point))
       continue;
 
     // for compile_each (gantt, bullet)
@@ -1074,7 +1074,7 @@ anychart.core.ui.Tooltip.prototype.showSeparatedChildren_ = function(points, cli
  * @return {boolean}
  * @private
  */
-anychart.core.ui.Tooltip.prototype.isTooltipShowing_ = function(tooltip, point) {
+anychart.core.ui.Tooltip.prototype.isTooltipEnabled_ = function(tooltip, point) {
   return !tooltip.enabled() || point['nearestPointToCursor'] && !isFinite(point['nearestPointToCursor']['distance']);
 };
 
