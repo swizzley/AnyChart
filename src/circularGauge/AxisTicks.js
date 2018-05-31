@@ -329,35 +329,28 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tick
   this.setupDefaultTick(tick);
 
   var rotation = /** @type {number} */(tick.getOption('rotation') || 0);
-
   this.contextProvider_['rotation'] = rotation + angle + 90;
   this.contextProvider_['x'] = x;
   this.contextProvider_['y'] = y;
   this.contextProvider_['angle'] = goog.math.standardAngle(angle - anychart.circularGaugeModule.Chart.DEFAULT_START_ANGLE);
   this.contextProvider_['value'] = tickValue;
 
+  tick.setOption('rotation', rotation + angle + 90);
   tick.setOption('size', this.pixLength_ / 2);
   tick.setOption('type', this.type_);
-
-  tick.rotation(rotation + angle + 90);
-  if (goog.isFunction(this.fill_))
-    tick.fill(/** @type {acgraph.vector.Fill} */(acgraph.vector.normalizeFill(
-        /** @type {acgraph.vector.Fill} */(this.normalizeColor(this.fill_)))));
-  if (goog.isFunction(this.stroke_))
-    tick.stroke(/** @type {acgraph.vector.Stroke} */(acgraph.vector.normalizeStroke(
-        /** @type {acgraph.vector.Stroke} */(this.normalizeColor(this.stroke_)))));
+  tick.setOption('fill', acgraph.vector.normalizeFill(/** @type {acgraph.vector.Fill} */(this.normalizeColor(this.fill_))));
+  tick.setOption('stroke', acgraph.vector.normalizeStroke(/** @type {acgraph.vector.Stroke} */(this.normalizeColor(this.stroke_))));
 
   if (this.hatchFillElement_) {
     var hatchFill = this.hatchFillElement_.add();
     hatchFill.positionProvider({'value': {'x': x, 'y': y}});
     this.setupDefaultTick(hatchFill);
-    hatchFill.rotation(rotation + angle + 90);
-
-    this.hatchFillElement_.setOption('disablePointerEvents', true);
-    this.hatchFillElement_.setOption('size', this.pixLength_ / 2);
-    this.hatchFillElement_.setOption('type', this.type_);
-    this.hatchFillElement_.setOption('fill', this.hatchFill_);
-    this.hatchFillElement_.setOption('stroke', null);
+    hatchFill.setOption('rotation', rotation + angle + 90);
+    hatchFill.setOption('disablePointerEvents', true);
+    hatchFill.setOption('size', this.pixLength_ / 2);
+    hatchFill.setOption('type', this.type_);
+    hatchFill.setOption('fill', this.hatchFill_);
+    hatchFill.setOption('stroke', null);
   }
 };
 

@@ -1193,6 +1193,7 @@ anychart.annotationsModule.Base.prototype.drawMarkers_ = function(state) {
         stateFactory, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
         normalState, anychart.utils.ExtractSettingModes.THEME_SETTINGS
       ]));
+      element.draw();
       this.setMarkerCursor(element, i);
     }
   } else {

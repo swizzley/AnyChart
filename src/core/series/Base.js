@@ -2515,6 +2515,48 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.labels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.labels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.labels());
+};
+
+
+/**
+ * Getter/setter for minLabels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.minLabels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.minLabels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.minLabels());
+};
+
+
+/**
+ * Getter/setter for maxLabels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.maxLabels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.maxLabels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.maxLabels());
+};
+
+
+/**
  * Listener for labels invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
  * @private
@@ -2577,6 +2619,20 @@ anychart.core.series.Base.prototype.additionalLabelsInitialize = function() {
 //  Markers
 //
 //----------------------------------------------------------------------------------------------------------------------
+/**
+ * Getter/setter for markers.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.markers = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.markers(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.markers());
+};
+
+
 /**
  * Labels factory getter/creator.
  * @return {anychart.core.utils.MarkersFactory} .
@@ -2661,6 +2717,20 @@ anychart.core.series.Base.prototype.getMarkerStroke = function() {
 //  Outliers
 //
 //----------------------------------------------------------------------------------------------------------------------
+/**
+ * Getter/setter for outlier markers.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
+ */
+anychart.core.series.Base.prototype.outlierMarkers = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.outlierMarkers(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.outlierMarkers());
+};
+
+
 /**
  * Labels factory getter/creator.
  * @return {anychart.core.utils.MarkersFactory} .
@@ -4535,11 +4605,11 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
 
   proto['yScale'] = proto.yScale;
 
-  // proto['labels'] = proto.labels;
-  // proto['minLabels'] = proto.minLabels;
-  // proto['maxLabels'] = proto.maxLabels;
-  // proto['markers'] = proto.markers;
-  // proto['outlierMarkers'] = proto.outlierMarkers;
+  proto['labels'] = proto.labels;
+  proto['minLabels'] = proto.minLabels;
+  proto['maxLabels'] = proto.maxLabels;
+  proto['markers'] = proto.markers;
+  proto['outlierMarkers'] = proto.outlierMarkers;
 
   proto['normal'] = proto.normal;
   proto['hovered'] = proto.hovered;

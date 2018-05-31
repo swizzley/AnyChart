@@ -501,6 +501,17 @@ anychart.vennModule.Chart.prototype.labelsInvalidated_ = function(event) {
 //endregion
 //region -- Markers
 /**
+ * @return {anychart.core.utils.MarkersFactory}
+ */
+anychart.vennModule.Chart.prototype.getMarkersFactory = function() {
+  if (!this.markersFactory_) {
+    this.markersFactory_ = new anychart.core.utils.MarkersFactory();
+  }
+  return this.markersFactory_;
+};
+
+
+/**
  * Listener for markers invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
  * @private
@@ -1306,7 +1317,7 @@ anychart.vennModule.Chart.prototype.drawContent = function(bounds) {
     }
 
     if (this.hasInvalidationState(anychart.ConsistencyState.VENN_MARKERS)) {
-      var markers = this.normal().markers();
+      var markers = this.getMarkersFactory();
       markers.suspendSignalsDispatching();
       markers.container(this.rootElement);
       markers.clear();
@@ -1323,7 +1334,8 @@ anychart.vennModule.Chart.prototype.drawContent = function(bounds) {
             'y': bounds.top + textCenter.y + 0.5
           }
         };
-        var marker = markers.add(positionProvider, iteratorIndex);
+        var marker = markers.add(iteratorIndex);
+        marker.positionProvider(positionProvider);
         iterator.meta('marker', marker);
         this.drawMarker_(this.state.getPointStateByIndex(iteratorIndex), iterator);
       }
@@ -1577,11 +1589,8 @@ anychart.vennModule.Chart.prototype.drawMarker_ = function(state, iterator) {
 
       marker.resetSettings();
       marker.enabled(true);
-      marker.currentMarkersFactory(sourceState);
-      marker.setSettings(/** @type {Object} */(pointMarker), /** @type {Object} */(pointState));
-
+      marker.settings(pointState, pointMarker, sourceState, this.normal().markers());
     } else {
-      marker.currentMarkersFactory(sourceState);
       marker.enabled(false);
     }
     marker.draw();

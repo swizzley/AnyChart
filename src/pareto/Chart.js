@@ -83,6 +83,7 @@ anychart.paretoModule.Chart.prototype.updateSeries = function() {
     goog.dispose(this.lineMapping);
   this.lineMapping = new anychart.paretoModule.SeriesMapping(this.paretoView);
   if (!lineSeries) {
+    debugger
     lineSeries = this[anychart.enums.CartesianSeriesType.LINE]()
         .clip(false).markers(true).yScale(this.percentScale);
   }
