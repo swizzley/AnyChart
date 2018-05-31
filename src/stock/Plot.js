@@ -1,5 +1,6 @@
 goog.provide('anychart.stockModule.Plot');
 
+goog.require('anychart.consistency');
 goog.require('anychart.core.Axis');
 goog.require('anychart.core.IPlot');
 goog.require('anychart.core.NoDataSettings');
@@ -11,6 +12,7 @@ goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.Background');
 goog.require('anychart.core.ui.Crosshair');
+goog.require('anychart.core.ui.DataArea');
 goog.require('anychart.core.ui.Label');
 goog.require('anychart.core.ui.Legend');
 goog.require('anychart.core.ui.Title');
@@ -230,9 +232,9 @@ anychart.stockModule.Plot = function(chart) {
     ['maxPointWidth', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.invalidateWidthBasedSeries],
     ['minPointLength', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.resetSeriesStack]
   ]);
-
 };
 goog.inherits(anychart.stockModule.Plot, anychart.core.VisualBaseWithBounds);
+anychart.consistency.supportStates(anychart.stockModule.Plot, anychart.enums.Store.PLOT, anychart.enums.State.DATA_AREA);
 
 
 /**
@@ -1155,6 +1157,7 @@ anychart.stockModule.Plot.prototype.invalidateRedrawable = function(doInvalidate
       anychart.ConsistencyState.STOCK_PLOT_LEGEND |
       anychart.ConsistencyState.STOCK_PLOT_NO_DATA_LABEL |
       anychart.ConsistencyState.STOCK_PLOT_AXIS_MARKERS);
+  this.invalidateState(anychart.enums.Store.PLOT, anychart.enums.State.DATA_AREA);
 };
 
 
@@ -1182,6 +1185,36 @@ anychart.stockModule.Plot.prototype.getPlotBounds = function() {
 anychart.stockModule.Plot.prototype.getEnableChangeSignals = function() {
   return anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED |
       anychart.Signal.ENABLED_STATE_CHANGED | anychart.Signal.NEEDS_RECALCULATION;
+};
+
+
+/**
+ * Getter/setter for Data area.
+ * @param {(Object|boolean)=} opt_value
+ * @return {anychart.stockModule.Plot|anychart.core.ui.DataArea}
+ */
+anychart.stockModule.Plot.prototype.dataArea = function(opt_value) {
+  if (!this.dataArea_) {
+    this.dataArea_ = new anychart.core.ui.DataArea();
+    this.dataArea_.listenSignals(this.dataAreaInvalidated_, this);
+  }
+  if (goog.isDef(opt_value)) {
+    this.dataArea_.setup(opt_value);
+    return this;
+  }
+  return this.dataArea_;
+};
+
+
+/**
+ * Data area invalidation handler.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.stockModule.Plot.prototype.dataAreaInvalidated_ = function(e) {
+  if (e.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
+    this.invalidateState(anychart.enums.Store.PLOT, anychart.enums.State.DATA_AREA, anychart.Signal.NEEDS_REDRAW);
+  }
 };
 
 
@@ -1377,7 +1410,7 @@ anychart.stockModule.Plot.prototype.xAxis = function(opt_value) {
   if (!this.xAxis_) {
     this.xAxis_ = new anychart.stockModule.Axis(this.chart_);
     this.xAxis_.setParentEventTarget(this);
-    this.xAxis_.enabled(false);
+    this.xAxis_.setupSpecial(true, false);
     this.xAxis_.zIndex(anychart.stockModule.Plot.ZINDEX_AXIS);
     this.xAxis_.listenSignals(this.xAxisInvalidated_, this);
     this.invalidate(anychart.ConsistencyState.STOCK_PLOT_DT_AXIS | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
@@ -2020,6 +2053,16 @@ anychart.stockModule.Plot.prototype.draw = function() {
     noDataLabel.resumeSignalsDispatching(false);
 
     this.markConsistent(anychart.ConsistencyState.STOCK_PLOT_NO_DATA_LABEL);
+  }
+
+  if (this.hasStateInvalidation(anychart.enums.Store.PLOT, anychart.enums.State.DATA_AREA)) {
+    var dataArea = this.dataArea();
+    dataArea.suspendSignalsDispatching();
+    if (!dataArea.container()) dataArea.container(this.rootLayer_);
+    dataArea.parentBounds(this.seriesBounds_);
+    dataArea.resumeSignalsDispatching(false);
+    dataArea.draw();
+    this.markStateConsistent(anychart.enums.Store.PLOT, anychart.enums.State.DATA_AREA);
   }
 
   this.resumeSignalsDispatching(false);
@@ -3118,8 +3161,6 @@ anychart.stockModule.Plot.prototype.serialize = function() {
 
   anychart.core.settings.serialize(this, anychart.stockModule.Plot.PROPERTY_DESCRIPTORS, json);
 
-  anychart.core.settings.serialize(this, anychart.stockModule.Plot.PROPERTY_DESCRIPTORS, json);
-
   scalesIds[goog.getUid(this.yScale())] = this.yScale().serialize();
   scales.push(scalesIds[goog.getUid(this.yScale())]);
   json['yScale'] = scales.length - 1;
@@ -3128,6 +3169,7 @@ anychart.stockModule.Plot.prototype.serialize = function() {
   json['background'] = this.background().serialize();
   json['title'] = this.title().serialize();
   json['noDataLabel'] = this.noData().label().serialize();
+  json['dataArea'] = this.dataArea().serialize();
 
   axesIds.push(goog.getUid(this.xAxis()));
   json['xAxis'] = this.xAxis().serialize();
@@ -3204,11 +3246,9 @@ anychart.stockModule.Plot.prototype.setupByJSON = function(config, opt_default) 
   anychart.stockModule.Plot.base(this, 'setupByJSON', config, opt_default);
   var i, json, scale;
 
-  if (opt_default) {
-    anychart.core.settings.copy(this.themeSettings, anychart.stockModule.Plot.PROPERTY_DESCRIPTORS, config);
-  } else {
-    anychart.core.settings.deserialize(this, anychart.stockModule.Plot.PROPERTY_DESCRIPTORS, config);
-  }
+  anychart.core.settings.deserialize(this, anychart.stockModule.Plot.PROPERTY_DESCRIPTORS, config, opt_default);
+
+  this.dataArea().setupInternal(!!opt_default, config['dataArea']);
 
   this.defaultSeriesType(config['defaultSeriesType']);
 
@@ -3222,7 +3262,7 @@ anychart.stockModule.Plot.prototype.setupByJSON = function(config, opt_default) 
   if ('title' in config)
     this.title().setupInternal(!!opt_default, config['title']);
 
-  this.xAxis(config['xAxis']);
+  this.xAxis().setupInternal(!!opt_default, config['xAxis']);
   this.legend(config['legend']);
   var type = this.getChart().getType();
 
@@ -3582,4 +3622,5 @@ anychart.stockModule.Plot.Dragger.prototype.limitY = function(y) {
   proto['textMarker'] = proto.textMarker;
   proto['noData'] = proto.noData;
   proto['getStat'] = proto.getStat;
+  proto['dataArea'] = proto.dataArea;
 })();

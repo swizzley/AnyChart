@@ -952,11 +952,13 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'padding': [2, 4, 2, 4],
       'enabled': true,
       'format': anychart.core.defaultTheme.returnValue,
+      'position': 'outside',
       'zIndex': 35
     },
     'minorLabels': {
       'fontSize': 9,
       'format': anychart.core.defaultTheme.returnValue,
+      'position': 'outside',
       'zIndex': 35
     },
     'ticks': {
@@ -1721,7 +1723,13 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'selectMarqueeStroke': '#d3d3d3',
 
     'maxPointWidth': '100%',
-    'minPointLength': 0
+    'minPointLength': 0,
+    'dataArea': {
+      'zIndex': 10, // series zIndex = 30
+      'background': {
+        'fill': 'none'
+      }
+    }
   },
 
   'cartesianBase': {

@@ -1,9 +1,11 @@
 goog.provide('anychart.core.ChartWithSeries');
 
+goog.require('anychart.consistency');
 goog.require('anychart.core.IChart');
 goog.require('anychart.core.SeparateChart');
 goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.reporting');
+goog.require('anychart.core.ui.DataArea');
 goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.palettes.DistinctColors');
 goog.require('anychart.palettes.HatchFills');
@@ -110,6 +112,7 @@ anychart.core.ChartWithSeries = function() {
   ]);
 };
 goog.inherits(anychart.core.ChartWithSeries, anychart.core.SeparateChart);
+anychart.consistency.supportStates(anychart.core.ChartWithSeries, anychart.enums.Store.SERIES_CHART, anychart.enums.State.DATA_AREA);
 anychart.core.settings.populateAliases(anychart.core.ChartWithSeries, [
   'labels',
   'minLabels',
@@ -210,7 +213,7 @@ anychart.core.ChartWithSeries.prototype.supportsLabels = function() {
  * Series config for the chart.
  * @type {!Object.<string, anychart.core.series.TypeConfig>}
  */
-anychart.core.ChartWithSeries.prototype.seriesConfig = (function () { return {}; })();
+anychart.core.ChartWithSeries.prototype.seriesConfig = (function() { return {}; })();
 
 
 /**
@@ -252,27 +255,12 @@ anychart.core.ChartWithSeries.PROPERTY_DESCRIPTORS = (function() {
   function seriesTypeNormalizer(opt_value) {
     return this.normalizeSeriesType(opt_value);
   }
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'defaultSeriesType',
-      seriesTypeNormalizer);
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'pointWidth',
-      anychart.utils.normalizeNumberOrPercent);
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'maxPointWidth',
-      anychart.utils.normalizeNumberOrPercent);
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'minPointLength',
-      anychart.utils.normalizeNumberOrPercent);
-
+  anychart.core.settings.createDescriptors(map, [
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'defaultSeriesType', seriesTypeNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'pointWidth', anychart.utils.normalizeNumberOrPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'maxPointWidth', anychart.utils.normalizeNumberOrPercent],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'minPointLength', anychart.utils.normalizeNumberOrPercent]
+  ]);
   return map;
 })();
 anychart.core.settings.populate(anychart.core.ChartWithSeries, anychart.core.ChartWithSeries.PROPERTY_DESCRIPTORS);
@@ -1194,6 +1182,60 @@ anychart.core.ChartWithSeries.prototype.drawSeriesInOrder = function() {
 };
 
 
+/**
+ * Getter/setter for Data area.
+ * @param {(Object|boolean)=} opt_value
+ * @return {anychart.core.ChartWithSeries|anychart.core.ui.DataArea}
+ */
+anychart.core.ChartWithSeries.prototype.dataArea = function(opt_value) {
+  if (!this.dataArea_) {
+    this.dataArea_ = new anychart.core.ui.DataArea();
+    this.dataArea_.listenSignals(this.dataAreaInvalidated_, this);
+  }
+  if (goog.isDef(opt_value)) {
+    this.dataArea_.setup(opt_value);
+    return this;
+  }
+  return this.dataArea_;
+};
+
+
+/**
+ * Data area invalidation handler.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.core.ChartWithSeries.prototype.dataAreaInvalidated_ = function(e) {
+  if (e.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
+    this.invalidateState(anychart.enums.Store.SERIES_CHART, anychart.enums.State.DATA_AREA, anychart.Signal.NEEDS_REDRAW);
+  }
+};
+
+
+/** @inheritDoc */
+anychart.core.ChartWithSeries.prototype.specialDraw = function(bounds) {
+  anychart.core.ChartWithSeries.base(this, 'specialDraw', bounds);
+  if (this.hasStateInvalidation(anychart.enums.Store.SERIES_CHART, anychart.enums.State.DATA_AREA)) {
+    var dataArea = this.dataArea();
+    dataArea.suspendSignalsDispatching();
+    if (!dataArea.container()) dataArea.container(this.rootElement);
+    dataArea.parentBounds(bounds);
+    dataArea.resumeSignalsDispatching(false);
+    dataArea.draw();
+    this.markStateConsistent(anychart.enums.Store.SERIES_CHART, anychart.enums.State.DATA_AREA);
+  }
+};
+
+
+/** @inheritDoc */
+anychart.core.ChartWithSeries.prototype.resizeHandler = function(e) {
+  this.suspendSignalsDispatching();
+  anychart.core.ChartWithSeries.base(this, 'resizeHandler', e);
+  this.invalidateState(anychart.enums.Store.SERIES_CHART, anychart.enums.State.DATA_AREA, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+  this.resumeSignalsDispatching(true);
+};
+
+
 //endregion
 //region --- Legend
 //----------------------------------------------------------------------------------------------------------------------
@@ -1310,6 +1352,7 @@ anychart.core.ChartWithSeries.prototype.setupByJSON = function(config, opt_defau
   this.palette(config['palette']);
   this.markerPalette(config['markerPalette']);
   this.hatchFillPalette(config['hatchFillPalette']);
+  this.dataArea().setupInternal(!!opt_default, config['dataArea']);
 
   this.normal_.setupInternal(!!opt_default, config);
   this.normal_.setupInternal(!!opt_default, config['normal']);
@@ -1330,6 +1373,7 @@ anychart.core.ChartWithSeries.prototype.serialize = function() {
   json['palette'] = this.palette().serialize();
   json['markerPalette'] = this.markerPalette().serialize();
   json['hatchFillPalette'] = this.hatchFillPalette().serialize();
+  json['dataArea'] = this.dataArea().serialize();
 
   json['normal'] = this.normal().serialize();
   json['hovered'] = this.hovered().serialize();
@@ -1345,8 +1389,8 @@ anychart.core.ChartWithSeries.prototype.disposeInternal = function() {
   this.removeAllSeries();
   this.resumeSignalsDispatching(false);
 
-  goog.disposeAll(this.palette_, this.markerPalette_, this.hatchFillPalette_);
-  this.palette_ = this.markerPalette_ = this.hatchFillPalette_ = null;
+  goog.disposeAll(this.palette_, this.markerPalette_, this.hatchFillPalette_, this.dataArea_);
+  this.palette_ = this.markerPalette_ = this.hatchFillPalette_ = this.dataArea_ = null;
 
   goog.disposeAll(this.normal_, this.hovered_, this.selected_);
 
@@ -1368,4 +1412,5 @@ anychart.core.ChartWithSeries.prototype.disposeInternal = function() {
   proto['hovered'] = proto.hovered;
   proto['selected'] = proto.selected;
   proto['isVertical'] = proto.isVertical;
+  proto['dataArea'] = proto.dataArea;
 })();
