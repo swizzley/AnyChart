@@ -835,7 +835,7 @@ anychart.mapModule.Series.prototype.applyZoomMoveTransform = function() {
     var markers = this.normal().markers();
     var hoverMarkers = this.hovered().markers();
     var selectMarkers = this.selected().markers();
-    var marker = markers.getElement(index);
+    var marker = this.getMarkersFactory().getElement(index);
     var markerEnabledState = pointMarker && goog.isDef(pointMarker['enabled']) ? pointMarker['enabled'] : null;
     var markerHoverEnabledState = hoverPointMarker && goog.isDef(hoverPointMarker['enabled']) ? hoverPointMarker['enabled'] : null;
     var markerSelectEnabledState = selectPointMarker && goog.isDef(selectPointMarker['enabled']) ? selectPointMarker['enabled'] : null;
@@ -1186,54 +1186,32 @@ anychart.mapModule.Series.prototype.createFormatProvider = function(opt_force) {
 
 /** @inheritDoc */
 anychart.mapModule.Series.prototype.drawSingleFactoryElement = function(factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
-  var factory = /** @type {anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory} */(factories[0]);
-  var seriesStateFactory = /** @type {anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory} */(factories[1]);
-  var pointOverride = factories[2];
-  var statePointOverride = factories[3];
+  var factory = formatProvider ? /** @type {anychart.core.ui.LabelsFactory} */(factories[0]) : this.getMarkersFactory();
 
   if (!positionProvider['value'])
     return null;
 
   var element = formatProvider ? factory.getLabel(/** @type {number} */(index)) : factory.getElement(/** @type {number} */(index));
-  if (element) {
-    if (formatProvider)
-      element.formatProvider(formatProvider);
-    element.positionProvider(positionProvider);
-  } else {
-    if (formatProvider)
-      element = factory.add(formatProvider, positionProvider, index);
-    else
-      element = factory.add(positionProvider, index);
+  if (!element) {
+    element = factory.add(index);
   }
+  if (formatProvider) {
+    element.formatProvider(formatProvider);
+  }
+  element.positionProvider(positionProvider);
   element.resetSettings();
+  settings = settings.slice();
+
   if (formatProvider) {
     element.autoAnchor(/** @type {anychart.enums.Anchor} */(this.getIterator().meta('labelAnchor')));
     settings.unshift(element);
     this.setupLabelDrawingPlan.apply(this, settings);
   } else {
-    element.currentMarkersFactory(seriesStateFactory || factory);
+    element.autoSettings['rotation'] = /** @type {number} */(this.getIterator().meta('markerRotation'));
+    element.autoSettings['anchor'] = /** @type {anychart.enums.Anchor} */(this.getIterator().meta('markerAnchor'));
 
-    pointOverride = goog.object.clone(/** @type {Object} */(pointOverride || {}));
-    statePointOverride = goog.object.clone(/** @type {Object} */(statePointOverride || {}));
-    var val;
-    var rotation = /** @type {number} */(element.getFinalSettings('rotation'));
-    if ((!goog.isDef(rotation) || goog.isNull(rotation) || isNaN(rotation))) {
-      val = /** @type {number} */(this.getIterator().meta('markerRotation'));
-      if (!('rotation' in pointOverride))
-        pointOverride['rotation'] = val;
-      if (!('rotation' in statePointOverride))
-        statePointOverride['rotation'] = val;
-    }
-
-    var anchor = /** @type {anychart.enums.Anchor} */(element.getFinalSettings('anchor'));
-    if ((!goog.isDef(anchor) || goog.isNull(anchor))) {
-      val = /** @type {anychart.enums.Anchor} */(this.getIterator().meta('markerAnchor'));
-      if (!('anchor' in pointOverride))
-        pointOverride['anchor'] = val;
-      if (!('anchor' in statePointOverride))
-        statePointOverride['anchor'] = val;
-    }
-    element.setSettings(/** @type {Object} */(pointOverride), /** @type {Object} */(statePointOverride));
+    settings.unshift(element);
+    this.setupMarkerDrawingPlan.apply(this, settings);
   }
 
   if (callDraw)

@@ -2482,7 +2482,6 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
     element.formatProvider(formatProvider);
   }
   element.positionProvider(positionProvider);
-
   element.resetSettings();
 
   settings = settings.slice();
