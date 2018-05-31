@@ -195,10 +195,11 @@ anychart.core.StateSettings.DEFAULT_HEADERS_AFTER_INIT_CALLBACK = function(facto
 
 /**
  * Default labels factory after init callback.
- * @param {anychart.core.ui.MarkersFactory} factory
+ * @param {anychart.core.Marker} factory
  * @this {*}
  */
 anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK = function(factory) {
+  factory.markConsistent(anychart.ConsistencyState.ALL);
   factory.listenSignals(this.markersInvalidated_, this);
   factory.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
 };
@@ -206,10 +207,11 @@ anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK = function(facto
 
 /**
  * Default labels factory after init callback.
- * @param {anychart.core.ui.MarkersFactory} factory
+ * @param {anychart.core.Marker} factory
  * @this {*}
  */
 anychart.core.StateSettings.DEFAULT_OUTLIER_MARKERS_AFTER_INIT_CALLBACK = function(factory) {
+  factory.markConsistent(anychart.ConsistencyState.ALL);
   factory.listenSignals(this.outlierMarkersInvalidated_, this);
   factory.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
 };

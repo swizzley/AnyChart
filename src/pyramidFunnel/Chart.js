@@ -144,6 +144,9 @@ anychart.pyramidFunnelModule.Chart = function(opt_data, opt_csvSettings) {
     ['connectorStroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW]
   ]);
 
+  this.markersFactory_ = new anychart.core.utils.MarkersFactory();
+  this.markersFactory_.setParentEventTarget(this);
+
   this.resumeSignalsDispatching(false);
 };
 goog.inherits(anychart.pyramidFunnelModule.Chart, anychart.core.SeparateChart);
@@ -2587,7 +2590,7 @@ anychart.pyramidFunnelModule.Chart.prototype.updateConnector = function(label, p
 /**
  * Getter/setter for markers.
  * @param {(Object|boolean|null|string)=} opt_value Data markers settings.
- * @return {anychart.core.ui.MarkersFactory|anychart.pyramidFunnelModule.Chart} Markers instance or itself for chaining call.
+ * @return {anychart.core.utils.MarkersFactory|anychart.pyramidFunnelModule.Chart} Markers instance or itself for chaining call.
  */
 anychart.pyramidFunnelModule.Chart.prototype.markers = function(opt_value) {
   if (goog.isDef(opt_value)) {
@@ -2760,7 +2763,7 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
     markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.markers());
   }
 
-  var marker = this.markers().getMarker(index);
+  var marker = this.markersFactory_.getElement(index);
 
   var markerEnabledState = pointMarker && goog.isDef(pointMarker['enabled']) ? pointMarker['enabled'] : null;
   var markerHoverEnabledState = hoverPointMarker && goog.isDef(hoverPointMarker['enabled']) ? hoverPointMarker['enabled'] : null;
@@ -2796,11 +2799,10 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
         markerPosition || this.markers().position();
 
     var positionProvider = this.createMarkersPositionProvider_(/** @type {anychart.enums.Position|string} */(position));
-    if (marker) {
-      marker.positionProvider(positionProvider);
-    } else {
-      marker = this.markers().add(positionProvider, index);
+    if (!marker) {
+      marker = this.markersFactory_.add(index);
     }
+    marker.positionProvider(positionProvider);
 
     var markerSettings = {};
     var settingsPropsList = ['position', 'anchor', 'offsetX', 'offsetY', 'type', 'size', 'fill', 'stroke', 'enabled'];
@@ -2855,11 +2857,8 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
       markerSettings.stroke = finalMarkerStroke;
 
     marker.resetSettings();
-    marker.currentMarkersFactory(markersFactory);
-    marker.setSettings(/** @type {Object} */(markerSettings), /** @type {Object} */(hovered ? hoverPointMarker : selectPointMarker));
-
+    marker.settings([(hovered ? hoverPointMarker : selectPointMarker), markerSettings, markersFactory, this.markers()]);
     marker.draw();
-
   } else if (marker) {
     marker.clear();
   }

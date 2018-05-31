@@ -835,7 +835,7 @@ anychart.mapModule.Series.prototype.applyZoomMoveTransform = function() {
     var markers = this.normal().markers();
     var hoverMarkers = this.hovered().markers();
     var selectMarkers = this.selected().markers();
-    var marker = markers.getMarker(index);
+    var marker = markers.getElement(index);
     var markerEnabledState = pointMarker && goog.isDef(pointMarker['enabled']) ? pointMarker['enabled'] : null;
     var markerHoverEnabledState = hoverPointMarker && goog.isDef(hoverPointMarker['enabled']) ? hoverPointMarker['enabled'] : null;
     var markerSelectEnabledState = selectPointMarker && goog.isDef(selectPointMarker['enabled']) ? selectPointMarker['enabled'] : null;
@@ -1194,7 +1194,7 @@ anychart.mapModule.Series.prototype.drawSingleFactoryElement = function(factorie
   if (!positionProvider['value'])
     return null;
 
-  var element = formatProvider ? factory.getLabel(/** @type {number} */(index)) : factory.getMarker(/** @type {number} */(index));
+  var element = formatProvider ? factory.getLabel(/** @type {number} */(index)) : factory.getElement(/** @type {number} */(index));
   if (element) {
     if (formatProvider)
       element.formatProvider(formatProvider);

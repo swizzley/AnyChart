@@ -120,7 +120,7 @@ anychart.core.Marker.settingsFieldsForMerge_ = [
  * @return {acgraph.vector.Layer}
  */
 anychart.core.Marker.prototype.getDomElement = function() {
-  return this.layer_;
+  return this.markerElement_;
 };
 
 
@@ -755,7 +755,8 @@ anychart.core.Marker.prototype.setupByJSON = function(config, opt_default) {
 
 /** @inheritDoc */
 anychart.core.Marker.prototype.disposeInternal = function() {
-  goog.dispose(this.layer_);
+  this.clear();
+  goog.dispose(this.markerElement_);
 
   anychart.core.Marker.base(this, 'disposeInternal');
 };

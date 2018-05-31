@@ -1904,7 +1904,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.iterateDrawingPlans_ = function(o
     if (!stateSettings)
       return;
 
-    var processedSetting = processor(state, stateSettings, i, opt_field, opt_handler);
+    var processedSetting = processor.call(this, state, stateSettings, i, opt_field, opt_handler);
     if (goog.isDef(processedSetting)) {
       if (goog.typeOf(processedSetting) == 'object' && !anychart.utils.instanceOf(processedSetting, goog.Disposable)) {
         if (goog.isDefAndNotNull(result)) {
@@ -2572,7 +2572,6 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
         clip = clipSettings;
       } else {
         clip = /** @type {anychart.math.Rect} */(this.iterateDrawingPlans_(function(settings) {
-          console.log(settings);
           var clipElement;
           if (anychart.utils.instanceOf(settings, anychart.core.ui.LabelsFactory)) {
             clipElement = settings['clipElement']();

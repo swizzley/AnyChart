@@ -55,16 +55,10 @@ anychart.circularGaugeModule.AxisTicks = function() {
 
   /**
    * In this class ticks are markers. Its control by MarkersFactory.
-   * @type {!anychart.core.Marker}
+   * @type {!anychart.core.utils.MarkersFactory}
    * @private
    */
-  this.ticks_ = new anychart.core.Marker();
-  this.ticks_.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
-  this.ticks_.themeSettings['size'] =  10;
-  this.ticks_.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
-  this.ticks_.themeSettings['offsetX'] =  0;
-  this.ticks_.themeSettings['offsetY'] =  0;
-  this.ticks_.themeSettings['rotation'] =  0;
+  this.ticks_ = new anychart.core.utils.MarkersFactory();
   this.ticks_.setParentEventTarget(this);
 
   /**
@@ -99,11 +93,6 @@ anychart.circularGaugeModule.AxisTicks.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.core.VisualBase.prototype.SUPPORTED_CONSISTENCY_STATES;
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Properties.
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Tick length.
  * @param {(null|number|string)=} opt_value .
@@ -296,33 +285,29 @@ anychart.circularGaugeModule.AxisTicks.prototype.startDrawing = function() {
   this.contextProvider_['cy'] = this.axis_.gauge().getCy();
 
   this.ticks_.clear();
-  if (!goog.isFunction(this.stroke_))
-    this.ticks_.stroke(this.stroke_);
-  if (!goog.isFunction(this.fill_))
-    this.ticks_.fill(this.fill_);
-  this.ticks_.size(this.pixLength_ / 2);
-  this.ticks_.type(this.type_);
 
   if (!this.hatchFillElement_ && !anychart.utils.isNone(this.hatchFill_)) {
-    this.hatchFillElement_ = new anychart.core.Marker();
-    this.hatchFillElement_.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
-    this.hatchFillElement_.themeSettings['size'] =  10;
-    this.hatchFillElement_.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
-    this.hatchFillElement_.themeSettings['offsetX'] =  0;
-    this.hatchFillElement_.themeSettings['offsetY'] =  0;
-    this.hatchFillElement_.themeSettings['rotation'] =  0;
+    this.hatchFillElement_ = new anychart.core.utils.MarkersFactory();
     this.hatchFillElement_.container(/** @type {acgraph.vector.ILayer} */(this.container()));
     this.hatchFillElement_.zIndex(anychart.circularGaugeModule.Axis.ZINDEX_TICK_HATCH_FILL);
   }
 
-  if (this.hatchFillElement_) {
+  if (this.hatchFillElement_)
     this.hatchFillElement_.clear();
-    this.hatchFillElement_.setOption('disablePointerEvents', true);
-    this.hatchFillElement_.setOption('size', this.pixLength_ / 2);
-    this.hatchFillElement_.setOption('type', this.type_);
-    this.hatchFillElement_.setOption('fill', this.hatchFill_);
-    this.hatchFillElement_.setOption('stroke', null);
-  }
+};
+
+
+/**
+ *
+ */
+anychart.circularGaugeModule.AxisTicks.prototype.setupDefaultTick = function(tick) {
+  tick.themeSettings['enabled'] = true;
+  tick.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
+  tick.themeSettings['size'] =  10;
+  tick.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
+  tick.themeSettings['offsetX'] =  0;
+  tick.themeSettings['offsetY'] =  0;
+  tick.themeSettings['rotation'] =  0;
 };
 
 
@@ -339,14 +324,20 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tick
   var x = cx + this.radius_ * Math.cos(angleRad);
   var y = cy + this.radius_ * Math.sin(angleRad);
 
-  var tick = this.ticks_.positionProvider({'value': {'x': x, 'y': y}});
-  var rotation = /** @type {number} */(goog.isDef(tick.rotation()) ? tick.rotation() : goog.isDef(this.ticks_.rotation()) ? this.ticks_.rotation() : 0);
+  var tick = this.ticks_.add();
+  tick.positionProvider({'value': {'x': x, 'y': y}});
+  this.setupDefaultTick(tick);
+
+  var rotation = /** @type {number} */(tick.getOption('rotation') || 0);
 
   this.contextProvider_['rotation'] = rotation + angle + 90;
   this.contextProvider_['x'] = x;
   this.contextProvider_['y'] = y;
   this.contextProvider_['angle'] = goog.math.standardAngle(angle - anychart.circularGaugeModule.Chart.DEFAULT_START_ANGLE);
   this.contextProvider_['value'] = tickValue;
+
+  tick.setOption('size', this.pixLength_ / 2);
+  tick.setOption('type', this.type_);
 
   tick.rotation(rotation + angle + 90);
   if (goog.isFunction(this.fill_))
@@ -357,8 +348,16 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tick
         /** @type {acgraph.vector.Stroke} */(this.normalizeColor(this.stroke_)))));
 
   if (this.hatchFillElement_) {
-    var hatchFill = this.hatchFillElement_.add({'value': {'x': x, 'y': y}});
+    var hatchFill = this.hatchFillElement_.add();
+    hatchFill.positionProvider({'value': {'x': x, 'y': y}});
+    this.setupDefaultTick(hatchFill);
     hatchFill.rotation(rotation + angle + 90);
+
+    this.hatchFillElement_.setOption('disablePointerEvents', true);
+    this.hatchFillElement_.setOption('size', this.pixLength_ / 2);
+    this.hatchFillElement_.setOption('type', this.type_);
+    this.hatchFillElement_.setOption('fill', this.hatchFill_);
+    this.hatchFillElement_.setOption('stroke', null);
   }
 };
 

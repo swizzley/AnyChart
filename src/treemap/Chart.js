@@ -1268,7 +1268,7 @@ anychart.treemapModule.Chart.prototype.drawMarker_ = function(pointState) {
   var selectPointMarker = anychart.utils.getFirstDefinedValue(pointSelectedMarker, node.get(selectMarkerType));
 
   var markerIndex = /** @type {number} */(node.meta('markerIndex'));
-  var marker = goog.isDef(markerIndex) ? markers.getMarker(markerIndex) : null;
+  var marker = goog.isDef(markerIndex) ? markers.getElement(markerIndex) : null;
 
   var markerEnabledState = pointMarker && goog.isDef(pointMarker['enabled']) ? pointMarker['enabled'] : null;
   var markerHoverEnabledState = hoverPointMarker && goog.isDef(hoverPointMarker['enabled']) ? hoverPointMarker['enabled'] : null;

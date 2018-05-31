@@ -26,8 +26,8 @@ anychart.circularGaugeModule.pointers.Marker = function() {
   this.domElement = new anychart.core.Marker();
   // defaults that was deleted form MarkersFactory
   this.domElement.setParentEventTarget(this);
+  this.domElement.themeSettings['enabled'] = true;
   this.domElement.themeSettings['positionFormatter'] =  anychart.utils.DEFAULT_FORMATTER;
-  this.domElement.themeSettings['size'] =  10;
   this.domElement.themeSettings['anchor'] =  anychart.enums.Anchor.CENTER;
   this.domElement.themeSettings['offsetX'] =  0;
   this.domElement.themeSettings['offsetY'] =  0;
@@ -176,14 +176,14 @@ anychart.circularGaugeModule.pointers.Marker.prototype.draw = function() {
     this.domElement.setOption('size', this.pixSize_);
     this.domElement.setOption('type', type);
 
-    var marker = this.domElement.add({'value': {'x': x, 'y': y}}, 0);
+    var marker = this.domElement.positionProvider({'value': {'x': x, 'y': y}});
     marker.rotation(angle + 90);
 
     if (this.hatchFillElement) {
       this.hatchFillElement.setOption('size', this.pixSize_);
       this.hatchFillElement.setOption('type', type);
 
-      var hatchFill = this.hatchFillElement.add({'value': {'x': x, 'y': y}}, 0);
+      var hatchFill = this.hatchFillElement.positionProvider({'value': {'x': x, 'y': y}});
       hatchFill.rotation(angle + 90);
     }
 

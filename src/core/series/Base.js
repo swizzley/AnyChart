@@ -2120,6 +2120,7 @@ anychart.core.series.Base.prototype.prepareFactory = function(factory, enabled, 
 
 /**
  * Draws element(s) for point.
+ * @param {anychart.core.ui.LabelsFactory|anychart.core.utils.MarkersFactory} factory
  * @param {!Array.<function(this:anychart.core.StateSettings):(anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory)>} seriesFactoryGetters
  * @param {!Array.<function(this:anychart.core.IChart):(anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory)>} chartFactoryGetters
  * @param {!Array.<string>} overrideNames
@@ -2132,7 +2133,7 @@ anychart.core.series.Base.prototype.prepareFactory = function(factory, enabled, 
  * @return {anychart.core.IFactoryElement|null}
  * @protected
  */
-anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryGetters, chartFactoryGetters, overrideNames, hasPointOverrides, isLabel, positionYs, point, state, callDraw) {
+anychart.core.series.Base.prototype.drawFactoryElement = function(factory, seriesFactoryGetters, chartFactoryGetters, overrideNames, hasPointOverrides, isLabel, positionYs, point, state, callDraw) {
   var isDraw, positionProvider, i, indexes;
   var index = point.getIndex();
   if (positionYs) {
@@ -2140,10 +2141,7 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
     if (!indexes)
       indexes = this.indexToMarkerIndexes_[index] = [];
   }
-  var mainFactory;
-  if (seriesFactoryGetters[0])
-    mainFactory = seriesFactoryGetters[0].call(this.normal_);
-  
+  var mainFactory = factory;
   var chartNormal, seriesNormal, pointNormal,
       chartState, seriesState, pointState,
       chartExtremumNormal, seriesExtremumNormal, pointExtremumNormal,
@@ -2159,7 +2157,7 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
 
     if (chartFactoryGetters[0])
       chartNormal = chartFactoryGetters[0].call(this.chart.normal_);
-    seriesNormal = mainFactory;
+    seriesNormal = seriesFactoryGetters[0].call(this.normal_);
     if (lookInPoint) {
       tmp = point.get('normal');
       pointNormal = tmp ? tmp[overrideNames[0]] : point.get(overrideNames[0]);
@@ -2249,40 +2247,28 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
         }
       }
     } else {
-      var position;
-      // if (isLabel) {
-        position = anychart.utils.getFirstDefinedValueRecursive(
-            anychart.utils.extractSettings([
-              pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-              pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-              seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              seriesState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              chartExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              chartState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              pointExtremumNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-              pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-              seriesExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              seriesNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              chartExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              chartNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
-              seriesExtremumState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-              seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-              chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-              seriesExtremumNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-              seriesNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
-              chartNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS
-            ], 'position'),
-            'auto');
-      // } else {
-      //   position = anychart.utils.getFirstDefinedValueRecursive(
-      //       anychart.utils.extractSettings([
-      //         pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-      //         seriesState, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      //         pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-      //         seriesNormal, anychart.utils.ExtractSettingModes.CALL_METHOD
-      //       ], 'position'),
-      //       'auto');
-      // }
+      var position = anychart.utils.getFirstDefinedValueRecursive(
+          anychart.utils.extractSettings([
+            pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
+            pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
+            seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            seriesState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            chartExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            chartState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            pointExtremumNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
+            pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
+            seriesExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            seriesNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            chartExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            chartNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            seriesExtremumState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+            seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+            chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+            seriesExtremumNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+            seriesNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+            chartNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS
+          ], 'position'),
+          'auto');
       positionProvider = this.createPositionProvider(/** @type {anychart.enums.Position|string} */(position), true);
       return this.drawSingleFactoryElement(factories, settings, index, positionProvider, formatProvider, callDraw, /** @type {string} */(position));
     }
@@ -2498,6 +2484,8 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
   element.positionProvider(positionProvider);
 
   element.resetSettings();
+
+  settings = settings.slice();
   if (formatProvider) {
     var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(element);
     settings.unshift(label);
@@ -2563,6 +2551,7 @@ anychart.core.series.Base.prototype.drawLabel = function(point, pointState, poin
     overrideNames.push('minLabel', 'hoverMinLabel', 'selectMinLabel');
   }
   point.meta('label', this.drawFactoryElement(
+      this.normal_.labels(),
       seriesGetters,
       chartGetters,
       overrideNames,
@@ -2627,6 +2616,7 @@ anychart.core.series.Base.prototype.drawMarker = function(point, pointState, poi
   var overrideNames = ['marker', 'hoverMarker', 'selectMarker'];
 
   point.meta('marker', this.drawFactoryElement(
+      this.getMarkersFactory(),
       seriesGetters,
       chartGetters,
       overrideNames,
@@ -2707,6 +2697,7 @@ anychart.core.series.Base.prototype.drawPointOutliers = function(iterator, point
   var outliers = iterator.meta('outliers');
   if (outliers && outliers.length)
     this.drawFactoryElement(
+        this.getOutlierMarkersFactory(),
         [this.normal_.outlierMarkers, this.hovered_.outlierMarkers, this.selected_.outlierMarkers],
         [],
         ['outlierMarker', 'hoverOutlierMarker', 'selectOutlierMarker'],
@@ -4419,6 +4410,7 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
     goog.dispose(this.rootLayer);
   }
   goog.disposeAll(
+      this.markersFactory_,
       this.shapeManager,
       this.drawer,
       this.normal_,
