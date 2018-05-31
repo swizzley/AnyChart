@@ -113,7 +113,7 @@ anychart.core.drawers.Line.prototype.drawMissingPoint = function(point, state) {
  */
 anychart.core.drawers.Line.prototype.getShapeName = function(value) {
   var name;
-  var baseLine = /** @type {number} */(this.series.getOption('baseLine'));
+  var baseLine = /** @type {number} */(this.series.plot.getOption('baseLine'));
   if (this.hasNegativeColoring) {
     name = value < baseLine ? 'negative' : 'stroke';
   } else if (this.hasRisingFallingColoring) {
@@ -167,7 +167,7 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
     prevX = /** @type {number} */(this.prevX);
     prevY = /** @type {number} */(this.prevY);
     prevName = this.prevShapeName;
-    var baseLine = /** @type {number} */(this.series.getOption('baseLine'));
+    var baseLine = /** @type {number} */(this.series.plot.getOption('baseLine'));
     var baseLineCrossed = (this.prevValue - baseLine) * (currValue - baseLine) < 0;
 
     if (this.hasNegativeColoring && baseLineCrossed) {

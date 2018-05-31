@@ -1420,7 +1420,6 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
           'valueErrorStroke': anychart.core.defaultTheme.returnDarkenSourceColor
         },
         'pointWidth': null,
-        'baseLine': 0,
         'connectMissingPoints': false,
         'a11y': {
           'enabled': false,
@@ -1676,6 +1675,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'crossing': {
       'stroke': 'none'
     },
+    'baseLine': 0,
 
     'defaultQuarterSettings': {
       'enabled': false,

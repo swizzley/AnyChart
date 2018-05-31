@@ -312,10 +312,6 @@ anychart.core.series.Base = function(chart, plot, type, config) {
     ['isVertical',
       anychart.ConsistencyState.SERIES_POINTS,
       anychart.Signal.NEEDS_RECALCULATION | anychart.Signal.NEEDS_REDRAW,
-      anychart.core.drawers.Capabilities.ANY],
-    ['baseLine',
-      anychart.ConsistencyState.SERIES_POINTS,
-      anychart.Signal.NEEDS_RECALCULATION | anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.ANY]
   ]);
 
@@ -3909,7 +3905,7 @@ anychart.core.series.Base.prototype.prepareMetaMakers = function(yNames, yColumn
     this.metaMakers.push(this.makeOutliersMeta);
   }
   if (this.needsZero()) {
-    var baseLine = /** @type {number} */(this.getOption('baseLine'));
+    var baseLine = /** @type {number} */(this.plot.getOption('baseLine'));
     this.zeroYRatio = goog.math.clamp((scale && scale.transform(baseLine, 0.5)) || baseLine, 0, 1);
     this.zeroY = this.applyAxesLinesSpace(this.applyRatioToBounds(this.zeroYRatio, false));
   }
@@ -4292,8 +4288,7 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'connectMissingPoints', anychart.core.settings.booleanNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'displayNegative', anychart.core.settings.booleanNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'stepDirection', anychart.enums.normalizeStepDirection],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'isVertical', anychart.core.settings.boolOrNullNormalizer],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'baseLine', anychart.core.settings.numberNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'isVertical', anychart.core.settings.boolOrNullNormalizer]
   ]);
 
   return map;
