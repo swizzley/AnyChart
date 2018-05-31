@@ -911,13 +911,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
       limitTop = y;
     }
 
-    if (pixelBounds.getRight() + offsetX + addOffsetX + mBox.left > windowBox.width) {
+    if (pixelBounds.getRight() - offsetX + addOffsetX + mBox.left > windowBox.width) {
       limit = windowBox.width - offsetX - pixelBounds.width - addOffsetX - mBox.left;
       x = Math.min(limit, limitRight);
       limitRight = x;
     }
 
-    if (pixelBounds.getBottom() + offsetY + addOffsetY + mBox.top > windowBox.height) {
+    if (pixelBounds.getBottom() - offsetY + addOffsetY + mBox.top > windowBox.height) {
       limit = windowBox.height - offsetY - pixelBounds.height - addOffsetY - mBox.top;
       y = Math.min(limit, limitBottom);
       limitBottom = y;
@@ -943,13 +943,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
       limitTop = y;
     }
 
-    if (pixelBounds.getRight() + offsetX + mBox.left > stageBounds.width) {
+    if (pixelBounds.getRight() - offsetX + mBox.left > stageBounds.width) {
       limit = stageBounds.width - offsetX - pixelBounds.width - mBox.left;
       x = Math.min(limit, limitRight);
       limitRight = x;
     }
 
-    if (pixelBounds.getBottom() + offsetY + mBox.top > stageBounds.height) {
+    if (pixelBounds.getBottom() - offsetY + mBox.top > stageBounds.height) {
       limit = stageBounds.height - offsetY - pixelBounds.height - mBox.top;
       y = Math.min(limit, limitBottom);
       limitBottom = y;
@@ -975,13 +975,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
       // limitTop = y;
     }
 
-    if (pixelBounds.getRight() + mBox.right + offsetX > pixelBoundsInStage.getRight()) {
+    if (pixelBounds.getRight() + mBox.right - offsetX > pixelBoundsInStage.getRight()) {
       limit = pixelBoundsInStage.getRight() - pixelBounds.width - offsetX - mBox.left;
       x = Math.min(limit, limitRight);
       // limitRight = x;
     }
 
-    if (pixelBounds.getBottom() + mBox.bottom + offsetY > pixelBoundsInStage.getBottom()) {
+    if (pixelBounds.getBottom() + mBox.bottom - offsetY > pixelBoundsInStage.getBottom()) {
       limit = pixelBoundsInStage.getBottom() - pixelBounds.height - offsetY - mBox.bottom;
       y = Math.min(limit, limitBottom);
       // limitBottom = y;
@@ -1854,13 +1854,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
       limitTop = y;
     }
 
-    if (pixelBounds.getRight() + offsetX + addOffsetX + mBox.left > windowBox.width) {
+    if (pixelBounds.getRight() - offsetX + addOffsetX + mBox.left > windowBox.width) {
       limit = windowBox.width - offsetX - pixelBounds.width - addOffsetX - mBox.left;
       x = Math.min(limit, limitRight);
       limitRight = x;
     }
 
-    if (pixelBounds.getBottom() + offsetY + addOffsetY + mBox.top > windowBox.height) {
+    if (pixelBounds.getBottom() - offsetY + addOffsetY + mBox.top > windowBox.height) {
       limit = windowBox.height - offsetY - pixelBounds.height - addOffsetY - mBox.top;
       y = Math.min(limit, limitBottom);
       limitBottom = y;
@@ -1885,13 +1885,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
       limitTop = y;
     }
 
-    if (pixelBounds.getRight() + offsetX + mBox.left > stageBounds.width) {
+    if (pixelBounds.getRight() - offsetX + mBox.left > stageBounds.width) {
       limit = stageBounds.width - offsetX - pixelBounds.width - mBox.left;
       x = Math.min(limit, limitRight);
       limitRight = x;
     }
 
-    if (pixelBounds.getBottom() + offsetY + mBox.top > stageBounds.height) {
+    if (pixelBounds.getBottom() - offsetY + mBox.top > stageBounds.height) {
       limit = stageBounds.height - offsetY - pixelBounds.height - mBox.top;
       y = Math.min(limit, limitBottom);
       limitBottom = y;
@@ -1916,13 +1916,13 @@ anychart.core.ui.Tooltip.prototype.setPositionForSeparated_ = function(tooltip, 
       // limitTop = y;
     }
 
-    if (pixelBounds.getRight() + mBox.right + offsetX > pixelBoundsInStage.getRight()) {
+    if (pixelBounds.getRight() + mBox.right - offsetX > pixelBoundsInStage.getRight()) {
       limit = pixelBoundsInStage.getRight() - pixelBounds.width - offsetX - mBox.left;
       x = Math.min(limit, limitRight);
       // limitRight = x;
     }
 
-    if (pixelBounds.getBottom() + mBox.bottom + offsetY > pixelBoundsInStage.getBottom()) {
+    if (pixelBounds.getBottom() + mBox.bottom - offsetY > pixelBoundsInStage.getBottom()) {
       limit = pixelBoundsInStage.getBottom() - pixelBounds.height - offsetY - mBox.bottom;
       y = Math.min(limit, limitBottom);
       // limitBottom = y;
