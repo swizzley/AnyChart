@@ -1,10 +1,11 @@
 goog.provide('anychart.annotationsModule.Base');
 goog.require('anychart.annotationsModule');
 goog.require('anychart.core.IPlot');
+goog.require('anychart.core.Marker');
 goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.VisualBaseWithBounds');
 goog.require('anychart.core.settings');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.math.Rect');
 
 
@@ -1145,7 +1146,7 @@ anychart.annotationsModule.Base.prototype.markersInvalidated_ = function(event) 
 
 /**
  * Sets type for anchor markers.
- * @param {anychart.core.ui.MarkersFactory.Marker} marker Marker.
+ * @param {anychart.core.Marker} marker Marker.
  * @param {number} index Marker index.
  */
 anychart.annotationsModule.Base.prototype.setMarkerCursor = goog.nullFunction;
@@ -1179,9 +1180,9 @@ anychart.annotationsModule.Base.prototype.drawMarkers_ = function(state) {
     var positionProviders = this.createPositionProviders();
     for (var i = 0; i < positionProviders.length; i++) {
       var positionProvider = positionProviders[i];
-      var element = factory.getElement(/** @type {number} */(i));
+      var element = /** @type {anychart.core.Marker} */(factory.getElement(/** @type {number} */(i)));
       if (!element)
-        element = factory.add(i);
+        element = /** @type {anychart.core.Marker} */(factory.add(i));
       element.positionProvider(positionProvider);
       element.resetSettings();
       element.parentBounds(this.pixelBoundsCache);

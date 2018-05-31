@@ -33,7 +33,7 @@ anychart.animations.ClipAnimation.prototype.update = function() {
    */
   this.isVertical = /** @type {boolean} */(this.series.getOption('isVertical'));
 
-  var clip = this.series.clip();
+  var clip = this.series.getOption('clip');
   if (goog.isBoolean(clip) && !clip) {
     this.clipBounds_ = this.series.getChart().getPixelBounds();
   }

@@ -1574,7 +1574,7 @@ anychart.vennModule.Chart.prototype.drawMarker_ = function(state, iterator) {
       pointMarker = chartNormalMarkerConfig;
 
       if (!goog.isDef(pointMarker.type)) {
-        pointMarker.type = sourceState.getType() || chartState.getType() || iterator.meta('paletteMarkerType');
+        pointMarker.type = sourceState.getOption('type') || chartState.getOption('type') || iterator.meta('paletteMarkerType');
       }
 
       if (!goog.isDef(pointMarker.fill)) {
@@ -1584,7 +1584,7 @@ anychart.vennModule.Chart.prototype.drawMarker_ = function(state, iterator) {
           intersectionFill = this.blendColors_(parentColors);
           intersectionFill.opacity = 1; //TODO (A.Kudryavtsev): is it correct here?
         }
-        pointMarker.fill = sourceState.getFill() || chartState.getFill() || intersectionFill;
+        pointMarker.fill = sourceState.getOption('fill') || chartState.getOption('fill') || intersectionFill;
       }
 
       marker.resetSettings();

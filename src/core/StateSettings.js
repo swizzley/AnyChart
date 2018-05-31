@@ -534,7 +534,8 @@ anychart.core.StateSettings.prototype.lowerLabels = function(opt_value) {
  */
 anychart.core.StateSettings.prototype.markers = function(opt_value) {
   if (!this.markers_) {
-    var markersFactoryConstructor = /** @type {anychart.core.Marker} */ (this.getOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR)) || anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR;
+    var markersFactoryConstructor = /** @type {function():!anychart.core.Marker} */(this.getOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR) ||
+        anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR);
     var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
     this.markers_ = markersFactoryConstructor();
     afterInitCallback.call(this.stateHolder, this.markers_);

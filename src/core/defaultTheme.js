@@ -1662,7 +1662,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'labels': {'enabled': false, 'clip': false},
       'minLabels': {'enabled': null},
       'maxLabels': {'enabled': null},
-      'markers': {'clip': false},
+      'markers': {'clip': false}
     },
     'hovered': {
       'labels': {'enabled': null},

@@ -1710,8 +1710,8 @@ anychart.core.series.Base.prototype.getLegendItemData = function(itemsFormat) {
   json['disabled'] = 'disabled' in json ? !!json['disabled'] : !this.enabled();
   json['meta'] = /** @type {Object} */ (this.meta());
   if (json['iconType'] == anychart.enums.LegendItemIconType.MARKER && !this.check(anychart.core.drawers.Capabilities.IS_MARKER_BASED)) {
-    json['iconFill'] = this.normal_.markers().fill();
-    json['iconStroke'] = this.normal_.markers().stroke();
+    json['iconFill'] = this.normal_.markers().getOption('fill');
+    json['iconStroke'] = this.normal_.markers().getOption('stroke');
   }
   json['iconType'] = this.getLegendIconType(json['iconType'], context);
   json['iconEnabled'] = 'iconEnabled' in json ? !!json['iconEnabled'] : true;
@@ -1731,10 +1731,10 @@ anychart.core.series.Base.prototype.getLegendItemData = function(itemsFormat) {
       this.getAutoHatchFill(),
       context);
 
-  if (this.supportsMarkers() && this.normal_.markers().enabled()) {
-    json['iconMarkerType'] = json['iconMarkerType'] || this.normal_.markers().type();
-    json['iconMarkerFill'] = json['iconMarkerFill'] || this.normal_.markers().fill();
-    json['iconMarkerStroke'] = json['iconMarkerStroke'] || this.normal_.markers().stroke();
+  if (this.supportsMarkers() && this.normal_.markers().getOption('enabled')) {
+    json['iconMarkerType'] = json['iconMarkerType'] || this.normal_.markers().getOption('type');
+    json['iconMarkerFill'] = json['iconMarkerFill'] || this.normal_.markers().getOption('fill');
+    json['iconMarkerStroke'] = json['iconMarkerStroke'] || this.normal_.markers().getOption('stroke');
   } else {
     json['iconMarkerType'] = null;
     json['iconMarkerFill'] = null;
@@ -1755,7 +1755,7 @@ anychart.core.series.Base.prototype.getLegendIconType = function(type, context) 
     if (this.check(anychart.core.drawers.Capabilities.IS_MARKER_BASED)) {
       type = this.getOption('type');
     } else if (this.supportsMarkers()) {
-      type = this.normal_.markers().type();
+      type = this.normal_.markers().getOption('type');
     } else {
       type = anychart.enums.LegendItemIconType.SQUARE;
     }
@@ -2091,7 +2091,7 @@ anychart.core.series.Base.prototype.getFactoryContainer = function() {
 
 /**
  * Prepares passed factory to be displayed. Returns true, if the factory SHOULD be drawn.
- * @param {anychart.core.ui.LabelsFactory|anychart.core.Marker} factory
+ * @param {anychart.core.ui.LabelsFactory|anychart.core.utils.MarkersFactory} factory
  * @param {boolean} enabled
  * @param {boolean} hasPointSettings
  * @param {anychart.core.series.Capabilities|number} isSupported
@@ -2130,7 +2130,7 @@ anychart.core.series.Base.prototype.prepareFactory = function(factory, enabled, 
  * @param {anychart.data.IRowInfo} point
  * @param {anychart.PointState|number} state
  * @param {boolean} callDraw
- * @return {anychart.core.IFactoryElement|null}
+ * @return {anychart.core.ui.LabelsFactory.Label|anychart.core.Marker|null}
  * @protected
  */
 anychart.core.series.Base.prototype.drawFactoryElement = function(factory, seriesFactoryGetters, chartFactoryGetters, overrideNames, hasPointOverrides, isLabel, positionYs, point, state, callDraw) {
@@ -2468,7 +2468,7 @@ anychart.core.series.Base.prototype.setupMarkerDrawingPlan = function(element,
  * @param {*} formatProvider
  * @param {boolean} callDraw
  * @param {(?anychart.enums.Position|string)=} opt_position Position which is needed to calculate label auto anchor.
- * @return {anychart.core.IFactoryElement}
+ * @return {anychart.core.ui.LabelsFactory.Label|anychart.core.Marker}
  * @protected
  */
 anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
@@ -2592,7 +2592,7 @@ anychart.core.series.Base.prototype.drawLabel = function(point, pointState, poin
     overrideNames.push('minLabel', 'hoverMinLabel', 'selectMinLabel');
   }
   point.meta('label', this.drawFactoryElement(
-      this.normal_.labels(),
+      /** @type {anychart.core.ui.LabelsFactory} */(this.normal_.labels()),
       seriesGetters,
       chartGetters,
       overrideNames,
@@ -2622,14 +2622,14 @@ anychart.core.series.Base.prototype.additionalLabelsInitialize = function() {
 /**
  * Getter/setter for markers.
  * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
+ * @return {anychart.core.Marker|anychart.core.series.Base} .
  */
 anychart.core.series.Base.prototype.markers = function(opt_value) {
   if (goog.isDef(opt_value)) {
     this.normal_.markers(opt_value);
     return this;
   }
-  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.markers());
+  return /** @type {anychart.core.Marker} */ (this.normal_.markers());
 };
 
 
@@ -2720,14 +2720,14 @@ anychart.core.series.Base.prototype.getMarkerStroke = function() {
 /**
  * Getter/setter for outlier markers.
  * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.MarkersFactory|anychart.core.series.Base} .
+ * @return {anychart.core.Marker|anychart.core.series.Base} .
  */
 anychart.core.series.Base.prototype.outlierMarkers = function(opt_value) {
   if (goog.isDef(opt_value)) {
     this.normal_.outlierMarkers(opt_value);
     return this;
   }
-  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.outlierMarkers());
+  return /** @type {anychart.core.Marker} */ (this.normal_.outlierMarkers());
 };
 
 
@@ -2797,7 +2797,7 @@ anychart.core.series.Base.prototype.getOutliersFill = function() {
  */
 anychart.core.series.Base.prototype.getOutliersStroke = function() {
   return /** @type {acgraph.vector.Stroke} */(anychart.color.darken(
-      /** @type {acgraph.vector.Stroke} */(this.normal().outlierMarkers().fill())));
+      /** @type {acgraph.vector.Stroke} */(this.normal().outlierMarkers().getOption('fill'))));
 };
 
 
@@ -2939,7 +2939,7 @@ anychart.core.series.Base.prototype.remove = function() {
     markers.invalidate(anychart.ConsistencyState.CONTAINER);
   }
 
-  var outlierMarkers = this.normal_.outlierMarkersFactory_;
+  var outlierMarkers = this.outlierMarkersFactory_;
   if (outlierMarkers) {
     outlierMarkers.remove();
     outlierMarkers.invalidate(anychart.ConsistencyState.CONTAINER);
@@ -3056,6 +3056,7 @@ anychart.core.series.Base.prototype.draw = function() {
   var factory, i, state, stateSettingsEnabled;
   var labelsAreToBeRedrawn = false;
   var COMMON_STATES = anychart.ConsistencyState.CONTAINER | anychart.ConsistencyState.SERIES_POINTS;
+  var stateFactoriesEnabled;
 
   // preparing to draw different series parts
   if (this.hasInvalidationState(COMMON_STATES)) {
@@ -3116,7 +3117,7 @@ anychart.core.series.Base.prototype.draw = function() {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_OUTLIERS | COMMON_STATES)) {
-    factory = /** @type {anychart.core.Factory} */(this.getOutlierMarkersFactory());
+    factory = /** @type {anychart.core.utils.MarkersFactory} */(this.getOutlierMarkersFactory());
 
     stateSettingsEnabled = /** @type {boolean} */(this.normal_.outlierMarkers().enabled() ||
         this.hovered_.outlierMarkers().enabled() ||
@@ -3338,8 +3339,8 @@ anychart.core.series.Base.prototype.calcFullClipBounds = function() {
  * @param {anychart.math.Rect=} opt_customClip Custom temporary clip to apply.
  */
 anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
-  var ownClip = /** @type {boolean|anychart.core.Rect} */(this.getOwnOption('clip'));
-  var clip = opt_customClip ||  /** @type {boolean|anychart.core.Rect} */(this.getOption('clip'));
+  var ownClip = /** @type {boolean|anychart.math.Rect} */(this.getOwnOption('clip'));
+  var clip = opt_customClip ||  /** @type {boolean|anychart.math.Rect} */(this.getOption('clip'));
   var clipShape = clip;
   if (goog.isBoolean(clipShape)) {
      clipShape = this.calcFullClipBounds();

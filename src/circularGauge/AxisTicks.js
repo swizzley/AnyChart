@@ -3,7 +3,7 @@ goog.require('acgraph');
 goog.require('anychart.color');
 goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.reporting');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.enums');
 goog.require('anychart.utils');
 
@@ -298,7 +298,7 @@ anychart.circularGaugeModule.AxisTicks.prototype.startDrawing = function() {
 
 
 /**
- *
+ * @param {anychart.core.Marker} tick .
  */
 anychart.circularGaugeModule.AxisTicks.prototype.setupDefaultTick = function(tick) {
   tick.themeSettings['enabled'] = true;
@@ -324,7 +324,7 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tick
   var x = cx + this.radius_ * Math.cos(angleRad);
   var y = cy + this.radius_ * Math.sin(angleRad);
 
-  var tick = this.ticks_.add();
+  var tick = /** @type {anychart.core.Marker} */(this.ticks_.add());
   tick.positionProvider({'value': {'x': x, 'y': y}});
   this.setupDefaultTick(tick);
 
@@ -342,7 +342,7 @@ anychart.circularGaugeModule.AxisTicks.prototype.drawTick = function(angle, tick
   tick.setOption('stroke', acgraph.vector.normalizeStroke(/** @type {acgraph.vector.Stroke} */(this.normalizeColor(this.stroke_))));
 
   if (this.hatchFillElement_) {
-    var hatchFill = this.hatchFillElement_.add();
+    var hatchFill = /** @type {anychart.core.Marker} */(this.hatchFillElement_.add());
     hatchFill.positionProvider({'value': {'x': x, 'y': y}});
     this.setupDefaultTick(hatchFill);
     hatchFill.setOption('rotation', rotation + angle + 90);

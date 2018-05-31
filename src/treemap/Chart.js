@@ -76,7 +76,7 @@ anychart.treemapModule.Chart = function(opt_data, opt_fillMethod) {
   this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK);
   this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, /** @this {anychart.treemapModule.Chart} */ function(factory) {
     factory.setParentEventTarget(this);
-    factory.setAutoType(anychart.enums.MarkerType.STAR5);
+    factory.autoType(anychart.enums.MarkerType.STAR5);
     factory.listenSignals(this.markersInvalidated_, this);
   });
 

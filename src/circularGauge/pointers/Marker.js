@@ -1,8 +1,8 @@
 goog.provide('anychart.circularGaugeModule.pointers.Marker');
 goog.require('acgraph');
 goog.require('anychart.circularGaugeModule.pointers.Base');
-goog.require('anychart.core.reporting');
 goog.require('anychart.core.Marker');
+goog.require('anychart.core.reporting');
 goog.require('anychart.enums');
 goog.require('anychart.utils');
 
@@ -23,6 +23,9 @@ anychart.circularGaugeModule.pointers.Marker = function() {
     ['type', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
   ]);
 
+  /**
+   * @type {anychart.core.Marker}
+   */
   this.domElement = new anychart.core.Marker();
   // defaults that was deleted form MarkersFactory
   this.domElement.setParentEventTarget(this);

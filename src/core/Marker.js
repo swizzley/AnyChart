@@ -1,6 +1,7 @@
 //region --- Requiring and Providing
 goog.provide('anychart.core.Marker');
 goog.require('acgraph.math');
+goog.require('anychart.core.IFactoryElement');
 goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
@@ -20,6 +21,7 @@ goog.require('goog.math.Coordinate');
  * Class for creation of sets of similar labels and management of such sets.
  * Any individual label can be changed after all labels are displayed.
  * @constructor
+ * @param {boolean=} opt_crispEdges .
  * @extends {anychart.core.VisualBase}
  * @implements {anychart.core.IFactoryElement}
  */
@@ -117,7 +119,7 @@ anychart.core.Marker.settingsFieldsForMerge_ = [
 //region --- Dom elements
 /**
  * Returns DOM element.
- * @return {acgraph.vector.Layer}
+ * @return {acgraph.vector.Element}
  */
 anychart.core.Marker.prototype.getDomElement = function() {
   return this.markerElement_;
@@ -126,19 +128,13 @@ anychart.core.Marker.prototype.getDomElement = function() {
 
 //endregion
 //region --- States
-/**
- * Root factory.
- * @param {anychart.core.utils.MarkersFactory} value .
- */
+/** @inheritDoc */
 anychart.core.Marker.prototype.setFactory = function(value) {
   this.factory_ = value;
 };
 
 
-/**
- * Root factory.
- * @return {anychart.core.utils.MarkersFactory} .
- */
+/** @inheritDoc */
 anychart.core.Marker.prototype.getFactory = function() {
   return this.factory_;
 };
@@ -212,20 +208,13 @@ anychart.core.Marker.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
 anychart.core.settings.populate(anychart.core.Marker, anychart.core.Marker.prototype.SIMPLE_PROPS_DESCRIPTORS);
 
 
-/**
- * Returns label index.
- * @return {number}
- */
+/** @inheritDoc */
 anychart.core.Marker.prototype.getIndex = function() {
   return this.index_;
 };
 
 
-/**
- * Sets labels index.
- * @param {number} index Index to set.
- * @return {anychart.core.Marker}
- */
+/** @inheritDoc */
 anychart.core.Marker.prototype.setIndex = function(index) {
   this.index_ = +index;
   return this;
@@ -381,31 +370,6 @@ anychart.core.Marker.prototype.getOwnAndAutoOption = function(name) {
 //endregion
 //region --- Settings manipulations
 /**
- * Measures plain text on label's settings. NOTE: avoid using string tokens.
- * @param {string} text - Text to measure.
- * @return {anychart.math.Rect}
- */
-anychart.core.Marker.prototype.measureWithText = function(text) {
-  var factory;
-  if (this.factory_) {
-    factory = this.factory_;
-  } else {
-    if (!anychart.core.ui.LabelsFactory.measureTextFactory) {
-      anychart.core.ui.LabelsFactory.measureTextFactory = new anychart.core.ui.LabelsFactory();
-      anychart.core.ui.LabelsFactory.measureTextFactory.setOption('positionFormatter', function() {
-        return this['value'];
-      });
-    }
-    factory = anychart.core.ui.LabelsFactory.measureTextFactory;
-  }
-
-  var sett = this.getMergedSettings();
-  sett['format'] = String(text);
-  return factory.measure({}, this.positionProvider(), sett);
-};
-
-
-/**
  * Reset settings.
  */
 anychart.core.Marker.prototype.resetSettings = function() {
@@ -550,7 +514,7 @@ anychart.core.Marker.prototype.dropMergedSettings = function() {
 
 /**
  * Returns merged settings.
- * @return {!Object}
+ * @return {Object}
  */
 anychart.core.Marker.prototype.getMergedSettings = function() {
   if (!this.mergedSettings) {
@@ -573,9 +537,7 @@ anychart.core.Marker.prototype.getMergedSettings = function() {
 
 //endregion
 //region --- Drawing
-/**
- * Resets label to the initial state, but leaves DOM elements intact, but without the parent.
- */
+/** @inheritDoc */
 anychart.core.Marker.prototype.clear = function() {
   this.resetSettings();
   if (this.markerElement_) {
@@ -586,10 +548,7 @@ anychart.core.Marker.prototype.clear = function() {
 };
 
 
-/**
- * Marker drawing.
- * @return {anychart.core.Marker}
- */
+/** @inheritDoc */
 anychart.core.Marker.prototype.draw = function() {
   if (this.isDisposed())
     return this;

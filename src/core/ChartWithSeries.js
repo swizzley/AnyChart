@@ -873,7 +873,63 @@ anychart.core.ChartWithSeries.prototype.selected = function(opt_value) {
 
 
 //endregion
-//region --- Elements listeners
+//region --- Elements
+/**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries} .
+ */
+anychart.core.ChartWithSeries.prototype.labels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.labels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.labels());
+};
+
+
+/**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries} .
+ */
+anychart.core.ChartWithSeries.prototype.minLabels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.minLabels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.minLabels());
+};
+
+
+/**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries} .
+ */
+anychart.core.ChartWithSeries.prototype.maxLabels = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.maxLabels(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.maxLabels());
+};
+
+
+/**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {anychart.core.Marker|anychart.core.ChartWithSeries} .
+ */
+anychart.core.ChartWithSeries.prototype.markers = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.markers(opt_value);
+    return this;
+  }
+  return /** @type {anychart.core.Marker} */(this.normal_.markers());
+};
+
+
 /**
  * Listener for labels invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
@@ -1408,6 +1464,7 @@ anychart.core.ChartWithSeries.prototype.disposeInternal = function() {
   proto['labels'] = proto.labels;
   proto['minLabels'] = proto.minLabels;
   proto['maxLabels'] = proto.maxLabels;
+  proto['markers'] = proto.markers;
   proto['normal'] = proto.normal;
   proto['hovered'] = proto.hovered;
   proto['selected'] = proto.selected;

@@ -4,8 +4,8 @@ goog.provide('anychart.standalones.ResourceTimeline');
 
 goog.require('acgraph.vector.Path');
 goog.require('anychart.core.IStandaloneBackend');
-goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.core.Marker');
+goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.ganttBaseModule.TimeLineHeader');
 goog.require('anychart.ganttModule.BaseGrid');
 goog.require('anychart.ganttModule.Scale');
@@ -3738,11 +3738,10 @@ anychart.ganttModule.TimeLine.prototype.drawMarkers_ = function(dataItem, totalT
             var left = Math.round(this.pixelBoundsCache.left + this.pixelBoundsCache.width * ratio);
             var top = Math.round(totalTop + (itemHeight - height) / 2);
 
-            var markerEl = this.markers().add();
-            markerEl
-                .positionProvider({value: {x: left, y: top}})
-                .size(height / 2)
-                .setup(marker);
+            var markerEl = /** @type {anychart.core.Marker} */(this.markers().add());
+            markerEl.positionProvider({value: {x: left, y: top}})
+            markerEl.setOption('size', height / 2);
+            markerEl.setup(marker);
           }
         }
       }

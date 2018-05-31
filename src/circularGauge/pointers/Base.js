@@ -47,13 +47,13 @@ anychart.circularGaugeModule.pointers.Base = function() {
   this.axisIndex_;
 
   /**
-   * @type {anychart.core.ui.MarkersFactory|acgraph.vector.Path}
+   * @type {anychart.core.Marker|acgraph.vector.Path}
    * @protected
    */
   this.domElement;
 
   /**
-   * @type {anychart.core.ui.MarkersFactory|acgraph.vector.Path}
+   * @type {anychart.core.Marker|acgraph.vector.Path}
    * @protected
    */
   this.hatchFillElement;

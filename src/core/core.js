@@ -12,6 +12,7 @@ goog.provide('anychart.core.IFactoryElement');
 goog.provide('anychart.core.IGroupingProvider');
 goog.provide('anychart.core.IPlot');
 goog.provide('anychart.core.IStandaloneBackend');
+goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.utils.Factory');
 goog.require('goog.events.Listenable');
 goog.forwardDeclare('anychart.core.series.TypeConfig');
@@ -381,8 +382,52 @@ anychart.core.IStandaloneBackend.prototype.dependsOnContainerSize = function() {
 //region IFactoryElement
 /**
  * @interface
+ * @extends {anychart.core.VisualBase}
  */
 anychart.core.IFactoryElement = function() {};
+
+
+/**
+ * Resets element to the initial state, but leaves DOM elements intact, but without the parent.
+ */
+anychart.core.IFactoryElement.prototype.clear = function() {};
+
+
+/**
+ * Element drawer.
+ * @return {anychart.core.IFactoryElement}
+ */
+anychart.core.IFactoryElement.prototype.draw = function() {};
+
+
+/**
+ * Sets index.
+ * @param {number} index Index to set.
+ * @return {anychart.core.IFactoryElement}
+ */
+anychart.core.IFactoryElement.prototype.setIndex = function(index) {};
+
+
+/**
+ * Returns index.
+ * @return {number}
+ */
+anychart.core.IFactoryElement.prototype.getIndex = function() {};
+
+
+/**
+ * Factory.
+ * @param {anychart.core.utils.Factory} value .
+ */
+anychart.core.IFactoryElement.prototype.setFactory = function(value) {};
+
+
+/**
+ * Returns factory.
+ * @return {anychart.core.utils.Factory} .
+ */
+anychart.core.IFactoryElement.prototype.getFactory = function() {};
+
 
 
 //endregion

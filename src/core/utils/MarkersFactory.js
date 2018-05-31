@@ -1,7 +1,7 @@
 //region --- Requiring and Providing
 goog.provide('anychart.core.utils.MarkersFactory');
-goog.require('anychart.core.utils.Factory');
 goog.require('anychart.core.Marker');
+goog.require('anychart.core.utils.Factory');
 //endregion
 
 
@@ -37,12 +37,6 @@ goog.inherits(anychart.core.utils.MarkersFactory, anychart.core.utils.Factory);
 anychart.core.utils.MarkersFactory.DEFAULT_CONSTRUCTOR = function() {
   return new anychart.core.Marker();
 };
-
-
-//endregion
-//region --- Infrastructure
-/** @inheritDoc */
-anychart.core.utils.MarkersFactory.prototype.dropCallsCache = goog.nullFunction;
 
 
 //endregion

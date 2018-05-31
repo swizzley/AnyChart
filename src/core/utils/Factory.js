@@ -13,7 +13,7 @@ goog.require('goog.math.Coordinate');
 /**
  * Class for creation of sets of similar labels and management of such sets.
  * Any individual label can be changed after all labels are displayed.
- * @param {function():anychart.core.IFactoryElement=} ctor .
+ * @param {function():anychart.core.IFactoryElement} ctor .
  * @constructor
  * @extends {anychart.core.VisualBase}
  */
@@ -22,7 +22,7 @@ anychart.core.utils.Factory = function(ctor) {
 
   /**
    * Factory elements constructor.
-   * @type {Function}
+   * @type {function():anychart.core.IFactoryElement}
    * @private
    */
   this.elementsCtor_ = ctor;
@@ -30,7 +30,6 @@ anychart.core.utils.Factory = function(ctor) {
   /**
    * Labels layer.
    * @type {acgraph.vector.Layer}
-   * @private
    */
   this.layer = null;
 
@@ -312,7 +311,8 @@ anychart.core.utils.Factory.prototype.makeBrowserEvent = function(e) {
 //endregion
 //region --- Setup & Dispose
 /** @inheritDoc */
-anychart.core.utils.Factory.prototype.disposeInternal = function() {
+anychart.core.utils.Factory.prototype.disposeInternal = function()
+{
   goog.disposeAll(
       this.elements_,
       this.freeToUseLabelsPool_,
