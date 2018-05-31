@@ -49,6 +49,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="y_scale" type="Scale"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="series_list" type="Series_list"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="a11y" type="utils.A11y"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="data_area" type="core.DataArea"/>
             <!-- charts.TagCloud elements -->
             <xsd:element minOccurs="0" maxOccurs="1" name="angles" type="Angle_list"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="normal" type="core.StateSettings"/>
@@ -405,6 +406,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="hatch_fill_palette" type="palettes.HatchFills"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="marker_palette" type="palettes.Markers"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="tooltip" type="core.Tooltip"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="data_area" type="core.DataArea"/>
             <!-- Map elements -->
             <xsd:element minOccurs="0" maxOccurs="1" name="unbound_regions" type="utils.UnboundRegionsSettings"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="color_range" type="core.ColorRange"/>
@@ -840,8 +842,8 @@
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="labels" type="core.LabelsFactory"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="minor_labels" type="core.LabelsFactory"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="ticks" type="core.axes.RadialTicks"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="minor_ticks" type="core.axes.RadialTicks"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="ticks" type="core.axes.Ticks"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="minor_ticks" type="core.axes.Ticks"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill"/>
         </xsd:all>
@@ -860,8 +862,8 @@
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="labels" type="core.LabelsFactory"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="minor_labels" type="core.LabelsFactory"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="ticks" type="core.axes.RadialTicks"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="minor_ticks" type="core.axes.RadialTicks"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="ticks" type="core.axes.Ticks"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="minor_ticks" type="core.axes.Ticks"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
         </xsd:all>
         <xsd:attribute name="labels" type="simple.BoolOrNull" default="true"/>
@@ -873,15 +875,6 @@
         <xsd:attribute name="draw_last_label" type="simple.Bool" default="true"/>
         <xsd:attribute name="overlap_mode" type="enums.LabelsOverlapMode" default="no-overlap"/>
         <xsd:attribute name="scale" type="simple.ScaleRef"/>
-        <xsd:attributeGroup ref="attrs.VisualBase"/>
-    </xsd:complexType>
-
-    <xsd:complexType name="core.axes.RadialTicks">
-        <xsd:all>
-            <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
-        </xsd:all>
-        <xsd:attribute name="stroke" type="xsd:string"/>
-        <xsd:attribute name="length" type="xsd:double" default="5"/>
         <xsd:attributeGroup ref="attrs.VisualBase"/>
     </xsd:complexType>
 
@@ -1124,6 +1117,13 @@
         <xsd:attribute name="disable_pointer_events" type="xsd:boolean"/>
         <xsd:attribute name="corner_type" type="enums.BackgroundCornerTypes" default="none"/>
         <xsd:attribute name="corners" type="xsd:double" default="0"/>
+        <xsd:attributeGroup ref="attrs.VisualBase"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="core.DataArea">
+        <xsd:all>
+            <xsd:element minOccurs="0" maxOccurs="1" name="background" type="core.Background"/>
+        </xsd:all>
         <xsd:attributeGroup ref="attrs.VisualBase"/>
     </xsd:complexType>
 
