@@ -235,21 +235,28 @@ anychart.color.fillOrStrokeToHex_ = function(fillOrStroke) {
  *      .fill( anychart.color.lighten('red'));
  * stage.rect(2*stage.width() / 3 + 10, 10, stage.width() / 3 - 30, stage.height() - 20)
  *      .fill( anychart.color.lighten('red', .8));
- * @param {(acgraph.vector.Fill|acgraph.vector.Stroke)} fillOrStroke Fill or stroke to be lightened.
+ * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill|string)} fillOrStroke Fill or stroke to be lightened.
  * @param {number=} opt_factor [0.3] White color blending factor.
- * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke)} Hex representation of the lightened color, or Color if color can not be lighten.
+ * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill)} Hex representation of the lightened color, or Color if color can not be lighten.
  */
 anychart.color.lighten = function(fillOrStroke, opt_factor) {
-  if (goog.isObject(fillOrStroke) && goog.isDef(fillOrStroke['keys'])) {
+  if (goog.isObject(fillOrStroke)) {
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
-    var keys = newFillOrStroke['keys'];
-    var newKeys = [];
-    for (var i = 0, len = keys.length; i < len; i++) {
-      var key = goog.object.clone(keys[i]);
-      key['color'] = anychart.color.lighten(key['color']);
-      newKeys.push(key);
+    if (goog.isDef(fillOrStroke['keys'])) {
+      var keys = newFillOrStroke['keys'];
+      var newKeys = [];
+      for (var i = 0, len = keys.length; i < len; i++) {
+        var key = goog.object.clone(keys[i]);
+        key['color'] = anychart.color.lighten(key['color']);
+        newKeys.push(key);
+      }
+      newFillOrStroke['keys'] = newKeys;
     }
-    newFillOrStroke['keys'] = newKeys;
+    if (goog.isDef(newFillOrStroke['color'])) {
+      newFillOrStroke['color'] = anychart.color.lighten(newFillOrStroke['color']);
+      if (goog.isDef(newFillOrStroke['opacity']))
+        newFillOrStroke['opacity'] = newFillOrStroke['opacity'];
+    }
     return newFillOrStroke;
 
   } else {
@@ -277,21 +284,28 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
  *      .fill( anychart.color.darken('red'));
  * stage.rect(2*stage.width() / 3 + 10, 10, stage.width() / 3 - 30, stage.height() - 20)
  *      .fill( anychart.color.darken('red', .8));
- * @param {(acgraph.vector.Fill|acgraph.vector.Stroke)} fillOrStroke Fill or stroke to be darkened.
+ * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill|string)} fillOrStroke Fill or stroke to be darkened.
  * @param {number=} opt_factor [0.3] Black color blending factor.
- * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke)} Hex representation of the darkened color, or Color if color can't be darkened.
+ * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill)} Hex representation of the darkened color, or Color if color can't be darkened.
  */
 anychart.color.darken = function(fillOrStroke, opt_factor) {
-  if (goog.isObject(fillOrStroke) && goog.isDef(fillOrStroke['keys'])) {
+  if (goog.isObject(fillOrStroke)) {
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
-    var keys = newFillOrStroke['keys'];
-    var newKeys = [];
-    for (var i = 0, len = keys.length; i < len; i++) {
-      var key = goog.object.clone(keys[i]);
-      key['color'] = anychart.color.darken(key['color']);
-      newKeys.push(key);
+    if (goog.isDef(fillOrStroke['keys'])) {
+      var keys = newFillOrStroke['keys'];
+      var newKeys = [];
+      for (var i = 0, len = keys.length; i < len; i++) {
+        var key = goog.object.clone(keys[i]);
+        key['color'] = anychart.color.darken(key['color']);
+        newKeys.push(key);
+      }
+      newFillOrStroke['keys'] = newKeys;
     }
-    newFillOrStroke['keys'] = newKeys;
+    if (goog.isDef(newFillOrStroke['color'])) {
+      newFillOrStroke['color'] = anychart.color.darken(newFillOrStroke['color']);
+      if (goog.isDef(newFillOrStroke['opacity']))
+        newFillOrStroke['opacity'] = newFillOrStroke['opacity'];
+    }
     return newFillOrStroke;
 
   } else {
