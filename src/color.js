@@ -252,11 +252,8 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
       }
       newFillOrStroke['keys'] = newKeys;
     }
-    if (goog.isDef(newFillOrStroke['color'])) {
+    if (goog.isDef(newFillOrStroke['color']))
       newFillOrStroke['color'] = anychart.color.lighten(newFillOrStroke['color']);
-      if (goog.isDef(newFillOrStroke['opacity']))
-        newFillOrStroke['opacity'] = newFillOrStroke['opacity'];
-    }
     return newFillOrStroke;
 
   } else {
@@ -301,11 +298,8 @@ anychart.color.darken = function(fillOrStroke, opt_factor) {
       }
       newFillOrStroke['keys'] = newKeys;
     }
-    if (goog.isDef(newFillOrStroke['color'])) {
+    if (goog.isDef(newFillOrStroke['color']))
       newFillOrStroke['color'] = anychart.color.darken(newFillOrStroke['color']);
-      if (goog.isDef(newFillOrStroke['opacity']))
-        newFillOrStroke['opacity'] = newFillOrStroke['opacity'];
-    }
     return newFillOrStroke;
 
   } else {
