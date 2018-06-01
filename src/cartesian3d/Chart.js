@@ -536,10 +536,12 @@ anychart.cartesian3dModule.Chart.prototype.createTextMarkerInstance = function()
 
 
 /**
+ * Convert series data to [x,y,z] values and calculate zIndex based on this values.
  * Set zIndex for point.
  * @param {anychart.core.series.Cartesian} series
- * @param {number} yPosition current y postion
- * @param {number} maxY maximum y value
+ * @param {number} yPosition Current y position of series.
+ * @param {number} maxY Count of series.
+ * @return {number} zIndex ZIndex for series.
  * @private
  */
 anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, maxY) {
@@ -548,23 +550,30 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var xPos = iterator.getIndex();
   var yPos = yPosition + 1;
   var zPos = yPos;
-  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 1000;
+  var inc = anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER * 1000; //Increment by 1000 needs for avoid wrong zIndex on charts with high count of series.
   var zIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
-  var isStacked = this.yScale().stackMode() != "none";
+  var isStacked = this.yScale().stackMode() != anychart.enums.ScaleStackMode.NONE;
   var isXInverted = this.xScale().inverted();
-  xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1;
+  xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1; //Convert x position to descending trend for x inverted chart.
 
+  /**
+   * Convert y position to negative if y scale is inverted or value < 0 and y scale not inverted.
+   * */
   if (this.yScale().inverted() ^ 0 > value) {
     yPos = -yPos;
   }
   if (this.getOption('zDistribution')) {
     zIndex += inc * zPos;
   }
+
+  /**
+   * Calculate zIndex for bar chart.
+   * */
   if (series.getOption('isVertical')) {
     var swap = xPos;
     xPos = yPos;
     yPos = swap;
-    var xOffset = (1 - (1 / Math.abs(xPos))); //Calculation x offset that greater then previous and less or equal 1
+    var xOffset = (1 - (1 / Math.abs(xPos))); //Calculate x offset for point, based on current x position, from 0 to 1.
     if (xPos > 0) {
       inc *= yPos + xOffset;
       zIndex += inc;
@@ -573,24 +582,23 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
       zIndex -= inc;
     }
   } else {
-      if(!isStacked && !this.getOption('zDistribution')) {
-        if (isXInverted) {
-          yPos = (maxY - Math.abs(yPos)) + 1;
-        }
-        xPos = (xPos * maxY) - maxY + Math.abs(yPos);
+    /**
+     * Calculate x position for not stacked and not z distributed column series.
+     * Every point have unique x position from 1 to count of series multiplied by count of points.
+     * */
+    if (!isStacked && !this.getOption('zDistribution')) {
+      if (isXInverted) {
+        yPos = (maxY - Math.abs(yPos)) + 1;
       }
-      inc *= xPos;
-      zIndex += inc;
-  }
-  if (!goog.isDef(series.zIndex())) {
-    series.zIndex(zIndex);
-  }
-  if (series.zIndex() < zIndex) {
-    series.zIndex(zIndex);
+      xPos = (xPos * maxY) - maxY + Math.abs(yPos);
+    }
+    inc *= xPos;
+    zIndex += inc;
   }
 
   iterator.meta('zIndex', zIndex);
   iterator.meta('directIndex', xPos * yPos);
+  return zIndex;
 };
 
 
@@ -612,15 +620,20 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
       if (series.check(anychart.core.drawers.Capabilities.IS_3D_BASED)) {
         if (series.isDiscreteBased()) {
           var iterator = series.getResetIterator();
+          var maxZIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
           while (iterator.advance()) {
-            this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length);
+            var zIndex = this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length);
+            if (maxZIndex < zIndex) {
+              maxZIndex = zIndex;
+            }
           }
-        } else if (series.supportsStack()) {
-          this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
+          series.zIndex(maxZIndex);  //For right maxLabels, minLabels position.
         }
-      } else {
-        series.setAutoZIndex(series.autoIndex() * anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER + anychart.cartesian3dModule.Chart.ZINDEX_2D_LINE_SERIES);
+      } else if (series.supportsStack()) {
+        this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
       }
+    } else {
+      series.setAutoZIndex(series.autoIndex() * anychart.core.series.Base.ZINDEX_INCREMENT_MULTIPLIER + anychart.cartesian3dModule.Chart.ZINDEX_2D_LINE_SERIES);
     }
   }
 };
