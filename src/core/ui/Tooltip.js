@@ -2422,6 +2422,7 @@ anychart.core.ui.Tooltip.prototype.isResolvable = function() {
  */
 anychart.core.ui.Tooltip.prototype.beforeUseHtmlHook = function() {
   if (this.getOption('useHtml')) {
+    anychart.utils.installHtmlTooltipStyle();
     if (!this.htmlTooltip)
       this.htmlTooltip = new anychart.core.ui.HTMLTooltip(this);
   } else {
