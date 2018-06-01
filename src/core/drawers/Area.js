@@ -150,13 +150,14 @@ anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes,
     }
 
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.fill]), this.isVertical, crossX, crossY);
-    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.fill]), this.isVertical, prevX, crossY);
+    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.fill]), this.isVertical, prevX, zeroY);
     this.currentShapes[prevNames.fill].close();
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.stroke]), this.isVertical, crossX, crossY);
 
     this.currentShapes = shapes;
     anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[names.stroke]), this.isVertical, crossX, crossY);
-    anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]), this.isVertical, crossX, crossY);
+    anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]), this.isVertical, crossX, zeroY);
+    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]), this.isVertical, crossX, crossY);
   }
 
   anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]), this.isVertical, x, y);
