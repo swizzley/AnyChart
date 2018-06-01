@@ -3856,4 +3856,3 @@ anychart.core.Chart.prototype.id = function(opt_value) {
   proto['fullScreen'] = proto.fullScreen;
   proto['isFullScreenAvailable'] = proto.isFullScreenAvailable;
 })();
-

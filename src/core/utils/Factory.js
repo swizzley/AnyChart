@@ -146,11 +146,11 @@ anychart.core.utils.Factory.prototype.clear = function(opt_index) {
       if (this.elements_[opt_index]) {
         this.elements_[opt_index].clear();
         this.freeToUseLabelsPool_.push(this.elements_[opt_index]);
-        this.dropCallsCache(opt_index);
+        this.additionalActions(opt_index);
         delete this.elements_[opt_index];
       }
     } else {
-      this.dropCallsCache();
+      this.additionalActions();
       for (var i = this.elements_.length; i--;) {
         var label = this.elements_[i];
         if (label) {
@@ -165,6 +165,16 @@ anychart.core.utils.Factory.prototype.clear = function(opt_index) {
     this.elements_ = [];
 
   return this;
+};
+
+
+/**
+ * Additional actions.
+ * @param {number=} opt_index .
+ */
+anychart.core.utils.Factory.prototype.additionalActions = function(opt_index) {
+  //todo for labelsFactory
+  // this.dropCallsCache(opt_index);
 };
 
 

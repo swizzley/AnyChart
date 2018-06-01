@@ -949,7 +949,6 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'zIndex': 35
     },
     'labels': {
-      'padding': [2, 4, 2, 4],
       'enabled': true,
       'format': anychart.core.defaultTheme.returnValue,
       'position': 'outside',
