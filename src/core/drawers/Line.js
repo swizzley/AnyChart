@@ -143,6 +143,7 @@ anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
     this.firstPointX = x;
     this.firstPointY = y;
   }
+
   this.prevX = x;
   this.prevY = y;
   this.prevValue = value;

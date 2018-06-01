@@ -289,6 +289,36 @@ anychart.core.shapeManagers.circleHatchConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.pathContiniousNegativeFillConfig = {
+  name: 'negativeFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'negativeFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.pathContiniousNegativeStrokeConfig = {
+  name: 'negativeStroke',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: null,
+  strokeName: 'negativeStroke',
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.circleNegativeFillStrokeConfig = {
   name: 'negative',
   shapeType: anychart.enums.ShapeType.CIRCLE,
@@ -349,6 +379,36 @@ anychart.core.shapeManagers.pathRisingStrokeConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.pathContiniousRisingStrokeConfig = {
+  name: 'risingStroke',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: null,
+  strokeName: 'risingStroke',
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.pathContiniousRisingFillConfig = {
+  name: 'risingFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'risingFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.pathRisingHatchConfig = {
   name: 'risingHatchFill',
   shapeType: anychart.enums.ShapeType.PATH,
@@ -384,6 +444,36 @@ anychart.core.shapeManagers.pathFallingStrokeConfig = {
   shapeType: anychart.enums.ShapeType.PATH,
   fillName: null,
   strokeName: 'fallingStroke',
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.pathContiniousFallingStrokeConfig = {
+  name: 'fallingStroke',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: null,
+  strokeName: 'fallingStroke',
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.pathContiniousFallingFillConfig = {
+  name: 'fallingFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'fallingFill',
+  strokeName: null,
   canBeHoveredSelected: true,
   isHatchFill: false,
   zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX

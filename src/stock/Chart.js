@@ -309,8 +309,15 @@ anychart.stockModule.Chart.prototype.createSeriesConfig = function(allowPointSet
     drawerType: anychart.enums.SeriesDrawerTypes.AREA,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
     shapesConfig: [
-      anychart.core.shapeManagers.pathFillConfig,
       anychart.core.shapeManagers.pathStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousFallingStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousRisingStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousNegativeStrokeConfig,
+      anychart.core.shapeManagers.pathFillConfig,
+      anychart.core.shapeManagers.pathContiniousFallingFillConfig,
+      anychart.core.shapeManagers.pathContiniousRisingFillConfig,
+      anychart.core.shapeManagers.pathContiniousNegativeFillConfig,
+
       anychart.core.shapeManagers.pathHatchConfig
     ],
     secondaryShapesConfig: null,
@@ -377,7 +384,7 @@ anychart.stockModule.Chart.prototype.createSeriesConfig = function(allowPointSet
     shapesConfig: [
       anychart.core.shapeManagers.pathStrokeConfig,
       anychart.core.shapeManagers.pathFallingStrokeConfig,
-      anychart.core.shapeManagers.pathRisingFillStrokeConfig,
+      anychart.core.shapeManagers.pathRisingStrokeConfig,
       anychart.core.shapeManagers.pathNegativeStrokeConfig
     ],
     secondaryShapesConfig: null,

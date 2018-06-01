@@ -251,22 +251,6 @@ anychart.core.shapeManagers.Base.prototype.configureShape = function(name, state
   var fill = /** @type {acgraph.vector.Fill|acgraph.vector.PatternFill} */(descriptor.fill(this.series, state));
   var stroke = /** @type {acgraph.vector.Stroke} */(descriptor.stroke(this.series, state));
 
-  // var isScaledFill = goog.isString(fill) && fill.toLowerCase() == 'colorscale';
-  // var isScaledStroke = goog.isString(stroke) && stroke.toLowerCase() == 'colorscale';
-  //
-  // if (isScaledFill || isScaledStroke) {
-  //   var colorScale = this.series.colorScale();
-  //   var value = this.series.getDetachedIterator().get('value');
-  //
-  //   if (isScaledFill) {
-  //     fill = colorScale ? colorScale.valueToColor(value) : '#fff';
-  //   }
-  //
-  //   if (isScaledStroke) {
-  //     stroke = colorScale ? colorScale.valueToColor(value) : '#fff';
-  //   }
-  // }
-
   shape.fill(fill);
   shape.stroke(stroke);
   shape.disableStrokeScaling(this.disableStrokeScaling_);
