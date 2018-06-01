@@ -350,7 +350,7 @@ anychart.core.drawers.Area.prototype.drawFirstPoint = function(point, state) {
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
 
-  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, names);
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
