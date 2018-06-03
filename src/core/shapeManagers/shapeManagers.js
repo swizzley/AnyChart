@@ -499,6 +499,21 @@ anychart.core.shapeManagers.pathFallingHatchConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.pathNegativeHatchConfig = {
+  name: 'negativeHatchFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'negativeHatchFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: true,
+  zIndex: anychart.core.shapeManagers.HATCH_FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.pathHighStrokeConfig = {
   name: 'high',
   shapeType: anychart.enums.ShapeType.PATH,
