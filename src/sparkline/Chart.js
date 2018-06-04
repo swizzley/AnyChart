@@ -2,13 +2,13 @@ goog.provide('anychart.sparklineModule.Chart');
 
 goog.require('anychart'); // otherwise we can't use anychart.chartTypesMap object.
 goog.require('anychart.core.Chart');
+goog.require('anychart.core.Marker');
 goog.require('anychart.core.axisMarkers.Line');
 goog.require('anychart.core.axisMarkers.Range');
 goog.require('anychart.core.axisMarkers.Text');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.Marker');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
 goog.require('anychart.core.utils.MarkersFactory');
@@ -1782,14 +1782,14 @@ anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSetti
   finalSettings = this.mergeFactorySettingsEasy_([finalSettings, finalDefaultSettings],
       anychart.sparklineModule.Chart.MARKERS_FIELD_NAMES_FOR_MERGE_);
 
-  var marker = this.markersFactory_.getElement(index);
+  var marker = /** @type {anychart.core.Marker} */(this.markersFactory_.getElement(index));
   var res = null;
   if (finalSettings['enabled']) {
     var position = finalSettings['position'] || this.markersInternal_.getOption('position');
     var positionProvider = this.series_.createPositionProvider(/** @type {anychart.enums.Position|string} */(position));
 
     if (!marker) {
-      marker = this.markersFactory_ .add(index);
+      marker = /** @type {anychart.core.Marker} */(this.markersFactory_.add(index));
     }
     marker.positionProvider(positionProvider);
     marker.resetSettings();

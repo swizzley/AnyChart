@@ -994,7 +994,7 @@ anychart.stockModule.Scroller.prototype.createSeriesByType = function(type, opt_
     series.autoIndex(index);
     series.data(opt_data || null, opt_mappingSettings, opt_csvSettings);
     series.setupAutoZIndex();
-    series.clip(true);
+    series.themeSettings['clip'] = true;
     series.setAutoPointWidth(.9);
     series.setAutoColor(this.palette().itemAt(index));
     series.setAutoHatchFill(/** @type {acgraph.vector.HatchFill|acgraph.vector.PatternFill} */(this.hatchFillPalette().itemAt(index)));

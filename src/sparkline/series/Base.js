@@ -303,14 +303,14 @@ anychart.sparklineModule.series.Base.prototype.finalizeDrawing = function() {
   var markersFactory = markers.getFactory();
   markersFactory.draw();
 
-  // clip = /** @type {!anychart.math.Rect} */(goog.isBoolean(this.chart.clip()) ?
-  //     this.chart.clip() ?
-  //         this.chart.getPixelBounds() :
-  //         'none' :
-  //     this.chart.clip());
-  //
-  // var markerDOM = markers.getDomElement();
-  // if (markerDOM) markerDOM.clip(/** @type {anychart.math.Rect} */(clip));
+  clip = /** @type {!anychart.math.Rect} */(goog.isBoolean(this.chart.clip()) ?
+      this.chart.clip() ?
+          this.chart.getPixelBounds() :
+          'none' :
+      this.chart.clip());
+
+  var markerDOM = markers.getDomElement();
+  if (markerDOM) markerDOM.clip(/** @type {anychart.math.Rect} */(clip));
 
   markers.resumeSignalsDispatching(false);
   markers.markConsistent(anychart.ConsistencyState.ALL);

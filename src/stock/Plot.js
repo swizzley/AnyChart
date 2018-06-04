@@ -967,7 +967,7 @@ anychart.stockModule.Plot.prototype.createSeriesByType = function(type, opt_data
     series.autoIndex(index);
     series.setupAutoZIndex();
     series.data(opt_data || null, opt_mappingSettings, opt_csvSettings);
-    series.clip(true);
+    series.themeSettings['clip'] = true;
     series.setAutoColor(this.palette().itemAt(index));
     series.setAutoMarkerType(/** @type {anychart.enums.MarkerType} */(this.markerPalette().itemAt(index)));
     series.setAutoHatchFill(/** @type {acgraph.vector.HatchFill|acgraph.vector.PatternFill} */(this.hatchFillPalette().itemAt(index)));

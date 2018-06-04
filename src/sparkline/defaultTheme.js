@@ -108,6 +108,10 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
           'offsetX': 0,
           'offsetY': 0,
           'rotation': 0,
+          /**
+           * @this {*}
+           * @return {*}
+           */
           'positionFormatter': function() {
             return this['value'];
           }
