@@ -50,4 +50,29 @@ anychart.core.utils.MarkersFactory.prototype.getRootLayer = function() {
   }
   return this.layer;
 };
+
+
+//endregion
+//region --- Interactivity
+//----------------------------------------------------------------------------------------------------------------------
+//
+//  Events
+//
+//----------------------------------------------------------------------------------------------------------------------
+/** @inheritDoc */
+anychart.core.utils.MarkersFactory.prototype.makeBrowserEvent = function(e) {
+  var res = anychart.core.utils.Factory.base(this, 'makeBrowserEvent', e);
+  var target = res['domTarget'];
+  var tag;
+  while (anychart.utils.instanceOf(target, acgraph.vector.Element)) {
+    tag = target.tag;
+    if (anychart.utils.instanceOf(tag, anychart.core.VisualBase) || !anychart.utils.isNaN(tag))
+      break;
+    target = target.parent();
+  }
+  res['markerIndex'] = anychart.utils.toNumber(tag);
+  return res;
+};
+
+
 //endregion

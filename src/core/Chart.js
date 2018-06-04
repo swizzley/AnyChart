@@ -2093,7 +2093,9 @@ anychart.core.Chart.prototype.handleMouseEvent = function(event) {
   var tag = anychart.utils.extractTag(event['domTarget']);
   var index;
 
-  if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)) {
+  if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory)
+      || anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory)
+      || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)) {
     var parent = event['target'].getParentEventTarget();
     if (parent.isSeries && parent.isSeries())
       series = parent;
@@ -2308,6 +2310,7 @@ anychart.core.Chart.prototype.handleMouseOverAndMove = function(event) {
     }
   } else if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory)
       || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)
+      || anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory)
       || anychart.utils.instanceOf(event['target'], anychart.core.ui.Tooltip)) {
     parent = event['target'].getParentEventTarget();
     if (parent.isSeries && parent.isSeries())
@@ -2425,7 +2428,9 @@ anychart.core.Chart.prototype.handleMouseOut = function(event) {
   var forbidTooltip = false;
 
   var series, index;
-  if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)) {
+  if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory)
+      || anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory)
+      || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)) {
     var parent = event['target'].getParentEventTarget();
     if (parent.isSeries && parent.isSeries())
       series = parent;
@@ -2527,7 +2532,8 @@ anychart.core.Chart.prototype.onMouseDown = function(event) {
   var isColorRange = this.checkIfColorRange(event['target']);
   var isLegend = anychart.utils.instanceOf(event['target'], anychart.core.ui.Legend);
   var isLabelsFactory = anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory);
-  var isMarkersFactory = anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory);
+  var isMarkersFactory = anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)
+      || anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory);
   var isTargetLegendOrColorRange = isLegend || isColorRange;
 
   var series, s, index, points;

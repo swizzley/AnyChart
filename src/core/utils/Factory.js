@@ -296,29 +296,6 @@ anychart.core.utils.Factory.prototype.draw = function() {
 
 
 //endregion
-//region --- Interactivity
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Events
-//
-//----------------------------------------------------------------------------------------------------------------------
-/** @inheritDoc */
-anychart.core.utils.Factory.prototype.makeBrowserEvent = function(e) {
-  var res = anychart.core.utils.Factory.base(this, 'makeBrowserEvent', e);
-  var target = res['domTarget'];
-  var tag;
-  while (anychart.utils.instanceOf(target, acgraph.vector.Element)) {
-    tag = target.tag;
-    if (anychart.utils.instanceOf(tag, anychart.core.VisualBase) || !anychart.utils.isNaN(tag))
-      break;
-    target = target.parent();
-  }
-  res['labelIndex'] = anychart.utils.toNumber(tag);
-  return res;
-};
-
-
-//endregion
 //region --- Setup & Dispose
 /** @inheritDoc */
 anychart.core.utils.Factory.prototype.disposeInternal = function()

@@ -267,8 +267,10 @@ anychart.core.series.Base = function(chart, plot, type, config) {
   }
   this.hovered_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markAllConsistent);
   this.hovered_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
+  this.hovered_.setOption(anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
   this.selected_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markAllConsistent);
   this.selected_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
+  this.selected_.setOption(anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['color',
@@ -2239,11 +2241,11 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(factory, serie
       var x = point.meta('x');
       if (/** @type {boolean} */(this.getOption('isVertical'))) {
         for (i = 0; i < positionYs.length; i++) {
-          indexes[i] = this.drawSingleFactoryElement(factories, settings, indexes[i], {'value': {'x': positionYs[i], 'y': x}}, formatProvider, callDraw).getIndex();
+          indexes[i] = this.drawSingleFactoryElement(mainFactory, factories, settings, indexes[i], {'value': {'x': positionYs[i], 'y': x}}, formatProvider, callDraw).getIndex();
         }
       } else {
         for (i = 0; i < positionYs.length; i++) {
-          indexes[i] = this.drawSingleFactoryElement(factories, settings, indexes[i], {'value': {'x': x, 'y': positionYs[i]}}, formatProvider, callDraw).getIndex();
+          indexes[i] = this.drawSingleFactoryElement(mainFactory, factories, settings, indexes[i], {'value': {'x': x, 'y': positionYs[i]}}, formatProvider, callDraw).getIndex();
         }
       }
     } else {
@@ -2270,7 +2272,7 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(factory, serie
           ], 'position'),
           'auto');
       positionProvider = this.createPositionProvider(/** @type {anychart.enums.Position|string} */(position), true);
-      return this.drawSingleFactoryElement(factories, settings, index, positionProvider, formatProvider, callDraw, /** @type {string} */(position));
+      return this.drawSingleFactoryElement(mainFactory, factories, settings, index, positionProvider, formatProvider, callDraw, /** @type {string} */(position));
     }
   } else {
     if (positionYs) {
@@ -2461,6 +2463,7 @@ anychart.core.series.Base.prototype.setupMarkerDrawingPlan = function(element,
 
 /**
  * Draws one factory element.
+ * @param {anychart.core.utils.MarkersFactory|anychart.core.ui.LabelsFactory} mainFactory .
  * @param {Array.<anychart.core.ui.MarkersFactory|anychart.core.ui.LabelsFactory|*>} factories [seriesNormal, seriesState, pointNormal, pointState]
  * @param {Array} settings [chartNormal, seriesNormal, pointNormal, chartState, seriesState, pointState, chartExtremumNormal, seriesExtremumNormal, pointExtremumNormal, chartExtremumState, seriesExtremumState, pointExtremumState]
  * @param {number|undefined} index
@@ -2471,17 +2474,20 @@ anychart.core.series.Base.prototype.setupMarkerDrawingPlan = function(element,
  * @return {anychart.core.ui.LabelsFactory.Label|anychart.core.Marker}
  * @protected
  */
-anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
-  var mainFactory = formatProvider ? /** @type {anychart.core.ui.LabelsFactory} */(factories[0]) : this.getMarkersFactory();
+anychart.core.series.Base.prototype.drawSingleFactoryElement = function(mainFactory, factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
   var element = formatProvider ? mainFactory.getLabel(/** @type {number} */(index)) : mainFactory.getElement(/** @type {number} */(index));
 
+  if (mainFactory == this.outlierMarkersFactory_)
+    console.log(index, mainFactory);
+
   if (!element) {
-    element = mainFactory.add(index);
+    if (formatProvider) {
+      element = mainFactory.add(formatProvider, positionProvider, index);
+    } else {
+      element = mainFactory.add(index);
+      element.positionProvider(positionProvider);
+    }
   }
-  if (formatProvider) {
-    element.formatProvider(formatProvider);
-  }
-  element.positionProvider(positionProvider);
   element.resetSettings();
 
   settings = settings.slice();
@@ -2640,6 +2646,7 @@ anychart.core.series.Base.prototype.markers = function(opt_value) {
 anychart.core.series.Base.prototype.getMarkersFactory = function() {
   if (!this.markersFactory_) {
     this.markersFactory_ = new anychart.core.utils.MarkersFactory();
+    this.markersFactory_.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
   }
   return this.markersFactory_;
 };
@@ -2738,6 +2745,7 @@ anychart.core.series.Base.prototype.outlierMarkers = function(opt_value) {
 anychart.core.series.Base.prototype.getOutlierMarkersFactory = function() {
   if (!this.outlierMarkersFactory_) {
     this.outlierMarkersFactory_ = new anychart.core.utils.MarkersFactory();
+    this.outlierMarkersFactory_.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
   }
   return this.outlierMarkersFactory_;
 };
@@ -2750,7 +2758,7 @@ anychart.core.series.Base.prototype.getOutlierMarkersFactory = function() {
  */
 anychart.core.series.Base.prototype.outlierMarkersInvalidated_ = function(event) {
   if (event.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
-    this.invalidate(anychart.ConsistencyState.SERIES_MARKERS, anychart.Signal.NEEDS_REDRAW);
+    this.invalidate(anychart.ConsistencyState.SERIES_OUTLIERS, anychart.Signal.NEEDS_REDRAW);
   }
 };
 
@@ -2796,8 +2804,9 @@ anychart.core.series.Base.prototype.getOutliersFill = function() {
  * @protected
  */
 anychart.core.series.Base.prototype.getOutliersStroke = function() {
-  return /** @type {acgraph.vector.Stroke} */(anychart.color.darken(
-      /** @type {acgraph.vector.Stroke} */(this.normal().outlierMarkers().getOption('fill'))));
+  var normalOutlierMarkersSettings = /** @type {anychart.core.Marker} */(this.normal_.outlierMarkers());
+  var fill = /** @type {acgraph.vector.Fill} */(normalOutlierMarkersSettings.getFinalSettings('fill'));
+  return /** @type {acgraph.vector.Stroke} */(anychart.color.darken(/** @type {acgraph.vector.Stroke} */(fill)));
 };
 
 

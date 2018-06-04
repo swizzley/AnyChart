@@ -604,6 +604,7 @@ anychart.core.Marker.prototype.draw = function() {
     }
 
     this.markerElement_.clear();
+    this.markerElement_.disablePointerEvents(settings['disablePointerEvents']);
 
     var anchor = /** @type {anychart.enums.Anchor} */(anychart.enums.normalizeAnchor(settings['anchor']));
 

@@ -1185,15 +1185,13 @@ anychart.mapModule.Series.prototype.createFormatProvider = function(opt_force) {
 
 
 /** @inheritDoc */
-anychart.mapModule.Series.prototype.drawSingleFactoryElement = function(factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
-  var factory = formatProvider ? /** @type {anychart.core.ui.LabelsFactory} */(factories[0]) : this.getMarkersFactory();
-
+anychart.mapModule.Series.prototype.drawSingleFactoryElement = function(mainFactory, factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
   if (!positionProvider['value'])
     return null;
 
-  var element = formatProvider ? factory.getLabel(/** @type {number} */(index)) : factory.getElement(/** @type {number} */(index));
+  var element = formatProvider ? mainFactory.getLabel(/** @type {number} */(index)) : mainFactory.getElement(/** @type {number} */(index));
   if (!element) {
-    element = factory.add(index);
+    element = mainFactory.add(index);
   }
   if (formatProvider) {
     element.formatProvider(formatProvider);
