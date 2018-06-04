@@ -1294,19 +1294,17 @@ anychart.treemapModule.Chart.prototype.drawMarker_ = function(pointState) {
           markers.enabled() :
           markerEnabledState;
   if (isDraw) {
-    var position = this.getMarkersPosition(pointState);
-    var positionProvider = this.createMarkerPositionProvider(bounds, /** @type {anychart.enums.Position|string} */ (position));
-    if (marker) {
-      marker.positionProvider(positionProvider);
-    } else {
-      marker = markers.add(positionProvider);
+    if (!marker) {
+      marker = markers.add();
       node.meta('markerIndex', marker.getIndex());
       this.markerToPointIndex_[marker.getIndex()] = node.meta('index');
     }
 
+    var position = this.getMarkersPosition(pointState);
+    var positionProvider = this.createMarkerPositionProvider(bounds, /** @type {anychart.enums.Position|string} */ (position));
+    marker.positionProvider(positionProvider);
     marker.resetSettings();
-    marker.currentMarkersFactory(markersFactory);
-    marker.setSettings(/** @type {Object} */(pointMarker), /** @type {Object} */(hovered ? hoverPointMarker : selectPointMarker));
+    marker.settings([hovered ? hoverPointMarker : selectPointMarker, pointMarker, markersFactory, markers]);
     marker.draw();
     //return marker;
   } else if (marker) {

@@ -5,8 +5,8 @@ goog.require('anychart.core.Base');
 goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.settings.IObjectWithSettings');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
 goog.require('anychart.core.ui.Tooltip');
+goog.require('anychart.core.utils.MarkersFactory');
 
 
 

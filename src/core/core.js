@@ -382,7 +382,6 @@ anychart.core.IStandaloneBackend.prototype.dependsOnContainerSize = function() {
 //region IFactoryElement
 /**
  * @interface
- * @extends {anychart.core.VisualBase}
  */
 anychart.core.IFactoryElement = function() {};
 

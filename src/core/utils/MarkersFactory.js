@@ -61,7 +61,7 @@ anychart.core.utils.MarkersFactory.prototype.getRootLayer = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.core.utils.MarkersFactory.prototype.makeBrowserEvent = function(e) {
-  var res = anychart.core.utils.Factory.base(this, 'makeBrowserEvent', e);
+  var res = anychart.core.utils.MarkersFactory.base(this, 'makeBrowserEvent', e);
   var target = res['domTarget'];
   var tag;
   while (anychart.utils.instanceOf(target, acgraph.vector.Element)) {

@@ -6,6 +6,7 @@ goog.require('acgraph.vector.Path');
 goog.require('anychart.core.IStandaloneBackend');
 goog.require('anychart.core.Marker');
 goog.require('anychart.core.ui.LabelsFactory');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.ganttBaseModule.TimeLineHeader');
 goog.require('anychart.ganttModule.BaseGrid');
 goog.require('anychart.ganttModule.Scale');
@@ -45,8 +46,15 @@ anychart.ganttModule.TimeLine = function(opt_controller, opt_isResources) {
   this.labelsFactory_ = null;
 
   /**
-   * Labels factory.
+   * Markers settings.
    * @type {anychart.core.Marker}
+   * @private
+   */
+  this.markers_ = null;
+
+  /**
+   * Markers drawer.
+   * @type {anychart.core.utils.MarkersFactory}
    * @private
    */
   this.markersFactory_ = null;
@@ -1985,19 +1993,19 @@ anychart.ganttModule.TimeLine.prototype.labels = function(opt_value) {
  * @return {anychart.ganttModule.TimeLine|anychart.core.Marker} - Current value or itself for method chaining.
  */
 anychart.ganttModule.TimeLine.prototype.markers = function(opt_value) {
-  if (!this.markersFactory_) {
-    this.markersFactory_ = new anychart.core.Marker();
-    this.markersFactory_.setParentEventTarget(this);
+  if (!this.markers_) {
+    this.markers_ = new anychart.core.Marker();
+    this.markers_.setParentEventTarget(this);
   }
 
   if (goog.isDef(opt_value)) {
     var redraw = true;
     if (anychart.utils.instanceOf(opt_value, anychart.core.Marker)) {
-      this.markersFactory_.setup(opt_value.serialize());
+      this.markers_.setup(opt_value.serialize());
     } else if (goog.isObject(opt_value)) {
-      this.markersFactory_.setup(opt_value);
+      this.markers_.setup(opt_value);
     } else if (anychart.utils.isNone(opt_value)) {
-      this.markersFactory_.enabled(false);
+      this.markers_.enabled(false);
     } else {
       redraw = false;
     }
@@ -2007,7 +2015,7 @@ anychart.ganttModule.TimeLine.prototype.markers = function(opt_value) {
     return this;
   }
 
-  return this.markersFactory_;
+  return this.markers_;
 };
 
 
@@ -3695,8 +3703,9 @@ anychart.ganttModule.TimeLine.prototype.drawTimelineElements_ = function() {
     }
   }
 
+  var markersFactory = this.getMarkersFactory();
   this.visElementsInUse_ = 0;
-  this.markers().clear();
+  markersFactory.clear();
 
   if (this.controller.isResources()) {
     this.drawResourceTimeline_();
@@ -3704,7 +3713,7 @@ anychart.ganttModule.TimeLine.prototype.drawTimelineElements_ = function() {
     this.drawProjectTimeline_();
   }
 
-  this.markers().draw();
+  markersFactory.draw();
 
   this.drawConnectors_();
 
@@ -3713,6 +3722,18 @@ anychart.ganttModule.TimeLine.prototype.drawTimelineElements_ = function() {
     var el = this.visElements_[i];
     el.reset();
   }
+};
+
+
+/**
+ * Returns MarkersFactory.
+ * @return {anychart.core.utils.MarkersFactory} .
+ */
+anychart.ganttModule.TimeLine.prototype.getMarkersFactory = function() {
+  if (!this.markersFactory_) {
+    this.markersFactory_ = new anychart.core.utils.MarkersFactory();
+  }
+  return this.markersFactory_;
 };
 
 
@@ -3738,8 +3759,8 @@ anychart.ganttModule.TimeLine.prototype.drawMarkers_ = function(dataItem, totalT
             var left = Math.round(this.pixelBoundsCache.left + this.pixelBoundsCache.width * ratio);
             var top = Math.round(totalTop + (itemHeight - height) / 2);
 
-            var markerEl = /** @type {anychart.core.Marker} */(this.markers().add());
-            markerEl.positionProvider({value: {x: left, y: top}})
+            var markerEl = /** @type {anychart.core.Marker} */(this.getMarkersFactory().add());
+            markerEl.positionProvider({value: {x: left, y: top}});
             markerEl.setOption('size', height / 2);
             markerEl.setup(marker);
           }
@@ -4760,7 +4781,7 @@ anychart.ganttModule.TimeLine.prototype.initScale = function() {
  */
 anychart.ganttModule.TimeLine.prototype.initDom = function() {
   this.getClipLayer().zIndex(anychart.ganttModule.BaseGrid.DRAW_Z_INDEX - 1); //Put it under draw layer.
-  this.markers().container(this.getContentLayer());
+  this.getMarkersFactory().container(this.getContentLayer());
   this.labels().container(this.getContentLayer());
   this.header().container(this.getBase());
   this.initScale();

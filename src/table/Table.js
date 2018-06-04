@@ -5,7 +5,7 @@ goog.require('anychart.core.IStandaloneBackend');
 goog.require('anychart.core.VisualBaseWithBounds');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.core.utils.Padding');
 goog.require('anychart.enums');
 goog.require('anychart.math.Rect');
@@ -1357,10 +1357,10 @@ anychart.tableModule.Table.prototype.checkContent_ = function() {
             label = /** @type {anychart.core.ui.LabelsFactory.Label} */(content);
             if (label.parentLabelsFactory())
               label.parentLabelsFactory().clear(label.getIndex());
-          } else if (anychart.utils.instanceOf(content, anychart.core.ui.MarkersFactory.Marker)) {
-            marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(content);
-            if (marker.parentMarkersFactory())
-              marker.parentMarkersFactory().clear(marker.getIndex());
+          } else if (anychart.utils.instanceOf(content, anychart.core.Marker)) {
+            marker = /** @type {anychart.core.Marker} */(content);
+            if (marker.getFactory())
+              marker.getFactory().clear(marker.getIndex());
           } else if (anychart.utils.instanceOf(content, anychart.core.VisualBase)) {
             if (content.isChart && content.isChart()) {
               chart = /** @type {anychart.core.Chart} */(content);
@@ -1387,7 +1387,7 @@ anychart.tableModule.Table.prototype.checkContent_ = function() {
           content.suspendSignalsDispatching();
           content.unlistenSignals(this.handleContentInvalidation_);
           if (anychart.utils.instanceOf(content, anychart.core.ui.LabelsFactory.Label) ||
-              anychart.utils.instanceOf(content, anychart.core.ui.MarkersFactory.Marker)) {
+              anychart.utils.instanceOf(content, anychart.core.Marker)) {
             content.enabled(false);
           } else if (content.isChart && content.isChart()) {
             chart = /** @type {anychart.core.Chart} */(content);
@@ -1501,12 +1501,9 @@ anychart.tableModule.Table.prototype.checkContent_ = function() {
                   label.positionProvider(positionProvider);
                   label.draw();
                 }
-              } else if (anychart.utils.instanceOf(content, anychart.core.ui.MarkersFactory.Marker)) {
-                marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(content);
-                position = /** @type {string} */(
-                    marker.position() ||
-                    (marker.currentMarkersFactory() && marker.currentMarkersFactory().position()) ||
-                    (marker.parentMarkersFactory() && marker.parentMarkersFactory().position()));
+              } else if (anychart.utils.instanceOf(content, anychart.core.Marker)) {
+                marker = /** @type {anychart.core.Marker} */(content);
+                position = /** @type {string} */(marker.getFinalSettings('position'));
                 positionProvider = {'value': anychart.utils.getCoordinateByAnchor(bounds, position)};
                 marker.positionProvider(positionProvider);
                 marker.draw();

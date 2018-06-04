@@ -78,7 +78,7 @@ anychart.heatmapModule.Series.prototype.tooltip = function(opt_value) {
  */
 anychart.heatmapModule.Series.prototype.calcMinFontSize_ = function(point, pointState, prefix, minFontSize) {
   var label = this.drawFactoryElement(
-      this.normal().labels(),
+      /** @type {anychart.core.ui.LabelsFactory} */(this.normal().labels()),
       [this.normal().labels, this.hovered().labels, this.selected().labels],
       [],
       ['label', 'hoverLabel', 'selectLabel'],
@@ -294,7 +294,7 @@ anychart.heatmapModule.Series.prototype.createPositionProviderByGeometry = funct
 anychart.heatmapModule.Series.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   var displayMode = (/** @type {anychart.heatmapModule.Chart} */(this.chart)).getOption('labelsDisplayMode');
   var label = this.drawFactoryElement(
-      this.normal().labels(),
+      /** @type {anychart.core.ui.LabelsFactory} */(this.normal().labels()),
       [this.normal().labels, this.hovered().labels, this.selected().labels],
       [],
       ['label', 'hoverLabel', 'selectLabel'],

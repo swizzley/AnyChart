@@ -214,8 +214,8 @@ anychart.core.ui.Center.prototype.clearContent = function() {
           label.parentLabelsFactory().clear(label.getIndex());
       } else if (anychart.utils.instanceOf(content, anychart.core.Marker)) {
         var marker = /** @type {anychart.core.Marker} */(content);
-        if (marker.parentMarkersFactory())
-          marker.parentMarkersFactory().clear(marker.getIndex());
+        if (marker.getFactory())
+          marker.getFactory().clear(marker.getIndex());
       } else if (anychart.utils.instanceOf(content, anychart.core.VisualBase)) {
         content.container(null);
         content.remove();
