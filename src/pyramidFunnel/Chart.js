@@ -9,10 +9,10 @@ goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.core.ui.Tooltip');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.core.utils.TypedLayer');
 goog.require('anychart.data.Set');
 goog.require('anychart.enums');
@@ -2590,14 +2590,14 @@ anychart.pyramidFunnelModule.Chart.prototype.updateConnector = function(label, p
 /**
  * Getter/setter for markers.
  * @param {(Object|boolean|null|string)=} opt_value Data markers settings.
- * @return {anychart.core.utils.MarkersFactory|anychart.pyramidFunnelModule.Chart} Markers instance or itself for chaining call.
+ * @return {anychart.core.Marker|anychart.pyramidFunnelModule.Chart} Markers instance or itself for chaining call.
  */
 anychart.pyramidFunnelModule.Chart.prototype.markers = function(opt_value) {
   if (goog.isDef(opt_value)) {
     this.normal_.markers(opt_value);
     return this;
   }
-  return /** @type {anychart.core.utils.MarkersFactory} */ (this.normal_.markers());
+  return /** @type {anychart.core.Marker} */(this.normal_.markers());
 };
 
 
@@ -2753,17 +2753,17 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
 
   var index = this.getIterator().getIndex();
   var markersFactory;
-  var hoverMarkers = this.hovered().markers();
-  var selectMarkers = this.selected().markers();
+  var hoverMarkers = /** @type {anychart.core.Marker} */(this.hovered().markers());
+  var selectMarkers = /** @type {anychart.core.Marker} */(this.selected().markers());
   if (selected) {
-    markersFactory = /** @type {anychart.core.utils.MarkersFactory} */(selectMarkers);
+    markersFactory = /** @type {anychart.core.Marker} */(selectMarkers);
   } else if (hovered) {
-    markersFactory = /** @type {anychart.core.utils.MarkersFactory} */(hoverMarkers);
+    markersFactory = /** @type {anychart.core.Marker} */(hoverMarkers);
   } else {
-    markersFactory = /** @type {anychart.core.utils.MarkersFactory} */(this.markers());
+    markersFactory = /** @type {anychart.core.Marker} */(this.markers());
   }
 
-  var marker = this.markersFactory_.getElement(index);
+  var marker = /** @type {anychart.core.Marker} */(this.markersFactory_.getElement(index));
 
   var markerEnabledState = pointMarker && goog.isDef(pointMarker['enabled']) ? pointMarker['enabled'] : null;
   var markerHoverEnabledState = hoverPointMarker && goog.isDef(hoverPointMarker['enabled']) ? hoverPointMarker['enabled'] : null;
@@ -2815,11 +2815,11 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
     }
 
     var markerType = pointMarker && pointMarker['type'];
-    var finalMarkerType = goog.isDef(markerType) ? markerType : (this.markers().getType() || this.markerPalette().itemAt(index));
+    var finalMarkerType = goog.isDef(markerType) ? markerType : (this.markers().getOption('type') || this.markerPalette().itemAt(index));
     var markerHoverType = hoverPointMarker && hoverPointMarker['type'];
-    var finalMarkerHoverType = goog.isDef(markerHoverType) ? markerHoverType : hoverMarkers.getType();
+    var finalMarkerHoverType = goog.isDef(markerHoverType) ? markerHoverType : hoverMarkers.getOption('type');
     var markerSelectType = selectPointMarker && selectPointMarker['type'];
-    var finalMarkerSelectType = goog.isDef(markerSelectType) ? markerSelectType : selectMarkers.getType();
+    var finalMarkerSelectType = goog.isDef(markerSelectType) ? markerSelectType : selectMarkers.getOption('type');
 
     if (selected && goog.isDef(finalMarkerSelectType))
       markerSettings.type = finalMarkerSelectType;
@@ -2829,11 +2829,11 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
       markerSettings.type = finalMarkerType;
 
     var markerFill = pointMarker && pointMarker['fill'];
-    var finalMarkerFill = goog.isDef(markerFill) ? markerFill : (this.markers().getFill() || this.getMarkerFill());
+    var finalMarkerFill = goog.isDef(markerFill) ? markerFill : (this.markers().getOption('fill') || this.getMarkerFill());
     var markerHoverFill = hoverPointMarker && hoverPointMarker['fill'];
-    var finalMarkerHoverFill = goog.isDef(markerHoverFill) ? markerHoverFill : hoverMarkers.getFill();
+    var finalMarkerHoverFill = goog.isDef(markerHoverFill) ? markerHoverFill : hoverMarkers.getOption('fill');
     var markerSelectFill = selectPointMarker && selectPointMarker['fill'];
-    var finalMarkerSelectFill = goog.isDef(markerSelectFill) ? markerSelectFill : selectMarkers.getFill();
+    var finalMarkerSelectFill = goog.isDef(markerSelectFill) ? markerSelectFill : selectMarkers.getOption('fill');
 
     if (selected && goog.isDef(finalMarkerSelectFill))
       markerSettings.fill = finalMarkerSelectFill;
@@ -2843,11 +2843,11 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
       markerSettings.fill = finalMarkerFill;
 
     var markerStroke = pointMarker && pointMarker['stroke'];
-    var finalMarkerStroke = goog.isDef(markerStroke) ? markerStroke : (this.markers().getStroke() || this.getMarkerStroke());
+    var finalMarkerStroke = goog.isDef(markerStroke) ? markerStroke : (this.markers().getOption('stroke') || this.getMarkerStroke());
     var markerHoverStroke = hoverPointMarker && hoverPointMarker['stroke'];
-    var finalMarkerHoverStroke = goog.isDef(markerHoverStroke) ? markerHoverStroke : (hoverMarkers.getStroke() || this.getMarkerStroke());
+    var finalMarkerHoverStroke = goog.isDef(markerHoverStroke) ? markerHoverStroke : (hoverMarkers.getOption('stroke') || this.getMarkerStroke());
     var markerSelectStroke = selectPointMarker && selectPointMarker['stroke'];
-    var finalMarkerSelectStroke = goog.isDef(markerSelectStroke) ? markerSelectStroke : (selectMarkers.getStroke() || this.getMarkerStroke());
+    var finalMarkerSelectStroke = goog.isDef(markerSelectStroke) ? markerSelectStroke : (selectMarkers.getOption('stroke') || this.getMarkerStroke());
 
     if (selected && goog.isDef(finalMarkerSelectStroke))
       markerSettings.stroke = finalMarkerSelectStroke;

@@ -400,6 +400,22 @@ anychart.core.IFactoryElement.prototype.draw = function() {};
 
 
 /**
+ * Getter/setter for container.
+ * @param {(acgraph.vector.ILayer|string|Element)=} opt_value .
+ * @return {(acgraph.vector.ILayer|!anychart.core.IFactoryElement)} .
+ */
+anychart.core.IFactoryElement.prototype.container = function(opt_value) {};
+
+
+/**
+ * Suspends dispatching of invalidation events. The dispatching can be resumed with or without cumulative dispatching
+ * of all affected states.
+ * @return {!anychart.core.IFactoryElement} Itself for chaining.
+ */
+anychart.core.IFactoryElement.prototype.suspendSignalsDispatching = function() {};
+
+
+/**
  * Sets index.
  * @param {number} index Index to set.
  * @return {anychart.core.IFactoryElement}

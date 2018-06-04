@@ -11,6 +11,7 @@ goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.core.Marker');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.data.Set');
 goog.require('anychart.enums');
 goog.require('anychart.format.Context');
@@ -99,6 +100,10 @@ anychart.sparklineModule.Chart = function(opt_data, opt_csvSettings) {
   /** @inheritDoc */
   this.allowCreditsDisabling = true;
 
+  /**
+   * @type {anychart.core.utils.MarkersFactory}
+   * @private
+   */
   this.markersFactory_ = new anychart.core.utils.MarkersFactory();
   this.markersFactory_.setAutoZIndex(anychart.sparklineModule.Chart.ZINDEX_MARKER);
   this.markersFactory_.setParentEventTarget(this);
@@ -1761,7 +1766,7 @@ anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSetti
   }
 
   //another case
-  var markers = this.markers();
+  var markers = /** @type {anychart.core.Marker} */(this.markers());
   var defaultMarkers = this.seriesDefaults_['markers'];
 
   var autoFill = this.getFinalFill(true);
@@ -1780,7 +1785,7 @@ anychart.sparklineModule.Chart.prototype.getFinalMarker = function(usePointSetti
   var marker = this.markersFactory_.getElement(index);
   var res = null;
   if (finalSettings['enabled']) {
-    var position = finalSettings['position'] || this.markersInternal_.position();
+    var position = finalSettings['position'] || this.markersInternal_.getOption('position');
     var positionProvider = this.series_.createPositionProvider(/** @type {anychart.enums.Position|string} */(position));
 
     if (!marker) {

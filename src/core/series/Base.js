@@ -2475,10 +2475,6 @@ anychart.core.series.Base.prototype.setupMarkerDrawingPlan = function(element,
  */
 anychart.core.series.Base.prototype.drawSingleFactoryElement = function(mainFactory, factories, settings, index, positionProvider, formatProvider, callDraw, opt_position) {
   var element = formatProvider ? mainFactory.getLabel(/** @type {number} */(index)) : mainFactory.getElement(/** @type {number} */(index));
-
-  if (mainFactory == this.outlierMarkersFactory_)
-    console.log(index, mainFactory);
-
   if (!element) {
     if (formatProvider) {
       element = mainFactory.add(formatProvider, positionProvider, index);
