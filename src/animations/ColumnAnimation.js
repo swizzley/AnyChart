@@ -45,7 +45,7 @@ anychart.animations.ColumnAnimation.prototype.update = function() {
           this.startPoint.push(x, zero);
         this.endPoint.push(positionProvider['x'], positionProvider['y']);
       }
-      var marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(iterator.meta('marker'));
+      var marker = /** @type {anychart.core.Marker} */(iterator.meta('marker'));
       if (marker) {
         positionProvider = marker.positionProvider()['value'];
         if (this.isBarAnimation)
@@ -75,7 +75,7 @@ anychart.animations.ColumnAnimation.prototype.onAnimate = function() {
         }});
         label.draw();
       }
-      var marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(iterator.meta('marker'));
+      var marker = /** @type {anychart.core.Marker} */(iterator.meta('marker'));
       if (marker) {
         marker.positionProvider({'value': {
           'x': this.coords[currentCoordIndex++],

@@ -6,7 +6,7 @@ goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
 goog.require('anychart.core.utils.TypedLayer');
@@ -352,7 +352,7 @@ anychart.treemapModule.Chart.prototype.handleMouseDown = function(event) {
 
   var series, index;
   var isLabels = anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory);
-  var isMarkers = anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory);
+  var isMarkers = anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory);
   if (isLabels || isMarkers) {
     var parent = event['target'].getParentEventTarget();
     if (parent.isSeries && parent.isSeries())
@@ -1243,13 +1243,13 @@ anychart.treemapModule.Chart.prototype.drawMarker_ = function(pointState) {
   var hoverMarkers = this.hovered().markers();
   var selectMarkers = this.selected().markers();
 
-  var markersFactory = /** @type {anychart.core.ui.MarkersFactory} */ (markers);
+  var markersFactory = /** @type {anychart.core.Marker} */ (markers);
   if (selected) {
-    markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(selectMarkers);
+    markersFactory = /** @type {anychart.core.Marker} */(selectMarkers);
   } else if (hovered) {
-    markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(hoverMarkers);
+    markersFactory = /** @type {anychart.core.Marker} */(hoverMarkers);
   } else {
-    markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(markers);
+    markersFactory = /** @type {anychart.core.Marker} */(markers);
   }
 
   var markerType = 'marker';
@@ -2003,7 +2003,7 @@ anychart.treemapModule.Chart.prototype.resizeHandler = function(e) {
 anychart.treemapModule.Chart.prototype.specificContextMenuItems = function(items, context, isPointContext) {
   var tag = anychart.utils.extractTag(context['event']['domTarget']);
   var node;
-  if (anychart.utils.instanceOf(context['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(context['target'], anychart.core.ui.MarkersFactory)) {
+  if (anychart.utils.instanceOf(context['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(context['target'], anychart.core.utils.MarkersFactory)) {
     node = this.linearNodes[/** @type {number} */(tag)];
   } else {
     node = tag['node'];

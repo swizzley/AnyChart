@@ -40,7 +40,7 @@ anychart.animations.BubbleAnimation.prototype.update = function() {
         this.startPoint.push(centerX, centerY);
         this.endPoint.push(positionProvider['x'], positionProvider['y']);
       }
-      var marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(iterator.meta('marker'));
+      var marker = /** @type {anychart.core.Marker} */(iterator.meta('marker'));
       if (marker) {
         positionProvider = marker.positionProvider()['value'];
         this.startPoint.push(centerX, centerY);
@@ -67,7 +67,7 @@ anychart.animations.BubbleAnimation.prototype.onAnimate = function() {
         }});
         label.draw();
       }
-      var marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(iterator.meta('marker'));
+      var marker = /** @type {anychart.core.Marker} */(iterator.meta('marker'));
       if (marker) {
         marker.positionProvider({'value': {
           'x': this.coords[currentCoordIndex++],

@@ -9,7 +9,7 @@ goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
+goog.require('anychart.core.utils.MarkersFactory');
 goog.require('anychart.core.ui.Tooltip');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
@@ -2597,7 +2597,7 @@ anychart.pyramidFunnelModule.Chart.prototype.markers = function(opt_value) {
     this.normal_.markers(opt_value);
     return this;
   }
-  return /** @type {anychart.core.ui.MarkersFactory} */ (this.normal_.markers());
+  return /** @type {anychart.core.utils.MarkersFactory} */ (this.normal_.markers());
 };
 
 
@@ -2756,11 +2756,11 @@ anychart.pyramidFunnelModule.Chart.prototype.drawMarker = function(pointState) {
   var hoverMarkers = this.hovered().markers();
   var selectMarkers = this.selected().markers();
   if (selected) {
-    markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(selectMarkers);
+    markersFactory = /** @type {anychart.core.utils.MarkersFactory} */(selectMarkers);
   } else if (hovered) {
-    markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(hoverMarkers);
+    markersFactory = /** @type {anychart.core.utils.MarkersFactory} */(hoverMarkers);
   } else {
-    markersFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.markers());
+    markersFactory = /** @type {anychart.core.utils.MarkersFactory} */(this.markers());
   }
 
   var marker = this.markersFactory_.getElement(index);

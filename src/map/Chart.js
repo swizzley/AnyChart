@@ -1072,7 +1072,7 @@ anychart.mapModule.Chart.prototype.onMouseDown = function(event) {
     if (drillDownMap) {
       var tag = anychart.utils.extractTag(event['domTarget']);
       var series, index;
-      if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)) {
+      if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory)) {
         var parent = event['target'].getParentEventTarget();
         if (parent.isSeries && parent.isSeries())
           series = parent;
@@ -1128,7 +1128,7 @@ anychart.mapModule.Chart.prototype.handleMouseOut = function(event) {
   var forbidTooltip = false;
 
   var series, index;
-  if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(event['target'], anychart.core.ui.MarkersFactory)) {
+  if (anychart.utils.instanceOf(event['target'], anychart.core.ui.LabelsFactory) || anychart.utils.instanceOf(event['target'], anychart.core.utils.MarkersFactory)) {
     var parent = event['target'].getParentEventTarget();
     if (parent.isSeries && parent.isSeries())
       series = parent;

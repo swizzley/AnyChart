@@ -212,8 +212,8 @@ anychart.core.ui.Center.prototype.clearContent = function() {
         var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(content);
         if (label.parentLabelsFactory())
           label.parentLabelsFactory().clear(label.getIndex());
-      } else if (anychart.utils.instanceOf(content, anychart.core.ui.MarkersFactory.Marker)) {
-        var marker = /** @type {anychart.core.ui.MarkersFactory.Marker} */(content);
+      } else if (anychart.utils.instanceOf(content, anychart.core.Marker)) {
+        var marker = /** @type {anychart.core.Marker} */(content);
         if (marker.parentMarkersFactory())
           marker.parentMarkersFactory().clear(marker.getIndex());
       } else if (anychart.utils.instanceOf(content, anychart.core.VisualBase)) {

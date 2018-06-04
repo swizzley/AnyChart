@@ -15,7 +15,6 @@ goog.require('anychart.core.settings');
 goog.require('anychart.core.shapeManagers.PerPoint');
 goog.require('anychart.core.shapeManagers.PerSeries');
 goog.require('anychart.core.ui.LabelsFactory');
-goog.require('anychart.core.ui.MarkersFactory');
 goog.require('anychart.core.ui.Tooltip');
 goog.require('anychart.core.utils.Error');
 goog.require('anychart.core.utils.ISeriesWithError');
@@ -2123,8 +2122,8 @@ anychart.core.series.Base.prototype.prepareFactory = function(factory, enabled, 
 /**
  * Draws element(s) for point.
  * @param {anychart.core.ui.LabelsFactory|anychart.core.utils.MarkersFactory} factory
- * @param {!Array.<function(this:anychart.core.StateSettings):(anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory)>} seriesFactoryGetters
- * @param {!Array.<function(this:anychart.core.IChart):(anychart.core.ui.LabelsFactory|anychart.core.ui.MarkersFactory)>} chartFactoryGetters
+ * @param {!Array.<function(this:anychart.core.StateSettings):(anychart.core.ui.LabelsFactory|anychart.core.utils.MarkersFactory)>} seriesFactoryGetters
+ * @param {!Array.<function(this:anychart.core.IChart):(anychart.core.ui.LabelsFactory|anychart.core.utils.MarkersFactory)>} chartFactoryGetters
  * @param {!Array.<string>} overrideNames
  * @param {boolean} hasPointOverrides
  * @param {boolean} isLabel
@@ -2464,7 +2463,7 @@ anychart.core.series.Base.prototype.setupMarkerDrawingPlan = function(element,
 /**
  * Draws one factory element.
  * @param {anychart.core.utils.MarkersFactory|anychart.core.ui.LabelsFactory} mainFactory .
- * @param {Array.<anychart.core.ui.MarkersFactory|anychart.core.ui.LabelsFactory|*>} factories [seriesNormal, seriesState, pointNormal, pointState]
+ * @param {Array.<anychart.core.utils.MarkersFactory|anychart.core.ui.LabelsFactory|*>} factories [seriesNormal, seriesState, pointNormal, pointState]
  * @param {Array} settings [chartNormal, seriesNormal, pointNormal, chartState, seriesState, pointState, chartExtremumNormal, seriesExtremumNormal, pointExtremumNormal, chartExtremumState, seriesExtremumState, pointExtremumState]
  * @param {number|undefined} index
  * @param {*} positionProvider

@@ -718,7 +718,7 @@ anychart.mapModule.Series.prototype.applyZoomMoveTransformToLabel = function(lab
 
 /**
  * Applying zoom and move transformations to marker element.
- * @param {anychart.core.ui.MarkersFactory.Marker} marker .
+ * @param {anychart.core.Marker} marker .
  * @param {number} pointState .
  */
 anychart.mapModule.Series.prototype.applyZoomMoveTransformToMarker = function(marker, pointState) {

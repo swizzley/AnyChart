@@ -1094,7 +1094,7 @@ anychart.core.series.Cartesian.prototype.pointIsInRect = function(point, left, t
       ]);
     }
   }
-  if (!result && (shapes = /** @type {anychart.core.ui.MarkersFactory.Marker} */(point.meta('marker')))) {
+  if (!result && (shapes = /** @type {anychart.core.Marker} */(point.meta('marker')))) {
     result = shapes.getDomElement().getBounds().intersects(new goog.math.Rect(left, top, width, height));
   }
   return result;
