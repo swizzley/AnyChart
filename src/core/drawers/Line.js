@@ -113,9 +113,9 @@ anychart.core.drawers.Line.prototype.drawMissingPoint = function(point, state) {
  */
 anychart.core.drawers.Line.prototype.getShapeName = function(value) {
   var name;
-  var baseLine = /** @type {number} */(this.series.plot.getOption('baseLine'));
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
   if (this.hasNegativeColoring) {
-    name = value < baseLine ? 'negative' : 'stroke';
+    name = value < baseline ? 'negative' : 'stroke';
   } else if (this.hasRisingFallingColoring) {
     name = value < this.prevValue ? 'falling' : value > this.prevValue ? 'rising' : 'stroke';
   } else {
@@ -168,10 +168,10 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
     prevX = /** @type {number} */(this.prevX);
     prevY = /** @type {number} */(this.prevY);
     prevName = this.prevShapeName;
-    var baseLine = /** @type {number} */(this.series.plot.getOption('baseLine'));
-    var baseLineCrossed = (this.prevValue - baseLine) * (currValue - baseLine) < 0;
+    var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+    var baselineCrossed = (this.prevValue - baseline) * (currValue - baseline) < 0;
 
-    if (this.hasNegativeColoring && baseLineCrossed) {
+    if (this.hasNegativeColoring && baselineCrossed) {
       crossY = /** @type {number} */(point.meta('zero'));
       crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
     } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {

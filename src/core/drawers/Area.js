@@ -64,10 +64,10 @@ anychart.core.drawers.Area.prototype.requiredShapes = (function() {
 anychart.core.drawers.Area.prototype.getShapeNames = function(value) {
   var names = {};
   var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
-  var baseLine = /** @type {number} */(this.series.plot.getOption('baseLine'));
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
 
   if (this.hasNegativeColoring) {
-    if (value < baseLine) {
+    if (value < baseline) {
       strokeName = 'negativeStroke';
       fillName = 'negativeFill';
       hatchFillName = 'negativeHatchFill';
@@ -121,9 +121,9 @@ anychart.core.drawers.Area.prototype.drawSegmentStart_ = function(shapes, x, y, 
  * w@param {number} value .
  * @return {boolean}
  */
-anychart.core.drawers.Area.prototype.isBaselineIntersect = function(value) {
-  var baseLine = /** @type {number} */(this.series.plot.getOption('baseLine'));
-  return ((this.prevValue - baseLine) || 1) * ((value - baseLine) || 1) < 0;
+anychart.core.drawers.Area.prototype.isbaselineIntersect = function(value) {
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+  return ((this.prevValue - baseline) || 1) * ((value - baseline) || 1) < 0;
 };
 
 
@@ -146,9 +146,9 @@ anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes,
     prevY = /** @type {number} */(this.prevY);
     prevNames = this.prevShapeNames;
 
-    var isBaselineIntersect = this.isBaselineIntersect(value);
+    var isbaselineIntersect = this.isbaselineIntersect(value);
 
-    if (this.hasNegativeColoring && isBaselineIntersect) {
+    if (this.hasNegativeColoring && isbaselineIntersect) {
       crossY = zeroY;
       crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
     } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {

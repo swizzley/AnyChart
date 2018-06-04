@@ -231,7 +231,7 @@ anychart.stockModule.Plot = function(chart) {
     ['pointWidth', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.invalidateWidthBasedSeries],
     ['maxPointWidth', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.invalidateWidthBasedSeries],
     ['minPointLength', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.resetSeriesStack],
-    ['baseLine', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.resetSeriesBaseLine]
+    ['baseline', anychart.ConsistencyState.STOCK_PLOT_SERIES, anychart.Signal.NEEDS_REDRAW, 0, this.resetSeriesBaseline]
   ]);
 };
 goog.inherits(anychart.stockModule.Plot, anychart.core.VisualBaseWithBounds);
@@ -359,7 +359,7 @@ anychart.stockModule.Plot.PROPERTY_DESCRIPTORS = (function() {
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'pointWidth', anychart.utils.normalizeNumberOrPercent],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'maxPointWidth', anychart.utils.normalizeNumberOrPercent],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'minPointLength', anychart.utils.normalizeNumberOrPercent],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'baseLine', anychart.core.settings.numberNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'baseline', anychart.core.settings.numberNormalizer]
   ]);
 
   return map;
@@ -1037,7 +1037,7 @@ anychart.stockModule.Plot.prototype.invalidateWidthBasedSeries = function() {
  * Resets series shared stack.
  * @param {boolean=} opt_skipInvalidation - Whether to skip width based series invalidation.
  */
-anychart.stockModule.Plot.prototype.resetSeriesBaseLine = function(opt_skipInvalidation) {
+anychart.stockModule.Plot.prototype.resetSeriesBaseline = function(opt_skipInvalidation) {
   for (var i = 0; i < this.series_.length; i++) {
     var series = this.series_[i];
     if (series)
@@ -3589,6 +3589,7 @@ anychart.stockModule.Plot.Dragger.prototype.limitY = function(y) {
   //proto['sma'] = proto.sma;
   //proto['stochastic'] = proto.stochastic;
   //proto['williamsR'] = proto.williamsR;
+  //proto['baseline'] = proto.baseline;
   proto['palette'] = proto.palette;
   proto['markerPalette'] = proto.markerPalette;
   proto['hatchFillPalette'] = proto.hatchFillPalette;

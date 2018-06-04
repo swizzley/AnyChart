@@ -3905,8 +3905,8 @@ anychart.core.series.Base.prototype.prepareMetaMakers = function(yNames, yColumn
     this.metaMakers.push(this.makeOutliersMeta);
   }
   if (this.needsZero()) {
-    var baseLine = /** @type {number} */(this.plot.getOption('baseLine'));
-    this.zeroYRatio = goog.math.clamp((scale && scale.transform(baseLine, 0.5)) || baseLine, 0, 1);
+    var baseline = /** @type {number} */(this.plot.getOption('baseline'));
+    this.zeroYRatio = goog.math.clamp((scale && scale.transform(baseline, 0.5)) || baseLine, 0, 1);
     this.zeroY = this.applyAxesLinesSpace(this.applyRatioToBounds(this.zeroYRatio, false));
   }
 };

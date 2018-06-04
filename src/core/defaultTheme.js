@@ -1675,7 +1675,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'crossing': {
       'stroke': 'none'
     },
-    'baseLine': 0,
+    'baseline': 0,
 
     'defaultQuarterSettings': {
       'enabled': false,
