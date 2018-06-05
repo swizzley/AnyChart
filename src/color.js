@@ -235,13 +235,38 @@ anychart.color.fillOrStrokeToHex_ = function(fillOrStroke) {
  *      .fill( anychart.color.lighten('red'));
  * stage.rect(2*stage.width() / 3 + 10, 10, stage.width() / 3 - 30, stage.height() - 20)
  *      .fill( anychart.color.lighten('red', .8));
- * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill|string)} fillOrStroke Fill or stroke to be lightened.
+ * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|string)} fillOrStroke Fill or stroke to be lightened.
  * @param {number=} opt_factor [0.3] White color blending factor.
- * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill)} Hex representation of the lightened color, or Color if color can not be lighten.
+ * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke)} Hex representation of the lightened color, or Color if color can not be lighten.
  */
 anychart.color.lighten = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
+    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+      var children = [];
+      var newPattern = acgraph.patternFill(fillOrStroke['bounds']);
+      for (var i = 0; i < fillOrStroke['children'].length; i++) {
+        var child = fillOrStroke['children'][i];
+        if (child instanceof acgraph.vector.Circle) {
+          console.log("Circle");
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Rect)) {
+          console.log("Rect");
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Text)) {
+          console.log("Text");
+        } else {
+          console.log('default');
+        }
+        child = anychart.color.lighten(/** @type {acgraph.vector.Fill} */(child), opt_factor);
+        child['parent'](newPattern);
+        children.push(child);
+      }
+      newPattern['children'] = children;
+      return /**@typedef{acgraph.vector.PatternFill}*/(newPattern);
+    }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
+    if (newFillOrStroke['fill']) {
+      newFillOrStroke['fill'](anychart.color.lighten(/** @type {acgraph.vector.Fill} */(goog.object.clone(newFillOrStroke['fill']())), opt_factor));
+      newFillOrStroke['stroke'](anychart.color.lighten(/** @type {acgraph.vector.Fill} */(goog.object.clone(newFillOrStroke['stroke']())), opt_factor));
+    }
     if (goog.isDef(fillOrStroke['keys'])) {
       var keys = newFillOrStroke['keys'];
       var newKeys = [];
@@ -281,13 +306,74 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
  *      .fill( anychart.color.darken('red'));
  * stage.rect(2*stage.width() / 3 + 10, 10, stage.width() / 3 - 30, stage.height() - 20)
  *      .fill( anychart.color.darken('red', .8));
- * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill|string)} fillOrStroke Fill or stroke to be darkened.
+ * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|string)} fillOrStroke Fill or stroke to be darkened.
  * @param {number=} opt_factor [0.3] Black color blending factor.
- * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.SolidStroke|acgraph.vector.SolidFill)} Hex representation of the darkened color, or Color if color can't be darkened.
+ * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke)} Hex representation of the darkened color, or Color if color can't be darkened.
  */
 anychart.color.darken = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
+    var withChild = false;
+    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
+        acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
+      withChild = true;
+    }
+    if (withChild) {
+      var children = [];
+      var newPattern = acgraph.patternFill(fillOrStroke['bounds']);
+      for (var i = 0; i < fillOrStroke['children'].length; i++) {
+        var child = fillOrStroke['children'][i];
+        var properties = child.serialize();
+        console.log(properties);
+        var newChild;
+        var hasFill = false;
+        if (acgraph.utils.instanceOf(child, acgraph.vector.Circle)) {
+          newChild = new acgraph.vector.Circle();
+          hasFill = true;
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Rect)) {
+          newChild = new acgraph.vector.Rect();
+          hasFill = true;
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Text)) {
+          newChild = new acgraph.vector.Text();
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Ellipse)) {
+          newChild = new acgraph.vector.Ellipse();
+          hasFill = true;
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Path)) {
+          newChild = new acgraph.vector.Path();
+          hasFill = true;
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Image)) {
+          newChild = new acgraph.vector.Image();
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Layer)) {
+          newChild = new acgraph.vector.Layer();
+          newChild = acgraph.color.darken(newChild, opt_factor)
+        }
+        console.log(children);
+        if (goog.isDef(newChild)) {
+          var id = newChild['id']();
+          newChild.deserialize(properties);
+          newChild['id'](id);
+          if (hasFill) {
+            var fill = newChild['fill']();
+            var stroke = newChild['stroke']();
+            fill = anychart.color.darken(fill, opt_factor);
+            stroke = anychart.color.darken(stroke, opt_factor);
+            newChild['fill'](fill);
+            newChild['stroke'](stroke);
+          } else {
+            newChild['color'](anychart.color.darken(newChild['color'](), opt_factor));
+          }
+          newChild['parent'](newPattern);
+          children.push(newChild);
+        }
+      }
+      console.log(children);
+      newPattern['children'] = children;
+      return /**@typedef{acgraph.vector.PatternFill}*/(newPattern);
+    }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
+    if (newFillOrStroke['fill']) {
+      newFillOrStroke['fill'](anychart.color.darken(newFillOrStroke['fill'](), opt_factor));
+      newFillOrStroke['stroke'](anychart.color.darken(newFillOrStroke['stroke'](), opt_factor));
+    }
     if (goog.isDef(fillOrStroke['keys'])) {
       var keys = newFillOrStroke['keys'];
       var newKeys = [];
@@ -299,7 +385,7 @@ anychart.color.darken = function(fillOrStroke, opt_factor) {
       newFillOrStroke['keys'] = newKeys;
     }
     if (goog.isDef(newFillOrStroke['color']))
-      newFillOrStroke['color'] = anychart.color.darken(newFillOrStroke['color']);
+      newFillOrStroke['color'] = anychart.color.darken(newFillOrStroke['color'], opt_factor);
     return newFillOrStroke;
 
   } else {
