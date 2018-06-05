@@ -1,5 +1,5 @@
 goog.provide('anychart.color');
-goog.require('acgraph');
+goog.require('acgraph.vector');
 goog.require('goog.color');
 goog.require('goog.math');
 
@@ -312,62 +312,61 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
  */
 anychart.color.darken = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
-    var withChild = false;
     if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
-        acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
-      withChild = true;
-    }
-    if (withChild) {
+        acgraph.utils.instanceOf(fillOrStroke, anychart.graphics.vector.Layer)) {
       var children = [];
-      var newPattern = acgraph.patternFill(fillOrStroke['bounds']);
+      var stage;
+
+      if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+        stage = new acgraph.vector.PatternFill(/**@typedef {anychart.core.utils.Bounds}*/(fillOrStroke['getBounds']()));
+      } else {
+        stage = new acgraph.vector.Layer();
+      }
+      var id = fillOrStroke['id']();
+      stage.deserialize(fillOrStroke.serialize());
+      stage['id'](id);
       for (var i = 0; i < fillOrStroke['children'].length; i++) {
         var child = fillOrStroke['children'][i];
         var properties = child.serialize();
         console.log(properties);
         var newChild;
-        var hasFill = false;
         if (acgraph.utils.instanceOf(child, acgraph.vector.Circle)) {
           newChild = new acgraph.vector.Circle();
-          hasFill = true;
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Rect)) {
           newChild = new acgraph.vector.Rect();
-          hasFill = true;
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Text)) {
           newChild = new acgraph.vector.Text();
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Ellipse)) {
           newChild = new acgraph.vector.Ellipse();
-          hasFill = true;
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Path)) {
           newChild = new acgraph.vector.Path();
-          hasFill = true;
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Image)) {
           newChild = new acgraph.vector.Image();
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Layer)) {
-          newChild = new acgraph.vector.Layer();
-          newChild = acgraph.color.darken(newChild, opt_factor)
+          newChild = anychart.color.darken(child, opt_factor);
         }
         console.log(children);
         if (goog.isDef(newChild)) {
-          var id = newChild['id']();
+          id = newChild['id']();
           newChild.deserialize(properties);
           newChild['id'](id);
-          if (hasFill) {
+          if (goog.isDef(newChild['fill'])) {
             var fill = newChild['fill']();
             var stroke = newChild['stroke']();
             fill = anychart.color.darken(fill, opt_factor);
             stroke = anychart.color.darken(stroke, opt_factor);
             newChild['fill'](fill);
             newChild['stroke'](stroke);
-          } else {
+          } else if (goog.isDef(newChild['color'])) {
             newChild['color'](anychart.color.darken(newChild['color'](), opt_factor));
           }
-          newChild['parent'](newPattern);
+          newChild['parent'](stage);
           children.push(newChild);
         }
       }
       console.log(children);
-      newPattern['children'] = children;
-      return /**@typedef{acgraph.vector.PatternFill}*/(newPattern);
+      stage['children'] = children;
+      return /**@typedef{acgraph.vector.PatternFill}*/(stage);
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
     if (newFillOrStroke['fill']) {
