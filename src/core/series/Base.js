@@ -3124,10 +3124,10 @@ anychart.core.series.Base.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_MARKERS | COMMON_STATES)) {
     factory = this.getMarkersFactory();
-    stateSettingsEnabled = /** @type {boolean} */(
-        this.chart.normal().markers().enabled() || this.chart.hovered().markers().enabled() || this.chart.selected().markers().enabled() ||
-        this.normal().markers().enabled() || this.hovered().markers().enabled() || this.selected().markers().enabled());
 
+    stateSettingsEnabled = this.chart.supportsMarkers() ?
+        this.chart.normal().markers().enabled() || this.chart.hovered().markers().enabled() || this.chart.selected().markers().enabled() : false;
+    stateSettingsEnabled = stateSettingsEnabled || this.normal().markers().enabled() || this.hovered().markers().enabled() || this.selected().markers().enabled();
     if (this.prepareFactory(factory, stateSettingsEnabled, this.planHasPointMarkers(),
             anychart.core.series.Capabilities.SUPPORTS_MARKERS, anychart.ConsistencyState.SERIES_MARKERS)) {
 
