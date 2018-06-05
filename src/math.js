@@ -620,6 +620,47 @@ anychart.math.clipSegmentByRect = function(x1, y1, x2, y2, rect) {
 };
 
 
+anychart.math.getSplineParams = function(fromX, fromY, fromXRatio, fromYRatio, toX, toY, toXRatio, toYRatio) {
+  var quarterStep;
+  if (counterClockwise) {
+    if (fromXRatio < toXRatio) {
+      fromXRatio += 1;
+    }
+    quarterStep = -.25;
+  } else {
+    if (toXRatio < fromXRatio) {
+      toXRatio += 1;
+    }
+    quarterStep = .25;
+  }
+  // searching full quarters to split the curve
+  var startQuarter = Math.ceil(fromXRatio / quarterStep) * quarterStep;
+  var endQuarter = Math.floor(toXRatio / quarterStep) * quarterStep;
+  if (fromXRatio == startQuarter)
+    startQuarter += quarterStep;
+  if (toXRatio == endQuarter)
+    endQuarter -= quarterStep;
+  var yRatioDivider = (toXRatio - fromXRatio) / (toYRatio - fromYRatio);
+  var result = [];
+  // for (var ratio = startQuarter; (ratio - endQuarter) * quarterStep <= 0; ratio += quarterStep) {
+  //   var angle = anychart.math.round(zeroAngle + ratio * Math.PI * 2, 4);
+  //   var rRatio = (ratio - fromXRatio) / yRatioDivider + fromYRatio;
+  //   var r = innerRadius + (radius - innerRadius) * rRatio;
+  //   var x = anychart.math.angleDx(angle, r, cx);
+  //   var y = anychart.math.angleDy(angle, r, cy);
+  //   result.push(fromXRatio % 1 == 0 ? 1 : 0);
+  //   anychart.math.getPolarLineParams_(fromX, fromY, fromXRatio, fromYRatio, x, y, ratio, rRatio, cx, cy, radius, innerRadius, zeroAngle, result);
+  //   fromX = x;
+  //   fromY = y;
+  //   fromXRatio = ratio;
+  //   fromYRatio = rRatio;
+  // }
+  result.push(fromXRatio % 1 == 0 ? 1 : 0);
+  anychart.math.getPolarLineParams_(fromX, fromY, fromXRatio, fromYRatio, toX, toY, toXRatio, toYRatio, cx, cy, radius, innerRadius, zeroAngle, result);
+  return result;
+};
+
+
 /**
  * Calculates a set of params to draw a line in polar coords. Returns an array where each 7 elements
  * represent one cubic curve to be drawn. The first element is a 0 or 1 - whether a new path needed,

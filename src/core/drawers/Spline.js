@@ -31,7 +31,7 @@ anychart.core.drawers.Spline.prototype.type = anychart.enums.SeriesDrawerTypes.S
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.flags = (
-    // anychart.core.drawers.Capabilities.NEEDS_ZERO |
+    anychart.core.drawers.Capabilities.NEEDS_ZERO |
     // anychart.core.drawers.Capabilities.NEEDS_SIZE_SCALE |
     // anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT |
     anychart.core.drawers.Capabilities.USES_STROKE_AS_FILL |
@@ -61,6 +61,24 @@ anychart.core.drawers.Spline.prototype.requiredShapes = (function() {
 })();
 
 
+/**
+ *
+ */
+anychart.core.drawers.Spline.prototype.getShapeName = function(value) {
+  var name;
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+  if (this.hasNegativeColoring) {
+    name = value < baseline ? 'negative' : 'stroke';
+  } else if (this.hasRisingFallingColoring) {
+    name = value < this.prevValue ? 'falling' : value > this.prevValue ? 'rising' : 'stroke';
+  } else {
+    name = 'stroke';
+  }
+
+  return name;
+};
+
+
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.Spline.base(this, 'startDrawing', shapeManager);
@@ -68,6 +86,19 @@ anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
   this.queue_.setPaths([/** @type {acgraph.vector.Path} */(shapes['stroke'])]);
+
+
+  var normSettings = this.series.normal();
+  /**
+   * @type {boolean}
+   */
+  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
+
+  /**
+   * @type {boolean}
+   */
+  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
+      goog.isDef(normSettings.getOption('fallingStroke'));
 };
 
 
@@ -85,6 +116,9 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, state) {
+  var params = anychart.math.getPolarLineParams(this.lastX, this.lastY, this.lastXRatio, this.lastYRatio,
+      x, y, xRatio, yRatio, this.cx, this.cy, this.radius, this.innerRadius, this.zeroAngle, this.counterClockwise);
+
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
