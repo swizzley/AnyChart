@@ -242,7 +242,7 @@ anychart.color.fillOrStrokeToHex_ = function(fillOrStroke) {
 anychart.color.lighten = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
     if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
-      acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
+        acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
 
       var children = [];
       var stage;
