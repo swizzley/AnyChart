@@ -893,7 +893,7 @@ anychart.stockModule.Chart.prototype.xScale = function(opt_value) {
       newType = opt_value['type'];
     }
     newType = String(newType).toLowerCase();
-    var askedForScatter = newType == 'scatter';
+    var askedForScatter = newType == anychart.enums.ScaleTypes.STOCK_SCATTER_DATE_TIME || newType == 'scatter';
     var currIsScatter = this.xScale_ && !(anychart.utils.instanceOf(this.xScale_, anychart.stockModule.scales.Ordinal));
     if (askedForScatter != currIsScatter) {
       if (askedForScatter) {
