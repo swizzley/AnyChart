@@ -2212,18 +2212,28 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(factory, serie
     pointExtremumState = pointProps[3];
 
     isDraw = anychart.utils.getFirstNotNullValueRecursive(anychart.utils.extractSettings([
+      //own state
       pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
       pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-      seriesExtremumState, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      seriesState, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      chartExtremumState, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      chartState, anychart.utils.ExtractSettingModes.CALL_METHOD,
+      seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      seriesState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      chartExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      chartState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      //own normal
       pointExtremumNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
       pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
-      seriesExtremumNormal, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      seriesNormal, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      chartExtremumNormal, anychart.utils.ExtractSettingModes.CALL_METHOD,
-      chartNormal, anychart.utils.ExtractSettingModes.CALL_METHOD
+      seriesExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      seriesNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      chartExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      chartNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+      //theme state
+      seriesExtremumState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+      seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+      chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+      //theme normal
+      seriesExtremumNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+      seriesNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+      chartNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS
     ], 'enabled'));
   }
 
@@ -2250,21 +2260,25 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(factory, serie
     } else {
       var position = anychart.utils.getFirstDefinedValueRecursive(
           anychart.utils.extractSettings([
+            //own state
             pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
             pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
             seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
             seriesState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
             chartExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
             chartState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            //own normal
             pointExtremumNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
             pointNormal, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
             seriesExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
             seriesNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
             chartExtremumNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
             chartNormal, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
+            //theme state
             seriesExtremumState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
             seriesState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
             chartState, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
+            //theme normal
             seriesExtremumNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
             seriesNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS,
             chartNormal, anychart.utils.ExtractSettingModes.THEME_SETTINGS
@@ -2393,6 +2407,7 @@ anychart.core.series.Base.prototype.setupLabelDrawingPlan = function(label,
                                                                      chartExtremumNormal, seriesExtremumNormal, pointExtremumNormal,
                                                                      chartExtremumState, seriesExtremumState, pointExtremumState) {
   label.stateOrder(anychart.utils.extractSettings([
+    //own state
     pointExtremumState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     pointState, anychart.utils.ExtractSettingModes.PLAIN_OBJECT,
     seriesExtremumState, anychart.utils.ExtractSettingModes.OWN_SETTINGS,
@@ -2654,6 +2669,7 @@ anychart.core.series.Base.prototype.getMarkersFactory = function() {
  */
 anychart.core.series.Base.prototype.markersInvalidated_ = function(event) {
   if (event.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
+    this.normal().markers().markConsistent(anychart.ConsistencyState.ALL);
     this.invalidate(anychart.ConsistencyState.SERIES_MARKERS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND);
   }
 };
@@ -2708,7 +2724,8 @@ anychart.core.series.Base.prototype.getMarkerFill = function() {
 anychart.core.series.Base.prototype.getMarkerStroke = function() {
   var normalMarkersSettings = /** @type {anychart.core.Marker} */(this.normal_.markers());
   var fill = /** @type {acgraph.vector.Fill} */(normalMarkersSettings.getFinalSettings('fill'));
-  return /** @type {acgraph.vector.Stroke} */(anychart.color.darken(fill));
+  var stroke = /** @type {acgraph.vector.Fill} */(normalMarkersSettings.getThemeOption('stroke'));
+  return stroke !== 'none' ? /** @type {acgraph.vector.Stroke} */(anychart.color.darken(fill)) : stroke;
 };
 
 
@@ -2753,6 +2770,7 @@ anychart.core.series.Base.prototype.getOutlierMarkersFactory = function() {
  */
 anychart.core.series.Base.prototype.outlierMarkersInvalidated_ = function(event) {
   if (event.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
+    this.normal().outlierMarkers().markConsistent(anychart.ConsistencyState.ALL);
     this.invalidate(anychart.ConsistencyState.SERIES_OUTLIERS, anychart.Signal.NEEDS_REDRAW);
   }
 };
@@ -3069,14 +3087,22 @@ anychart.core.series.Base.prototype.draw = function() {
     // we do not mark any states consistent here - we do it later.
   }
 
+  if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_CLIP)) {
+    this.applyClip();
+    this.markConsistent(anychart.ConsistencyState.SERIES_CLIP);
+  }
+
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_LABELS | COMMON_STATES)) {
     factory = /** @type {anychart.core.ui.LabelsFactory} */(this.normal_.labels());
     stateFactoriesEnabled = /** @type {boolean} */(
+        this.normal_.labels().enabled() ||
         this.normal_.minLabels().enabled() || this.normal_.maxLabels().enabled() ||
-        this.hovered_.labels().enabled() || this.selected_.labels().enabled() ||
+        this.hovered_.labels().enabled() ||
         this.hovered_.minLabels().enabled() || this.selected_.minLabels().enabled() ||
+        this.selected_.labels().enabled() ||
         this.hovered_.maxLabels().enabled() || this.selected_.maxLabels().enabled()
     );
+
     if (this.prepareFactory(factory, stateFactoriesEnabled, this.planHasPointLabels(),
             anychart.core.series.Capabilities.SUPPORTS_LABELS, anychart.ConsistencyState.SERIES_LABELS)) {
       factory.setAutoZIndex(/** @type {number} */(this.zIndex() + this.LABELS_ZINDEX + (this.planIsStacked() ? 1 : 0)));
@@ -3098,7 +3124,10 @@ anychart.core.series.Base.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_MARKERS | COMMON_STATES)) {
     factory = this.getMarkersFactory();
-    stateSettingsEnabled = /** @type {boolean} */(this.normal_.markers().enabled() || this.hovered_.markers().enabled() || this.selected_.markers().enabled());
+    stateSettingsEnabled = /** @type {boolean} */(
+        this.chart.normal().markers().enabled() || this.chart.hovered().markers().enabled() || this.chart.selected().markers().enabled() ||
+        this.normal().markers().enabled() || this.hovered().markers().enabled() || this.selected().markers().enabled());
+
     if (this.prepareFactory(factory, stateSettingsEnabled, this.planHasPointMarkers(),
             anychart.core.series.Capabilities.SUPPORTS_MARKERS, anychart.ConsistencyState.SERIES_MARKERS)) {
 
@@ -3107,6 +3136,7 @@ anychart.core.series.Base.prototype.draw = function() {
         elementsDrawers.push(this.drawMarker);
       factoriesToFinalize.push(factory);
     }
+    this.normal_.markers().markConsistent(anychart.ConsistencyState.ALL);
     this.markConsistent(anychart.ConsistencyState.SERIES_MARKERS);
   }
 
@@ -3202,10 +3232,6 @@ anychart.core.series.Base.prototype.draw = function() {
     }
   }
 
-  if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_CLIP)) {
-    this.applyClip();
-    this.markConsistent(anychart.ConsistencyState.SERIES_CLIP);
-  }
 
   for (i = 0; i < factoriesToFinalize.length; i++) {
     factory = factoriesToFinalize[i];
@@ -3373,7 +3399,8 @@ anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
   }
   if (this.supportsOutliers()) {
     this.normal_.outlierMarkers()
-        .autoClipElement(this.clipElement_);
+        .autoClipElement(this.clipElement_)
+        .autoClip(ownClip);
   }
 };
 

@@ -149,7 +149,7 @@ anychart.core.Marker.prototype.settings = function(opt_value) {
   if (goog.isDef(opt_value)) {
     this.settings_ = opt_value ? goog.array.slice(opt_value, 0) : opt_value;
 
-    this.invalidate(
+    this.invalidate(anychart.ConsistencyState.MARKERS_FACTORY_CLIP |
         anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
         anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW);
   }
@@ -353,17 +353,7 @@ anychart.core.Marker.prototype.hasOwnOption = function(name) {
  * @return {*}
  */
 anychart.core.Marker.prototype.getOption = function(name) {
-  return this.ownSettings[name];
-};
-
-
-/**
- * Returns own and auto option value.
- * @param {string} name
- * @return {*}
- */
-anychart.core.Marker.prototype.getOwnAndAutoOption = function(name) {
-  return this.ownSettings[name];
+  return this.getFinalSettings(name);
 };
 
 
@@ -475,17 +465,14 @@ anychart.core.Marker.defaultSettingsProcessor_ = function(settings, index, field
   var setting;
 
   if (anychart.utils.instanceOf(settings, anychart.core.Marker)) {
-    if (field == 'enabled') {
-      var result = settings[field]();
-      setting = !goog.isNull(result) ? result : undefined;
-    } else {
-      setting = settings.getOwnAndAutoOption(field);
-    }
-  } else if (goog.typeOf(settings) == 'object') {
+    setting = settings.ownSettings['field'];
+  } else if (goog.typeOf(settings) === 'object') {
     setting = settings[field];
-    if (field == 'enabled' && goog.isNull(setting))
-      setting = undefined;
   }
+
+  if (goog.isNull(setting))
+    setting = void 0;
+
   if (opt_handler && goog.isDef(setting))
     setting = opt_handler(setting);
   return setting;
@@ -577,6 +564,13 @@ anychart.core.Marker.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
     if (enabled) {
+      if (this.factory_ && this.factory_.getDomElement()) {
+        if (!this.container()) this.container(/** @type {acgraph.vector.ILayer} */(this.factory_.getDomElement()));
+        if (!this.container().parent()) {
+          this.container().parent(/** @type {acgraph.vector.ILayer} */(this.factory_.container()));
+        }
+      }
+
       if (this.container())
         this.markerElement_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
     }
@@ -584,6 +578,8 @@ anychart.core.Marker.prototype.draw = function() {
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
+    if (this.container() && this.factory_)
+      this.container().zIndex(/** @type {number} */(this.factory_.zIndex()));
     this.markerElement_.zIndex(/** @type {number} */(this.zIndex()));
     this.markConsistent(anychart.ConsistencyState.Z_INDEX);
   }
@@ -698,7 +694,7 @@ anychart.core.Marker.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.Marker.prototype.setupByJSON = function(config, opt_default) {
-  var enabledState = this.getOption('enabled');
+  var enabledState = this.ownSettings['enabled'];
 
   anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config, opt_default);
 
@@ -709,7 +705,6 @@ anychart.core.Marker.prototype.setupByJSON = function(config, opt_default) {
   } else {
     this.enabled('enabled' in config ? config['enabled'] : enabledState);
   }
-
 };
 
 

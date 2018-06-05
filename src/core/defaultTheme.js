@@ -810,7 +810,6 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
     'offsetY': 0,
     'width': null,
     'height': null,
-    'clip': null,
     'fontSize': 12,
     'minFontSize': 8,
     'maxFontSize': 72,
@@ -1658,7 +1657,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
       'mode': 'chart-elements'
     },
     'normal': {
-      'labels': {'enabled': false, 'clip': false},
+      'labels': {'enabled': false, 'clip': true},
       'minLabels': {'enabled': null},
       'maxLabels': {'enabled': null},
       'markers': {'clip': false}

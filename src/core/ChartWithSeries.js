@@ -78,14 +78,11 @@ anychart.core.ChartWithSeries = function() {
     ['markers', 0, 0]
   ]);
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
-  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.core.ChartWithSeries} */ function(label) {
-    label.markConsistent(anychart.ConsistencyState.ALL);
-    label.listenSignals(this.labelsInvalidated_, this);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.core.ChartWithSeries} */ function(factory) {
+    factory.markConsistent(anychart.ConsistencyState.ALL);
+    factory.listenSignals(this.labelsInvalidated_, this);
   });
-  this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, /** @this {anychart.core.ChartWithSeries} */ function(marker) {
-    marker.markConsistent(anychart.ConsistencyState.ALL);
-    marker.listenSignals(this.labelsInvalidated_, this);
-  });
+  this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK);
 
   var descriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(descriptorsMeta, [
@@ -172,14 +169,14 @@ anychart.core.ChartWithSeries.generateSeriesConstructors = function(chartConstru
  * Series z-index in chart root layer.
  * @type {number}
  */
-anychart.core.ChartWithSeries.ZINDEX_SERIES = 30;
+anychart.core.ChartWithSeries.ZINDEX_SERIES = 36;
 
 
 /**
  * Line-like series should have bigger zIndex value than other series.
  * @type {number}
  */
-anychart.core.ChartWithSeries.ZINDEX_LINE_SERIES = 31;
+anychart.core.ChartWithSeries.ZINDEX_LINE_SERIES = 37;
 
 
 //endregion

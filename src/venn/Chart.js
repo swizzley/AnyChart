@@ -518,6 +518,7 @@ anychart.vennModule.Chart.prototype.getMarkersFactory = function() {
  */
 anychart.vennModule.Chart.prototype.markersInvalidated_ = function(event) {
   if (event.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
+    this.normal().markers().markConsistent(anychart.ConsistencyState.ALL);
     this.invalidate(anychart.ConsistencyState.VENN_MARKERS | anychart.ConsistencyState.CHART_LEGEND,
         anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND);
   }

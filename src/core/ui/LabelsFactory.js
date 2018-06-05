@@ -1408,7 +1408,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.state = function(name, opt_value,
       if (!isNaN(opt_priority))
         this.stateOrder(name, opt_priority);
 
-      this.invalidate(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
+      this.invalidate(anychart.ConsistencyState.LABELS_FACTORY_CLIP | anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
           anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW);
     }
 
@@ -1456,7 +1456,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.stateOrder = function(nameOrSet, 
     invalidate = true;
   }
   if (invalidate) {
-    this.invalidate(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
+    this.invalidate(anychart.ConsistencyState.LABELS_FACTORY_CLIP | anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ENABLED,
         anychart.Signal.BOUNDS_CHANGED | anychart.Signal.NEEDS_REDRAW);
   }
 
@@ -1974,7 +1974,7 @@ anychart.core.ui.LabelsFactory.Label.defaultSettingsProcessor_ = function(state,
       setting = anychart.core.ui.LabelsFactory.Label.normalizeAdjustFontSize(settings[field]);
     } else {
       setting = settings[field];
-      if (field == 'enabled' && goog.isNull(setting))
+      if ((field == 'enabled' || field == 'clip') && goog.isNull(setting))
         setting = undefined;
     }
   }
