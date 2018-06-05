@@ -235,32 +235,62 @@ anychart.color.fillOrStrokeToHex_ = function(fillOrStroke) {
  *      .fill( anychart.color.lighten('red'));
  * stage.rect(2*stage.width() / 3 + 10, 10, stage.width() / 3 - 30, stage.height() - 20)
  *      .fill( anychart.color.lighten('red', .8));
- * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|string)} fillOrStroke Fill or stroke to be lightened.
+ * @param {(acgraph.vector.Fill|acgraph.vector.Stroke)} fillOrStroke Fill or stroke to be lightened.
  * @param {number=} opt_factor [0.3] White color blending factor.
  * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke)} Hex representation of the lightened color, or Color if color can not be lighten.
  */
 anychart.color.lighten = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
-    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
+      acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
+
       var children = [];
-      var newPattern = acgraph.patternFill(fillOrStroke['bounds']);
+      var stage;
+      if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+        stage = new acgraph.vector.PatternFill(/** @type {goog.math.Rect}*/(fillOrStroke['getBounds']()));
+      } else {
+        stage = /** @type {acgraph.vector.PatternFill}*/(new acgraph.vector.Layer());
+      }
+      var id = stage['id']();
+      stage.deserialize(fillOrStroke.serialize());
+      stage['id'](id);
       for (var i = 0; i < fillOrStroke['children'].length; i++) {
         var child = fillOrStroke['children'][i];
-        if (child instanceof acgraph.vector.Circle) {
-          console.log("Circle");
+        var newChild;
+        if (acgraph.utils.instanceOf(child, acgraph.vector.Circle)) {
+          newChild = new acgraph.vector.Circle();
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Rect)) {
-          console.log("Rect");
+          newChild = new acgraph.vector.Rect();
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Text)) {
-          console.log("Text");
-        } else {
-          console.log('default');
+          newChild = new acgraph.vector.Text();
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Ellipse)) {
+          newChild = new acgraph.vector.Ellipse();
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Path)) {
+          newChild = new acgraph.vector.Path();
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Image)) {
+          newChild = new acgraph.vector.Image();
+        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Layer)) {
+          newChild = /** @type {acgraph.vector.Layer}*/(anychart.color.lighten(child, opt_factor));
         }
-        child = anychart.color.lighten(/** @type {acgraph.vector.Fill} */(child), opt_factor);
-        child['parent'](newPattern);
-        children.push(child);
+        if (goog.isDef(newChild)) {
+          id = newChild['id']();
+          newChild.deserialize(child.serialize());
+          newChild['id'](id);
+          if (goog.isDef(newChild['fill'])) {
+            newChild['fill'](anychart.color.lighten(newChild['fill'](), opt_factor));
+          }
+          if (goog.isDef(newChild['stroke'])) {
+            newChild['stroke'](anychart.color.lighten(newChild['stroke'](), opt_factor));
+          }
+          if (goog.isDef(newChild['color'])) {
+            newChild['color'](anychart.color.lighten(newChild['color'](), opt_factor));
+          }
+          newChild['parent'](stage);
+          children.push(newChild);
+        }
       }
-      newPattern['children'] = children;
-      return /**@typedef{acgraph.vector.PatternFill}*/(newPattern);
+      stage['children'] = children;
+      return stage;
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
     if (newFillOrStroke['fill']) {
@@ -306,29 +336,27 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
  *      .fill( anychart.color.darken('red'));
  * stage.rect(2*stage.width() / 3 + 10, 10, stage.width() / 3 - 30, stage.height() - 20)
  *      .fill( anychart.color.darken('red', .8));
- * @param {(acgraph.vector.Fill|acgraph.vector.Stroke|string)} fillOrStroke Fill or stroke to be darkened.
+ * @param {(acgraph.vector.Fill|acgraph.vector.Stroke)} fillOrStroke Fill or stroke to be darkened.
  * @param {number=} opt_factor [0.3] Black color blending factor.
  * @return {(string|acgraph.vector.Fill|acgraph.vector.Stroke)} Hex representation of the darkened color, or Color if color can't be darkened.
  */
 anychart.color.darken = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
     if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
-        acgraph.utils.instanceOf(fillOrStroke, anychart.graphics.vector.Layer)) {
+        acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
+
       var children = [];
       var stage;
-
       if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
-        stage = new acgraph.vector.PatternFill(/**@typedef {anychart.core.utils.Bounds}*/(fillOrStroke['getBounds']()));
+        stage = new acgraph.vector.PatternFill(/** @type {goog.math.Rect}*/(fillOrStroke['getBounds']()));
       } else {
-        stage = new acgraph.vector.Layer();
+        stage = /** @type {acgraph.vector.PatternFill}*/(new acgraph.vector.Layer());
       }
-      var id = fillOrStroke['id']();
+      var id = stage['id']();
       stage.deserialize(fillOrStroke.serialize());
       stage['id'](id);
       for (var i = 0; i < fillOrStroke['children'].length; i++) {
         var child = fillOrStroke['children'][i];
-        var properties = child.serialize();
-        console.log(properties);
         var newChild;
         if (acgraph.utils.instanceOf(child, acgraph.vector.Circle)) {
           newChild = new acgraph.vector.Circle();
@@ -343,30 +371,27 @@ anychart.color.darken = function(fillOrStroke, opt_factor) {
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Image)) {
           newChild = new acgraph.vector.Image();
         } else if (acgraph.utils.instanceOf(child, acgraph.vector.Layer)) {
-          newChild = anychart.color.darken(child, opt_factor);
+          newChild = /** @type {acgraph.vector.Layer}*/(anychart.color.darken(child, opt_factor));
         }
-        console.log(children);
         if (goog.isDef(newChild)) {
           id = newChild['id']();
-          newChild.deserialize(properties);
+          newChild.deserialize(child.serialize());
           newChild['id'](id);
           if (goog.isDef(newChild['fill'])) {
-            var fill = newChild['fill']();
-            var stroke = newChild['stroke']();
-            fill = anychart.color.darken(fill, opt_factor);
-            stroke = anychart.color.darken(stroke, opt_factor);
-            newChild['fill'](fill);
-            newChild['stroke'](stroke);
-          } else if (goog.isDef(newChild['color'])) {
+            newChild['fill'](anychart.color.darken(newChild['fill'](), opt_factor));
+          }
+          if (goog.isDef(newChild['stroke'])) {
+            newChild['stroke'](anychart.color.darken(newChild['stroke'](), opt_factor));
+          }
+          if (goog.isDef(newChild['color'])) {
             newChild['color'](anychart.color.darken(newChild['color'](), opt_factor));
           }
           newChild['parent'](stage);
           children.push(newChild);
         }
       }
-      console.log(children);
       stage['children'] = children;
-      return /**@typedef{acgraph.vector.PatternFill}*/(stage);
+      return stage;
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
     if (newFillOrStroke['fill']) {
