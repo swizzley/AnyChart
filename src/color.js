@@ -1,5 +1,5 @@
 goog.provide('anychart.color');
-goog.require('acgraph.vector');
+goog.require('acgraph');
 goog.require('goog.color');
 goog.require('goog.math');
 
