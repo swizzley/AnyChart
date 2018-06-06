@@ -60,11 +60,20 @@ anychart.radarPolarBaseModule.Chart = function(categorizeData) {
 goog.inherits(anychart.radarPolarBaseModule.Chart, anychart.core.ChartWithOrthogonalScales);
 
 //region --- Infrastructure
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Infrastructure
-//
-//----------------------------------------------------------------------------------------------------------------------
+/**
+ * Series z-index in chart root layer.
+ * @type {number}
+ */
+anychart.radarPolarBaseModule.Chart.ZINDEX_SERIES = 30;
+
+
+/**
+ * Line-like series should have bigger zIndex value than other series.
+ * @type {number}
+ */
+anychart.radarPolarBaseModule.Chart.ZINDEX_LINE_SERIES = 31;
+
+
 /**
  * Supported consistency states. Adds AXES, AXES_MARKERS, GRIDS to anychart.core.ChartWithSeries states.
  * @type {number}
@@ -100,6 +109,17 @@ anychart.radarPolarBaseModule.Chart.prototype.calculateStatistics = function() {
   this.statistics(anychart.enums.Statistics.CHART_ELEMENTS, elementsStat);
 };
 
+
+/**
+ * Returns base series z-index.
+ * @param {anychart.core.series.Base} series .
+ * @return {number}
+ */
+anychart.radarPolarBaseModule.Chart.prototype.getBaseSeriesZIndex = function(series) {
+  return series.isLineBased() ?
+      anychart.radarPolarBaseModule.Chart.ZINDEX_LINE_SERIES :
+      anychart.radarPolarBaseModule.Chart.ZINDEX_SERIES;
+};
 
 //endregion
 //region --- Specific settings
