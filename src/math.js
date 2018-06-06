@@ -620,47 +620,6 @@ anychart.math.clipSegmentByRect = function(x1, y1, x2, y2, rect) {
 };
 
 
-anychart.math.getSplineParams = function(fromX, fromY, fromXRatio, fromYRatio, toX, toY, toXRatio, toYRatio) {
-  var quarterStep;
-  if (counterClockwise) {
-    if (fromXRatio < toXRatio) {
-      fromXRatio += 1;
-    }
-    quarterStep = -.25;
-  } else {
-    if (toXRatio < fromXRatio) {
-      toXRatio += 1;
-    }
-    quarterStep = .25;
-  }
-  // searching full quarters to split the curve
-  var startQuarter = Math.ceil(fromXRatio / quarterStep) * quarterStep;
-  var endQuarter = Math.floor(toXRatio / quarterStep) * quarterStep;
-  if (fromXRatio == startQuarter)
-    startQuarter += quarterStep;
-  if (toXRatio == endQuarter)
-    endQuarter -= quarterStep;
-  var yRatioDivider = (toXRatio - fromXRatio) / (toYRatio - fromYRatio);
-  var result = [];
-  // for (var ratio = startQuarter; (ratio - endQuarter) * quarterStep <= 0; ratio += quarterStep) {
-  //   var angle = anychart.math.round(zeroAngle + ratio * Math.PI * 2, 4);
-  //   var rRatio = (ratio - fromXRatio) / yRatioDivider + fromYRatio;
-  //   var r = innerRadius + (radius - innerRadius) * rRatio;
-  //   var x = anychart.math.angleDx(angle, r, cx);
-  //   var y = anychart.math.angleDy(angle, r, cy);
-  //   result.push(fromXRatio % 1 == 0 ? 1 : 0);
-  //   anychart.math.getPolarLineParams_(fromX, fromY, fromXRatio, fromYRatio, x, y, ratio, rRatio, cx, cy, radius, innerRadius, zeroAngle, result);
-  //   fromX = x;
-  //   fromY = y;
-  //   fromXRatio = ratio;
-  //   fromYRatio = rRatio;
-  // }
-  result.push(fromXRatio % 1 == 0 ? 1 : 0);
-  anychart.math.getPolarLineParams_(fromX, fromY, fromXRatio, fromYRatio, toX, toY, toXRatio, toYRatio, cx, cy, radius, innerRadius, zeroAngle, result);
-  return result;
-};
-
-
 /**
  * Calculates a set of params to draw a line in polar coords. Returns an array where each 7 elements
  * represent one cubic curve to be drawn. The first element is a 0 or 1 - whether a new path needed,
@@ -1090,6 +1049,287 @@ anychart.math.Rect.fromJSON = function(config) {
 anychart.math.rect = function(x, y, w, h) {
   return new anychart.math.Rect(x, y, w, h);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Vector2D(x,y){if(arguments.length>0){this.init(x,y);}}
+Vector2D.prototype.init=function(x,y){this.x=x;this.y=y;};
+Vector2D.prototype.length=function(){return Math.sqrt(this.x*this.x+this.y*this.y);};
+Vector2D.prototype.dot=function(that){return this.x*that.x+this.y*that.y;};
+Vector2D.prototype.cross=function(that){return this.x*that.y-this.y*that.x;}
+Vector2D.prototype.unit=function(){return this.divide(this.length());};
+Vector2D.prototype.unitEquals=function(){this.divideEquals(this.length());return this;};
+Vector2D.prototype.add=function(that){return new Vector2D(this.x+that.x,this.y+that.y);};
+Vector2D.prototype.addEquals=function(that){this.x+=that.x;this.y+=that.y;return this;};
+Vector2D.prototype.subtract=function(that){return new Vector2D(this.x-that.x,this.y-that.y);};
+Vector2D.prototype.subtractEquals=function(that){this.x-=that.x;this.y-=that.y;return this;};
+Vector2D.prototype.multiply=function(scalar){return new Vector2D(this.x*scalar,this.y*scalar);};
+Vector2D.prototype.multiplyEquals=function(scalar){this.x*=scalar;this.y*=scalar;return this;};
+Vector2D.prototype.divide=function(scalar){return new Vector2D(this.x/ scalar, this.y /scalar);};
+Vector2D.prototype.divideEquals=function(scalar){this.x/=scalar;this.y/=scalar;return this;};
+Vector2D.prototype.perp=function(){return new Vector2D(-this.y,this.x);};
+Vector2D.fromPoints=function(p1,p2){return new Vector2D(p2.x-p1.x,p2.y-p1.y);};
+
+
+function Point2D(x,y){if(arguments.length>0){this.init(x,y);}}
+Point2D.prototype.init=function(x,y){this.x=x;this.y=y;};
+Point2D.prototype.add=function(that){return new Point2D(this.x+that.x,this.y+that.y);};
+Point2D.prototype.addEquals=function(that){this.x+=that.x;this.y+=that.y;return this;};
+Point2D.prototype.scalarAdd=function(scalar){return new Point2D(this.x+scalar,this.y+scalar);};
+Point2D.prototype.scalarAddEquals=function(scalar){this.x+=scalar;this.y+=scalar;return this;};
+Point2D.prototype.subtract=function(that){return new Point2D(this.x-that.x,this.y-that.y);};
+Point2D.prototype.subtractEquals=function(that){this.x-=that.x;this.y-=that.y;return this;};
+Point2D.prototype.scalarSubtract=function(scalar){return new Point2D(this.x-scalar,this.y-scalar);};
+Point2D.prototype.scalarSubtractEquals=function(scalar){this.x-=scalar;this.y-=scalar;return this;};
+Point2D.prototype.multiply=function(scalar){return new Point2D(this.x*scalar,this.y*scalar);};
+Point2D.prototype.multiplyEquals=function(scalar){this.x*=scalar;this.y*=scalar;return this;};
+Point2D.prototype.divide=function(scalar){return new Point2D(this.x/scalar, this.y/scalar);};
+Point2D.prototype.divideEquals=function(scalar){this.x/=scalar;this.y/=scalar;return this;};
+Point2D.prototype.eq=function(that){return(this.x==that.x&&this.y==that.y);};
+Point2D.prototype.lt=function(that){return(this.x<that.x&&this.y<that.y);};
+Point2D.prototype.lte=function(that){return(this.x<=that.x&&this.y<=that.y);};
+Point2D.prototype.gt=function(that){return(this.x>that.x&&this.y>that.y);};
+Point2D.prototype.gte=function(that){return(this.x>=that.x&&this.y>=that.y);};
+Point2D.prototype.lerp=function(that,t){return new Point2D(this.x+(that.x-this.x)*t,this.y+(that.y-this.y)*t);};
+Point2D.prototype.distanceFrom=function(that){var dx=this.x-that.x;var dy=this.y-that.y;return Math.sqrt(dx*dx+dy*dy);};
+Point2D.prototype.min=function(that){return new Point2D(Math.min(this.x,that.x),Math.min(this.y,that.y));};
+Point2D.prototype.max=function(that){return new Point2D(Math.max(this.x,that.x),Math.max(this.y,that.y));};
+Point2D.prototype.toString=function(){return this.x+","+this.y;};
+Point2D.prototype.setXY=function(x,y){this.x=x;this.y=y;};
+Point2D.prototype.setFromPoint=function(that){this.x=that.x;this.y=that.y;};
+Point2D.prototype.swap=function(that){var x=this.x;var y=this.y;this.x=that.x;this.y=that.y;that.x=x;that.y=y;};
+
+
+Polynomial.TOLERANCE=1e-6;
+Polynomial.ACCURACY=6;
+function Polynomial(){this.init(arguments);}
+Polynomial.prototype.init=function(coefs){this.coefs=new Array();for(var i=coefs.length-1;i>=0;i--)this.coefs.push(coefs[i]);};
+Polynomial.prototype.eval=function(x){var result=0;for(var i=this.coefs.length-1;i>=0;i--)result=result*x+this.coefs[i];return result;};
+Polynomial.prototype.multiply=function(that){var result=new Polynomial();for(var i=0;i<=this.getDegree()+that.getDegree();i++)result.coefs.push(0);for(var i=0;i<=this.getDegree();i++)for(var j=0;j<=that.getDegree();j++)result.coefs[i+j]+=this.coefs[i]*that.coefs[j];return result;};
+Polynomial.prototype.divide_scalar=function(scalar){for(var i=0;i<this.coefs.length;i++)this.coefs[i]/=scalar;};
+Polynomial.prototype.simplify=function(){for(var i=this.getDegree();i>=0;i--){if(Math.abs(this.coefs[i])<=Polynomial.TOLERANCE)this.coefs.pop();else break;}};
+Polynomial.prototype.bisection=function(min,max){var minValue=this.eval(min);var maxValue=this.eval(max);var result;if(Math.abs(minValue)<=Polynomial.TOLERANCE)result=min;else if(Math.abs(maxValue)<=Polynomial.TOLERANCE)result=max;else if(minValue*maxValue<=0){var tmp1=Math.log(max-min);var tmp2=Math.log(10)*Polynomial.ACCURACY;var iters=Math.ceil((tmp1+tmp2)/Math.log(2));for(var i=0;i<iters;i++){result=0.5*(min+max);var value=this.eval(result);if(Math.abs(value)<=Polynomial.TOLERANCE){break;}if(value*minValue<0){max=result;maxValue=value;}else{min=result;minValue=value;}}}return result;};
+Polynomial.prototype.toString=function(){var coefs=new Array();var signs=new Array();for(var i=this.coefs.length-1;i>=0;i--){var value=this.coefs[i];if(value!=0){var sign=(value<0)?" - ":" + ";value=Math.abs(value);if(i>0)if(value==1)value="x";else value+="x";if(i>1)value+="^"+i;signs.push(sign);coefs.push(value);}}signs[0]=(signs[0]==" + ")?"":"-";var result="";for(var i=0;i<coefs.length;i++)result+=signs[i]+coefs[i];return result;};
+Polynomial.prototype.getDegree=function(){return this.coefs.length-1;};
+Polynomial.prototype.getDerivative=function(){var derivative=new Polynomial();for(var i=1;i<this.coefs.length;i++){derivative.coefs.push(i*this.coefs[i]);}return derivative;};
+Polynomial.prototype.getRoots=function(){var result;this.simplify();switch(this.getDegree()){case 0:result=new Array();break;case 1:result=this.getLinearRoot();break;case 2:result=this.getQuadraticRoots();break;case 3:result=this.getCubicRoots();break;case 4:result=this.getQuarticRoots();break;default:result=new Array();}return result;};
+Polynomial.prototype.getRootsInInterval=function(min,max){var roots=new Array();var root;if(this.getDegree()==1){root=this.bisection(min,max);if(root!=null)roots.push(root);}else{var deriv=this.getDerivative();var droots=deriv.getRootsInInterval(min,max);if(droots.length>0){root=this.bisection(min,droots[0]);if(root!=null)roots.push(root);for(i=0;i<=droots.length-2;i++){root=this.bisection(droots[i],droots[i+1]);if(root!=null)roots.push(root);}root=this.bisection(droots[droots.length-1],max);if(root!=null)roots.push(root);}else{root=this.bisection(min,max);if(root!=null)roots.push(root);}}return roots;};
+Polynomial.prototype.getLinearRoot=function(){var result=new Array();var a=this.coefs[1];if(a!=0)result.push(-this.coefs[0]/a);return result;};
+Polynomial.prototype.getQuadraticRoots=function(){var results=new Array();if(this.getDegree()==2){var a=this.coefs[2];var b=this.coefs[1]/a;var c=this.coefs[0]/a;var d=b*b-4*c;if(d>0){var e=Math.sqrt(d);results.push(0.5*(-b+e));results.push(0.5*(-b-e));}else if(d==0){results.push(0.5*-b);}}return results;};
+Polynomial.prototype.getCubicRoots=function(){var results=new Array();if(this.getDegree()==3){var c3=this.coefs[3];var c2=this.coefs[2]/c3;var c1=this.coefs[1]/c3;var c0=this.coefs[0]/c3;var a=(3*c1-c2*c2)/3;var b=(2*c2*c2*c2-9*c1*c2+27*c0)/27;var offset=c2/3;var discrim=b*b/4 + a*a*a/27;var halfB=b/2;if(Math.abs(discrim)<=Polynomial.TOLERANCE)disrim=0;if(discrim>0){var e=Math.sqrt(discrim);var tmp;var root;tmp=-halfB+e;if(tmp>=0)root=Math.pow(tmp,1/3);else root=-Math.pow(-tmp,1/3);tmp=-halfB-e;if(tmp>=0)root+=Math.pow(tmp,1/3);else root-=Math.pow(-tmp,1/3);results.push(root-offset);}else if(discrim<0){var distance=Math.sqrt(-a/3);var angle=Math.atan2(Math.sqrt(-discrim),-halfB)/3;var cos=Math.cos(angle);var sin=Math.sin(angle);var sqrt3=Math.sqrt(3);results.push(2*distance*cos-offset);results.push(-distance*(cos+sqrt3*sin)-offset);results.push(-distance*(cos-sqrt3*sin)-offset);}else{var tmp;if(halfB>=0)tmp=-Math.pow(halfB,1/3);else tmp=Math.pow(-halfB,1/3);results.push(2*tmp-offset);results.push(-tmp-offset);}}return results;};
+Polynomial.prototype.getQuarticRoots=function(){var results=new Array();if(this.getDegree()==4){var c4=this.coefs[4];var c3=this.coefs[3]/c4;var c2=this.coefs[2]/c4;var c1=this.coefs[1]/c4;var c0=this.coefs[0]/c4;var resolveRoots=new Polynomial(1,-c2,c3*c1-4*c0,-c3*c3*c0+4*c2*c0-c1*c1).getCubicRoots();var y=resolveRoots[0];var discrim=c3*c3/4-c2+y;if(Math.abs(discrim)<=Polynomial.TOLERANCE)discrim=0;if(discrim>0){var e=Math.sqrt(discrim);var t1=3*c3*c3/4-e*e-2*c2;var t2=(4*c3*c2-8*c1-c3*c3*c3)/(4*e);var plus=t1+t2;var minus=t1-t2;if(Math.abs(plus)<=Polynomial.TOLERANCE)plus=0;if(Math.abs(minus)<=Polynomial.TOLERANCE)minus=0;if(plus>=0){var f=Math.sqrt(plus);results.push(-c3/4 + (e+f)/2);results.push(-c3/4 + (e-f)/2);}if(minus>=0){var f=Math.sqrt(minus);results.push(-c3/4 + (f-e)/2);results.push(-c3/4 - (f+e)/2);}}else if(discrim<0){}else{var t2=y*y-4*c0;if(t2>=-Polynomial.TOLERANCE){if(t2<0)t2=0;t2=2*Math.sqrt(t2);t1=3*c3*c3/4-2*c2;if(t1+t2>=Polynomial.TOLERANCE){var d=Math.sqrt(t1+t2);results.push(-c3/4 + d/2);results.push(-c3/4 - d/2);}if(t1-t2>=Polynomial.TOLERANCE){var d=Math.sqrt(t1-t2);results.push(-c3/4 + d/2);results.push(-c3/4 - d/2);}}}}return results;};
+
+
+
+anychart.math.intersectBezier2Line = function(p1x, p1y, p2x, p2y, p3x, p3y, a1x, a1y, a2x, a2y) {
+  console.log(p1x, p1y, p2x, p2y, p3x, p3y, a1x, a1y, a2x, a2y);
+  var p1 = new Point2D(p1x, p1y);
+  var p2 = new Point2D(p2x, p2y);
+  var p3 = new Point2D(p3x, p3y);
+  var a1 = new Point2D(a1x, a1y);
+  var a2 = new Point2D(a2x, a2y);
+
+  var a, b;             // temporary variables
+  var c2, c1, c0;       // coefficients of quadratic
+  var cl;               // c coefficient for normal form of line
+  var n;                // normal for normal form of line
+  var min = a1.min(a2); // used to determine if point is on line segment
+  var max = a1.max(a2); // used to determine if point is on line segment
+  var result = [];
+
+  a = p2.multiply(-2);
+  c2 = p1.add(a.add(p3));
+
+  a = p1.multiply(-2);
+  b = p2.multiply(2);
+  c1 = a.add(b);
+
+  c0 = new Point2D(p1.x, p1.y);
+
+  // Convert line to normal form: ax + by + c = 0
+  // Find normal to line: negative inverse of original line's slope
+  n = new Vector2D(a1.y - a2.y, a2.x - a1.x);
+
+  // Determine new c coefficient
+  cl = a1.x*a2.y - a2.x*a1.y;
+
+  // Transform cubic coefficients to line's coordinate system and find roots
+  // of cubic
+  var roots = new Polynomial(
+      n.dot(c2),
+      n.dot(c1),
+      n.dot(c0) + cl
+  ).getRoots();
+
+  // Any roots in closed interval [0,1] are intersections on Bezier, but
+  // might not be on the line segment.
+  // Find intersections and calculate point coordinates
+  for ( var i = 0; i < roots.length; i++ ) {
+    var t = roots[i];
+
+    if ( 0 <= t && t <= 1 ) {
+      // We're within the Bezier curve
+      // Find point on Bezier
+      var p4 = p1.lerp(p2, t);
+      var p5 = p2.lerp(p3, t);
+
+      var p6 = p4.lerp(p5, t);
+
+      // See if point is on line segment
+      // Had to make special cases for vertical and horizontal lines due
+      // to slight errors in calculation of p6
+      if ( a1.x == a2.x ) {
+        if ( min.y <= p6.y && p6.y <= max.y ) {
+          result.push( p6 );
+        }
+      } else if ( a1.y == a2.y ) {
+        if ( min.x <= p6.x && p6.x <= max.x ) {
+          result.push( p6 );
+        }
+      } else if ( p6.gte(min) && p6.lte(max) ) {
+        result.push( p6 );
+      }
+    }
+  }
+
+  return result;
+};
+
+
+/*****
+ *
+ *   intersectBezier3Line
+ *
+ *   Many thanks to Dan Sunday at SoftSurfer.com.  He gave me a very thorough
+ *   sketch of the algorithm used here.  Without his help, I'm not sure when I
+ *   would have figured out this intersection problem.
+ *
+ *****/
+anychart.math.intersectBezier3Line = function(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, a1x, a1y, a2x, a2y) {
+  var p1 = new Point2D(p1x, p1y);
+  var p2 = new Point2D(p2x, p2y);
+  var p3 = new Point2D(p3x, p3y);
+  var p4 = new Point2D(p4x, p4y);
+  var a1 = new Point2D(a1x, a1y);
+  var a2 = new Point2D(a2x, a2y);
+
+  var a, b, c, d;       // temporary variables
+  var c3, c2, c1, c0;   // coefficients of cubic
+  var cl;               // c coefficient for normal form of line
+  var n;                // normal for normal form of line
+  var min = a1.min(a2); // used to determine if point is on line segment
+  var max = a1.max(a2); // used to determine if point is on line segment
+  var result = [];
+
+  // Calculate the coefficients
+  a = p1.multiply(-1);
+  b = p2.multiply(3);
+  c = p3.multiply(-3);
+  d = a.add(b.add(c.add(p4)));
+  c3 = new Vector2D(d.x, d.y);
+
+  a = p1.multiply(3);
+  b = p2.multiply(-6);
+  c = p3.multiply(3);
+  d = a.add(b.add(c));
+  c2 = new Vector2D(d.x, d.y);
+
+  a = p1.multiply(-3);
+  b = p2.multiply(3);
+  c = a.add(b);
+  c1 = new Vector2D(c.x, c.y);
+
+  c0 = new Vector2D(p1.x, p1.y);
+
+  // Convert line to normal form: ax + by + c = 0
+  // Find normal to line: negative inverse of original line's slope
+  n = new Vector2D(a1.y - a2.y, a2.x - a1.x);
+
+  // Determine new c coefficient
+  cl = a1.x*a2.y - a2.x*a1.y;
+
+  // ?Rotate each cubic coefficient using line for new coordinate system?
+  // Find roots of rotated cubic
+  var roots = new Polynomial(
+      n.dot(c3),
+      n.dot(c2),
+      n.dot(c1),
+      n.dot(c0) + cl
+  ).getRoots();
+
+  // Any roots in closed interval [0,1] are intersections on Bezier, but
+  // might not be on the line segment.
+  // Find intersections and calculate point coordinates
+  for ( var i = 0; i < roots.length; i++ ) {
+    var t = roots[i];
+
+    if ( 0 <= t && t <= 1 ) {
+      // We're within the Bezier curve
+      // Find point on Bezier
+      var p5 = p1.lerp(p2, t);
+      var p6 = p2.lerp(p3, t);
+      var p7 = p3.lerp(p4, t);
+
+      var p8 = p5.lerp(p6, t);
+      var p9 = p6.lerp(p7, t);
+
+      var p10 = p8.lerp(p9, t);
+
+      // See if point is on line segment
+      // Had to make special cases for vertical and horizontal lines due
+      // to slight errors in calculation of p10
+      if ( a1.x == a2.x ) {
+        if ( min.y <= p10.y && p10.y <= max.y ) {
+          result.push(p10);
+        }
+      } else if ( a1.y == a2.y ) {
+        if ( min.x <= p10.x && p10.x <= max.x ) {
+          result.push(p10);
+        }
+      } else if ( p10.gte(min) && p10.lte(max) ) {
+        result.push(p10);
+      }
+    }
+  }
+
+  return result;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //exports

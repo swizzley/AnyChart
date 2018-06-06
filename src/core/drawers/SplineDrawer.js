@@ -112,6 +112,7 @@ anychart.core.drawers.SplineDrawer.prototype.isVertical = function(opt_value) {
  * @param {boolean=} opt_skip
  */
 anychart.core.drawers.SplineDrawer.prototype.processPoint = function(x, y, opt_skip) {
+  console.log(this.state_);
   switch (this.state_) {
     case 3:
       if (this.x2_ == x && this.y2_ == y) break;
@@ -300,12 +301,15 @@ anychart.core.drawers.SplineDrawer.prototype.drawNextSplinePoint_ = function(p1x
     var mpx = (c1x + c2x) / 2;
     var mpy = (c1y + c2y) / 2;
 
-    // this.paths_[0].getStage().path().moveTo(p1x, p1y).lineTo(mpx, mpy, c1x, c1y, p1x, p1y).fill(null).stroke('5 black').zIndex(1000);
-    // this.paths_[0].getStage().path().moveTo(mpx, mpy).lineTo(p2x, p2y, c2x, c2y, mpx, mpy).fill(null).stroke('5 black').zIndex(1000);
-    // this.paths_[0].getStage().pie(mpx, mpy, 5, 0, 360).fill(this.paths_[0].fill()).stroke('black').zIndex(1000);
-    // this.paths_[0].getStage().pie(c1x, c1y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('black').zIndex(1000);
-    // this.paths_[0].getStage().pie(c2x, c2y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('black').zIndex(1000);
-    // console.log(this.tangent_[0], this.tangent_[1], c2x - p2x, c2y - p2y);
+    // anychart.math.intersectBezier3Line(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, );
+    // anychart.math.intersectBezier2Line(mpx, mpy, c1x, c1y, c2x, c2y, p2x, p2y, mpx_, mpy_);
+
+
+    this.paths_[0].getStage().path().moveTo(p1x, p1y).lineTo(mpx, mpy, c1x, c1y, p1x, p1y).fill(null).stroke('2 red').zIndex(1000);
+    this.paths_[0].getStage().path().moveTo(mpx, mpy).lineTo(p2x, p2y, c2x, c2y, mpx, mpy).fill(null).stroke('2 green').zIndex(1000);
+    this.paths_[0].getStage().pie(mpx, mpy, 5, 0, 360).fill(this.paths_[0].fill()).stroke('red').zIndex(1000);
+    this.paths_[0].getStage().pie(c1x, c1y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('blue').zIndex(1000);
+    this.paths_[0].getStage().pie(c2x, c2y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('green').zIndex(1000);
 
     var i;
     if (this.isVertical_) {

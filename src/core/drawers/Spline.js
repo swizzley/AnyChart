@@ -85,7 +85,6 @@ anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
   var shapes = this.shapesManager.getShapesGroup(this.seriesState);
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
-  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(shapes['stroke'])]);
 
 
   var normSettings = this.series.normal();
@@ -104,25 +103,92 @@ anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var value = point.get(this.series.getYValueNames()[0]);
+  var name = this.getShapeName(value);
+  var shapeNames = {};
+  shapeNames[name] = true;
+
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
+  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(this.currentShapes[name])]);
   this.queue_.resetDrawer(false);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['stroke']), this.isVertical, x, y);
+  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
   this.queue_.processPoint(x, y);
+
+  this.prevX = x;
+  this.prevY = y;
+  this.prevValue = value;
+  this.prevShapeName = name;
+};
+
+
+anychart.core.drawers.Spline.prototype.drawBreaker = function() {
+  if (shapes != this.currentShapes) {
+    var crossX, crossY, prevX, prevY, prevName;
+    prevX = /** @type {number} */(this.prevX);
+    prevY = /** @type {number} */(this.prevY);
+    prevName = this.prevShapeName;
+    var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+    var baselineCrossed = (this.prevValue - baseline) * (currValue - baseline) < 0;
+
+    if (this.hasNegativeColoring && baselineCrossed) {
+      crossY = /** @type {number} */(point.meta('zero'));
+      // crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
+
+      var p1x = this.queue_.x1_;
+      var p1y = this.queue_.y1_;
+      var p2x = this.queue_.x2_;
+      var p2y = this.queue_.y2_;
+      var p3x = x;
+      var p3y = y;
+
+      this.queue_.calcTangent_(p1x, p1y, p2x, p2y, p3x, p3y);
+
+      var c1x = p1x + this.queue_.tangent_[0];
+      var c1y = p1y + this.queue_.tangent_[1];
+      var c2x = p2x - this.queue_.tan_[0] * this.queue_.tanLen_;
+      var c2y = p2y - this.queue_.tan_[1] * this.queue_.tanLen_;
+      var mpx = (c1x + c2x) / 2;
+      var mpy = (c1y + c2y) / 2;
+
+      var crossPoint;
+      if ((p1y < crossY && mpy > crossY) || (mpy < crossY && p1y > crossY)) {
+        crossPoint = anychart.math.intersectBezier2Line(p1x, p1y, c1x, c1y, mpx, mpy, p1x, crossY, mpx, crossY);
+      } else {
+        crossPoint = anychart.math.intersectBezier2Line(mpx, mpy, c2x, c2y, p2x, p2y, mpx, crossY, p2x, crossY);
+      }
+      console.log(crossPoint);
+    }
+
+    // this.queue_.processPoint(x, y);
+
+    // anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevName]), this.isVertical, crossX, crossY);
+    // this.currentShapes = shapes;
+    // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, crossX, crossY);
+  }
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, state) {
-  var params = anychart.math.getPolarLineParams(this.lastX, this.lastY, this.lastXRatio, this.lastYRatio,
-      x, y, xRatio, yRatio, this.cx, this.cy, this.radius, this.innerRadius, this.zeroAngle, this.counterClockwise);
+  var currValue = point.get(this.series.getYValueNames()[0]);
+  var name = this.getShapeName(currValue);
+  var shapeNames = {};
+  shapeNames[name] = true;
+  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
   this.queue_.processPoint(x, y);
+
+  this.prevX = x;
+  this.prevY = y;
+  this.prevValue = currValue;
+  this.prevShapeName = name;
 };
 
 
