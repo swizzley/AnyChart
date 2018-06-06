@@ -241,7 +241,7 @@ anychart.color.fillOrStrokeToHex_ = function(fillOrStroke) {
  */
 anychart.color.lighten = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
-    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+    if (!fillOrStroke['color'] && !fillOrStroke['keys']) {
       return fillOrStroke;
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
@@ -290,7 +290,7 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
  */
 anychart.color.darken = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
-    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+    if (!fillOrStroke['color'] && !fillOrStroke['keys']) {
       return fillOrStroke;
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
