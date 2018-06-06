@@ -734,7 +734,7 @@ anychart.pieModule.Chart.prototype.group = function(opt_value) {
 anychart.pieModule.Chart.prototype.palette = function(opt_value) {
   if (anychart.utils.instanceOf(opt_value, anychart.palettes.RangeColors)) {
     this.setupPalette_(anychart.palettes.RangeColors, /** @type {anychart.palettes.RangeColors} */(opt_value));
-    this.palette_.setOption('autoCount', this.data().getRowsCount());
+    this.palette_.setAutoCount(this.data().getRowsCount());
     return this;
   } else if (anychart.utils.instanceOf(opt_value, anychart.palettes.DistinctColors)) {
     this.setupPalette_(anychart.palettes.DistinctColors, /** @type {anychart.palettes.DistinctColors} */(opt_value));
