@@ -47,16 +47,19 @@ anychart.palettes.RangeColors = function() {
   this.colorPalette_ = [];
 
   /**
+   * AutoCount, used to store how much count chart needs
+   * @type {number}
+   * @private
+   */
+  this.autoCount_ = NaN;
+
+  /**
    * Descriptors meta.
    * @type {!Object.<string, anychart.core.settings.PropertyDescriptorMeta>}
    */
   this.descriptorsMeta = {};
 
   this.restoreDefaults(true);
-
-  anychart.core.settings.createDescriptorMeta(this.descriptorsMeta, [
-    ['autoCount', 0, 0]
-  ]);
 };
 goog.inherits(anychart.palettes.RangeColors, anychart.core.Base);
 
@@ -76,14 +79,12 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEED
 anychart.palettes.RangeColors.prototype.colorPalette_;
 
 
-anychart.palettes.RangeColors.PROPERTY_DESCRIPTORS = (function() {
-  var map = {};
-  anychart.core.settings.createDescriptors(map, [
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'autoCount', anychart.core.settings.numberNormalizer]
-  ]);
-  return map;
-})();
-anychart.core.settings.populate(anychart.palettes.RangeColors, anychart.palettes.RangeColors.PROPERTY_DESCRIPTORS);
+/**
+ * @param {number} val Value from chart for autoCount
+ */
+anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
+  this.autoCount_ = val;
+};
 
 
 /**
@@ -168,7 +169,7 @@ anychart.palettes.RangeColors.prototype.processColorRange_ = function() {
     var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
     if (!goog.isArray(colors) || !colors.length) return;
 
-    var autoCount = this.getOption('autoCount');
+    var autoCount = this.autoCount_;
     var count;
     if (!isNaN(this.count_))
       count = this.count_;
@@ -176,7 +177,6 @@ anychart.palettes.RangeColors.prototype.processColorRange_ = function() {
       count = autoCount;
     else
       count = colors.length;
-
 
     var offsetStep = 1 / (colors.length - 1), color;
     for (var i = 0; i < colors.length; i++) {
@@ -356,6 +356,4 @@ anychart.palettes.rangeColors = function(opt_value, var_args) {
   proto['itemAt'] = proto.itemAt;
   proto['items'] = proto.items;
   proto['count'] = proto.count;
-  // auto generated
-  // proto['autoCount'] = proto.autoCount;
 })();
