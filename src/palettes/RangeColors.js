@@ -46,7 +46,17 @@ anychart.palettes.RangeColors = function() {
    */
   this.colorPalette_ = [];
 
+  /**
+   * Descriptors meta.
+   * @type {!Object.<string, anychart.core.settings.PropertyDescriptorMeta>}
+   */
+  this.descriptorsMeta = {};
+
   this.restoreDefaults(true);
+
+  anychart.core.settings.createDescriptorMeta(this.descriptorsMeta, [
+    ['autoCount', 0, 0]
+  ]);
 };
 goog.inherits(anychart.palettes.RangeColors, anychart.core.Base);
 
@@ -64,6 +74,16 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEED
  * @private
  */
 anychart.palettes.RangeColors.prototype.colorPalette_;
+
+
+anychart.palettes.RangeColors.PROPERTY_DESCRIPTORS = (function() {
+  var map = {};
+  anychart.core.settings.createDescriptors(map, [
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'autoCount', anychart.core.settings.numberNormalizer]
+  ]);
+  return map;
+})();
+anychart.core.settings.populate(anychart.palettes.RangeColors, anychart.palettes.RangeColors.PROPERTY_DESCRIPTORS);
 
 
 /**
@@ -147,7 +167,15 @@ anychart.palettes.RangeColors.prototype.processColorRange_ = function() {
     var gradientKeys = [];
     var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
     if (!goog.isArray(colors) || !colors.length) return;
-    if (isNaN(this.count_)) this.count_ = colors.length;
+
+    var autoCount = this.getOption('autoCount');
+    var count;
+    if (!isNaN(this.count_))
+      count = this.count_;
+    else if (!isNaN(autoCount))
+      count = autoCount;
+    else
+      count = colors.length;
 
 
     var offsetStep = 1 / (colors.length - 1), color;
@@ -177,11 +205,11 @@ anychart.palettes.RangeColors.prototype.processColorRange_ = function() {
     this.colorPalette_ = [];
 
     if (gradientKeys.length == 1) {
-      for (i = 0; i < this.count_; i++)
+      for (i = 0; i < count; i++)
         this.colorPalette_[i] = {'color': gradientKeys[0].color};
     } else {
-      for (i = 0; i < this.count_; i++) {
-        var indexOffset = this.count_ == 1 ? 0 : i / (this.count_ - 1);
+      for (i = 0; i < count; i++) {
+        var indexOffset = count == 1 ? 0 : i / (count - 1);
 
         var leftLimit = null;
         var rightLimit = null;
@@ -328,4 +356,6 @@ anychart.palettes.rangeColors = function(opt_value, var_args) {
   proto['itemAt'] = proto.itemAt;
   proto['items'] = proto.items;
   proto['count'] = proto.count;
+  // auto generated
+  // proto['autoCount'] = proto.autoCount;
 })();
