@@ -1053,6 +1053,9 @@ anychart.core.ChartWithSeries.prototype.invalidateAnnotations = function() {};
  * @inheritDoc
  */
 anychart.core.ChartWithSeries.prototype.beforeDraw = function() {
+  if (anychart.utils.instanceOf(this.palette_, anychart.palettes.RangeColors))
+    this.palette_.setAutoCount(this.getAllSeries().length);
+
   if (this.isConsistent())
     return;
 
