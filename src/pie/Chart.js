@@ -734,7 +734,6 @@ anychart.pieModule.Chart.prototype.group = function(opt_value) {
 anychart.pieModule.Chart.prototype.palette = function(opt_value) {
   if (anychart.utils.instanceOf(opt_value, anychart.palettes.RangeColors)) {
     this.setupPalette_(anychart.palettes.RangeColors, /** @type {anychart.palettes.RangeColors} */(opt_value));
-    this.palette_.setAutoCount(this.data().getRowsCount());
     return this;
   } else if (anychart.utils.instanceOf(opt_value, anychart.palettes.DistinctColors)) {
     this.setupPalette_(anychart.palettes.DistinctColors, /** @type {anychart.palettes.DistinctColors} */(opt_value));
@@ -2076,7 +2075,7 @@ anychart.pieModule.Chart.prototype.transformCenterContent = function(contentBoun
  */
 anychart.pieModule.Chart.prototype.beforeDraw = function() {
   if (this.palette_ && anychart.utils.instanceOf(this.palette_, anychart.palettes.RangeColors)) {
-    this.palette_.count(this.getIterator().getRowsCount());
+    this.palette_.setAutoCount(this.getIterator().getRowsCount());
   }
 };
 
