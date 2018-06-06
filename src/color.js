@@ -295,6 +295,8 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
     if (newFillOrStroke['fill']) {
       newFillOrStroke['fill'](anychart.color.lighten(/** @type {acgraph.vector.Fill} */(goog.object.clone(newFillOrStroke['fill']())), opt_factor));
+    }
+    if (newFillOrStroke['stroke']) {
       newFillOrStroke['stroke'](anychart.color.lighten(/** @type {acgraph.vector.Fill} */(goog.object.clone(newFillOrStroke['stroke']())), opt_factor));
     }
     if (goog.isDef(fillOrStroke['keys'])) {
@@ -396,6 +398,8 @@ anychart.color.darken = function(fillOrStroke, opt_factor) {
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
     if (newFillOrStroke['fill']) {
       newFillOrStroke['fill'](anychart.color.darken(newFillOrStroke['fill'](), opt_factor));
+    }
+    if (newFillOrStroke['stroke']) {
       newFillOrStroke['stroke'](anychart.color.darken(newFillOrStroke['stroke'](), opt_factor));
     }
     if (goog.isDef(fillOrStroke['keys'])) {
