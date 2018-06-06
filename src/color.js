@@ -241,64 +241,10 @@ anychart.color.fillOrStrokeToHex_ = function(fillOrStroke) {
  */
 anychart.color.lighten = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
-    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
-        acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
-
-      var children = [];
-      var stage;
-      if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
-        stage = new acgraph.vector.PatternFill(/** @type {goog.math.Rect}*/(fillOrStroke['getBounds']()));
-      } else {
-        stage = /** @type {acgraph.vector.PatternFill}*/(new acgraph.vector.Layer());
-      }
-      var id = stage['id']();
-      stage.deserialize(fillOrStroke.serialize());
-      stage['id'](id);
-      for (var i = 0; i < fillOrStroke['children'].length; i++) {
-        var child = fillOrStroke['children'][i];
-        var newChild;
-        if (acgraph.utils.instanceOf(child, acgraph.vector.Circle)) {
-          newChild = new acgraph.vector.Circle();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Rect)) {
-          newChild = new acgraph.vector.Rect();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Text)) {
-          newChild = new acgraph.vector.Text();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Ellipse)) {
-          newChild = new acgraph.vector.Ellipse();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Path)) {
-          newChild = new acgraph.vector.Path();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Image)) {
-          newChild = new acgraph.vector.Image();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Layer)) {
-          newChild = /** @type {acgraph.vector.Layer}*/(anychart.color.lighten(child, opt_factor));
-        }
-        if (goog.isDef(newChild)) {
-          id = newChild['id']();
-          newChild.deserialize(child.serialize());
-          newChild['id'](id);
-          if (goog.isDef(newChild['fill'])) {
-            newChild['fill'](anychart.color.lighten(newChild['fill'](), opt_factor));
-          }
-          if (goog.isDef(newChild['stroke'])) {
-            newChild['stroke'](anychart.color.lighten(newChild['stroke'](), opt_factor));
-          }
-          if (goog.isDef(newChild['color'])) {
-            newChild['color'](anychart.color.lighten(newChild['color'](), opt_factor));
-          }
-          newChild['parent'](stage);
-          children.push(newChild);
-        }
-      }
-      stage['children'] = children;
-      return stage;
+    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+      return fillOrStroke;
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
-    if (newFillOrStroke['fill']) {
-      newFillOrStroke['fill'](anychart.color.lighten(/** @type {acgraph.vector.Fill} */(goog.object.clone(newFillOrStroke['fill']())), opt_factor));
-    }
-    if (newFillOrStroke['stroke']) {
-      newFillOrStroke['stroke'](anychart.color.lighten(/** @type {acgraph.vector.Fill} */(goog.object.clone(newFillOrStroke['stroke']())), opt_factor));
-    }
     if (goog.isDef(fillOrStroke['keys'])) {
       var keys = newFillOrStroke['keys'];
       var newKeys = [];
@@ -344,64 +290,10 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
  */
 anychart.color.darken = function(fillOrStroke, opt_factor) {
   if (goog.isObject(fillOrStroke)) {
-    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill) ||
-        acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.Layer)) {
-
-      var children = [];
-      var stage;
-      if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
-        stage = new acgraph.vector.PatternFill(/** @type {goog.math.Rect}*/(fillOrStroke['getBounds']()));
-      } else {
-        stage = /** @type {acgraph.vector.PatternFill}*/(new acgraph.vector.Layer());
-      }
-      var id = stage['id']();
-      stage.deserialize(fillOrStroke.serialize());
-      stage['id'](id);
-      for (var i = 0; i < fillOrStroke['children'].length; i++) {
-        var child = fillOrStroke['children'][i];
-        var newChild;
-        if (acgraph.utils.instanceOf(child, acgraph.vector.Circle)) {
-          newChild = new acgraph.vector.Circle();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Rect)) {
-          newChild = new acgraph.vector.Rect();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Text)) {
-          newChild = new acgraph.vector.Text();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Ellipse)) {
-          newChild = new acgraph.vector.Ellipse();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Path)) {
-          newChild = new acgraph.vector.Path();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Image)) {
-          newChild = new acgraph.vector.Image();
-        } else if (acgraph.utils.instanceOf(child, acgraph.vector.Layer)) {
-          newChild = /** @type {acgraph.vector.Layer}*/(anychart.color.darken(child, opt_factor));
-        }
-        if (goog.isDef(newChild)) {
-          id = newChild['id']();
-          newChild.deserialize(child.serialize());
-          newChild['id'](id);
-          if (goog.isDef(newChild['fill'])) {
-            newChild['fill'](anychart.color.darken(newChild['fill'](), opt_factor));
-          }
-          if (goog.isDef(newChild['stroke'])) {
-            newChild['stroke'](anychart.color.darken(newChild['stroke'](), opt_factor));
-          }
-          if (goog.isDef(newChild['color'])) {
-            newChild['color'](anychart.color.darken(newChild['color'](), opt_factor));
-          }
-          newChild['parent'](stage);
-          children.push(newChild);
-        }
-      }
-      stage['children'] = children;
-      return stage;
+    if (acgraph.utils.instanceOf(fillOrStroke, acgraph.vector.PatternFill)) {
+      return fillOrStroke;
     }
     var newFillOrStroke = /** @type {acgraph.vector.Fill} */ (goog.object.clone(fillOrStroke));
-    if (newFillOrStroke['fill']) {
-      newFillOrStroke['fill'](anychart.color.darken(newFillOrStroke['fill'](), opt_factor));
-    }
-    if (newFillOrStroke['stroke']) {
-      newFillOrStroke['stroke'](anychart.color.darken(newFillOrStroke['stroke'](), opt_factor));
-    }
     if (goog.isDef(fillOrStroke['keys'])) {
       var keys = newFillOrStroke['keys'];
       var newKeys = [];
