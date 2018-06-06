@@ -66,7 +66,7 @@ goog.addDependency('../../../../src/circularGauge/pointers/Base.js', ['anychart.
 goog.addDependency('../../../../src/circularGauge/pointers/Knob.js', ['anychart.circularGaugeModule.pointers.Knob'], ['acgraph', 'anychart.circularGaugeModule.pointers.Base', 'anychart.utils'], {});
 goog.addDependency('../../../../src/circularGauge/pointers/Marker.js', ['anychart.circularGaugeModule.pointers.Marker'], ['acgraph', 'anychart.circularGaugeModule.pointers.Base', 'anychart.core.reporting', 'anychart.core.ui.MarkersFactory', 'anychart.enums', 'anychart.utils'], {});
 goog.addDependency('../../../../src/circularGauge/pointers/Needle.js', ['anychart.circularGaugeModule.pointers.Needle'], ['acgraph', 'anychart.circularGaugeModule.pointers.Base', 'anychart.utils'], {});
-goog.addDependency('../../../../src/color.js', ['anychart.color'], ['acgraph.vector', 'goog.color', 'goog.math'], {});
+goog.addDependency('../../../../src/color.js', ['anychart.color'], ['acgraph', 'goog.color', 'goog.math'], {});
 goog.addDependency('../../../../src/colorScales/Linear.js', ['anychart.colorScalesModule.Linear'], ['anychart.enums', 'anychart.scales.Continuous', 'anychart.scales.ScatterBase', 'anychart.scales.ScatterTicks'], {});
 goog.addDependency('../../../../src/colorScales/Ordinal.js', ['anychart.colorScalesModule.Ordinal'], ['anychart.colorScalesModule.OrdinalTicks', 'anychart.scales.Base'], {});
 goog.addDependency('../../../../src/colorScales/OrdinalTicks.js', ['anychart.colorScalesModule.OrdinalTicks'], ['anychart.scales.OrdinalTicks'], {});
