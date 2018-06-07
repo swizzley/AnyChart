@@ -435,17 +435,10 @@ anychart.stockModule.Axis.prototype.drawLabels_ = function(bounds, iterator) {
   var majorIndex = 1;
   var minorIndex = 0;
   iterator.reset();
-  // if (bounds.height == 25)
-  //   debugger
   while (iterator.advance()) {
-
     curr = iterator.getCurrent();
     currIsMajor = allowMajor && iterator.getCurrentIsMajor();
 
-    // if(!currIsMajor && bounds.height == 25) {
-    //   console.log(new Date(curr));
-    //   // debugger
-    // }
 
     if (currIsMajor && majorTicksDrawer)
       majorTicksDrawer.call(this.ticks_, this.scale_.transformAligned(curr), bounds, bounds, 0, 0.5);
@@ -467,9 +460,6 @@ anychart.stockModule.Axis.prototype.drawLabels_ = function(bounds, iterator) {
             majorUnit, majorUnitCount, minorUnit, minorUnitCount, 0));
       }
     } else {
-      // if(!currIsMajor && bounds.height == 25) {
-      //   debugger
-      // }
       currBounds = this.getLabelBounds_(curr, currIsMajor, bounds,
           majorUnit, majorUnitCount, minorUnit, minorUnitCount, currIsMajor ? majorIndex : minorIndex);
       if (currIsMajor) {
@@ -494,14 +484,6 @@ anychart.stockModule.Axis.prototype.drawLabels_ = function(bounds, iterator) {
         }
         prevMinor.length = prevMinorBounds.length = prevMinorIndexes.length = 0;
       } else if (allowMinor) {
-
-        if(!currIsMajor && bounds.height == 25) {
-
-          // console.log(prevMinorBounds.length && prevMinorBounds[prevMinorBounds.length - 1].intersects(currBounds));
-          // console.log(prevMinorBounds, currBounds)
-          // debugger
-        }
-
         if (!(prevMajorBounds && prevMajorBounds.intersects(currBounds) ||
             (this.labelsOverlapMode_ != anychart.enums.StockLabelsOverlapMode.ALLOW_MINOR_OVERLAP) &&
             prevMinorBounds.length && prevMinorBounds[prevMinorBounds.length - 1].intersects(currBounds))) {
@@ -551,7 +533,6 @@ anychart.stockModule.Axis.prototype.drawLabels_ = function(bounds, iterator) {
     this.drawLabel_(majorToDraw[i], true, bounds,
         majorUnit, majorUnitCount, minorUnit, minorUnitCount, majorIndexes[i]);
   }
-  // console.log("minorToDraw", minorToDraw);
   for (i = 0; i < minorToDraw.length; i++) {
     this.drawLabel_(minorToDraw[i], false, bounds,
         majorUnit, majorUnitCount, minorUnit, minorUnitCount, minorIndexes[i]);
