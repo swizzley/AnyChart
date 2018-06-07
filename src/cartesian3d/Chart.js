@@ -557,7 +557,7 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1; //Convert x position to descending trend for x inverted chart.
 
   //Convert y position to negative if y scale is inverted or value < 0 and y scale not inverted.
-  if (this.yScale().inverted() ^ (0 > value)) {
+  if (this.yScale().inverted() ^ (value < 0)) {
     yPos = -yPos;
   }
   if (this.getOption('zDistribution')) {
