@@ -248,13 +248,13 @@ anychart.color.lighten = function(fillOrStroke, opt_factor) {
         var newKeys = [];
         for (var i = 0, len = keys.length; i < len; i++) {
           var key = goog.object.clone(keys[i]);
-          key['color'] = anychart.color.lighten(key['color']);
+          key['color'] = anychart.color.lighten(key['color'], opt_factor);
           newKeys.push(key);
         }
         newFillOrStroke['keys'] = newKeys;
       }
       if (goog.isDef(newFillOrStroke['color']))
-        newFillOrStroke['color'] = anychart.color.lighten(newFillOrStroke['color']);
+        newFillOrStroke['color'] = anychart.color.lighten(newFillOrStroke['color'], opt_factor);
       return newFillOrStroke;
     }
     return fillOrStroke;
@@ -296,7 +296,7 @@ anychart.color.darken = function(fillOrStroke, opt_factor) {
         var newKeys = [];
         for (var i = 0, len = keys.length; i < len; i++) {
           var key = goog.object.clone(keys[i]);
-          key['color'] = anychart.color.darken(key['color']);
+          key['color'] = anychart.color.darken(key['color'], opt_factor);
           newKeys.push(key);
         }
         newFillOrStroke['keys'] = newKeys;
