@@ -105,6 +105,12 @@ anychart.core.drawers.SplineDrawer.prototype.isVertical = function(opt_value) {
 };
 
 
+anychart.core.drawers.SplineDrawer.prototype.setBreak = function(y, paths) {
+  this.breakY_ = y;
+  this.breakPaths_ = paths;
+};
+
+
 /**
  * Processes next spline point.
  * @param {number} x .
@@ -112,11 +118,14 @@ anychart.core.drawers.SplineDrawer.prototype.isVertical = function(opt_value) {
  * @param {boolean=} opt_skip
  */
 anychart.core.drawers.SplineDrawer.prototype.processPoint = function(x, y, opt_skip) {
-  console.log(this.state_);
   switch (this.state_) {
     case 3:
       if (this.x2_ == x && this.y2_ == y) break;
-      this.drawNextSplinePoint_(this.x1_, this.y1_, this.x2_, this.y2_, x, y, opt_skip);
+      if (this.breakPaths_) {
+        this.drawBreak(this.x1_, this.y1_, this.x2_, this.y2_, x, y);
+      } else {
+        this.drawNextSplinePoint_(this.x1_, this.y1_, this.x2_, this.y2_, x, y, opt_skip);
+      }
       this.x1_ = this.x2_;
       this.y1_ = this.y2_;
       this.x2_ = x;
@@ -124,6 +133,11 @@ anychart.core.drawers.SplineDrawer.prototype.processPoint = function(x, y, opt_s
       break;
     case 2:
       if (this.x2_ == x && this.y2_ == y) break;
+      if (this.breakPaths_) {
+        var breakPoint = this.drawBreak(this.x1_, this.y1_, this.x2_, this.y2_, x, y);
+        this.x1_ = breakPoint[0];
+        this.y1_ = breakPoint[1];
+      }
       this.startSplineDrawing_(this.x1_, this.y1_, this.x2_, this.y2_, x, y, opt_skip);
       this.x1_ = this.x2_;
       this.y1_ = this.y2_;
@@ -240,6 +254,160 @@ anychart.core.drawers.SplineDrawer.prototype.calcTangent_ = function(p1x, p1y, p
 
 
 /**
+ *
+ * @param p1x
+ * @param p1y
+ * @param p2x
+ * @param p2y
+ * @param p3x
+ * @param p3y
+ * @return {Array}
+ */
+anychart.core.drawers.SplineDrawer.prototype.drawBreak = function(p1x, p1y, p2x, p2y, p3x, p3y) {
+  if (this.breakPaths_) {
+    this.calcTangent_(p1x, p1y, p2x, p2y, p3x, p3y);
+
+    var tLen, tx, ty, c1x, c1y, c2x, c2y, cXx, cXy, mpx, mpy, i, crossPoint;
+
+    if (this.state_ == 3) {
+      c1x = p1x + this.tangent_[0];
+      c1y = p1y + this.tangent_[1];
+      c2x = p2x - this.tan_[0] * this.tanLen_;
+      c2y = p2y - this.tan_[1] * this.tanLen_;
+      mpx = (c1x + c2x) / 2;
+      mpy = (c1y + c2y) / 2;
+
+      // this.paths_[0].getStage().pie(mpx, mpy, 5, 0, 360).stroke('2 black').zIndex(1000);
+      // this.paths_[0].getStage().pie(c1x, c1y, 5, 0, 360).stroke('2 green').zIndex(1000);
+
+      if (this.isVertical_) {
+        // for (i = 0; i < this.paths_.length; i++)
+        //   this.paths_[i]
+        //       .quadraticCurveTo(c1y, c1x, mpy, mpx)
+        //       .quadraticCurveTo(c2y, c2x, p2y, p2x);
+      } else {
+        if ((p1y < this.breakY_ && mpy > this.breakY_) || (p1y > this.breakY_ && mpy < this.breakY_)) {
+          crossPoint = anychart.math.intersectBezier2Line(p1x, p1y, c1x, c1y, mpx, mpy, p1x, this.breakY_, mpx, this.breakY_)[0];
+          if (crossPoint) {
+            // var t = (p1x - c1x + Math.sqrt((p1x - 2 * c1x + mpx) * crossPoint.x + c1x * c1x - p1x * mpx)) / (p1x - 2 * c1x + mpx);
+            var t = anychart.math.getQuadraticCurveDistanceByPoint(p1x, p1y, c1x, c1y, mpx, mpy, crossPoint.x, crossPoint.y);
+            // var t_y = (p1y - c1y - Math.sqrt((p1y - 2 * c1y + mpy) * crossPoint.y + c1y * c1y - p1y * mpy)) / (p1y - 2 * c1y + mpy);
+            var tt = 1 - t;
+            var cX1x = p1x * tt + c1x * t;
+            var cX1y = p1y * tt + c1y * t;
+            var cX2x = c1x * tt + mpx * t;
+            var cX2y = c1y * tt + mpy * t;
+
+            // var x = (tt * tt * p1x) + (2 * tt * t * c1x) + (t * t * mpx);
+            // var y = (tt * tt * p1y) + (2 * tt * t * c1y) + (t * t * mpy);
+
+            // this.paths_[0].getStage().pie(mpx, mpy, 2, 0, 360).stroke('2 red').zIndex(1000);
+            // this.paths_[0].getStage().pie(p1x, p1y, 2, 0, 360).stroke('2 red').zIndex(1000);
+            // this.paths_[0].getStage().pie(x, y, 2, 0, 360).stroke('2 red').zIndex(1000);
+            // this.paths_[0].getStage().pie(cX1x, cX1y, 2, 0, 360).stroke('2 red').zIndex(1000);
+            // this.paths_[0].getStage().pie(cX2x, cX2y, 2, 0, 360).stroke('2 red').zIndex(1000);
+
+            for (i = 0; i < this.paths_.length; i++)
+              this.paths_[i]
+                  .quadraticCurveTo(cX1x, cX1y, crossPoint.x, crossPoint.y)
+
+            p1x = crossPoint.x;
+            p1y = crossPoint.y;
+
+            this.paths_ = this.breakPaths_;
+            this.breakPaths_ = null;
+
+            for (i = 0; i < this.paths_.length; i++)
+              anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.paths_[i]), this.isVertical_, p1x, p1y);
+
+            for (i = 0; i < this.paths_.length; i++)
+              this.paths_[i]
+                  .quadraticCurveTo(cX2x, cX2y, mpx, mpy)
+                  .quadraticCurveTo(c2x, c2y, p2x, p2y)
+          }
+        } else if ((p2y < this.breakY_ && mpy > this.breakY_) || (p2y > this.breakY_ && mpy < this.breakY_)) {
+          crossPoint = anychart.math.intersectBezier2Line(mpx, mpy, c2x, c2y, p2x, p2y, mpx, this.breakY_, p2x, this.breakY_)[0];
+          if (crossPoint) {
+            var t = anychart.math.getQuadraticCurveDistanceByPoint(mpx, mpy, c2x, c2y, p2x, p2y, crossPoint.x, crossPoint.y);
+            var tt = 1 - t;
+            var cX1x = mpx * tt + c2x * t;
+            var cX1y = mpy * tt + c2y * t;
+            var cX2x = c2x * tt + p2x * t;
+            var cX2y = c2y * tt + p2y * t;
+
+            // this.paths_[0].getStage().pie(c1x, c1y, 2, 0, 360).stroke('2 red').zIndex(1000);
+
+            for (i = 0; i < this.paths_.length; i++)
+              this.paths_[i]
+                  .quadraticCurveTo(c1x, c1y, mpx, mpy)
+                  .quadraticCurveTo(cX1x, cX1y, crossPoint.x, crossPoint.y)
+
+            p1x = crossPoint.x;
+            p1y = crossPoint.y;
+
+            this.paths_ = this.breakPaths_;
+            this.breakPaths_ = null;
+
+            for (i = 0; i < this.paths_.length; i++)
+              anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.paths_[i]), this.isVertical_, p1x, p1y);
+
+            for (i = 0; i < this.paths_.length; i++)
+              this.paths_[i]
+                  .quadraticCurveTo(cX2x, cX2y, p2x, p2y)
+          }
+        }
+      }
+
+
+      this.tanLen_ = (p3x - p2x) * this.tangentLengthPercent_;
+      this.tangent_[0] = this.tan_[0] * this.tanLen_;
+      this.tangent_[1] = this.tan_[1] * this.tanLen_;
+    } else if (this.state_ == 2) {
+      tLen = (p2x - p1x) * this.tangentLengthPercent_;
+      tx = -this.tan_[0] * tLen;
+      ty = -this.tan_[1] * tLen;
+
+      c1x = p2x + tx;
+      c1y = p2y + ty;
+
+      crossPoint = anychart.math.intersectBezier2Line(p1x, p1y, c1x, c1y, p2x, p2y, p1x, this.breakY_, p2x, this.breakY_)[0];
+      if (crossPoint) {
+
+        tLen = (crossPoint.x - p1x) * this.tangentLengthPercent_;
+        tx = -this.tan_[0] * tLen;
+        ty = -this.tan_[1] * tLen;
+
+        c1x = crossPoint.x + tx;
+        c1y = crossPoint.y + ty;
+
+        // this.paths_[0].getStage().pie(c1x, c1y, 2, 0, 360).stroke('2 red').zIndex(1000);
+
+        if (this.isVertical_) {
+          for (i = 0; i < this.paths_.length; i++)
+            this.paths_[i].quadraticCurveTo(c1y, c1x, crossPoint.y, crossPoint.x);
+        } else {
+          for (i = 0; i < this.paths_.length; i++)
+            this.paths_[i].quadraticCurveTo(c1x, c1y, crossPoint.x, crossPoint.y);
+        }
+
+        this.paths_ = this.breakPaths_;
+        this.breakPaths_ = null;
+
+        for (i = 0; i < this.paths_.length; i++)
+          anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.paths_[i]), this.isVertical_, p1x, p1y);
+
+        p1x = crossPoint.x;
+        p1y = crossPoint.y;
+      }
+    }
+
+    // this.paths_[0].getStage().pie(crossPoint.x, crossPoint.y, 5, 0, 360).stroke('2 lime').zIndex(1000);
+    // this.calcTangent_(p1x, p1y, crossPoint.x, crossPoint.y, p2x, p2y);
+  }
+  return [p1x, p1y];
+};
+
+/**
  * Curve from p1 to p2
  * @param {number} p1x .
  * @param {number} p1y .
@@ -305,11 +473,11 @@ anychart.core.drawers.SplineDrawer.prototype.drawNextSplinePoint_ = function(p1x
     // anychart.math.intersectBezier2Line(mpx, mpy, c1x, c1y, c2x, c2y, p2x, p2y, mpx_, mpy_);
 
 
-    this.paths_[0].getStage().path().moveTo(p1x, p1y).lineTo(mpx, mpy, c1x, c1y, p1x, p1y).fill(null).stroke('2 red').zIndex(1000);
-    this.paths_[0].getStage().path().moveTo(mpx, mpy).lineTo(p2x, p2y, c2x, c2y, mpx, mpy).fill(null).stroke('2 green').zIndex(1000);
-    this.paths_[0].getStage().pie(mpx, mpy, 5, 0, 360).fill(this.paths_[0].fill()).stroke('red').zIndex(1000);
-    this.paths_[0].getStage().pie(c1x, c1y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('blue').zIndex(1000);
-    this.paths_[0].getStage().pie(c2x, c2y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('green').zIndex(1000);
+    // this.paths_[0].getStage().path().moveTo(p1x, p1y).lineTo(mpx, mpy, c1x, c1y, p1x, p1y).fill(null).stroke('2 red').zIndex(1000);
+    // this.paths_[0].getStage().path().moveTo(mpx, mpy).lineTo(p2x, p2y, c2x, c2y, mpx, mpy).fill(null).stroke('2 green').zIndex(1000);
+    // this.paths_[0].getStage().pie(mpx, mpy, 5, 0, 360).fill(this.paths_[0].fill()).stroke('red').zIndex(1000);
+    // this.paths_[0].getStage().pie(c1x, c1y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('blue').zIndex(1000);
+    // this.paths_[0].getStage().pie(c2x, c2y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('green').zIndex(1000);
 
     var i;
     if (this.isVertical_) {

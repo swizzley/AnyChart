@@ -813,7 +813,30 @@ anychart.math.projectToLine = function(points, vx, vy, x0, y0) {
 };
 
 
-/**
+anychart.math.getQuadraticCurveDistanceByPoint = function(p0x, p0y, p1x, p1y, p2x, p2y, x, y) {
+  var t = NaN, t1x, t2x, t1y, t2y;
+  if (p0x - 2 * p1x + p2x != 0) {
+    t1x = (p0x - p1x + Math.sqrt((p0x - 2 * p1x + p2x) * x + p1x * p1x - p0x * p2x)) / (p0x - 2 * p1x + p2x);
+    t2x = (p0x - p1x - Math.sqrt((p0x - 2 * p1x + p2x) * x + p1x * p1x - p0x * p2x)) / (p0x - 2 * p1x + p2x);
+
+    t1y = (p0y - p1y + Math.sqrt((p0y - 2 * p1y + p2y) * y + p1y * p1y - p0y * p2y)) / (p0y - 2 * p1y + p2y);
+    t2y = (p0y - p1y - Math.sqrt((p0y - 2 * p1y + p2y) * y + p1y * p1y - p0y * p2y)) / (p0y - 2 * p1y + p2y);
+    t = (t1x >= 0 && t1x <= 1) ? t1x :
+        (t2x >= 0 && t2x <= 1) ? t2x :
+            (t1y >= 0 && t1y <= 1) ? t1y :
+                (t2y >= 0 && t2y <= 1) ? t2y : 0;
+
+  } else if (p0x != p1x) {
+    t = (x - p0x) / (2 * (p1x - p0x));
+  } else if (p0x == p1x && p1x != p2x) {
+    t = Math.sqrt((x - p0x) / (p2x - p1x));
+  }
+
+  return t;
+};
+
+
+    /**
  * Returns the length of the vector set by two coordinate pairs.
  * @param {number} x1
  * @param {number} y1
@@ -1139,7 +1162,6 @@ Polynomial.prototype.getQuarticRoots=function(){var results=new Array();if(this.
 
 
 anychart.math.intersectBezier2Line = function(p1x, p1y, p2x, p2y, p3x, p3y, a1x, a1y, a2x, a2y) {
-  console.log(p1x, p1y, p2x, p2y, p3x, p3y, a1x, a1y, a2x, a2y);
   var p1 = new Point2D(p1x, p1y);
   var p2 = new Point2D(p2x, p2y);
   var p3 = new Point2D(p3x, p3y);
@@ -1211,109 +1233,6 @@ anychart.math.intersectBezier2Line = function(p1x, p1y, p2x, p2y, p3x, p3y, a1x,
 
   return result;
 };
-
-
-/*****
- *
- *   intersectBezier3Line
- *
- *   Many thanks to Dan Sunday at SoftSurfer.com.  He gave me a very thorough
- *   sketch of the algorithm used here.  Without his help, I'm not sure when I
- *   would have figured out this intersection problem.
- *
- *****/
-anychart.math.intersectBezier3Line = function(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, a1x, a1y, a2x, a2y) {
-  var p1 = new Point2D(p1x, p1y);
-  var p2 = new Point2D(p2x, p2y);
-  var p3 = new Point2D(p3x, p3y);
-  var p4 = new Point2D(p4x, p4y);
-  var a1 = new Point2D(a1x, a1y);
-  var a2 = new Point2D(a2x, a2y);
-
-  var a, b, c, d;       // temporary variables
-  var c3, c2, c1, c0;   // coefficients of cubic
-  var cl;               // c coefficient for normal form of line
-  var n;                // normal for normal form of line
-  var min = a1.min(a2); // used to determine if point is on line segment
-  var max = a1.max(a2); // used to determine if point is on line segment
-  var result = [];
-
-  // Calculate the coefficients
-  a = p1.multiply(-1);
-  b = p2.multiply(3);
-  c = p3.multiply(-3);
-  d = a.add(b.add(c.add(p4)));
-  c3 = new Vector2D(d.x, d.y);
-
-  a = p1.multiply(3);
-  b = p2.multiply(-6);
-  c = p3.multiply(3);
-  d = a.add(b.add(c));
-  c2 = new Vector2D(d.x, d.y);
-
-  a = p1.multiply(-3);
-  b = p2.multiply(3);
-  c = a.add(b);
-  c1 = new Vector2D(c.x, c.y);
-
-  c0 = new Vector2D(p1.x, p1.y);
-
-  // Convert line to normal form: ax + by + c = 0
-  // Find normal to line: negative inverse of original line's slope
-  n = new Vector2D(a1.y - a2.y, a2.x - a1.x);
-
-  // Determine new c coefficient
-  cl = a1.x*a2.y - a2.x*a1.y;
-
-  // ?Rotate each cubic coefficient using line for new coordinate system?
-  // Find roots of rotated cubic
-  var roots = new Polynomial(
-      n.dot(c3),
-      n.dot(c2),
-      n.dot(c1),
-      n.dot(c0) + cl
-  ).getRoots();
-
-  // Any roots in closed interval [0,1] are intersections on Bezier, but
-  // might not be on the line segment.
-  // Find intersections and calculate point coordinates
-  for ( var i = 0; i < roots.length; i++ ) {
-    var t = roots[i];
-
-    if ( 0 <= t && t <= 1 ) {
-      // We're within the Bezier curve
-      // Find point on Bezier
-      var p5 = p1.lerp(p2, t);
-      var p6 = p2.lerp(p3, t);
-      var p7 = p3.lerp(p4, t);
-
-      var p8 = p5.lerp(p6, t);
-      var p9 = p6.lerp(p7, t);
-
-      var p10 = p8.lerp(p9, t);
-
-      // See if point is on line segment
-      // Had to make special cases for vertical and horizontal lines due
-      // to slight errors in calculation of p10
-      if ( a1.x == a2.x ) {
-        if ( min.y <= p10.y && p10.y <= max.y ) {
-          result.push(p10);
-        }
-      } else if ( a1.y == a2.y ) {
-        if ( min.x <= p10.x && p10.x <= max.x ) {
-          result.push(p10);
-        }
-      } else if ( p10.gte(min) && p10.lte(max) ) {
-        result.push(p10);
-      }
-    }
-  }
-
-  return result;
-};
-
-
-
 
 
 

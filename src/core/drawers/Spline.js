@@ -118,57 +118,8 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
   this.queue_.processPoint(x, y);
 
-  this.prevX = x;
-  this.prevY = y;
   this.prevValue = value;
   this.prevShapeName = name;
-};
-
-
-anychart.core.drawers.Spline.prototype.drawBreaker = function() {
-  if (shapes != this.currentShapes) {
-    var crossX, crossY, prevX, prevY, prevName;
-    prevX = /** @type {number} */(this.prevX);
-    prevY = /** @type {number} */(this.prevY);
-    prevName = this.prevShapeName;
-    var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-    var baselineCrossed = (this.prevValue - baseline) * (currValue - baseline) < 0;
-
-    if (this.hasNegativeColoring && baselineCrossed) {
-      crossY = /** @type {number} */(point.meta('zero'));
-      // crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
-
-      var p1x = this.queue_.x1_;
-      var p1y = this.queue_.y1_;
-      var p2x = this.queue_.x2_;
-      var p2y = this.queue_.y2_;
-      var p3x = x;
-      var p3y = y;
-
-      this.queue_.calcTangent_(p1x, p1y, p2x, p2y, p3x, p3y);
-
-      var c1x = p1x + this.queue_.tangent_[0];
-      var c1y = p1y + this.queue_.tangent_[1];
-      var c2x = p2x - this.queue_.tan_[0] * this.queue_.tanLen_;
-      var c2y = p2y - this.queue_.tan_[1] * this.queue_.tanLen_;
-      var mpx = (c1x + c2x) / 2;
-      var mpy = (c1y + c2y) / 2;
-
-      var crossPoint;
-      if ((p1y < crossY && mpy > crossY) || (mpy < crossY && p1y > crossY)) {
-        crossPoint = anychart.math.intersectBezier2Line(p1x, p1y, c1x, c1y, mpx, mpy, p1x, crossY, mpx, crossY);
-      } else {
-        crossPoint = anychart.math.intersectBezier2Line(mpx, mpy, c2x, c2y, p2x, p2y, mpx, crossY, p2x, crossY);
-      }
-      console.log(crossPoint);
-    }
-
-    // this.queue_.processPoint(x, y);
-
-    // anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevName]), this.isVertical, crossX, crossY);
-    // this.currentShapes = shapes;
-    // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, crossX, crossY);
-  }
 };
 
 
@@ -185,8 +136,17 @@ anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, sta
 
   this.queue_.processPoint(x, y);
 
-  this.prevX = x;
-  this.prevY = y;
+  if (shapes != this.currentShapes) {
+    var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+    var baselineCrossed = (this.prevValue - baseline) * (currValue - baseline) < 0;
+
+    if (this.hasNegativeColoring && baselineCrossed) {
+      var crossY = /** @type {number} */(point.meta('zero'));
+      this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[name])]);
+      this.currentShapes = shapes;
+    }
+  }
+
   this.prevValue = currValue;
   this.prevShapeName = name;
 };
