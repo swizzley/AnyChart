@@ -556,19 +556,15 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var isXInverted = this.xScale().inverted();
   xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1; //Convert x position to descending trend for x inverted chart.
 
-  /**
-   * Convert y position to negative if y scale is inverted or value < 0 and y scale not inverted.
-   * */
-  if (this.yScale().inverted() ^ 0 > value) {
+  //Convert y position to negative if y scale is inverted or value < 0 and y scale not inverted.
+  if (this.yScale().inverted() ^ (0 > value)) {
     yPos = -yPos;
   }
   if (this.getOption('zDistribution')) {
     zIndex += inc * zPos;
   }
 
-  /**
-   * Calculate zIndex for bar chart.
-   * */
+  //Calculate zIndex for bar chart.
   if (series.getOption('isVertical')) {
     var swap = xPos;
     xPos = yPos;
@@ -582,10 +578,10 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
       zIndex -= inc;
     }
   } else {
-    /**
-     * Calculate x position for not stacked and not z distributed column series.
-     * Every point have unique x position from 1 to count of series multiplied by count of points.
-     * */
+    /*
+    Calculate x position for not stacked and not z distributed column series.
+    Every point have unique x position from 1 to count of series multiplied by count of points.
+    */
     if (!isStacked && !this.getOption('zDistribution')) {
       if (isXInverted) {
         yPos = (maxY - Math.abs(yPos)) + 1;
