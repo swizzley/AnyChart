@@ -118,16 +118,6 @@ anychart.core.drawers.Area.prototype.drawSegmentStart_ = function(shapes, x, y, 
 
 
 /**
- * w@param {number} value .
- * @return {boolean}
- */
-anychart.core.drawers.Area.prototype.isbaselineIntersect = function(value) {
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-  return ((this.prevValue - baseline) || 1) * ((value - baseline) || 1) < 0;
-};
-
-
-/**
  * Draws area start.
  * @param {Object.<string, acgraph.vector.Shape>} shapes
  * @param {number} x
@@ -146,9 +136,9 @@ anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes,
     prevY = /** @type {number} */(this.prevY);
     prevNames = this.prevShapeNames;
 
-    var isbaselineIntersect = this.isbaselineIntersect(value);
+    var isBaselineIntersect = this.isBaselineIntersect(value);
 
-    if (this.hasNegativeColoring && isbaselineIntersect) {
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = zeroY;
       crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
     } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {

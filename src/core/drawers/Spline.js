@@ -137,10 +137,8 @@ anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, sta
   this.queue_.processPoint(x, y);
 
   if (shapes != this.currentShapes) {
-    var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-    var baselineCrossed = (this.prevValue - baseline) * (currValue - baseline) < 0;
-
-    if (this.hasNegativeColoring && baselineCrossed) {
+    var isBaselineIntersect = this.isBaselineIntersect(currValue);
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       var crossY = /** @type {number} */(point.meta('zero'));
       this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[name])]);
       this.currentShapes = shapes;
