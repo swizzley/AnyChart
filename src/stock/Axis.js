@@ -439,7 +439,6 @@ anychart.stockModule.Axis.prototype.drawLabels_ = function(bounds, iterator) {
     curr = iterator.getCurrent();
     currIsMajor = allowMajor && iterator.getCurrentIsMajor();
 
-
     if (currIsMajor && majorTicksDrawer)
       majorTicksDrawer.call(this.ticks_, this.scale_.transformAligned(curr), bounds, bounds, 0, 0.5);
     else if (minorTicksDrawer)
