@@ -467,9 +467,9 @@ anychart.linearGaugeModule.pointers.Tank.prototype.colorizePointer = function(po
 
   ////////////////////
   var emptyColor = /** @type {acgraph.vector.Fill} */ (this.emptyFillResolver(this, pointerState, false));
-  colorDarken = anychart.color.darken(emptyColor);
-  colorLighten = anychart.color.lighten(emptyColor);
-  var opacity = anychart.color.getOpacity(emptyColor);
+  colorDarken = anychart.color.darken(emptyColor).color;
+  colorLighten = anychart.color.lighten(emptyColor).color;
+  var opacity = emptyColor.opacity;
 
   fill = /** @type {acgraph.vector.Fill} */ ({
     'angle': -angle,
