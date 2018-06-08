@@ -63,6 +63,41 @@ anychart.core.drawers.SplineArea.prototype.requiredShapes = (function() {
 })();
 
 
+/**
+ * @param {number} value .
+ * @return {Object.<string>}
+ */
+anychart.core.drawers.SplineArea.prototype.getShapeNames = function(value) {
+  var names = {};
+  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+
+  if (this.hasNegativeColoring) {
+    if (value < baseline) {
+      strokeName = 'negativeStroke';
+      fillName = 'negativeFill';
+      hatchFillName = 'negativeHatchFill';
+    }
+  } else if (this.hasRisingFallingColoring) {
+    if (value < this.prevValue) {
+      strokeName = 'fallingStroke';
+      fillName = 'fallingFill';
+      hatchFillName = 'fallingHatchFill';
+    } else if (value > this.prevValue) {
+      strokeName = 'risingStroke';
+      fillName = 'risingFill';
+      hatchFillName = 'risingHatchFill';
+    }
+  }
+
+  names.stroke = strokeName;
+  names.fill = fillName;
+  names.hatchFill = hatchFillName;
+
+  return names;
+};
+
+
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.SplineArea.base(this, 'startDrawing', shapeManager);
@@ -112,6 +147,7 @@ anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, stat
 
   this.queue_.setPaths(this.forwardPaths_);
   this.queue_.resetDrawer(false);
+
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, zero);
   anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, y);
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, zero);
