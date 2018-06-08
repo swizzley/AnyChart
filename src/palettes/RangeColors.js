@@ -59,6 +59,14 @@ anychart.palettes.RangeColors = function() {
    */
   this.descriptorsMeta = {};
 
+
+  /**
+   * Whether palette needs processing
+   * @type {boolean}
+   * @private
+   */
+  this.needsProcessing_ = true;
+
   this.restoreDefaults(true);
 };
 goog.inherits(anychart.palettes.RangeColors, anychart.core.Base);
@@ -80,12 +88,28 @@ anychart.palettes.RangeColors.prototype.colorPalette_;
 
 
 /**
+ * Checks if palette is consistent and if not - recreates it
+ * @private
+ */
+anychart.palettes.RangeColors.prototype.ensureConsistent = function() {
+  if(this.needsProcessing_) {
+    this.processColorRange_();
+    this.needsProcessing_ = false;
+  }
+};
+
+
+/**
  * @param {number} val Value from chart for autoCount
  */
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
-  this.autoCount_ = val;
-  this.processColorRange_();
-  this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
+  if (this.autoCount_ != val) {
+    this.autoCount_ = val;
+    if (isNaN(this.count_)) {
+      this.needsProcessing_ = true;
+      this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
+    }
+  }
 };
 
 
@@ -110,7 +134,7 @@ anychart.palettes.RangeColors.prototype.items = function(opt_value, var_args) {
       });
     }
 
-    this.processColorRange_();
+    this.needsProcessing_ = true;
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
     return this;
   } else {
@@ -128,13 +152,13 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
   if (goog.isDef(opt_value)) {
     if (this.count_ != opt_value) {
       this.count_ = opt_value;
-      this.processColorRange_();
+
+      this.needsProcessing_ = true;
       this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
     }
     return this;
   } else {
-    var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
-    return !isNaN(this.count_) ? this.count_ : !isNaN(this.autoCount_) ? this.autoCount_ : colors.length;
+    return this.count_;
   }
 };
 
@@ -146,6 +170,7 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
  * @return {acgraph.vector.SolidFill|anychart.palettes.RangeColors} .
  */
 anychart.palettes.RangeColors.prototype.itemAt = function(index, opt_item) {
+  this.ensureConsistent();
   var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
   if (!this.colors_ || this.colors_.length < 1) return null;
   var count;
@@ -300,7 +325,7 @@ anychart.palettes.RangeColors.prototype.restoreDefaults = function(opt_doNotDisp
     '#FF9A00',
     '#FF6500'
   ];
-  this.processColorRange_();
+  this.needsProcessing_ = true;
   if (opt_doNotDispatch) this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
 };
 
