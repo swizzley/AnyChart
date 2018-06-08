@@ -108,18 +108,17 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
   var shapeNames = {};
   shapeNames[name] = true;
 
-  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
-  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(this.currentShapes[name])]);
+  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(shapes[name])]);
   this.queue_.resetDrawer(false);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[name]), this.isVertical, x, y);
   this.queue_.processPoint(x, y);
 
+  this.prevY = y;
   this.prevValue = value;
-  this.prevShapeName = name;
 };
 
 
@@ -137,16 +136,22 @@ anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, sta
   this.queue_.processPoint(x, y);
 
   if (shapes != this.currentShapes) {
+    var crossY, prevY;
+    prevY = /** @type {number} */(this.prevY);
+
     var isBaselineIntersect = this.isBaselineIntersect(currValue);
     if (this.hasNegativeColoring && isBaselineIntersect) {
-      var crossY = /** @type {number} */(point.meta('zero'));
-      this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[name])]);
-      this.currentShapes = shapes;
+      crossY = /** @type {number} */(point.meta('zero'));
+    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
+      crossY = prevY;
+    } else {
+      crossY = 'middle';
     }
+    this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[name])]);
   }
 
+  this.prevY = y;
   this.prevValue = currValue;
-  this.prevShapeName = name;
 };
 
 
