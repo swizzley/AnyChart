@@ -566,16 +566,26 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
 
   //Calculate zIndex for bar chart.
   if (series.getOption('isVertical')) {
-    var swap = xPos;
-    xPos = yPos;
-    yPos = swap;
-    var xOffset = (1 - (1 / Math.abs(xPos))); //Calculate x offset for point, based on current x position, from 0 to 1.
-    if (xPos > 0) {
-      inc *= yPos + xOffset;
+    if (!isStacked && !this.getOption('zDistribution')) {
+      if (isXInverted) {
+        yPos = (maxY - Math.abs(yPos)) + 1;
+      }
+      xPos = (xPos * maxY) - maxY + Math.abs(yPos);
+      inc *= xPos;
       zIndex += inc;
+      console.log('value ' + value + ' xPos ' + xPos+' Zindex ' + zIndex);
     } else {
-      inc *= (maxY - yPos) + xOffset;
-      zIndex -= inc;
+      var swap = xPos;
+      xPos = yPos;
+      yPos = swap;
+      var xOffset = (1 - (1 / Math.abs(xPos))); //Calculate x offset for point, based on current x position, from 0 to 1.
+      if (xPos > 0) {
+        inc *= yPos + xOffset;
+        zIndex += inc;
+      } else {
+        inc *= (maxY - yPos) + xOffset;
+        zIndex -= inc;
+      }
     }
   } else {
     /*
@@ -609,6 +619,7 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
   var stackIsDirect = stackDirection == anychart.enums.ScaleStackDirection.DIRECT;
 
   for (var i = 0; i < allSeries.length; i++) {
+    var maxZIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
     var directIndex = allSeries.length - i - 1;
     var actualIndex = isStacked && stackIsDirect ? directIndex : i;
     series = allSeries[actualIndex];
@@ -616,15 +627,15 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
       if (series.check(anychart.core.drawers.Capabilities.IS_3D_BASED)) {
         if (series.isDiscreteBased()) {
           var iterator = series.getResetIterator();
-          var maxZIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES;
           while (iterator.advance()) {
             var zIndex = this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length);
             if (maxZIndex < zIndex) {
               maxZIndex = zIndex;
             }
           }
-          series.zIndex(maxZIndex);  //For right maxLabels, minLabels position.
         }
+
+        series.zIndex(maxZIndex * (i + 1));  //For right maxLabels, minLabels position.
       } else if (series.supportsStack()) {
         this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
       }
