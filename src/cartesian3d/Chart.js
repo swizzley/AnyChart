@@ -640,6 +640,7 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
             }
           }
         }
+        series.zIndex(maxZIndex + (1 - (1 - (1 / (allSeries.length - i)))));
       } else if (series.supportsStack()) {
         this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
       }
