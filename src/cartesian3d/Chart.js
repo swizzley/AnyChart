@@ -573,7 +573,13 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
       xPos = (xPos * maxY) - maxY + Math.abs(yPos);
       inc *= xPos;
       zIndex += inc;
-      console.log('value ' + value + ' xPos ' + xPos+' Zindex ' + zIndex);
+      if (this.yScale().inverted()) {
+        value = -value;
+      }
+      if (value < 0) {
+        inc = -inc;
+      }
+      zIndex += inc;
     } else {
       var swap = xPos;
       xPos = yPos;
@@ -634,8 +640,6 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
             }
           }
         }
-
-        series.zIndex(maxZIndex * (i + 1));  //For right maxLabels, minLabels position.
       } else if (series.supportsStack()) {
         this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
       }
