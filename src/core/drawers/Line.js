@@ -114,6 +114,7 @@ anychart.core.drawers.Line.prototype.drawMissingPoint = function(point, state) {
 anychart.core.drawers.Line.prototype.getShapeName = function(value) {
   var name;
   var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+
   if (this.hasNegativeColoring) {
     name = value < baseline ? 'negative' : 'stroke';
   } else if (this.hasRisingFallingColoring) {
