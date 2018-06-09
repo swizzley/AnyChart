@@ -54,13 +54,6 @@ anychart.palettes.RangeColors = function() {
   this.autoCount_ = NaN;
 
   /**
-   * Descriptors meta.
-   * @type {!Object.<string, anychart.core.settings.PropertyDescriptorMeta>}
-   */
-  this.descriptorsMeta = {};
-
-
-  /**
    * Whether palette needs processing
    * @type {boolean}
    * @private
@@ -89,10 +82,9 @@ anychart.palettes.RangeColors.prototype.colorPalette_;
 
 /**
  * Checks if palette is consistent and if not - recreates it
- * @private
  */
-anychart.palettes.RangeColors.prototype.ensureConsistent = function() {
-  if(this.needsProcessing_) {
+anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
+  if (this.needsProcessing_) {
     this.processColorRange_();
     this.needsProcessing_ = false;
   }
@@ -105,10 +97,8 @@ anychart.palettes.RangeColors.prototype.ensureConsistent = function() {
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
   if (this.autoCount_ != val) {
     this.autoCount_ = val;
-    if (isNaN(this.count_)) {
-      this.needsProcessing_ = true;
-      this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
-    }
+    this.needsProcessing_ = true;
+    this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
   }
 };
 
@@ -170,16 +160,10 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
  * @return {acgraph.vector.SolidFill|anychart.palettes.RangeColors} .
  */
 anychart.palettes.RangeColors.prototype.itemAt = function(index, opt_item) {
-  this.ensureConsistent();
+  this.ensureProcessed();
   var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
-  if (!this.colors_ || this.colors_.length < 1) return null;
-  var count;
-  if (!isNaN(this.count_))
-    count = this.count_;
-  else if (!isNaN(this.autoCount_))
-    count = this.autoCount_;
-  else
-    count = colors.length;
+  if (this.colors_.length < 1) return null;
+  var count = this.count_ || this.autoCount_ || colors.length;
   if (!count) return null;
 
   if (goog.isDef(opt_item)) {
@@ -205,14 +189,7 @@ anychart.palettes.RangeColors.prototype.processColorRange_ = function() {
     var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
     if (!goog.isArray(colors) || !colors.length) return;
 
-    var autoCount = this.autoCount_;
-    var count;
-    if (!isNaN(this.count_))
-      count = this.count_;
-    else if (!isNaN(autoCount))
-      count = autoCount;
-    else
-      count = colors.length;
+    var count = this.count_ || this.autoCount_ || colors.length;
 
     var offsetStep = 1 / (colors.length - 1), color;
     for (var i = 0; i < colors.length; i++) {
