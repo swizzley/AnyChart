@@ -73,7 +73,7 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEED
 anychart.palettes.RangeColors.prototype.colorPalette_;
 
 
-anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.ConsistencyState.DATA_MASK;
+anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.ConsistencyState.APPEARANCE;
 
 
 /**
@@ -82,7 +82,7 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.
 anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
   if (!this.isConsistent()) {
     this.processColorRange_();
-    this.markConsistent(anychart.ConsistencyState.DATA_MASK);
+    this.markConsistent(anychart.ConsistencyState.APPEARANCE);
   }
 
 };
@@ -94,7 +94,7 @@ anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
   if (this.autoCount_ != val) {
     this.autoCount_ = val;
-    this.invalidate(anychart.ConsistencyState.DATA_MASK);
+    this.invalidate(anychart.ConsistencyState.APPEARANCE);
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
   }
 };
@@ -121,7 +121,7 @@ anychart.palettes.RangeColors.prototype.items = function(opt_value, var_args) {
       });
     }
 
-    this.invalidate(anychart.ConsistencyState.DATA_MASK);
+    this.invalidate(anychart.ConsistencyState.APPEARANCE);
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
     return this;
   } else {
@@ -140,7 +140,7 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
     if (this.count_ != opt_value) {
       this.count_ = opt_value;
 
-      this.invalidate(anychart.ConsistencyState.DATA_MASK);
+      this.invalidate(anychart.ConsistencyState.APPEARANCE);
       this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
     }
     return this;
@@ -299,7 +299,7 @@ anychart.palettes.RangeColors.prototype.restoreDefaults = function(opt_doNotDisp
     '#FF9A00',
     '#FF6500'
   ];
-  this.invalidate(anychart.ConsistencyState.DATA_MASK);
+  this.invalidate(anychart.ConsistencyState.APPEARANCE);
   if (opt_doNotDispatch) this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
 };
 
