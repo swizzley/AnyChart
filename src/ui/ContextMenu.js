@@ -45,7 +45,7 @@ anychart.ui.ContextMenu = function() {
 
   /**
    * Link to chart.
-   * @type {anychart.core.Chart}
+   * @type {anychart.core.Chart|anychart.core.ui.Table}
    * @private
    */
   this.chart_ = null;
@@ -118,9 +118,11 @@ anychart.ui.ContextMenu = function() {
       'item': menuItemModel
     };
 
-    if (this.chart_ && goog.isFunction(this.chart_['getSelectedPoints'])) {
+    if (this.chart_) {
       actionContext['chart'] = this.chart_;
-      actionContext['selectedPoints'] = this.chart_['getSelectedPoints']() || [];
+      if (goog.isFunction(this.chart_['getSelectedPoints'])) {
+        actionContext['selectedPoints'] = this.chart_['getSelectedPoints']() || [];
+      }
     }
 
     if (goog.isFunction(menuItemModel['action'])) {
@@ -310,11 +312,13 @@ anychart.ui.ContextMenu.prototype.prepareItems_ = function(event, target) {
     'menu': this
   };
 
-  if (this.chart_ && goog.isFunction(this.chart_['getSelectedPoints'])) {
-    var stage = this.chart_['container']() ? this.chart_['container']()['getStage']() : null;
-    if (goog.isNull(stage) || goog.style.getComputedStyle(stage['domElement'](), 'border-style') == 'none') return false;
+  if (this.chart_) {
     context['chart'] = this.chart_;
-    context['selectedPoints'] = this.chart_['getSelectedPoints']() || [];
+    if (goog.isFunction(this.chart_['getSelectedPoints'])) {
+      var stage = this.chart_['container']() ? this.chart_['container']()['getStage']() : null;
+      if (goog.isNull(stage) || goog.style.getComputedStyle(stage['domElement'](), 'border-style') == 'none') return false;
+      context['selectedPoints'] = this.chart_['getSelectedPoints']() || [];
+    }
   }
 
   // Flow: itemsProvider -> itemsFormatter -> items -> render
@@ -342,7 +346,7 @@ anychart.ui.ContextMenu.prototype.render = function(opt_parentElement) {
  * only be attached to a target once, since attaching the same menu for
  * multiple targets doesn't make sense.
  * This method will render the context menu in the document.body.
- * @param {Element|anychart.core.Chart} target Target whose click event should trigger the context menu.
+ * @param {Element|anychart.core.Chart|anychart.core.ui.Table} target Target whose click event should trigger the context menu.
  * @param {boolean=} opt_capture Optional whether to use capture phase.
  * @return {anychart.ui.ContextMenu} Self for chaining.
  * @suppress {checkTypes}

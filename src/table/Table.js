@@ -687,8 +687,10 @@ anychart.tableModule.Table.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
+
   if (!this.layer_) {
-    this.layer_ = acgraph.layer();
+    this.layer_ = acgraph.layer().id('QWEQWEQWEQWEQ');
+    this.bindHandlersToGraphics(this.layer_);
     this.contentLayer_ = this.layer_.layer();
   }
 
@@ -729,9 +731,20 @@ anychart.tableModule.Table.prototype.draw = function() {
     this.markConsistent(anychart.ConsistencyState.CONTAINER);
   }
 
+  if (!this.contextMenu_) {
+    this.contextMenu();
+    this.contextMenu_['attach'](this);
+    console.log('menu exists');
+  }
+
   if (manualSuspend) stage.resume();
 
   return this;
+};
+
+anychart.tableModule.Table.prototype.handleBrowserEvent = function(event) {
+  if (event.type == 'contextmenu')
+    this.dispatchEvent(event);
 };
 
 
@@ -2563,7 +2576,7 @@ anychart.tableModule.table = function(opt_rowsCount, opt_colsCount) {
 /**
  * Creates context menu for chart.
  * @param {(Object|boolean|null)=} opt_value
- * @return {anychart.ui.ContextMenu|!anychart.core.Chart}
+ * @return {anychart.ui.ContextMenu|!anychart.core.ui.Table}
  */
 anychart.tableModule.Table.prototype.contextMenu = function(opt_value) {
   if (!this.contextMenu_) {
@@ -2617,7 +2630,8 @@ anychart.tableModule.Table.prototype.contextMenuItemsProvider = function(context
   if (anychart.window['anychart']['exports']) {
     goog.object.extend(items, /** @type {Object} */ (anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuMap['exporting'])));
   }
-  if (goog.dom.fullscreen.isSupported() && context['chart'])
+  // if (goog.dom.fullscreen.isSupported() && context['chart'])
+    if (goog.dom.fullscreen.isSupported() && context['chart'] && context['chart'].fullScreen)
     goog.object.extend(items, /** @type {Object} */ (anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuMap[context['chart'].fullScreen() ? 'full-screen-exit' : 'full-screen-enter'])));
   goog.object.extend(items, /** @type {Object} */ (anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuMap['main'])));
 
@@ -2653,7 +2667,7 @@ anychart.tableModule.Table.prototype.specificContextMenuItems = function(items, 
  * Get selected points.
  * @return {Array.<anychart.core.Point>}
  */
-anychart.tableModule.Table.prototype.getSelectedPoints = function() {
+/*anychart.tableModule.Table.prototype.getSelectedPoints = function() {
   var selectedPoints = [];
   var selectedPointsIndexes, series, i, j;
   var allSeries = this.getAllSeries();
@@ -2667,7 +2681,7 @@ anychart.tableModule.Table.prototype.getSelectedPoints = function() {
   }
 
   return selectedPoints;
-};
+};*/
 
 
 /**
@@ -2916,6 +2930,41 @@ anychart.tableModule.Table.contextMenuMap = {
 
 
 //endregion
+//region --- Full screen
+//------------------------------------------------------------------------------
+//
+//  Full screen
+//
+//------------------------------------------------------------------------------
+/**
+ * Getter/Setter for the full screen mode.
+ * @param {boolean=} opt_value
+ * @return {anychart.tableModule.Table|boolean}
+ */
+anychart.tableModule.Table.prototype.fullScreen = function(opt_value) {
+  var container = this.container();
+  var stage = container ? container.getStage() : null;
+  if (goog.isDef(opt_value)) {
+    if (stage)
+      stage.fullScreen(opt_value);
+    return this;
+  }
+  return stage ? /** @type {boolean} */(stage.fullScreen()) : false;
+};
+
+
+/**
+ * Tester for the full screen support.
+ * @return {boolean}
+ */
+anychart.core.Chart.prototype.isFullScreenAvailable = function() {
+  var container = this.container();
+  var stage = container ? container.getStage() : null;
+  return stage ? /** @type {boolean} */(stage.isFullScreenAvailable()) : false;
+};
+
+
+//endregion
 //exports
 (function() {
   var proto = anychart.tableModule.Table.prototype;
@@ -2940,6 +2989,8 @@ anychart.tableModule.Table.contextMenuMap = {
   proto['contextMenu'] = proto.contextMenu;
 
   proto['draw'] = proto.draw;//doc
+
+  proto['fullScreen'] = proto.fullScreen;
 
   proto['fontSize'] = proto.fontSize;
   proto['fontFamily'] = proto.fontFamily;
