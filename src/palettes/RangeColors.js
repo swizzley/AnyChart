@@ -66,18 +66,18 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEED
 
 
 /**
+ * Supported consistency states.
+ * @type {anychart.ConsistencyState|number}
+ */
+anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.ConsistencyState.APPEARANCE;
+
+
+/**
  * Color palette.
  * @type {Array.<acgraph.vector.SolidFill>}
  * @private
  */
 anychart.palettes.RangeColors.prototype.colorPalette_;
-
-
-/**
- * Supported consistency states.
- * @type {anychart.ConsistencyState|number}
- */
-anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.ConsistencyState.APPEARANCE;
 
 
 /**
