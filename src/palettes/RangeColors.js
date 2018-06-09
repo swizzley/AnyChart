@@ -53,13 +53,6 @@ anychart.palettes.RangeColors = function() {
    */
   this.autoCount_ = NaN;
 
-  /**
-   * Whether palette needs processing
-   * @type {boolean}
-   * @private
-   */
-  this.needsProcessing_ = true;
-
   this.restoreDefaults(true);
 };
 goog.inherits(anychart.palettes.RangeColors, anychart.core.Base);
@@ -80,14 +73,18 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEED
 anychart.palettes.RangeColors.prototype.colorPalette_;
 
 
+anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.ConsistencyState.DATA_MASK;
+
+
 /**
  * Checks if palette is consistent and if not - recreates it
  */
 anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
-  if (this.needsProcessing_) {
+  if (!this.isConsistent()) {
     this.processColorRange_();
-    this.needsProcessing_ = false;
+    this.markConsistent(anychart.ConsistencyState.DATA_MASK);
   }
+
 };
 
 
@@ -97,7 +94,7 @@ anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
   if (this.autoCount_ != val) {
     this.autoCount_ = val;
-    this.needsProcessing_ = true;
+    this.invalidate(anychart.ConsistencyState.DATA_MASK);
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
   }
 };
@@ -124,7 +121,7 @@ anychart.palettes.RangeColors.prototype.items = function(opt_value, var_args) {
       });
     }
 
-    this.needsProcessing_ = true;
+    this.invalidate(anychart.ConsistencyState.DATA_MASK);
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
     return this;
   } else {
@@ -143,7 +140,7 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
     if (this.count_ != opt_value) {
       this.count_ = opt_value;
 
-      this.needsProcessing_ = true;
+      this.invalidate(anychart.ConsistencyState.DATA_MASK);
       this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
     }
     return this;
@@ -302,7 +299,7 @@ anychart.palettes.RangeColors.prototype.restoreDefaults = function(opt_doNotDisp
     '#FF9A00',
     '#FF6500'
   ];
-  this.needsProcessing_ = true;
+  this.invalidate(anychart.ConsistencyState.DATA_MASK);
   if (opt_doNotDispatch) this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
 };
 
