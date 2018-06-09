@@ -163,7 +163,7 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
 anychart.palettes.RangeColors.prototype.itemAt = function(index, opt_item) {
   this.ensureProcessed();
   var colors = goog.isArray(this.colors_) ? this.colors_ : this.colors_.keys;
-  if (this.colors_.length < 1) return null;
+  if (colors.length < 1) return null;
   var count = this.count_ || this.autoCount_ || colors.length;
   if (!count) return null;
 
