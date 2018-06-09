@@ -73,6 +73,10 @@ anychart.palettes.RangeColors.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEED
 anychart.palettes.RangeColors.prototype.colorPalette_;
 
 
+/**
+ * Supported consistency states.
+ * @type {anychart.ConsistencyState|number}
+ */
 anychart.palettes.RangeColors.prototype.SUPPORTED_CONSISTENCY_STATES = anychart.ConsistencyState.APPEARANCE;
 
 
