@@ -106,6 +106,18 @@ anychart.core.drawers.SplineDrawer.prototype.isVertical = function(opt_value) {
 
 
 /**
+ *
+ */
+anychart.core.drawers.SplineDrawer.prototype.baseline = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.baseline_ = opt_value;
+    return this;
+  }
+  return this.baseline_;
+};
+
+
+/**
  * @param {number} position
  * @param {Array.<acgraph.vector.Element>} paths
  */
@@ -297,33 +309,67 @@ anychart.core.drawers.SplineDrawer.prototype.makeSplineBreak = function(p0x, p0y
 anychart.core.drawers.SplineDrawer.prototype.splineTo = function(var_args) {
   var i, j, argsLen;
   var args = arguments;
-  var m0, m1, c1, c2, p1, p2;
+  var m0, m1, c1, c2, p0, p1;
 
   for (i = 0; i < this.paths_.length; i++) {
+    var path = this.paths_[i];
     for (j = 0, argsLen = args.length; j < argsLen; j++) {
-      if (args[j] == 'm') {
-        if (this.isVertical_) {
-          m0 = args[j + 2]; m1 = args[j + 1];
-        } else {
-          m0 = args[j + 1]; m1 = args[j + 2];
-        }
-        this.paths_[i].moveTo(m0, m1);
-        j += 2;
-      } else if (args[j] == 'c') {
-        if (this.isVertical_) {
-          c1 = args[j + 2]; c2 = args[j + 1]; p1 = args[j + 4]; p2 = args[j + 3]
-        } else {
-          c1 = args[j + 1]; c2 = args[j + 2]; p1 = args[j + 3]; p2 = args[j + 4]
-        }
-        this.paths_[i].quadraticCurveTo(c1, c2, p1, p2);
-        j += 4;
-      } else if (args[j] == 'l') {
-        if (this.isVertical_) {
-          m0 = args[j + 2]; m1 = args[j + 1];
-        } else {
-          m0 = args[j + 1]; m1 = args[j + 2];
-        }
-        this.paths_[i].lineTo(m0, m1);
+      switch (args[j]) {
+        case 'm':
+          if (this.isVertical_) {
+            m0 = args[j + 2]; m1 = args[j + 1];
+          } else {
+            m0 = args[j + 1]; m1 = args[j + 2];
+          }
+          path.moveTo(m0, m1);
+          j += 2;
+          break;
+        case 'bs':
+          if (this.isVertical_) {
+            m0 = args[j + 2]; m1 = args[j + 1];
+            p0 = args[j + 4]; p1 = args[j + 3];
+          } else {
+            m0 = args[j + 1]; m1 = args[j + 2];
+            p0 = args[j + 3]; p1 = args[j + 4];
+          }
+          if (path.baselineDepened) {
+            path.moveTo(m0, m1);
+            path.lineTo(p0, p1);
+          } else {
+            path.moveTo(p0, p1);
+          }
+          j += 4;
+          break;
+        case 'bc':
+          if (this.isVertical_) {
+            p0 = args[j + 2]; p1 = args[j + 1];
+          } else {
+            p0 = args[j + 1]; p1 = args[j + 2];
+          }
+          if (path.baselineDepened) {
+            path.lineTo(p0, p1);
+          }
+          j += 2;
+          break;
+        case 'c':
+          if (this.isVertical_) {
+            c1 = args[j + 2]; c2 = args[j + 1];
+            p0 = args[j + 4]; p1 = args[j + 3]
+          } else {
+            c1 = args[j + 1]; c2 = args[j + 2];
+            p0 = args[j + 3]; p1 = args[j + 4]
+          }
+          path.quadraticCurveTo(c1, c2, p0, p1);
+          j += 4;
+          break;
+        case 'l':
+          if (this.isVertical_) {
+            m0 = args[j + 2]; m1 = args[j + 1];
+          } else {
+            m0 = args[j + 1]; m1 = args[j + 2];
+          }
+          path.lineTo(m0, m1);
+          break;
       }
     }
   }
@@ -358,11 +404,16 @@ anychart.core.drawers.SplineDrawer.prototype.startSplineDrawing_ = function(p1x,
 
     if (this.breakPaths_) {
       points = this.makeSplineBreak(p1x, p1y, c1x, c1y, p2x, p2y);
-      this.splineTo('m', points[0], points[1], 'c', points[2], points[3], points[4], points[5]);
+      this.splineTo(
+          'bs', points[0], this.baseline_, points[0], points[1],
+          'c', points[2], points[3], points[4], points[5],
+          'bc', points[4], this.baseline_);
       this.applyBreakPath();
       this.splineTo('m', points[4], points[5], 'c', points[6], points[7], points[8], points[9]);
     } else {
-      this.splineTo('m', p1x, p1y, 'c', c1x, c1y, p2x, p2y);
+      this.splineTo(
+          'bs', p1x, this.baseline_, p1x, p1y,
+          'c', c1x, c1y, p2x, p2y);
     }
   }
 
@@ -407,17 +458,29 @@ anychart.core.drawers.SplineDrawer.prototype.drawNextSplinePoint_ = function(p1x
       var firsSegmentCrossed = (p1y <= this.breakPos_ && mpy >= this.breakPos_) || (p1y >= this.breakPos_ && mpy <= this.breakPos_);
       if (firsSegmentCrossed) {
         points = this.makeSplineBreak(p1x, p1y, c1x, c1y, mpx, mpy);
-        this.splineTo('c', points[2], points[3], points[4], points[5]);
+        this.splineTo(
+            'c', points[2], points[3], points[4], points[5],
+            'bc', points[4], this.baseline_);
         this.applyBreakPath();
-        this.splineTo('m', points[4], points[5], 'c', points[6], points[7], points[8], points[9], 'c', c2x, c2y, p2x, p2y);
+        this.splineTo(
+            'bs', points[4], this.baseline_, points[4], points[5],
+            'c', points[6], points[7], points[8], points[9],
+            'c', c2x, c2y, p2x, p2y);
       } else {
         points = this.makeSplineBreak(mpx, mpy, c2x, c2y, p2x, p2y);
-        this.splineTo('c', c1x, c1y, mpx, mpy, 'c', points[2], points[3], points[4], points[5]);
+        this.splineTo(
+            'c', c1x, c1y, mpx, mpy,
+            'c', points[2], points[3], points[4], points[5],
+            'bc', points[4], this.baseline_);
         this.applyBreakPath();
-        this.splineTo('m', points[4], points[5], 'c', points[6], points[7], points[8], points[9]);
+        this.splineTo(
+            'm', points[4], points[5],
+            'c', points[6], points[7], points[8], points[9]);
       }
     } else {
-      this.splineTo('c', c1x, c1y, mpx, mpy, 'c', c2x, c2y, p2x, p2y);
+      this.splineTo(
+          'c', c1x, c1y, mpx, mpy,
+          'c', c2x, c2y, p2x, p2y);
     }
   }
 
@@ -443,11 +506,18 @@ anychart.core.drawers.SplineDrawer.prototype.finalizeSplineDrawing_ = function(p
 
   if (this.breakPaths_) {
     points = this.makeSplineBreak(p1x, p1y, c1x, c1y, p2x, p2y);
-    this.splineTo('c', points[2], points[3], points[4], points[5]);
+    this.splineTo(
+        'c', points[2], points[3], points[4], points[5],
+        'bc', points[4], this.baseline_);
     this.applyBreakPath();
-    this.splineTo('m', points[4], points[5], 'c', points[6], points[7], points[8], points[9]);
+    this.splineTo(
+        'm', points[4], points[5],
+        'c', points[6], points[7], points[8], points[9],
+        'c', points[8], this.baseline_);
   } else {
-    this.splineTo('c', c1x, c1y, p2x, p2y);
+    this.splineTo(
+        'c', c1x, c1y, p2x, p2y,
+        'bc', p2x, this.baseline_);
   }
 
   // this.paths_[0].getStage().pie(p1x + this.tangent_[0], p1y + this.tangent_[1], 5, 0, 360).fill(this.paths_[0].fill()).stroke('black').zIndex(1000);

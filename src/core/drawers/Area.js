@@ -422,7 +422,6 @@ anychart.core.drawers.Area.prototype.drawSubsequentPoint = function(point, state
 anychart.core.drawers.Area.prototype.finalizeSegment = function() {
   if (!this.prevPointDrawn) return;
 
-  // var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
   var shapes = this.currentShapes;
   var name = this.prevShapeNames;
   var path = /** @type {acgraph.vector.Path} */(shapes[name.fill]);

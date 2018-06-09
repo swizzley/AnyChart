@@ -108,12 +108,12 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
   var shapeNames = {};
   shapeNames[name] = true;
 
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
-  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(shapes[name])]);
+  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(this.currentShapes[name])]);
   this.queue_.resetDrawer(false);
   this.queue_.processPoint(x, y);
 
@@ -148,6 +148,7 @@ anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, sta
       crossY = 'middle';
     }
     this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[name])]);
+    this.currentShapes = shapes;
   }
 
   this.prevY = y;
