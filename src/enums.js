@@ -1917,6 +1917,7 @@ anychart.enums.StockIndicatorTypes = {
   MMA: 'mma',
   MOMENTUM: 'momentum',
   OBV: 'obv',
+  PRICE_CHANNELS: 'price-channels',
   PSAR: 'psar',
   ROC: 'roc',
   RSI: 'rsi',
@@ -2584,7 +2585,11 @@ anychart.enums.WarningCode = {
   DEPRECATED_WITHOUT_REPLACEMENT: 407,
 
   IMMUTABLE_MARKER_SCALE: 500,
-  IMMUTABLE_MARKER_LAYOUT: 501
+  IMMUTABLE_MARKER_LAYOUT: 501,
+
+  STATES_IN_STORE_EXCEEDED: 700,
+  STORE_LAST_STATE_USED: 701,
+  STORE_STATE_PAIR_EXISTS: 702
 
 };
 
@@ -5035,6 +5040,29 @@ anychart.enums.TimeTrackingMode = {
 anychart.enums.normalizeTimeTrackingMode = function(value) {
   return /** @type {anychart.enums.TimeTrackingMode} */(anychart.enums.normalize(anychart.enums.TimeTrackingMode, value,
       anychart.enums.TimeTrackingMode.ACTIVITY_PER_RESOURCE));
+};
+
+
+//endregion
+//region --- Consistency State and Store names.
+/**
+ * Names for stores.
+ * @enum {string}
+ */
+anychart.enums.Store = {
+  SERIES_CHART: 'serieschart',
+  PLOT: 'plot',
+  DATA_AREA: 'dataarea'
+};
+
+
+/**
+ * Names for states.
+ * @enum {string}
+ */
+anychart.enums.State = {
+  DATA_AREA: 'dataarea',
+  APPEARANCE: 'appearance'
 };
 //endregion
 
