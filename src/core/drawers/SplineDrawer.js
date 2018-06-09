@@ -409,7 +409,9 @@ anychart.core.drawers.SplineDrawer.prototype.startSplineDrawing_ = function(p1x,
           'c', points[2], points[3], points[4], points[5],
           'bc', points[4], this.baseline_);
       this.applyBreakPath();
-      this.splineTo('m', points[4], points[5], 'c', points[6], points[7], points[8], points[9]);
+      this.splineTo(
+          'bs', points[4], this.baseline_, points[4], points[5],
+          'c', points[6], points[7], points[8], points[9]);
     } else {
       this.splineTo(
           'bs', p1x, this.baseline_, p1x, p1y,
@@ -474,7 +476,7 @@ anychart.core.drawers.SplineDrawer.prototype.drawNextSplinePoint_ = function(p1x
             'bc', points[4], this.baseline_);
         this.applyBreakPath();
         this.splineTo(
-            'm', points[4], points[5],
+            'bs', points[4], this.baseline_, points[4], points[5],
             'c', points[6], points[7], points[8], points[9]);
       }
     } else {
@@ -511,9 +513,9 @@ anychart.core.drawers.SplineDrawer.prototype.finalizeSplineDrawing_ = function(p
         'bc', points[4], this.baseline_);
     this.applyBreakPath();
     this.splineTo(
-        'm', points[4], points[5],
+        'bs', points[4], this.baseline_, points[4], points[5],
         'c', points[6], points[7], points[8], points[9],
-        'c', points[8], this.baseline_);
+        'bc', points[8], this.baseline_);
   } else {
     this.splineTo(
         'c', c1x, c1y, p2x, p2y,
@@ -548,10 +550,17 @@ anychart.core.drawers.SplineDrawer.prototype.drawDummySpline_ = function(p1x, p1
   if (this.breakPaths_) {
     var crossY = this.breakPos_;
     var crossX = (p2x - p1x) * (crossY - p1y) / (p2y - p1y) + p1x;
-    this.splineTo('m', p1x, p1y, 'l', crossX, crossY);
+    this.splineTo(
+        'bs', p1x, this.baseline_, p1x, p1y,
+        'l', crossX, crossY,
+        'bc', crossX, this.baseline_);
     this.applyBreakPath();
-    this.splineTo('m', crossX, crossY, 'l', p2x, p2y);
+    this.splineTo(
+        'bs', crossX, this.baseline_, crossX, crossY,
+        'l', p2x, p2y);
   } else {
-    this.splineTo('m', p1x, p1y, 'l', p2x, p2y);
+    this.splineTo(
+        'bs', p1x, this.baseline_, p1x, p1y,
+        'l', p2x, p2y);
   }
 };

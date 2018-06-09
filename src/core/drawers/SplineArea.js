@@ -204,8 +204,8 @@ anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, stat
 
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point, state) {
-  var currValue = point.get(this.series.getYValueNames()[0]);
-  var names = this.getShapeNames(currValue);
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = this.getShapeNames(value);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
@@ -225,7 +225,7 @@ anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point,
     var crossY, prevY;
     prevY = /** @type {number} */(this.prevY);
 
-    var isBaselineIntersect = this.isBaselineIntersect(currValue);
+    var isBaselineIntersect = this.isBaselineIntersect(value);
     if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = zero;
     } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
@@ -251,7 +251,7 @@ anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point,
   }
 
   this.prevY = y;
-  this.prevValue = currValue;
+  this.prevValue = value;
 };
 
 
