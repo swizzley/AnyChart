@@ -675,7 +675,7 @@ anychart.pyramidFunnelModule.Chart.prototype.drawContent = function(bounds) {
     }
 
     if (this.palette_ && anychart.utils.instanceOf(this.palette_, anychart.palettes.RangeColors)) {
-      this.palette_.count(iterator.getRowsCount());
+      this.palette_.setAutoCount(iterator.getRowsCount());
     }
 
     this.pointsPaddingValue_ = Math.abs(anychart.math.round(anychart.utils.normalizeSize(/** @type {number|string} */ (this.getOption('pointsPadding')), bounds.height), 2));
