@@ -148,7 +148,7 @@ anychart.stockModule.data.TableIterator.prototype.current = function() {
 
 
 /** @inheritDoc */
-anychart.stockModule.data.TableIterator.prototype.specialSelect = function(row) {
+anychart.stockModule.data.TableIterator.prototype.specialSelect = function(row, opt_index) {
   if (goog.isDef(row)) {
     this.current_ = /** @type {anychart.stockModule.data.TableRow} */(row);
     this.currentExists_ = true;

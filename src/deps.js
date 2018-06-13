@@ -312,7 +312,7 @@ goog.addDependency('../../../../src/map/utils/GeoSVGParser.js', ['anychart.mapMo
 goog.addDependency('../../../../src/map/utils/SVGPathDataParser.js', ['anychart.mapModule.utils.SVGPathDataParser'], [], {});
 goog.addDependency('../../../../src/map/utils/TopoJSONParser.js', ['anychart.mapModule.utils.TopoJSONParser'], ['anychart.mapModule.geom', 'anychart.mapModule.utils.GeoJSONParser'], {});
 goog.addDependency('../../../../src/map/utils/UnboundRegionsSettings.js', ['anychart.mapModule.utils.UnboundRegionsSettings'], [], {});
-goog.addDependency('../../../../src/math.js', ['anychart.math', 'anychart.math.Rect'], ['acgraph.math', 'goog.math.Coordinate', 'goog.math.Rect'], {});
+goog.addDependency('../../../../src/math.js', ['anychart.math', 'anychart.math.Point2D', 'anychart.math.Polynomial', 'anychart.math.Rect'], ['acgraph.math', 'goog.math.Coordinate', 'goog.math.Rect'], {});
 goog.addDependency('../../../../src/mekko/Chart.js', ['anychart.mekkoModule.Chart'], ['anychart.core.ChartWithAxes', 'anychart.core.series', 'anychart.core.settings', 'anychart.core.shapeManagers', 'anychart.enums', 'anychart.mekkoModule.Series'], {});
 goog.addDependency('../../../../src/mekko/Drawer.js', ['anychart.mekkoModule.Drawer'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], {});
 goog.addDependency('../../../../src/mekko/Series.js', ['anychart.mekkoModule.Series'], ['anychart.core.series.Cartesian', 'anychart.core.utils.IInteractiveSeries'], {});

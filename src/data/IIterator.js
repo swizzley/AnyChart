@@ -34,7 +34,7 @@ anychart.data.IIterator.prototype.getRowsCount = function() {};
 
 /**
  * "Selects" iterator to row.
- * @param {anychart.stockModule.data.TableRow} row Row to select to.
+ * @param {*} row Row to select to.
  * @param {number=} opt_index Row index.
  */
 anychart.data.IIterator.prototype.specialSelect = function(row, opt_index) {};
