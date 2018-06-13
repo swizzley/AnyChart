@@ -734,7 +734,6 @@ anychart.tableModule.Table.prototype.draw = function() {
   if (!this.contextMenu_) {
     this.contextMenu();
     this.contextMenu_['attach'](this);
-    console.log('menu exists');
   }
 
   if (manualSuspend) stage.resume();
@@ -2630,8 +2629,7 @@ anychart.tableModule.Table.prototype.contextMenuItemsProvider = function(context
   if (anychart.window['anychart']['exports']) {
     goog.object.extend(items, /** @type {Object} */ (anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuMap['exporting'])));
   }
-  // if (goog.dom.fullscreen.isSupported() && context['chart'])
-    if (goog.dom.fullscreen.isSupported() && context['chart'] && context['chart'].fullScreen)
+  if (goog.dom.fullscreen.isSupported() && context['chart'])
     goog.object.extend(items, /** @type {Object} */ (anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuMap[context['chart'].fullScreen() ? 'full-screen-exit' : 'full-screen-enter'])));
   goog.object.extend(items, /** @type {Object} */ (anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuMap['main'])));
 
@@ -2641,7 +2639,6 @@ anychart.tableModule.Table.prototype.contextMenuItemsProvider = function(context
     versionHistoryItem['href'] = context['chart'].getVersionHistoryLink() + '?version=' + anychart.VERSION;
 
     items['version-history-separator'] = {'index': 81};
-    items['save-config-as'] = anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuItems['save-config-as']);
     items['link-to-help'] = anychart.utils.recursiveClone(anychart.tableModule.Table.contextMenuItems['link-to-help']);
     items['version-history'] = versionHistoryItem;
   }
@@ -2689,16 +2686,6 @@ anychart.tableModule.Table.prototype.specificContextMenuItems = function(items, 
  * @type {Object.<string, anychart.ui.ContextMenu.Item>}
  */
 anychart.tableModule.Table.contextMenuItems = {
-  // Item 'Print Chart'.
-  'select-marquee-start': {
-    'index': 9.3,
-    'text': 'Start selection marquee',
-    'eventType': 'anychart.startSelectMarquee',
-    'action': function(context) {
-      context['chart'].startSelectMarquee(false);
-    }
-  },
-
   // Item 'Export as ...'.
   'save-chart-as': {
     'index': 10,
@@ -2854,33 +2841,6 @@ anychart.tableModule.Table.contextMenuItems = {
     'href': 'https://anychart.com'
   },
 
-  // Item 'Save config as..'.
-  'save-config-as': {
-    'index': 100,
-    'text': 'Save config as...',
-    'iconClass': 'ac ac-save',
-    'subMenu': {
-      'save-config-as-json': {
-        'index': 10,
-        'text': '.json',
-        'iconClass': 'ac ac-file-code-o',
-        'eventType': 'anychart.saveAsJson',
-        'action': function(context) {
-          context['chart'].saveAsJson();
-        }
-      },
-      'save-config-as-xml': {
-        'index': 20,
-        'text': '.xml',
-        'iconClass': 'ac ac-file-code-o',
-        'eventType': 'anychart.saveAsXml',
-        'action': function(context) {
-          context['chart'].saveAsXml();
-        }
-      }
-    }
-  },
-
   // Item 'Link to help'.
   'link-to-help': {
     'index': 110,
@@ -2921,10 +2881,6 @@ anychart.tableModule.Table.contextMenuMap = {
   },
   'main': {
     'about': anychart.core.Chart.contextMenuItems['about']
-  },
-  'select-marquee': {
-    'select-marquee-start': anychart.core.Chart.contextMenuItems['select-marquee-start'],
-    'select-marquee-separator': {'index': 9.4}
   }
 };
 
