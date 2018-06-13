@@ -63,12 +63,60 @@ anychart.core.drawers.SplineArea.prototype.requiredShapes = (function() {
 })();
 
 
+/**
+ * @param {number} value .
+ * @return {Object.<string>}
+ */
+anychart.core.drawers.SplineArea.prototype.getShapeNames = function(value) {
+  var names = {};
+  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+
+  if (this.hasNegativeColoring) {
+    if (value < baseline) {
+      strokeName = 'negativeStroke';
+      fillName = 'negativeFill';
+      hatchFillName = 'negativeHatchFill';
+    }
+  } else if (this.hasRisingFallingColoring) {
+    if (value < this.prevValue) {
+      strokeName = 'fallingStroke';
+      fillName = 'fallingFill';
+      hatchFillName = 'fallingHatchFill';
+    } else if (value > this.prevValue) {
+      strokeName = 'risingStroke';
+      fillName = 'risingFill';
+      hatchFillName = 'risingHatchFill';
+    }
+  }
+
+  names.stroke = strokeName;
+  names.fill = fillName;
+  names.hatchFill = hatchFillName;
+
+  return names;
+};
+
+
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.SplineArea.base(this, 'startDrawing', shapeManager);
   var shapes = this.shapesManager.getShapesGroup(this.seriesState);
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
+
+  var normSettings = this.series.normal();
+  /**
+   * @type {boolean}
+   */
+  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
+
+  /**
+   * @type {boolean}
+   */
+  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
+      goog.isDef(normSettings.getOption('fallingStroke'));
+
   /**
    * @type {Array.<acgraph.vector.Path>}
    * @private
@@ -104,19 +152,39 @@ anychart.core.drawers.SplineArea.prototype.drawMissingPoint = function(point, st
 
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = this.getShapeNames(value);
+
+  var shapeNames = {};
+  shapeNames[names.stroke] = true;
+  shapeNames[names.fill] = true;
+  shapeNames[names.hatchFill] = true;
+
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var zero = /** @type {number} */(point.meta('zero'));
   var zeroMissing = /** @type {boolean} */(point.meta('zeroMissing'));
   var y = /** @type {number} */(point.meta('value'));
 
-  this.queue_.setPaths(this.forwardPaths_);
   this.queue_.resetDrawer(false);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, zero);
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, y);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, zero);
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, y);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['stroke']), this.isVertical, x, y);
+  this.queue_.baseline(zero);
+
+  var fillShape = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+  fillShape.baselineDepened = true;
+  var hatchShape = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
+  hatchShape.baselineDepened = true;
+  var strokeShape = /** @type {acgraph.vector.Path} */(this.currentShapes[names.stroke]);
+  strokeShape.baselineDepened = false;
+
+  this.queue_.setPaths([fillShape, strokeShape, hatchShape]);
+
+  // anychart.core.drawers.move(fillShape, this.isVertical, x, zero);
+  // anychart.core.drawers.line(fillShape, this.isVertical, x, y);
+  // anychart.core.drawers.move(hatchShape, this.isVertical, x, zero);
+  // anychart.core.drawers.line(hatchShape, this.isVertical, x, y);
+  // anychart.core.drawers.move(strokeShape, this.isVertical, x, y);
+
   this.queue_.processPoint(x, y);
 
   if (this.series.planIsStacked()) {
@@ -128,23 +196,62 @@ anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, stat
     /** @type {number} */
     this.zeroY = zero;
   }
+
+  this.prevY = y;
+  this.prevValue = value;
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point, state) {
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = this.getShapeNames(value);
+  var shapeNames = {};
+  shapeNames[names.stroke] = true;
+  shapeNames[names.fill] = true;
+  shapeNames[names.hatchFill] = true;
+
+  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var zero = /** @type {number} */(point.meta('zero'));
   var zeroMissing = /** @type {boolean} */(point.meta('zeroMissing'));
   var y = /** @type {number} */(point.meta('value'));
 
+  this.queue_.baseline(zero);
   this.queue_.processPoint(x, y);
+
+  if (shapes != this.currentShapes) {
+    var crossY, prevY;
+    prevY = /** @type {number} */(this.prevY);
+
+    var isBaselineIntersect = this.isBaselineIntersect(value);
+    if (this.hasNegativeColoring && isBaselineIntersect) {
+      crossY = zero;
+    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
+      crossY = prevY;
+    } else {
+      crossY = 'middle';
+    }
+    var fillShape = /** @type {acgraph.vector.Path} */(shapes[names.fill]);
+    fillShape.baselineDepened = true;
+    var hatchShape = /** @type {acgraph.vector.Path} */(shapes[names.hatchFill]);
+    hatchShape.baselineDepened = true;
+    var strokeShape = /** @type {acgraph.vector.Path} */(shapes[names.stroke]);
+    strokeShape.baselineDepened = false;
+
+    this.queue_.setBreak(crossY, [fillShape, strokeShape, hatchShape]);
+    this.currentShapes = shapes;
+  }
 
   if (this.series.planIsStacked()) {
     this.zeroesStack.push(x, zero, zeroMissing);
   } else {
     this.lastDrawnX = x;
   }
+
+  this.prevY = y;
+  this.prevValue = value;
 };
 
 
@@ -153,10 +260,10 @@ anychart.core.drawers.SplineArea.prototype.finalizeSegment = function() {
   if (!this.prevPointDrawn) return;
   this.queue_.finalizeProcessing();
   if (!isNaN(this.lastDrawnX)) {
-    anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, this.lastDrawnX, this.zeroY);
-    this.backwardPaths_[0].close();
-    anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, this.lastDrawnX, this.zeroY);
-    this.backwardPaths_[1].close();
+    // anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, this.lastDrawnX, this.zeroY);
+    // this.backwardPaths_[0].close();
+    // anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, this.lastDrawnX, this.zeroY);
+    // this.backwardPaths_[1].close();
   } else if (this.zeroesStack) {
     this.queue_.setPaths(this.backwardPaths_);
     this.queue_.resetDrawer(true);

@@ -644,7 +644,7 @@ anychart.color.getColor = function(colorName, normalizer, isHatchFill, canBeHove
     color = normalizer(series.getAutoHatchFill());
 
   var colorScaleName = 'scaled_' + colorName;
-  if (goog.isString(color) && color.toLowerCase() == 'colorscale') {
+  if (goog.isString(color)) {
     var colorScale = series.colorScale && series.colorScale();
     if (colorScale) {
       color = anychart.color.getScaledColor;

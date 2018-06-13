@@ -103,6 +103,16 @@ anychart.core.drawers.Base.prototype.getYValueNames = function() {
 
 
 /**
+ * @param {number} value .
+ * @return {boolean}
+ */
+anychart.core.drawers.Base.prototype.isBaselineIntersect = function(value) {
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+  return ((this.prevValue - baseline) || 1) * ((value - baseline) || 1) < 0;
+};
+
+
+/**
  * Checks if any shape of the passed object intersects the rect.
  * @param {Object.<acgraph.vector.Element>} shapes
  * @param {number} left

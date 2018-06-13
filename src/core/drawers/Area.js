@@ -118,16 +118,6 @@ anychart.core.drawers.Area.prototype.drawSegmentStart_ = function(shapes, x, y, 
 
 
 /**
- * w@param {number} value .
- * @return {boolean}
- */
-anychart.core.drawers.Area.prototype.isbaselineIntersect = function(value) {
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-  return ((this.prevValue - baseline) || 1) * ((value - baseline) || 1) < 0;
-};
-
-
-/**
  * Draws area start.
  * @param {Object.<string, acgraph.vector.Shape>} shapes
  * @param {number} x
@@ -146,9 +136,9 @@ anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes,
     prevY = /** @type {number} */(this.prevY);
     prevNames = this.prevShapeNames;
 
-    var isbaselineIntersect = this.isbaselineIntersect(value);
+    var isBaselineIntersect = this.isBaselineIntersect(value);
 
-    if (this.hasNegativeColoring && isbaselineIntersect) {
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = zeroY;
       crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
     } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
@@ -160,7 +150,7 @@ anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes,
     }
 
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.fill]), this.isVertical, crossX, crossY);
-    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.fill]), this.isVertical, prevX, zeroY);
+    anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.fill]), this.isVertical, crossX, zeroY);
     this.currentShapes[prevNames.fill].close();
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.hatchFill]), this.isVertical, crossX, crossY);
     anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[prevNames.hatchFill]), this.isVertical, prevX, zeroY);
@@ -432,7 +422,6 @@ anychart.core.drawers.Area.prototype.drawSubsequentPoint = function(point, state
 anychart.core.drawers.Area.prototype.finalizeSegment = function() {
   if (!this.prevPointDrawn) return;
 
-  // var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
   var shapes = this.currentShapes;
   var name = this.prevShapeNames;
   var path = /** @type {acgraph.vector.Path} */(shapes[name.fill]);
