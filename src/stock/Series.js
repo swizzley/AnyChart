@@ -335,7 +335,7 @@ anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_b
     'sourceColor': {value: source, type: anychart.enums.TokenType.UNKNOWN},
     'iterator': {value: iterator, type: anychart.enums.TokenType.UNKNOWN},
     'plot': {value: this.plot, type: anychart.enums.TokenType.UNKNOWN},
-    'chart': {value: this, type: anychart.enums.TokenType.UNKNOWN},
+    'chart': {value: this.chart, type: anychart.enums.TokenType.UNKNOWN},
     'name': {value: name, type: anychart.enums.TokenType.STRING},
     'isIntersection': {value: !!iterator.meta('isIntersection'), type: anychart.enums.TokenType.STRING}
   };

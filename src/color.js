@@ -639,6 +639,8 @@ anychart.color.getColor = function(colorName, normalizer, isHatchFill, canBeHove
   }
   // we can get here only if state color is undefined or is a function
 
+  console.log(colorName);
+
   var color = series.resolveOption(colorName, 0, iterator, normalizer, scrollerSelected, void 0, opt_ignorePointSettings);
   if (isHatchFill && color === true)
     color = normalizer(series.getAutoHatchFill());

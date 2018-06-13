@@ -87,21 +87,25 @@ anychart.core.shapeManagers.PerSeries.prototype.addShapesGroup = function(state)
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.updateZIndex = function(newBaseZIndex) {
+  var current = this.series.getIterator().current();
   for (var key in this.shapes) {
     var shape = this.shapes[key];
     this.series.getIterator().specialSelect(shape.row);
     anychart.core.shapeManagers.PerSeries.base(this, 'updateZIndex', newBaseZIndex);
   }
+  this.series.getIterator().specialSelect(current);
 };
 
 
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.updateColors = function(state, opt_shapesGroup) {
+  var current = this.series.getIterator().current();
   for (var key in this.shapes) {
     var shape = this.shapes[key];
     this.series.getIterator().specialSelect(shape.row);
     anychart.core.shapeManagers.PerSeries.base(this, 'updateColors', state, shape.shapes);
   }
+  this.series.getIterator().specialSelect(current);
 };
 
 
