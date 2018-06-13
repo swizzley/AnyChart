@@ -640,7 +640,7 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
             }
           }
         }
-        series.zIndex(maxZIndex + (1 - (1 - (1 / (allSeries.length - i)))));
+        series.zIndex(series.zIndex() + (1 - (1 - (1 / (allSeries.length - i)))));
       } else if (series.supportsStack()) {
         this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
       }
@@ -841,6 +841,7 @@ anychart.cartesian3dModule.Chart.prototype.setupByJSON = function(config, opt_de
   proto['yAxis'] = proto.yAxis;
   proto['getYAxesCount'] = proto.getYAxesCount;
   proto['getSeries'] = proto.getSeries;
+  proto['zIndex'] = proto.zIndex;
   // generated automatically
   // proto['area'] = proto.area;
   // proto['bar'] = proto.bar;
