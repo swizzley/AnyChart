@@ -61,43 +61,12 @@ anychart.core.drawers.Spline.prototype.requiredShapes = (function() {
 })();
 
 
-/**
- *
- */
-anychart.core.drawers.Spline.prototype.getShapeName = function(value) {
-  var name;
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-  if (this.hasNegativeColoring) {
-    name = value < baseline ? 'negative' : 'stroke';
-  } else if (this.hasRisingFallingColoring) {
-    name = value < this.prevValue ? 'falling' : value > this.prevValue ? 'rising' : 'stroke';
-  } else {
-    name = 'stroke';
-  }
-
-  return name;
-};
-
-
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.Spline.base(this, 'startDrawing', shapeManager);
 
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
-
-
-  var normSettings = this.series.normal();
-  /**
-   * @type {boolean}
-   */
-  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
-
-  /**
-   * @type {boolean}
-   */
-  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
-      goog.isDef(normSettings.getOption('fallingStroke'));
 };
 
 

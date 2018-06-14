@@ -70,26 +70,6 @@ anychart.core.drawers.SplineArea.prototype.startDrawing = function(shapeManager)
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
 
-  var normSettings = this.series.normal();
-  /**
-   * @type {boolean}
-   */
-  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
-
-  /**
-   * @type {boolean}
-   */
-  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
-      goog.isDef(normSettings.getOption('fallingStroke'));
-
-  /**
-   * @type {Array.<acgraph.vector.Path>}
-   * @private
-   */
-  this.forwardPaths_ = [
-    /** @type {acgraph.vector.Path} */(shapes['fill']),
-    /** @type {acgraph.vector.Path} */(shapes['hatchFill']),
-    /** @type {acgraph.vector.Path} */(shapes['stroke'])];
   /**
    * @type {Array.<acgraph.vector.Path>}
    * @private
@@ -162,14 +142,15 @@ anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, stat
 
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point, state) {
+  var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.shapesManager.getShapeNames(value, this.prevValue);
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
 
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var zero = /** @type {number} */(point.meta('zero'));
@@ -184,9 +165,9 @@ anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point,
     prevY = /** @type {number} */(this.prevY);
 
     var isBaselineIntersect = this.isBaselineIntersect(value);
-    if (this.hasNegativeColoring && isBaselineIntersect) {
+    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
       crossY = zero;
-    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
+    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
       crossY = prevY;
     } else {
       crossY = 'middle';
