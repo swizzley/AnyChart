@@ -355,9 +355,6 @@ anychart.core.series.Cartesian.prototype.getColorResolutionContext = function(op
   }
 
   values['sourceColor'] = {value: scaledColor || source, type: anychart.enums.TokenType.UNKNOWN};
-  console.log(scaledColor, values['sourceColor']);
-  debugger;
-
 
   return this.pointProvider_.propagate(values);
 };
@@ -1183,8 +1180,9 @@ anychart.core.series.Cartesian.prototype.applyAppearanceToPoint = function(point
     this.drawPointOutliers(iterator, pointState, true);
   }
   this.drawer.updatePoint(iterator, pointState);
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
+  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS)) {
     this.drawMarker(iterator, pointState, true);
+  }
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
     this.drawLabel(iterator, pointState, true);
 

@@ -55,6 +55,12 @@ anychart.core.shapeManagers.PerSeries.prototype.getPointColorHash = function(sta
     var fill = /** @type {acgraph.vector.Fill} */(descriptor.fill(this.series, state));
     var stroke = /** @type {acgraph.vector.Stroke} */(descriptor.stroke(this.series, state));
 
+    if (!descriptor.isHatchFill) {
+      var iterator = this.series.getIterator();
+      iterator.meta('fill', fill);
+      iterator.meta('stroke', stroke);
+    }
+
     hash += name + anychart.color.hash(fill) + anychart.color.hash(stroke);
   }
 
@@ -82,6 +88,76 @@ anychart.core.shapeManagers.PerSeries.prototype.getShapesGroup = function(state,
 /** @inheritDoc */
 anychart.core.shapeManagers.PerSeries.prototype.addShapesGroup = function(state) {
   return this.getShapesGroup(state);
+};
+
+
+/**
+ * @param {number} value .
+ * @param {number} prevValue .
+ * @return {Object.<string>}
+ */
+anychart.core.shapeManagers.PerSeries.prototype.getShapeNames = function(value, prevValue) {
+  var names = {};
+  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+
+  var normSettings = this.series.normal();
+  /**
+   * @type {boolean}
+   */
+  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
+
+  /**
+   * @type {boolean}
+   */
+  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
+      goog.isDef(normSettings.getOption('fallingStroke'));
+
+
+  var isLineBased = this.series.check(anychart.core.drawers.Capabilities.IS_LINE_BASED);
+
+  if (this.hasNegativeColoring) {
+    if (value < baseline) {
+      strokeName = 'negativeStroke';
+      fillName = 'negativeFill';
+      hatchFillName = 'negativeHatchFill';
+    }
+  } else if (this.hasRisingFallingColoring) {
+    if (value < prevValue) {
+      strokeName = 'fallingStroke';
+      fillName = 'fallingFill';
+      hatchFillName = 'fallingHatchFill';
+    } else if (value > prevValue) {
+      strokeName = 'risingStroke';
+      fillName = 'risingFill';
+      hatchFillName = 'risingHatchFill';
+    }
+  }
+
+  names.stroke = strokeName;
+  if (!isLineBased) {
+    names.fill = fillName;
+    names.hatchFill = hatchFillName;
+  }
+
+  return names;
+};
+
+
+/**
+ *  
+ */
+anychart.core.shapeManagers.PerSeries.prototype.getShapesColor = function(state) {
+  var current = this.series.getIterator().current();
+  var color, targetShapeGroup;
+  for (var key in this.shapes) {
+    var shapesGroup = this.shapes[key];
+    // console.log(shapesGroup.key, current);
+    if (shapesGroup.row <= current) {
+      targetShapeGroup = shapesGroup;
+    }
+  }
+  console.log(targetShapeGroup);
 };
 
 

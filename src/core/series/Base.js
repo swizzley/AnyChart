@@ -2509,6 +2509,12 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
       this.checkBoundsCollision(/** @type {anychart.core.ui.LabelsFactory} */(mainFactory), label);
     }
   } else {
+    var iterator = this.getIterator();
+    var autoFill = anychart.color.setOpacity(iterator.meta(this.check(anychart.core.drawers.Capabilities.USES_STROKE_AS_FILL) ? 'stroke' : 'fill'), 1, true);
+    var autoStroke = anychart.color.darken(autoFill);
+
+    element.setAutoFill(autoFill);
+    element.setAutoStroke(autoStroke);
     element.currentMarkersFactory(/** @type {anychart.core.ui.MarkersFactory} */(factories[1] || mainFactory));
     element.setSettings(/** @type {Object} */(factories[2]), /** @type {Object} */(factories[3]));
   }
