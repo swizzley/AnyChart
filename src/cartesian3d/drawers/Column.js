@@ -102,8 +102,8 @@ anychart.cartesian3dModule.drawers.Column.prototype.updateZIndex = function(zInd
   while (iterator.advance()) {
     var shapes = /** @type {Object.<acgraph.vector.Shape>} */(iterator.meta('shapes'));
     if (shapes) {
-      var zIndexMeta = /** @type {number} */(iterator.meta('zIndex'));
-      this.shapesManager.updateZIndex(zIndexMeta + zIndex, shapes);
+      zIndex = /** @type {number} */(iterator.meta('zIndex'));
+      this.shapesManager.updateZIndex(zIndex + iterator.getIndex() * 1e-8, shapes);
     }
   }
 };
