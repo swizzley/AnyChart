@@ -908,7 +908,6 @@ anychart.stockModule.Chart.prototype.xScale = function(opt_value) {
           this.scroller_.xScale(new anychart.stockModule.scales.Ordinal(this.scroller_));
       }
 
-      this.invalidate(anychart.ConsistencyState.STOCK_SCROLLER);
       this.invalidateRedrawable();
     }
     return this;
@@ -1133,7 +1132,8 @@ anychart.stockModule.Chart.prototype.drawContent = function(bounds) {
   }
 
   // means that stock selection range needs to be updated
-  if (this.hasInvalidationState(anychart.ConsistencyState.STOCK_DATA)) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.STOCK_DATA) ||
+      this.hasInvalidationState(anychart.ConsistencyState.STOCK_SCALES)) {
     anychart.performance.start('Stock data calc');
     var xScale = /** @type {anychart.stockModule.scales.Scatter} */(this.xScale());
     var scrollerXScale = /** @type {anychart.stockModule.scales.Scatter} */(this.scroller().xScale());
