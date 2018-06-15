@@ -98,8 +98,7 @@ anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
   if (this.autoCount_ != val) {
     this.autoCount_ = val;
-    this.invalidate(anychart.ConsistencyState.APPEARANCE);
-    this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
+    this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REAPPLICATION);
   }
 };
 
@@ -125,8 +124,7 @@ anychart.palettes.RangeColors.prototype.items = function(opt_value, var_args) {
       });
     }
 
-    this.invalidate(anychart.ConsistencyState.APPEARANCE);
-    this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
+    this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REAPPLICATION);
     return this;
   } else {
     return /** @type {Array|acgraph.vector.LinearGradientFill|acgraph.vector.RadialGradientFill} */ (this.colors_);
@@ -144,8 +142,7 @@ anychart.palettes.RangeColors.prototype.count = function(opt_value) {
     if (this.count_ != opt_value) {
       this.count_ = opt_value;
 
-      this.invalidate(anychart.ConsistencyState.APPEARANCE);
-      this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
+      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REAPPLICATION);
     }
     return this;
   } else {
