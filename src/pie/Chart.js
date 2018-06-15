@@ -5017,7 +5017,6 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.calcDomain = function(
       if (nextLabel) {
         nextIterator.select(nextLabel.getIndex());
         nextValue = nextIterator.get('value');
-        console.log('Next ' + nextIterator.get('x') + ' ' + nextIterator.get('value') + ' current ' + iterator.get('x') + ' ' + iterator.get('value'));
       }
       if (prevLabel) {
         nextIterator.select(prevLabel.getIndex());
