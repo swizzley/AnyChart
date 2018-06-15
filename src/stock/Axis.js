@@ -555,6 +555,9 @@ anychart.stockModule.Axis.prototype.drawLabel_ = function(value, isMajor, bounds
   var labels = isMajor ? this.labels() : this.minorLabels();
 
   var dataIndex = this.scale_.getIndexByKey(value);
+  if (this.scale_.getType() == anychart.enums.ScaleTypes.STOCK_ORDINAL_DATE_TIME)
+    dataIndex = Math.ceil(dataIndex);
+
   var realValue = this.scale_.getKeyByIndex(dataIndex);
   var ratio = this.scale_.transformInternal(realValue, dataIndex);
 
@@ -604,6 +607,9 @@ anychart.stockModule.Axis.prototype.getLabelBounds_ = function(value, isMajor, b
   if (!labels.enabled()) return null;
 
   var dataIndex = this.scale_.getIndexByKey(value);
+  if (this.scale_.getType() == anychart.enums.ScaleTypes.STOCK_ORDINAL_DATE_TIME)
+    dataIndex = Math.ceil(dataIndex);
+
   var realValue = this.scale_.getKeyByIndex(dataIndex);
   var ratio = this.scale_.transformInternal(realValue, dataIndex);
   var x = Math.round(bounds.left + ratio * bounds.width);
