@@ -5009,8 +5009,46 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.calcDomain = function(
 
     if (dAngle > this.maxAngle || isNaN(this.maxAngle) || isNotValidConnectorLength) {
       this.maxAngle = leg < 0 ? Number.POSITIVE_INFINITY : dAngle;
-      this.labelToDrop = label;
-      this.dropIndex = j;
+      var nextLabel = (j == len - 1) ? null : this.labels[j + 1];
+      var prevLabel = (j == 0) ? null : this.labels[j - 1];
+      var nextIterator = this.pie.getDetachedIterator();
+      var nextValue = null, prevValue = null, currValue;
+      currValue = iterator.get('value');
+      if (nextLabel) {
+        nextIterator.select(nextLabel.getIndex());
+        nextValue = nextIterator.get('value');
+        console.log('Next ' + nextIterator.get('x') + ' ' + nextIterator.get('value') + ' current ' + iterator.get('x') + ' ' + iterator.get('value'));
+      }
+      if (prevLabel) {
+        nextIterator.select(prevLabel.getIndex());
+        prevValue = nextIterator.get('value');
+      }
+
+      var minValue = Math.min(currValue, Math.min(nextValue, prevValue));
+      var dropIndex = 0;
+
+      switch (minValue) {
+        case currValue:
+          dropIndex = j;
+          break;
+        case prevValue:
+          dropIndex = j - 1;
+          break;
+        case nextValue:
+          dropIndex = j + 1;
+          break;
+      }
+
+      this.labelToDrop = this.labels[dropIndex];
+      this.dropIndex = dropIndex;
+
+      //if (nextLabel && nextIterator.get('value') < iterator.get('value')) {
+      //  this.labelToDrop = nextLabel;
+      //  this.dropIndex = j + 1;
+      //} else {
+      //  this.labelToDrop = label;
+      //  this.dropIndex = j;
+      //}
     }
     if (dAngle > criticalAngle || isNotValidConnectorLength) this.isCriticalAngle = true;
 
