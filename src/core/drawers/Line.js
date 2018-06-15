@@ -123,8 +123,8 @@ anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state) {
   var shapesManager = this.shapesManager;
-  var currValue = point.get(this.series.getYValueNames()[0]);
-  var names = shapesManager.getShapeNames(currValue, this.prevValue);
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
 
@@ -138,7 +138,7 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
     prevX = /** @type {number} */(this.prevX);
     prevY = /** @type {number} */(this.prevY);
 
-    var isBaselineIntersect = this.isBaselineIntersect(currValue);
+    var isBaselineIntersect = this.isBaselineIntersect(value);
 
     if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
       crossY = /** @type {number} */(point.meta('zero'));
@@ -160,7 +160,7 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
 
   this.prevX = x;
   this.prevY = y;
-  this.prevValue = currValue;
+  this.prevValue = value;
   this.prevShapeNames = names;
 };
 

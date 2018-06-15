@@ -1371,6 +1371,15 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
           'stroke': anychart.core.defaultTheme.returnLightenStrokeSourceColor,
           'lowStroke': anychart.core.defaultTheme.returnLightenStrokeSourceColor,
           'highStroke': anychart.core.defaultTheme.returnLightenStrokeSourceColor,
+
+          'negativeFill': anychart.core.defaultTheme.returnSourceColor,
+          'negativeStroke': anychart.core.defaultTheme.returnLightenStrokeSourceColor,
+
+          'risingFill': anychart.core.defaultTheme.returnLightenSourceColor,
+          'risingStroke': anychart.core.defaultTheme.returnDarkenSourceColor,
+          'fallingFill': anychart.core.defaultTheme.returnLightenSourceColor,
+          'fallingStroke': anychart.core.defaultTheme.returnDarkenSourceColor,
+
           'hatchFill': null,
           'labels': {'enabled': null},
           'minLabels': {'enabled': null},
@@ -1386,6 +1395,15 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
           'stroke': anychart.core.defaultTheme.defaultSelectColor,
           'lowStroke': anychart.core.defaultTheme.defaultSelectColor,
           'highStroke': anychart.core.defaultTheme.defaultSelectColor,
+
+          'negativeFill': anychart.core.defaultTheme.defaultSelectColor,
+          'negativeStroke': anychart.core.defaultTheme.defaultSelectColor,
+
+          'risingFill': anychart.core.defaultTheme.defaultSelectColor,
+          'risingStroke': anychart.core.defaultTheme.defaultSelectColor,
+          'fallingFill': anychart.core.defaultTheme.defaultSelectColor,
+          'fallingStroke': anychart.core.defaultTheme.defaultSelectColor,
+
           'hatchFill': null,
           'labels': {'enabled': null},
           'minLabels': {'enabled': null},
@@ -1517,6 +1535,7 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
         },
         'hovered': {
           'fill': anychart.core.defaultTheme.returnSourceColor65,
+          'negativeFill': anychart.core.defaultTheme.returnSourceColor65,
           'markers': {
             'enabled': true
           }
@@ -1536,7 +1555,8 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
           'fill': anychart.core.defaultTheme.returnSourceColor85
         },
         'hovered': {
-          'fill': anychart.core.defaultTheme.returnSourceColor65
+          'fill': anychart.core.defaultTheme.returnSourceColor65,
+          'negativeFill': anychart.core.defaultTheme.returnSourceColor65,
         },
         'legendItem': {
           'iconStroke': 'none'

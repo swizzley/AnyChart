@@ -63,11 +63,17 @@ anychart.core.drawers.StepLine.prototype.startDrawing = function(shapeManager) {
 
 /** @inheritDoc */
 anychart.core.drawers.StepLine.prototype.drawFirstPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = this.shapesManager.getShapeNames(value, this.prevValue);
+  var shapeNames = {};
+  shapeNames[names.stroke] = true;
+
+  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['stroke']), this.isVertical, x, y);
+  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[names.stroke]), this.isVertical, x, y);
 
   /**
    * @type {number}
@@ -79,15 +85,50 @@ anychart.core.drawers.StepLine.prototype.drawFirstPoint = function(point, state)
    * @private
    */
   this.prevY_ = y;
+
+  this.prevValue = value;
+  this.prevShapeNames = names;
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.StepLine.prototype.drawSubsequentPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var shapesManager = this.shapesManager;
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var shapeNames = {};
+  shapeNames[names.stroke] = true;
+
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
-  var line = /** @type {acgraph.vector.Path} */(shapes['stroke']);
+
+  var line = /** @type {acgraph.vector.Path} */((shapes[names.stroke]));
+
+  // if (shapes != this.currentShapes) {
+  //   var crossX, crossY, prevX, prevY;
+  //   prevX = /** @type {number} */(this.prevX);
+  //   prevY = /** @type {number} */(this.prevY);
+  //
+  //   var isBaselineIntersect = this.isBaselineIntersect(value);
+  //
+  //   if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
+  //     crossY = /** @type {number} */(point.meta('zero'));
+  //     crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
+  //   } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
+  //     crossX = prevX;
+  //     crossY = prevY;
+  //   } else {
+  //     crossX = prevX + (x - prevX) / 2;
+  //     crossY = prevY + (y - prevY) / 2;
+  //   }
+  //
+  //   anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(this.currentShapes[this.prevShapeNames.stroke]), this.isVertical, crossX, crossY);
+  //   this.currentShapes = shapes;
+  //   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(this.currentShapes[names.stroke]), this.isVertical, crossX, crossY);
+  // }
+
 
   switch (this.direction_) {
     case anychart.enums.StepDirection.FORWARD:
@@ -105,4 +146,6 @@ anychart.core.drawers.StepLine.prototype.drawSubsequentPoint = function(point, s
 
   this.prevX_ = x;
   this.prevY_ = y;
+  this.prevValue = value;
+  this.prevShapeNames = names;
 };
