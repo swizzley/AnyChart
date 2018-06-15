@@ -231,9 +231,6 @@ anychart.core.shapeManagers.Base.prototype.createShape = function(name, state, i
 };
 
 
-
-
-
 /**
  *
  * @param {string} name

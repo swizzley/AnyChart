@@ -34,9 +34,10 @@ anychart.data.IIterator.prototype.getRowsCount = function() {};
 
 /**
  * "Selects" iterator to row.
- * @param {*} row .
+ * @param {*} row Row to select to.
+ * @param {number=} opt_index Row index.
  */
-anychart.data.IIterator.prototype.specialSelect = function(row) {};
+anychart.data.IIterator.prototype.specialSelect = function(row, opt_index) {};
 
 
 /**

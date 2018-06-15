@@ -327,7 +327,7 @@ anychart.stockModule.eventMarkers.Table.Iterator.prototype.select = function(ind
 
 
 /** @inheritDoc */
-anychart.stockModule.eventMarkers.Table.Iterator.prototype.specialSelect = function(row) {
+anychart.stockModule.eventMarkers.Table.Iterator.prototype.specialSelect = function(row, opt_index) {
   this.select(/** @type {number} */(row));
 };
 

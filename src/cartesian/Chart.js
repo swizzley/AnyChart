@@ -158,9 +158,9 @@ anychart.cartesianModule.Chart.prototype.seriesConfig = (function() {
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
     shapesConfig: [
       anychart.core.shapeManagers.pathStrokeConfig,
-      anychart.core.shapeManagers.pathFallingStrokeConfig,
-      anychart.core.shapeManagers.pathRisingStrokeConfig,
-      anychart.core.shapeManagers.pathNegativeStrokeConfig
+      anychart.core.shapeManagers.pathContiniousFallingStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousRisingStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousNegativeStrokeConfig
     ],
     secondaryShapesConfig: null,
     postProcessor: null,
@@ -276,9 +276,9 @@ anychart.cartesianModule.Chart.prototype.seriesConfig = (function() {
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
     shapesConfig: [
       anychart.core.shapeManagers.pathStrokeConfig,
-      anychart.core.shapeManagers.pathFallingStrokeConfig,
-      anychart.core.shapeManagers.pathRisingStrokeConfig,
-      anychart.core.shapeManagers.pathNegativeStrokeConfig
+      anychart.core.shapeManagers.pathContiniousFallingStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousRisingStrokeConfig,
+      anychart.core.shapeManagers.pathContiniousNegativeStrokeConfig
     ],
     secondaryShapesConfig: null,
     postProcessor: null,

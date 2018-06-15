@@ -61,59 +61,28 @@ anychart.core.drawers.Spline.prototype.requiredShapes = (function() {
 })();
 
 
-/**
- *
- */
-anychart.core.drawers.Spline.prototype.getShapeName = function(value) {
-  var name;
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-  if (this.hasNegativeColoring) {
-    name = value < baseline ? 'negative' : 'stroke';
-  } else if (this.hasRisingFallingColoring) {
-    name = value < this.prevValue ? 'falling' : value > this.prevValue ? 'rising' : 'stroke';
-  } else {
-    name = 'stroke';
-  }
-
-  return name;
-};
-
-
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.Spline.base(this, 'startDrawing', shapeManager);
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
-
-
-  var normSettings = this.series.normal();
-  /**
-   * @type {boolean}
-   */
-  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
-
-  /**
-   * @type {boolean}
-   */
-  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
-      goog.isDef(normSettings.getOption('fallingStroke'));
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
-  var name = this.getShapeName(value);
+  var names = this.shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
-  shapeNames[name] = true;
+  shapeNames[names.stroke] = true;
 
   this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
 
-  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(this.currentShapes[name])]);
+  this.queue_.setPaths([/** @type {acgraph.vector.Path} */(this.currentShapes[names.stroke])]);
   this.queue_.resetDrawer(false);
   this.queue_.processPoint(x, y);
 
@@ -124,11 +93,12 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, state) {
-  var currValue = point.get(this.series.getYValueNames()[0]);
-  var name = this.getShapeName(currValue);
+  var shapesManager = this.shapesManager;
+  var value = point.get(this.series.getYValueNames()[0]);
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
-  shapeNames[name] = true;
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  shapeNames[names.stroke] = true;
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
@@ -139,20 +109,20 @@ anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, sta
     var crossY, prevY;
     prevY = /** @type {number} */(this.prevY);
 
-    var isBaselineIntersect = this.isBaselineIntersect(currValue);
-    if (this.hasNegativeColoring && isBaselineIntersect) {
+    var isBaselineIntersect = this.isBaselineIntersect(value);
+    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
       crossY = /** @type {number} */(point.meta('zero'));
-    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
+    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
       crossY = prevY;
     } else {
       crossY = 'middle';
     }
-    this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[name])]);
+    this.queue_.setBreak(crossY, [/** @type {acgraph.vector.Path} */(shapes[names.stroke])]);
     this.currentShapes = shapes;
   }
 
   this.prevY = y;
-  this.prevValue = currValue;
+  this.prevValue = value;
 };
 
 

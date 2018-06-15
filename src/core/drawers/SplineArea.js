@@ -63,41 +63,6 @@ anychart.core.drawers.SplineArea.prototype.requiredShapes = (function() {
 })();
 
 
-/**
- * @param {number} value .
- * @return {Object.<string>}
- */
-anychart.core.drawers.SplineArea.prototype.getShapeNames = function(value) {
-  var names = {};
-  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-
-  if (this.hasNegativeColoring) {
-    if (value < baseline) {
-      strokeName = 'negativeStroke';
-      fillName = 'negativeFill';
-      hatchFillName = 'negativeHatchFill';
-    }
-  } else if (this.hasRisingFallingColoring) {
-    if (value < this.prevValue) {
-      strokeName = 'fallingStroke';
-      fillName = 'fallingFill';
-      hatchFillName = 'fallingHatchFill';
-    } else if (value > this.prevValue) {
-      strokeName = 'risingStroke';
-      fillName = 'risingFill';
-      hatchFillName = 'risingHatchFill';
-    }
-  }
-
-  names.stroke = strokeName;
-  names.fill = fillName;
-  names.hatchFill = hatchFillName;
-
-  return names;
-};
-
-
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.SplineArea.base(this, 'startDrawing', shapeManager);
@@ -105,26 +70,6 @@ anychart.core.drawers.SplineArea.prototype.startDrawing = function(shapeManager)
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
 
-  var normSettings = this.series.normal();
-  /**
-   * @type {boolean}
-   */
-  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
-
-  /**
-   * @type {boolean}
-   */
-  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
-      goog.isDef(normSettings.getOption('fallingStroke'));
-
-  /**
-   * @type {Array.<acgraph.vector.Path>}
-   * @private
-   */
-  this.forwardPaths_ = [
-    /** @type {acgraph.vector.Path} */(shapes['fill']),
-    /** @type {acgraph.vector.Path} */(shapes['hatchFill']),
-    /** @type {acgraph.vector.Path} */(shapes['stroke'])];
   /**
    * @type {Array.<acgraph.vector.Path>}
    * @private
@@ -153,7 +98,7 @@ anychart.core.drawers.SplineArea.prototype.drawMissingPoint = function(point, st
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.getShapeNames(value);
+  var names = this.shapesManager.getShapeNames(value, this.prevValue);
 
   var shapeNames = {};
   shapeNames[names.stroke] = true;
@@ -178,13 +123,6 @@ anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, stat
   strokeShape.baselineDepened = false;
 
   this.queue_.setPaths([fillShape, strokeShape, hatchShape]);
-
-  // anychart.core.drawers.move(fillShape, this.isVertical, x, zero);
-  // anychart.core.drawers.line(fillShape, this.isVertical, x, y);
-  // anychart.core.drawers.move(hatchShape, this.isVertical, x, zero);
-  // anychart.core.drawers.line(hatchShape, this.isVertical, x, y);
-  // anychart.core.drawers.move(strokeShape, this.isVertical, x, y);
-
   this.queue_.processPoint(x, y);
 
   if (this.series.planIsStacked()) {
@@ -204,14 +142,15 @@ anychart.core.drawers.SplineArea.prototype.drawFirstPoint = function(point, stat
 
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point, state) {
+  var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.getShapeNames(value);
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
 
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var zero = /** @type {number} */(point.meta('zero'));
@@ -226,9 +165,9 @@ anychart.core.drawers.SplineArea.prototype.drawSubsequentPoint = function(point,
     prevY = /** @type {number} */(this.prevY);
 
     var isBaselineIntersect = this.isBaselineIntersect(value);
-    if (this.hasNegativeColoring && isBaselineIntersect) {
+    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
       crossY = zero;
-    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
+    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
       crossY = prevY;
     } else {
       crossY = 'middle';
@@ -260,10 +199,7 @@ anychart.core.drawers.SplineArea.prototype.finalizeSegment = function() {
   if (!this.prevPointDrawn) return;
   this.queue_.finalizeProcessing();
   if (!isNaN(this.lastDrawnX)) {
-    // anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, this.lastDrawnX, this.zeroY);
-    // this.backwardPaths_[0].close();
-    // anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, this.lastDrawnX, this.zeroY);
-    // this.backwardPaths_[1].close();
+
   } else if (this.zeroesStack) {
     this.queue_.setPaths(this.backwardPaths_);
     this.queue_.resetDrawer(true);

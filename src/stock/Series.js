@@ -335,7 +335,7 @@ anychart.stockModule.Series.prototype.getColorResolutionContext = function(opt_b
     'sourceColor': {value: source, type: anychart.enums.TokenType.UNKNOWN},
     'iterator': {value: iterator, type: anychart.enums.TokenType.UNKNOWN},
     'plot': {value: this.plot, type: anychart.enums.TokenType.UNKNOWN},
-    'chart': {value: this, type: anychart.enums.TokenType.UNKNOWN},
+    'chart': {value: this.chart, type: anychart.enums.TokenType.UNKNOWN},
     'name': {value: name, type: anychart.enums.TokenType.STRING},
     'isIntersection': {value: !!iterator.meta('isIntersection'), type: anychart.enums.TokenType.STRING}
   };
@@ -475,10 +475,15 @@ anychart.stockModule.Series.prototype.updateLastRow = function() {
 /**
  * Highlights series data.
  * @param {number} value
+ * @param {number} stickyValue
  */
-anychart.stockModule.Series.prototype.highlight = function(value) {
+anychart.stockModule.Series.prototype.highlight = function(value, stickyValue) {
   this.highlightedRow_ = this.prepareHighlight(value);
   this.inHighlight_ = true;
+
+  this.highlightStickyRow_(anychart.PointState.NORMAL);
+  this.highlightedStyckyRow_ = this.highlightedRow_ ? this.highlightedRow_ : this.prepareHighlight(stickyValue);
+  this.highlightStickyRow_(anychart.PointState.HOVER);
 };
 
 
@@ -488,6 +493,35 @@ anychart.stockModule.Series.prototype.highlight = function(value) {
 anychart.stockModule.Series.prototype.removeHighlight = function() {
   this.highlightedRow_ = null;
   this.inHighlight_ = false;
+
+  this.highlightStickyRow_(anychart.PointState.NORMAL);
+};
+
+
+/**
+ * Hover marker processing
+ * @param {anychart.PointState} state Point hover state
+ * @private
+ */
+anychart.stockModule.Series.prototype.highlightStickyRow_ = function(state) {
+  if (this.highlightedStyckyRow_) {
+    var iterator = this.getIterator();
+    iterator.specialSelect(this.highlightedStyckyRow_.row, this.highlightedStyckyRow_.getIndex());
+
+    iterator.meta('marker', this.drawFactoryElement(
+        [this.normal_.markers, this.hovered_.markers, this.selected_.markers],
+        [],
+        ['marker', 'hoverMarker', 'selectMarker'],
+        false,
+        false,
+        null,
+        iterator,
+        state,
+        true));
+
+    if (state == anychart.PointState.NORMAL)
+      this.highlightedStyckyRow_ = null;
+  }
 };
 
 

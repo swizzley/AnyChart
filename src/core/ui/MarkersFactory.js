@@ -251,6 +251,7 @@ anychart.core.ui.MarkersFactory.prototype.enabled = function(opt_value) {
       this.invalidate(anychart.ConsistencyState.ENABLED, this.getEnableChangeSignals());
     }
     this.enabledState_ = opt_value;
+    this.supportsEnabledSuspension = !goog.isNull(this.ownSettings['enabled']);
     // if (!goog.isNull(opt_value)) {
     anychart.core.ui.MarkersFactory.base(this, 'enabled', /** @type {boolean} */(opt_value));
     // } else {
@@ -1171,8 +1172,17 @@ anychart.core.ui.MarkersFactory.Marker.prototype.fill = function(opt_fillOrColor
     }
     return this;
   } else {
-    return /** @type {acgraph.vector.Fill} */(this.settingsObj['fill']);
+    return /** @type {acgraph.vector.Fill} */(this.settingsObj['fill'] || this.autoFill_);
   }
+};
+
+
+/**
+ * Sets markers fill that parent series have set for it.
+ * @param {acgraph.vector.Fill} value Auto fill distributed by the series.
+ */
+anychart.core.ui.MarkersFactory.Marker.prototype.setAutoFill = function(value) {
+  this.autoFill_ = value;
 };
 
 
@@ -1198,8 +1208,17 @@ anychart.core.ui.MarkersFactory.Marker.prototype.stroke = function(opt_strokeOrF
     }
     return this;
   } else {
-    return /** @type {acgraph.vector.Stroke} */(this.settingsObj['stroke']);
+    return /** @type {acgraph.vector.Stroke} */(this.settingsObj['stroke'] || this.autoStroke_);
   }
+};
+
+
+/**
+ * Sets markers fill that parent series have set for it.
+ * @param {acgraph.vector.Stroke} value Auto fill distributed by the series.
+ */
+anychart.core.ui.MarkersFactory.Marker.prototype.setAutoStroke = function(value) {
+  this.autoStroke_ = value;
 };
 
 

@@ -266,13 +266,18 @@ anychart.core.series.Base = function(chart, plot, type, config) {
   ]);
   this.hovered_ = new anychart.core.StateSettings(this, descriptorsMeta, anychart.PointState.HOVER);
   this.selected_ = new anychart.core.StateSettings(this, descriptorsMeta, anychart.PointState.SELECT);
-  function markAllConsistent(factory) {
+  function markLabelsAllConsistent(factory) {
+    anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK.call(this, factory);
     factory.markConsistent(anychart.ConsistencyState.ALL);
   }
-  this.hovered_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markAllConsistent);
-  this.hovered_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
-  this.selected_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markAllConsistent);
-  this.selected_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
+  function markMarkersAllConsistent(factory) {
+    anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK.call(this, factory);
+    factory.markConsistent(anychart.ConsistencyState.ALL);
+  }
+  this.hovered_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markLabelsAllConsistent);
+  this.hovered_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markMarkersAllConsistent);
+  this.selected_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markLabelsAllConsistent);
+  this.selected_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markMarkersAllConsistent);
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['color',
@@ -2504,6 +2509,12 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factorie
       this.checkBoundsCollision(/** @type {anychart.core.ui.LabelsFactory} */(mainFactory), label);
     }
   } else {
+    var iterator = this.getIterator();
+    var autoFill = anychart.color.setOpacity(iterator.meta(this.check(anychart.core.drawers.Capabilities.USES_STROKE_AS_FILL) ? 'stroke' : 'fill'), 1, true);
+    var autoStroke = anychart.color.darken(autoFill);
+
+    element.setAutoFill(autoFill);
+    element.setAutoStroke(autoStroke);
     element.currentMarkersFactory(/** @type {anychart.core.ui.MarkersFactory} */(factories[1] || mainFactory));
     element.setSettings(/** @type {Object} */(factories[2]), /** @type {Object} */(factories[3]));
   }

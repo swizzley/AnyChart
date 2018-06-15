@@ -285,39 +285,78 @@ anychart.core.series.Cartesian.prototype.prepareData = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.core.series.Cartesian.prototype.getColorResolutionContext = function(opt_baseColor, opt_ignorePointSettings, opt_ignoreColorScale) {
+  // var source = opt_baseColor || this.getOption('color') || 'blue';
+  // if (this.supportsPointSettings()) {
+  //   var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
+  //   var colorScale = this.colorScale();
+  //   var ignoreColorScale = goog.isDef(opt_ignoreColorScale) && opt_ignoreColorScale;
+  //
+  //   var scaledColor;
+  //   var ctx = {
+  //     'index': iterator.getIndex(),
+  //     'sourceColor': source,
+  //     'iterator': iterator,
+  //     'series': this,
+  //     'colorScale': colorScale,
+  //     'chart': this.chart
+  //   };
+  //
+  //   if (colorScale && !ignoreColorScale) {
+  //     var value = /** @type {number} */(iterator.get(this.drawer.valueFieldName));
+  //     if (goog.isDef(value))
+  //       scaledColor = colorScale.valueToColor(value);
+  //
+  //     goog.object.extend(ctx, {
+  //       'scaledColor': scaledColor,
+  //       'colorScale': colorScale
+  //     });
+  //   }
+  //
+  //
+  //   return ctx;
+  // }
+  // return {
+  //   'sourceColor': source
+  // };
+
+  if (!this.pointProvider_)
+    this.pointProvider_ = new anychart.format.Context();
+
+  var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
+  this.pointProvider_
+      .dataSource(iterator)
+      .statisticsSources([this.getPoint(iterator.getIndex()), this]);
+
+  var scaledColor;
   var source = opt_baseColor || this.getOption('color') || 'blue';
-  if (this.supportsPointSettings()) {
-    var iterator = !!opt_ignorePointSettings ? this.getDetachedIterator() : this.getIterator();
-    var colorScale = this.colorScale();
-    var ignoreColorScale = goog.isDef(opt_ignoreColorScale) && opt_ignoreColorScale;
-
-    var scaledColor;
-    var ctx = {
-      'index': iterator.getIndex(),
-      'sourceColor': source,
-      'iterator': iterator,
-      'series': this,
-      'colorScale': colorScale,
-      'chart': this.chart
-    };
-
-    if (colorScale && !ignoreColorScale) {
-      var value = /** @type {number} */(iterator.get(this.drawer.valueFieldName));
-      if (goog.isDef(value))
-        scaledColor = colorScale.valueToColor(value);
-
-      goog.object.extend(ctx, {
-        'scaledColor': scaledColor,
-        'colorScale': colorScale
-      });
-    }
-
-
-    return ctx;
-  }
-  return {
-    'sourceColor': source
+  var x = iterator.getX();
+  var value = iterator.get('value');
+  var name = goog.isDef(iterator.get('name')) ? iterator.get('name') : x;
+  var values = {
+    'x': {value: x, type: anychart.enums.TokenType.DATE_TIME},
+    'value': {value: value, type: anychart.enums.TokenType.NUMBER},
+    'index': {value: iterator.getIndex(), type: anychart.enums.TokenType.NUMBER},
+    'autoColor': {value: source, type: anychart.enums.TokenType.UNKNOWN},
+    'iterator': {value: iterator, type: anychart.enums.TokenType.UNKNOWN},
+    'chart': {value: this.chart, type: anychart.enums.TokenType.UNKNOWN},
+    'name': {value: name, type: anychart.enums.TokenType.STRING},
   };
+
+  var ignoreColorScale = goog.isDef(opt_ignoreColorScale) && opt_ignoreColorScale;
+  var colorScale = this.colorScale();
+  if (colorScale && !ignoreColorScale) {
+    if (goog.isDef(value))
+      scaledColor = colorScale.valueToColor(value);
+
+    goog.object.extend(values, {
+      'scaledColor': {value: scaledColor, type: anychart.enums.TokenType.UNKNOWN},
+      'colorScale': {value: colorScale, type: anychart.enums.TokenType.UNKNOWN}
+    });
+  }
+
+  values['sourceColor'] = {value: scaledColor || source, type: anychart.enums.TokenType.UNKNOWN};
+
+  return this.pointProvider_.propagate(values);
 };
 
 
@@ -1141,8 +1180,9 @@ anychart.core.series.Cartesian.prototype.applyAppearanceToPoint = function(point
     this.drawPointOutliers(iterator, pointState, true);
   }
   this.drawer.updatePoint(iterator, pointState);
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
+  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS)) {
     this.drawMarker(iterator, pointState, true);
+  }
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
     this.drawLabel(iterator, pointState, true);
 

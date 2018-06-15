@@ -72,14 +72,14 @@ anychart.data.Iterator.prototype.select = function(index) {
 
 
 /** @inheritDoc */
-anychart.data.Iterator.prototype.specialSelect = function(row) {
+anychart.data.Iterator.prototype.specialSelect = function(row, opt_index) {
   this.select(/** @type {number} */(row));
 };
 
 
 /** @inheritDoc */
 anychart.data.Iterator.prototype.current = function() {
-  return this.currentRow;
+  return this.currentIndex;
 };
 
 
