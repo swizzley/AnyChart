@@ -1,14 +1,11 @@
 goog.provide('anychart.tableModule.Table');
 goog.require('acgraph');
-goog.require('acgraph.events.BrowserEvent');    //???
 goog.require('anychart.color');
 goog.require('anychart.core.IStandaloneBackend');
 goog.require('anychart.core.VisualBaseWithBounds');
 goog.require('anychart.core.reporting');
 goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.core.ui.MarkersFactory');
-goog.require('anychart.core.utils.Interactivity');  //???
-goog.require('anychart.core.utils.InteractivityState'); //???
 goog.require('anychart.core.utils.Padding');
 goog.require('anychart.enums');
 goog.require('anychart.math.Rect');
@@ -19,7 +16,6 @@ goog.require('anychart.tableModule.elements.IProxyUser');
 goog.require('anychart.tableModule.elements.Padding');
 goog.require('anychart.tableModule.elements.Row');
 goog.require('anychart.utils');
-goog.require('goog.events.EventHandler');   //???
 
 goog.forwardDeclare('anychart.ui.ContextMenu');
 goog.forwardDeclare('anychart.ui.ContextMenu.Item');
@@ -689,7 +685,7 @@ anychart.tableModule.Table.prototype.draw = function() {
 
 
   if (!this.layer_) {
-    this.layer_ = acgraph.layer().id('QWEQWEQWEQWEQ');
+    this.layer_ = acgraph.layer();
     this.bindHandlersToGraphics(this.layer_);
     this.contentLayer_ = this.layer_.layer();
   }
@@ -732,7 +728,7 @@ anychart.tableModule.Table.prototype.draw = function() {
   }
 
   if (!this.contextMenu_) {
-    this.contextMenu();
+    this.contextMenu({fromTheme: true, enabled: true});
     this.contextMenu_['attach'](this);
   }
 
@@ -741,9 +737,16 @@ anychart.tableModule.Table.prototype.draw = function() {
   return this;
 };
 
+
+/**
+ * Default browser event handler. Redispatches the event over ACDVF event target hierarchy.
+ * @param {acgraph.events.BrowserEvent} event
+ * @override
+ */
 anychart.tableModule.Table.prototype.handleBrowserEvent = function(event) {
   if (event.type == 'contextmenu')
-    this.dispatchEvent(event);
+    return this.dispatchEvent(event);
+  return false;
 };
 
 
@@ -2575,7 +2578,7 @@ anychart.tableModule.table = function(opt_rowsCount, opt_colsCount) {
 /**
  * Creates context menu for chart.
  * @param {(Object|boolean|null)=} opt_value
- * @return {anychart.ui.ContextMenu|!anychart.core.ui.Table}
+ * @return {anychart.ui.ContextMenu|!anychart.tableModule.Table}
  */
 anychart.tableModule.Table.prototype.contextMenu = function(opt_value) {
   if (!this.contextMenu_) {
@@ -2658,27 +2661,6 @@ anychart.tableModule.Table.prototype.contextMenuItemsProvider = function(context
 anychart.tableModule.Table.prototype.specificContextMenuItems = function(items, context, isPointContext) {
   return items;
 };
-
-
-/**
- * Get selected points.
- * @return {Array.<anychart.core.Point>}
- */
-/*anychart.tableModule.Table.prototype.getSelectedPoints = function() {
-  var selectedPoints = [];
-  var selectedPointsIndexes, series, i, j;
-  var allSeries = this.getAllSeries();
-  for (i = 0; i < allSeries.length; i++) {
-    series = allSeries[i];
-    if (!series || !series.state || !series.getPoint || !series.enabled()) continue;
-    selectedPointsIndexes = series.state.getIndexByPointState(anychart.PointState.SELECT);
-    for (j = 0; j < selectedPointsIndexes.length; j++) {
-      selectedPoints.push(series.getPoint(selectedPointsIndexes[j]));
-    }
-  }
-
-  return selectedPoints;
-};*/
 
 
 /**
@@ -2913,7 +2895,7 @@ anychart.tableModule.Table.prototype.fullScreen = function(opt_value) {
  * Tester for the full screen support.
  * @return {boolean}
  */
-anychart.core.Chart.prototype.isFullScreenAvailable = function() {
+anychart.tableModule.Table.prototype.isFullScreenAvailable = function() {
   var container = this.container();
   var stage = container ? container.getStage() : null;
   return stage ? /** @type {boolean} */(stage.isFullScreenAvailable()) : false;
@@ -2947,6 +2929,7 @@ anychart.core.Chart.prototype.isFullScreenAvailable = function() {
   proto['draw'] = proto.draw;//doc
 
   proto['fullScreen'] = proto.fullScreen;
+  proto['isFullScreenAvailable'] = proto.isFullScreenAvailable;
 
   proto['fontSize'] = proto.fontSize;
   proto['fontFamily'] = proto.fontFamily;
@@ -2991,12 +2974,17 @@ anychart.core.Chart.prototype.isFullScreenAvailable = function() {
   proto['getSvgBase64String'] = proto.getSvgBase64String;//inherited
   proto['getPdfBase64String'] = proto.getPdfBase64String;//inherited
   proto['toSvg'] = proto.toSvg;//inherited
-
-  proto['parentBounds'] = proto.parentBounds;
-  proto['container'] = proto.container;
   proto['toCsv'] = proto.toCsv;
   proto['saveAsCsv'] = proto.saveAsCsv;
   proto['saveAsXlsx'] = proto.saveAsXlsx;
+
+  proto['shareWithFacebook'] = proto.shareWithFacebook;//inherited
+  proto['shareWithTwitter'] = proto.shareWithTwitter;//inherited
+  proto['shareWithLinkedIn'] = proto.shareWithLinkedIn;//inherited
+  proto['shareWithPinterest'] = proto.shareWithPinterest;//inherited
+
+  proto['parentBounds'] = proto.parentBounds;
+  proto['container'] = proto.container;
 
   proto = anychart.tableModule.Table.Standalone.prototype;
   proto['draw'] = proto.draw;
