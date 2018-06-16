@@ -57,41 +57,6 @@ anychart.core.drawers.Area.prototype.requiredShapes = (function() {
 })();
 
 
-/**
- * @param {number} value .
- * @return {Object.<string>}
- */
-anychart.core.drawers.Area.prototype.getShapeNames = function(value) {
-  var names = {};
-  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-
-  if (this.hasNegativeColoring) {
-    if (value < baseline) {
-      strokeName = 'negativeStroke';
-      fillName = 'negativeFill';
-      hatchFillName = 'negativeHatchFill';
-    }
-  } else if (this.hasRisingFallingColoring) {
-    if (value < this.prevValue) {
-      strokeName = 'fallingStroke';
-      fillName = 'fallingFill';
-      hatchFillName = 'fallingHatchFill';
-    } else if (value > this.prevValue) {
-      strokeName = 'risingStroke';
-      fillName = 'risingFill';
-      hatchFillName = 'risingHatchFill';
-    }
-  }
-
-  names.stroke = strokeName;
-  names.fill = fillName;
-  names.hatchFill = hatchFillName;
-
-  return names;
-};
-
-
 //region --- Internal drawing variants
 //------------------------------------------------------------------------------
 //
@@ -128,7 +93,8 @@ anychart.core.drawers.Area.prototype.drawSegmentStart_ = function(shapes, x, y, 
  * @private
  */
 anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes, x, y, zeroX, zeroY, value) {
-  var names = this.getShapeNames(value);
+  var shapesManager = this.shapesManager;
+  var names = shapesManager.getShapeNames(value, this.prevValue);
 
   if (shapes != this.currentShapes) {
     var crossX, crossY, prevX, prevY, prevNames;
@@ -234,13 +200,14 @@ anychart.core.drawers.Area.prototype.drawFirstPointSingleZero_ = function(point,
  * @private
  */
 anychart.core.drawers.Area.prototype.drawSubsequentPointMultiZero_ = function(point, x, y, zeroX, zeroY, value) {
-  var names = this.getShapeNames(value);
+  var shapesManager = this.shapesManager;
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
 
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
   var prevZeroX = /** @type {number} */(point.meta('prevZeroX'));
   var prevZeroY = /** @type {number} */(point.meta('prevZero'));
   var prevX = /** @type {number} */(point.meta('prevValueX'));
@@ -277,13 +244,14 @@ anychart.core.drawers.Area.prototype.drawSubsequentPointMultiZero_ = function(po
  * @private
  */
 anychart.core.drawers.Area.prototype.drawSubsequentPointSingleZero_ = function(point, x, y, zeroX, zeroY, value) {
-  var names = this.getShapeNames(value);
+  var shapesManager = this.shapesManager;
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
 
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   this.drawSegmentContinuation_(shapes, x, y, zeroX, zeroY, value);
   this.lastDrawnX = zeroX;
@@ -365,14 +333,15 @@ anychart.core.drawers.Area.prototype.drawMissingPoint = function(point, state) {
 
 /** @inheritDoc */
 anychart.core.drawers.Area.prototype.drawFirstPoint = function(point, state) {
+  var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.getShapeNames(value);
+  var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
 
-  this.currentShapes = this.shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  this.currentShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));
@@ -400,7 +369,8 @@ anychart.core.drawers.Area.prototype.drawFirstPoint = function(point, state) {
 /** @inheritDoc */
 anychart.core.drawers.Area.prototype.drawSubsequentPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.getShapeNames(value);
+  var shapesManager = this.shapesManager;
+  var names = shapesManager.getShapeNames(value, this.prevValue);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));

@@ -24,7 +24,7 @@ anychart.core.drawers.RangeArea.prototype.type = anychart.enums.SeriesDrawerType
 
 /** @inheritDoc */
 anychart.core.drawers.RangeArea.prototype.flags = (
-    // anychart.core.drawers.Capabilities.NEEDS_ZERO |
+    anychart.core.drawers.Capabilities.NEEDS_ZERO |
     // anychart.core.drawers.Capabilities.NEEDS_SIZE_SCALE |
     // anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT |
     // anychart.core.drawers.Capabilities.USES_STROKE_AS_FILL |

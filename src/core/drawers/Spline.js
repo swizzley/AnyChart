@@ -93,8 +93,8 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
 
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, state) {
-  var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
+  var shapesManager = this.shapesManager;
   var names = shapesManager.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
