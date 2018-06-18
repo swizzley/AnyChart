@@ -555,7 +555,7 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var isStacked = this.yScale().stackMode() != anychart.enums.ScaleStackMode.NONE;
   var isXInverted = this.xScale().inverted();
   xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1; //Convert x position to descending trend for x inverted chart.
-  var zIndex = isStacked ? anychart.core.ChartWithSeries.ZINDEX_SERIES : series.zIndex();
+  var zIndex = isStacked ? anychart.core.ChartWithSeries.ZINDEX_SERIES : anychart.core.ChartWithSeries.ZINDEX_SERIES + yPos;
   //Convert y position to negative if y scale is inverted or value < 0 and y scale not inverted.
   if (this.yScale().inverted() ^ (value < 0)) {
     yPos = -yPos;
@@ -607,7 +607,6 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
     inc *= xPos;
     zIndex += inc;
   }
-
   iterator.meta('zIndex', zIndex);
   iterator.meta('directIndex', xPos * yPos);
   return zIndex;
@@ -639,6 +638,8 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
               maxZIndex = zIndex;
             }
           }
+        } else {
+          maxZIndex += i + 1;
         }
         series.zIndex(maxZIndex);
       } else if (series.supportsStack()) {
