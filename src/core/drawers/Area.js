@@ -94,7 +94,7 @@ anychart.core.drawers.Area.prototype.drawSegmentStart_ = function(shapes, x, y, 
  */
 anychart.core.drawers.Area.prototype.drawSegmentContinuation_ = function(shapes, x, y, zeroX, zeroY, value) {
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
 
   if (shapes != this.currentShapes) {
     var crossX, crossY, prevX, prevY, prevNames;
@@ -201,7 +201,7 @@ anychart.core.drawers.Area.prototype.drawFirstPointSingleZero_ = function(point,
  */
 anychart.core.drawers.Area.prototype.drawSubsequentPointMultiZero_ = function(point, x, y, zeroX, zeroY, value) {
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
@@ -245,7 +245,7 @@ anychart.core.drawers.Area.prototype.drawSubsequentPointMultiZero_ = function(po
  */
 anychart.core.drawers.Area.prototype.drawSubsequentPointSingleZero_ = function(point, x, y, zeroX, zeroY, value) {
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
@@ -335,7 +335,7 @@ anychart.core.drawers.Area.prototype.drawMissingPoint = function(point, state) {
 anychart.core.drawers.Area.prototype.drawFirstPoint = function(point, state) {
   var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
@@ -370,7 +370,7 @@ anychart.core.drawers.Area.prototype.drawFirstPoint = function(point, state) {
 anychart.core.drawers.Area.prototype.drawSubsequentPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
 
   var x = /** @type {number} */(point.meta('x'));
   var y = /** @type {number} */(point.meta('value'));

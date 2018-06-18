@@ -49,10 +49,12 @@ anychart.core.drawers.RangeArea.prototype.flags = (
 /** @inheritDoc */
 anychart.core.drawers.RangeArea.prototype.requiredShapes = (function() {
   var res = {};
-  res['fill'] = anychart.enums.ShapeType.PATH;
-  res['hatchFill'] = anychart.enums.ShapeType.PATH;
-  res['low'] = anychart.enums.ShapeType.PATH;
-  res['high'] = anychart.enums.ShapeType.PATH;
+  res['highFill'] = anychart.enums.ShapeType.PATH;
+  res['lowFill'] = anychart.enums.ShapeType.PATH;
+  res['highStroke'] = anychart.enums.ShapeType.PATH;
+  res['lowStroke'] = anychart.enums.ShapeType.PATH;
+  res['highHatchFill'] = anychart.enums.ShapeType.PATH;
+  res['lowHatchFill'] = anychart.enums.ShapeType.PATH;
   return res;
 })();
 
@@ -66,57 +68,112 @@ anychart.core.drawers.RangeArea.prototype.valueFieldName = 'high';
 
 
 /** @inheritDoc */
+anychart.core.drawers.RangeArea.prototype.getShapeNames = function(var_args) {
+  var high = /** @type {number} */(arguments[0]);
+  var low = /** @type {number} */(arguments[1]);
+
+  var names = {};
+  var fillName, hatchFillName;
+
+  // fillName = 'highFill';
+  // hatchFillName = 'highHatchFill';
+
+  if (high > low) {
+    fillName = 'highFill';
+    hatchFillName = 'highHatchFill';
+  } else {
+    fillName = 'lowFill';
+    hatchFillName = 'lowHatchFill';
+  }
+
+  names.highStroke = 'highStroke';
+  names.lowStroke = 'lowStroke';
+  names.fill = fillName;
+  names.hatchFill = hatchFillName;
+
+  return names;
+};
+
+
+/** @inheritDoc */
 anychart.core.drawers.RangeArea.prototype.drawFirstPoint = function(point, state) {
   var shapesManager = this.shapesManager;
   var valueNames = this.series.getYValueNames();
+
   var highValue = point.get(valueNames[1]);
-  var names = shapesManager.getShapeNames(highValue, this.prevValue);
+  var lowValue = point.get(valueNames[0]);
+
+  var names = this.getShapeNames(highValue, lowValue);
+
   var shapeNames = {};
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
-  shapeNames[names.high] = true;
+  shapeNames[names.highStroke] = true;
+  shapeNames[names.lowStroke] = true;
 
-  // this.currentShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
-
-  // console.log(this.series.getYValueNames());
-
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  this.currentShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
   var x = /** @type {number} */(point.meta('x'));
   var high = /** @type {number} */(point.meta('high'));
   var low = /** @type {number} */(point.meta('low'));
 
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, low);
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, high);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, low);
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, high);
-  anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['high']), this.isVertical, x, high);
+  var fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+  var hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
+  var highStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.highStroke]);
+  var lowStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.lowStroke]);
 
-  // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes[names.fill]), this.isVertical, x, low);
-  // anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes[names.fill]), this.isVertical, x, high);
-  // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes[names.hatchFill]), this.isVertical, x, low);
-  // anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes[names.hatchFill]), this.isVertical, x, high);
-  // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes[names.high]), this.isVertical, x, high);
+  anychart.core.drawers.move(fill, this.isVertical, x, low);
+  anychart.core.drawers.line(fill, this.isVertical, x, high);
+  anychart.core.drawers.move(hatchFill, this.isVertical, x, low);
+  anychart.core.drawers.line(hatchFill, this.isVertical, x, high);
+  anychart.core.drawers.move(highStroke, this.isVertical, x, high);
 
-  /**
-   * @type {Array.<number>}
-   */
-  this.lowsStack = [x, low];
+  this.lowsStack = [x, low, lowStroke, fill, hatchFill];
+
+  this.prevX_ = x;
+  this.prevHigh_ = high;
+  this.prevLow_ = low;
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.RangeArea.prototype.drawSubsequentPoint = function(point, state) {
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  var shapesManager = this.shapesManager;
+  var valueNames = this.series.getYValueNames();
+
+  var highValue = point.get(valueNames[1]);
+  var lowValue = point.get(valueNames[0]);
+
+  var names = this.getShapeNames(highValue, lowValue, true);
+
+  var shapeNames = {};
+  shapeNames[names.fill] = true;
+  shapeNames[names.hatchFill] = true;
+  shapeNames[names.highStroke] = true;
+  shapeNames[names.lowStroke] = true;
+
+  var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var high = /** @type {number} */(point.meta('high'));
   var low = /** @type {number} */(point.meta('low'));
 
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, high);
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, high);
-  anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['high']), this.isVertical, x, high);
+  if (this.currentShapes != shapes) {
+    var crossX = (x - this.prevX_) / 2;
+    var crossY = (y - this.prevX_) / 2;
 
-  this.lowsStack.push(x, low);
+  }
+
+  var fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+  var hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
+  var highStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.highStroke]);
+  var lowStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.lowStroke]);
+
+  anychart.core.drawers.line(fill, this.isVertical, x, high);
+  anychart.core.drawers.line(hatchFill, this.isVertical, x, high);
+  anychart.core.drawers.line(highStroke, this.isVertical, x, high);
+
+  this.lowsStack.push(x, low, lowStroke, fill, hatchFill);
 };
 
 
@@ -124,22 +181,25 @@ anychart.core.drawers.RangeArea.prototype.drawSubsequentPoint = function(point, 
 anychart.core.drawers.RangeArea.prototype.finalizeSegment = function() {
   if (!this.prevPointDrawn) return;
   if (this.lowsStack) {
-    var shapes = this.shapesManager.getShapesGroup(this.seriesState);
     var first = true;
-    for (var i = this.lowsStack.length - 1; i >= 0; i -= 2) {
-      var x = this.lowsStack[i - 1];
-      var y = this.lowsStack[i];
-      anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['fill']), this.isVertical, x, y);
-      anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, y);
+    for (var i = this.lowsStack.length - 1; i >= 0; i -= 5) {
+      var x = this.lowsStack[i - 4];
+      var y = this.lowsStack[i - 3];
+      var stroke = this.lowsStack[i - 2];
+      var fill = this.lowsStack[i - 1];
+      var hatchFill = this.lowsStack[i];
+
+      anychart.core.drawers.line(fill, this.isVertical, x, y);
+      anychart.core.drawers.line(hatchFill, this.isVertical, x, y);
       if (first) {
-        anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['low']), this.isVertical, x, y);
+        anychart.core.drawers.move(stroke, this.isVertical, x, y);
         first = false;
       } else {
-        anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['low']), this.isVertical, x, y);
+        anychart.core.drawers.line(stroke, this.isVertical, x, y);
       }
     }
-    shapes['fill'].close();
-    shapes['hatchFill'].close();
+    // shapes['fill'].close();
+    // shapes['hatchFill'].close();
     this.lowsStack = null;
   }
 };

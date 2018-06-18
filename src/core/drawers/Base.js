@@ -92,6 +92,47 @@ anychart.core.drawers.Base.prototype.valueFieldName = 'value';
  */
 anychart.core.drawers.Base.prototype.requiredShapes = (function() { return {}; })();
 
+/**
+ * @param {...*} var_args .
+ * @return {Object.<string>}
+ */
+anychart.core.drawers.Base.prototype.getShapeNames = function(var_args) {
+  var value = /** @type {number} */(arguments[0]);
+  var prevValue = /** @type {number} */(arguments[1]);
+
+  var names = {};
+  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
+  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
+
+  var isLineBased = this.series.check(anychart.core.drawers.Capabilities.IS_LINE_BASED);
+
+  if (this.hasNegativeColoring) {
+    if (value < baseline) {
+      strokeName = 'negativeStroke';
+      fillName = 'negativeFill';
+      hatchFillName = 'negativeHatchFill';
+    }
+  } else if (this.hasRisingFallingColoring) {
+    if (value < prevValue) {
+      strokeName = 'fallingStroke';
+      fillName = 'fallingFill';
+      hatchFillName = 'fallingHatchFill';
+    } else if (value > prevValue) {
+      strokeName = 'risingStroke';
+      fillName = 'risingFill';
+      hatchFillName = 'risingHatchFill';
+    }
+  }
+
+  names.stroke = strokeName;
+  if (!isLineBased) {
+    names.fill = fillName;
+    names.hatchFill = hatchFillName;
+  }
+
+  return names;
+};
+
 
 /**
  * Returns y value names. Used for Y scale calculations.
@@ -204,6 +245,18 @@ anychart.core.drawers.Base.prototype.startDrawing = function(shapeManager) {
    * @private
    */
   this.individualPointWidths_ = Boolean(this.series.getXScale()) && this.series.getXScale().checkWeights();
+
+  var normSettings = this.series.normal();
+  /**
+   * @type {boolean}
+   */
+  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
+
+  /**
+   * @type {boolean}
+   */
+  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
+      goog.isDef(normSettings.getOption('fallingStroke'));
 };
 
 

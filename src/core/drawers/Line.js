@@ -98,7 +98,7 @@ anychart.core.drawers.Line.prototype.drawMissingPoint = function(point, state) {
 /** @inheritDoc */
 anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
 
@@ -124,7 +124,7 @@ anychart.core.drawers.Line.prototype.drawFirstPoint = function(point, state) {
 anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state) {
   var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
 
@@ -140,10 +140,10 @@ anychart.core.drawers.Line.prototype.drawSubsequentPoint = function(point, state
 
     var isBaselineIntersect = this.isBaselineIntersect(value);
 
-    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = /** @type {number} */(point.meta('zero'));
       crossX = (x - this.prevX) * (crossY - this.prevY) / (y - this.prevY) + this.prevX;
-    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
+    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
       crossX = prevX;
       crossY = prevY;
     } else {

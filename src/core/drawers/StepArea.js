@@ -140,10 +140,10 @@ anychart.core.drawers.StepArea.prototype.drawSegmentContinuation_ = function(sha
     hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevShapeNames.hatchFill]);
 
     var isBaselineIntersect = this.isBaselineIntersect(value);
-    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = zeroY;
       crossX = this.drawVerticalLine(this.prevShapeNames, x, y, this.prevY_, crossY, zeroX, zeroY);
-    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
+    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
       crossX = this.drawVerticalLine(this.prevShapeNames, x, y, this.prevY_, crossY, zeroX, zeroY);
       anychart.core.drawers.line(fill, this.isVertical, crossX, zeroY);
       anychart.core.drawers.line(hatchFill, this.isVertical, crossX, zeroY);
@@ -180,7 +180,7 @@ anychart.core.drawers.StepArea.prototype.drawSegmentContinuation_ = function(sha
 anychart.core.drawers.StepArea.prototype.drawFirstPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;
@@ -230,7 +230,7 @@ anychart.core.drawers.StepArea.prototype.drawFirstPoint = function(point, state)
 anychart.core.drawers.StepArea.prototype.drawSubsequentPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   shapeNames[names.fill] = true;

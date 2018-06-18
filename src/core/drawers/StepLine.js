@@ -64,7 +64,7 @@ anychart.core.drawers.StepLine.prototype.startDrawing = function(shapeManager) {
 /** @inheritDoc */
 anychart.core.drawers.StepLine.prototype.drawFirstPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
 
@@ -124,7 +124,7 @@ anychart.core.drawers.StepLine.prototype.drawVerticalLine = function(names, x, y
 anychart.core.drawers.StepLine.prototype.drawSubsequentPoint = function(point, state) {
   var shapesManager = this.shapesManager;
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
 
@@ -137,10 +137,10 @@ anychart.core.drawers.StepLine.prototype.drawSubsequentPoint = function(point, s
 
   if (shapes != this.currentShapes) {
     var isBaselineIntersect = this.isBaselineIntersect(value);
-    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = /** @type {number} */(point.meta('zero'));
       crossX = this.drawVerticalLine(this.prevShapeNames, x, y, this.prevY_, crossY);
-    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
+    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
       crossX = this.drawVerticalLine(this.prevShapeNames, x, y, this.prevY_, crossY);
     } else {
       crossX = this.drawVerticalLine(this.prevShapeNames, x, y, this.prevY_, crossY);

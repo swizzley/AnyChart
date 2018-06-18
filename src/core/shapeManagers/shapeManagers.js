@@ -229,6 +229,36 @@ anychart.core.shapeManagers.pathHatchConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.pathLowHatchConfig = {
+  name: 'lowHatchFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'lowHatchFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: true,
+  zIndex: anychart.core.shapeManagers.HATCH_FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.pathHighHatchConfig = {
+  name: 'highHatchFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'highHatchFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: true,
+  zIndex: anychart.core.shapeManagers.HATCH_FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.rectFillStrokeConfig = {
   name: 'rect',
   shapeType: anychart.enums.ShapeType.RECT,
@@ -311,7 +341,7 @@ anychart.core.shapeManagers.pathContiniousNegativeStrokeConfig = {
   strokeName: 'negativeStroke',
   canBeHoveredSelected: true,
   isHatchFill: false,
-  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+  zIndex: anychart.core.shapeManagers.STROKE_SHAPES_ZINDEX
 };
 
 
@@ -371,7 +401,7 @@ anychart.core.shapeManagers.pathRisingStrokeConfig = {
   strokeName: 'risingStroke',
   canBeHoveredSelected: true,
   isHatchFill: false,
-  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+  zIndex: anychart.core.shapeManagers.STROKE_SHAPES_ZINDEX
 };
 
 
@@ -386,7 +416,7 @@ anychart.core.shapeManagers.pathContiniousRisingStrokeConfig = {
   strokeName: 'risingStroke',
   canBeHoveredSelected: true,
   isHatchFill: false,
-  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+  zIndex: anychart.core.shapeManagers.STROKE_SHAPES_ZINDEX
 };
 
 
@@ -446,7 +476,7 @@ anychart.core.shapeManagers.pathFallingStrokeConfig = {
   strokeName: 'fallingStroke',
   canBeHoveredSelected: true,
   isHatchFill: false,
-  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+  zIndex: anychart.core.shapeManagers.STROKE_SHAPES_ZINDEX
 };
 
 
@@ -461,7 +491,7 @@ anychart.core.shapeManagers.pathContiniousFallingStrokeConfig = {
   strokeName: 'fallingStroke',
   canBeHoveredSelected: true,
   isHatchFill: false,
-  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+  zIndex: anychart.core.shapeManagers.STROKE_SHAPES_ZINDEX
 };
 
 
@@ -514,8 +544,23 @@ anychart.core.shapeManagers.pathNegativeHatchConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.pathHighFillConfig = {
+  name: 'highFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'highFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.pathHighStrokeConfig = {
-  name: 'high',
+  name: 'highStroke',
   shapeType: anychart.enums.ShapeType.PATH,
   fillName: null,
   strokeName: 'highStroke',
@@ -529,8 +574,23 @@ anychart.core.shapeManagers.pathHighStrokeConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.pathLowFillConfig = {
+  name: 'lowFill',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: 'lowFill',
+  strokeName: null,
+  canBeHoveredSelected: true,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.pathLowStrokeConfig = {
-  name: 'low',
+  name: 'lowStroke',
   shapeType: anychart.enums.ShapeType.PATH,
   fillName: null,
   strokeName: 'lowStroke',

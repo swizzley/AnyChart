@@ -92,59 +92,6 @@ anychart.core.shapeManagers.PerSeries.prototype.addShapesGroup = function(state)
 
 
 /**
- * @param {number} value .
- * @param {number} prevValue .
- * @return {Object.<string>}
- */
-anychart.core.shapeManagers.PerSeries.prototype.getShapeNames = function(value, prevValue) {
-  var names = {};
-  var strokeName = 'stroke', fillName = 'fill', hatchFillName = 'hatchFill';
-  var baseline = /** @type {number} */(this.series.plot.getOption('baseline'));
-
-  var normSettings = this.series.normal();
-  /**
-   * @type {boolean}
-   */
-  this.hasNegativeColoring = goog.isDef(normSettings.getOption('negativeStroke'));
-
-  /**
-   * @type {boolean}
-   */
-  this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
-      goog.isDef(normSettings.getOption('fallingStroke'));
-
-
-  var isLineBased = this.series.check(anychart.core.drawers.Capabilities.IS_LINE_BASED);
-
-  if (this.hasNegativeColoring) {
-    if (value < baseline) {
-      strokeName = 'negativeStroke';
-      fillName = 'negativeFill';
-      hatchFillName = 'negativeHatchFill';
-    }
-  } else if (this.hasRisingFallingColoring) {
-    if (value < prevValue) {
-      strokeName = 'fallingStroke';
-      fillName = 'fallingFill';
-      hatchFillName = 'fallingHatchFill';
-    } else if (value > prevValue) {
-      strokeName = 'risingStroke';
-      fillName = 'risingFill';
-      hatchFillName = 'risingHatchFill';
-    }
-  }
-
-  names.stroke = strokeName;
-  if (!isLineBased) {
-    names.fill = fillName;
-    names.hatchFill = hatchFillName;
-  }
-
-  return names;
-};
-
-
-/**
  *  
  */
 anychart.core.shapeManagers.PerSeries.prototype.getShapesColor = function(state) {

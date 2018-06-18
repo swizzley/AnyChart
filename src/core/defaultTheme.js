@@ -1349,6 +1349,8 @@ goog.exportSymbol('anychart.themes.defaultTheme', {
           'stroke': anychart.core.defaultTheme.returnStrokeSourceColor,
           'lowStroke': anychart.core.defaultTheme.returnStrokeSourceColor,
           'highStroke': anychart.core.defaultTheme.returnStrokeSourceColor,
+          'lowFill': anychart.core.defaultTheme.returnSourceColor65,
+          'highFill': anychart.core.defaultTheme.returnSourceColor65,
           'hatchFill': false,
           'labels': {
             'enabled': null,

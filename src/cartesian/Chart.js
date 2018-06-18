@@ -204,10 +204,12 @@ anychart.cartesianModule.Chart.prototype.seriesConfig = (function() {
     drawerType: anychart.enums.SeriesDrawerTypes.RANGE_AREA,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
     shapesConfig: [
-      anychart.core.shapeManagers.pathFillConfig,
-      anychart.core.shapeManagers.pathLowStrokeConfig,
+      anychart.core.shapeManagers.pathHighFillConfig,
+      anychart.core.shapeManagers.pathLowFillConfig,
       anychart.core.shapeManagers.pathHighStrokeConfig,
-      anychart.core.shapeManagers.pathHatchConfig
+      anychart.core.shapeManagers.pathLowStrokeConfig,
+      anychart.core.shapeManagers.pathHighHatchConfig,
+      anychart.core.shapeManagers.pathLowHatchConfig
     ],
     secondaryShapesConfig: null,
     postProcessor: null,

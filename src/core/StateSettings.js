@@ -315,6 +315,8 @@ anychart.core.StateSettings.prototype.PROPERTY_DESCRIPTORS = (function() {
     descriptors.STROKE_FUNCTION,
     descriptors.LOW_STROKE,
     descriptors.HIGH_STROKE,
+    descriptors.LOW_FILL,
+    descriptors.HIGH_FILL,
     descriptors.NEGATIVE_STROKE,
     descriptors.RISING_STROKE,
     descriptors.FALLING_STROKE,

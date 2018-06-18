@@ -73,7 +73,7 @@ anychart.core.drawers.Spline.prototype.startDrawing = function(shapeManager) {
 /** @inheritDoc */
 anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
-  var names = this.shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
 
@@ -95,7 +95,7 @@ anychart.core.drawers.Spline.prototype.drawFirstPoint = function(point, state) {
 anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, state) {
   var value = point.get(this.series.getYValueNames()[0]);
   var shapesManager = this.shapesManager;
-  var names = shapesManager.getShapeNames(value, this.prevValue);
+  var names = this.getShapeNames(value, this.prevValue);
   var shapeNames = {};
   shapeNames[names.stroke] = true;
   var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
@@ -110,9 +110,9 @@ anychart.core.drawers.Spline.prototype.drawSubsequentPoint = function(point, sta
     prevY = /** @type {number} */(this.prevY);
 
     var isBaselineIntersect = this.isBaselineIntersect(value);
-    if (shapesManager.hasNegativeColoring && isBaselineIntersect) {
+    if (this.hasNegativeColoring && isBaselineIntersect) {
       crossY = /** @type {number} */(point.meta('zero'));
-    } else if (shapesManager.hasRisingFallingColoring && !shapesManager.hasNegativeColoring) {
+    } else if (this.hasRisingFallingColoring && !this.hasNegativeColoring) {
       crossY = prevY;
     } else {
       crossY = 'middle';
