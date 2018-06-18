@@ -213,9 +213,13 @@ anychart.core.ui.HTMLTooltip.prototype.updateTexts = function() {
  * @return {anychart.core.ui.HTMLTooltip}
  */
 anychart.core.ui.HTMLTooltip.prototype.updatePosition = function() {
+  // goog.style.setPosition(this.getElement(),
+  //     /** @type {number} */ (this.tooltip_.getOption('x')),
+  //     /** @type {number} */ (this.tooltip_.getOption('y')));
+  var mBox = this.getMarginBox();
   goog.style.setPosition(this.getElement(),
-      /** @type {number} */ (this.tooltip_.getOption('x')),
-      /** @type {number} */ (this.tooltip_.getOption('y')));
+      this.tooltip_.instantPosition_.x - mBox.left,
+      this.tooltip_.instantPosition_.y - mBox.top);
   return this;
 };
 
@@ -242,8 +246,7 @@ anychart.core.ui.HTMLTooltip.prototype.visible = function(opt_value) {
  */
 anychart.core.ui.HTMLTooltip.prototype.getBounds = function() {
   var s = goog.style.getSize(this.getElement());
-  return new anychart.math.Rect(/** @type {number} */ (this.tooltip_.getOption('x')), /** @type {number} */ (this.tooltip_.getOption('y')),
-      s.width, s.height);
+  return new anychart.math.Rect(0, 0, s.width, s.height);
 };
 
 
