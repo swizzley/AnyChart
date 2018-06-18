@@ -1952,7 +1952,6 @@ anychart.utils.installHtmlTooltipStyle = function() {
         'font-size: 12px;' +
         'position: absolute;' +
         'pointer-events: none;' +
-        'white-space: nowrap;' +
         'margin: 10px;' +
         '}' +
         '.anychart-tooltip-separator {' +
