@@ -67,7 +67,21 @@ anychart.core.drawers.RangeArea.prototype.valueFieldName = 'high';
 
 /** @inheritDoc */
 anychart.core.drawers.RangeArea.prototype.drawFirstPoint = function(point, state) {
+  var shapesManager = this.shapesManager;
+  var valueNames = this.series.getYValueNames();
+  var highValue = point.get(valueNames[1]);
+  var names = shapesManager.getShapeNames(highValue, this.prevValue);
+  var shapeNames = {};
+  shapeNames[names.fill] = true;
+  shapeNames[names.hatchFill] = true;
+  shapeNames[names.high] = true;
+
+  // this.currentShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
+  // console.log(this.series.getYValueNames());
+
   var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+
   var x = /** @type {number} */(point.meta('x'));
   var high = /** @type {number} */(point.meta('high'));
   var low = /** @type {number} */(point.meta('low'));
@@ -77,6 +91,12 @@ anychart.core.drawers.RangeArea.prototype.drawFirstPoint = function(point, state
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, low);
   anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes['hatchFill']), this.isVertical, x, high);
   anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes['high']), this.isVertical, x, high);
+
+  // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes[names.fill]), this.isVertical, x, low);
+  // anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes[names.fill]), this.isVertical, x, high);
+  // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes[names.hatchFill]), this.isVertical, x, low);
+  // anychart.core.drawers.line(/** @type {acgraph.vector.Path} */(shapes[names.hatchFill]), this.isVertical, x, high);
+  // anychart.core.drawers.move(/** @type {acgraph.vector.Path} */(shapes[names.high]), this.isVertical, x, high);
 
   /**
    * @type {Array.<number>}
