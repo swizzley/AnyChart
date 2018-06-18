@@ -35,6 +35,7 @@ STEP_LEGACY_7x=false
 
 #### Define version
 if [ "${TRAVIS_BRANCH}" = "master" ] || [ ${DRY_RUN_RELEASE} ]; then
+    #TRAVIS_BRANCH =>    master (release) OR Dry-Run
     VERSION=${BUILD_VERSION}
     IS_RELEASE_BUILD=true
 
@@ -48,7 +49,7 @@ if [ "${TRAVIS_BRANCH}" = "master" ] || [ ${DRY_RUN_RELEASE} ]; then
     #STEP_LEGACY_7x=true
 
 elif [[ "${TRAVIS_BRANCH}" =~ ^([0-9]+\.[0-9]+\.[0-9]+[-rc]+[0-9]+)$ ]]; then
-    # 8.3.0-rc0 it is RC build
+    #TRAVIS_BRANCH =>      8.3.0-rc0 it is RC build
     VERSION=${TRAVIS_BRANCH}
     IS_RC_BUILD=true
 
@@ -61,11 +62,12 @@ elif [[ "${TRAVIS_BRANCH}" =~ ^([0-9]+\.[0-9]+\.[0-9]+[-rc]+[0-9]+)$ ]]; then
     STEP_GIT_RELEASE=false
 
 elif [[ "${TRAVIS_BRANCH}" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-    # v8.3.0 it is a tag. Drop build
+    #TRAVIS_BRANCH =>     v8.3.0 it is a tag. Drop build
     echo 'No build needed for TAG'
     echo 'exit...'
     exit 0;
 else
+    #TRAVIS_BRANCH =>  `develop` OR any other brunch
     VERSION=${TRAVIS_BRANCH}
     IS_DEV_BUILD=true
 
@@ -162,7 +164,7 @@ if [ ${IS_RELEASE_BUILD} = "true" ] || [ ${IS_RC_BUILD} = "true" ]; then
     download_resources
 
 fi
-
+download_resources
 ########################################################################################################################
 #
 #  Clear all big files/data for non release branch
