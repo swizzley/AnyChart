@@ -23,14 +23,14 @@ IS_DEV_BUILD=false                          # build without geoData (drop CDN wi
 VERSION=''
 
 #### Set Steps
-STEP_BUILD_DIST=true
+STEP_BUILD_DIST=false
 STEP_UPLOAD_STATIC=true
-STEP_DROP_CDN=true
+STEP_DROP_CDN=false
 
 STEP_EXPORT_SERVER=false
 STEP_NPM_RELEASE=false
 STEP_GIT_RELEASE=false
-STEP_DOWNLOAD_EXTERNAL=false
+STEP_DOWNLOAD_EXTERNAL=true
 STEP_LEGACY_7x=false
 
 #### Define version
