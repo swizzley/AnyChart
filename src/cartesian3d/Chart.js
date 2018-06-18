@@ -623,11 +623,12 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
   var stackDirection = /** @type {anychart.enums.ScaleStackDirection} */ (this.yScale().stackDirection());
   var stackIsDirect = stackDirection == anychart.enums.ScaleStackDirection.DIRECT;
 
+
   for (var i = 0; i < allSeries.length; i++) {
     var directIndex = allSeries.length - i - 1;
     var actualIndex = isStacked && stackIsDirect ? directIndex : i;
     series = allSeries[actualIndex];
-    var maxZIndex = series.zIndex();
+    var maxZIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES + i + 1;
     if (series && series.enabled()) {
       if (series.check(anychart.core.drawers.Capabilities.IS_3D_BASED)) {
         if (series.isDiscreteBased()) {
@@ -638,8 +639,6 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
               maxZIndex = zIndex;
             }
           }
-        } else {
-          maxZIndex += i + 1;
         }
         series.zIndex(maxZIndex);
       } else if (series.supportsStack()) {
