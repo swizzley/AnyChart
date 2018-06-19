@@ -544,7 +544,7 @@ anychart.cartesian3dModule.Chart.prototype.createTextMarkerInstance = function()
  * @return {number} zIndex ZIndex for series.
  * @private
  */
-anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, maxY) {
+anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(series, yPosition, maxY, zIndex, isMono) {
   var iterator = series.getIterator();
   var value = anychart.utils.toNumber(iterator.get('value'));
   var xPos = iterator.getIndex();
@@ -555,7 +555,7 @@ anychart.cartesian3dModule.Chart.prototype.setSeriesPointZIndex_ = function(seri
   var isStacked = this.yScale().stackMode() != anychart.enums.ScaleStackMode.NONE;
   var isXInverted = this.xScale().inverted();
   xPos = isXInverted ? iterator.getRowsCount() - xPos : xPos + 1; //Convert x position to descending trend for x inverted chart.
-  var zIndex = isStacked ? anychart.core.ChartWithSeries.ZINDEX_SERIES : anychart.core.ChartWithSeries.ZINDEX_SERIES + yPos;
+  zIndex = !this.getOption('zDistribution') ? isMono ? anychart.core.ChartWithSeries.ZINDEX_SERIES : zIndex : anychart.core.ChartWithSeries.ZINDEX_SERIES + (1 - (1 / yPos));
   //Convert y position to negative if y scale is inverted or value < 0 and y scale not inverted.
   if (this.yScale().inverted() ^ (value < 0)) {
     yPos = -yPos;
@@ -622,19 +622,28 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
   var isStacked = /** @type {anychart.enums.ScaleStackMode} */ (this.yScale().stackMode()) != anychart.enums.ScaleStackMode.NONE;
   var stackDirection = /** @type {anychart.enums.ScaleStackDirection} */ (this.yScale().stackDirection());
   var stackIsDirect = stackDirection == anychart.enums.ScaleStackDirection.DIRECT;
-
+  var z = [anychart.core.ChartWithSeries.ZINDEX_SERIES];
+  var isSingletyped = true;
+  for (var i = 1; i < allSeries.length; i++) {
+    if (allSeries[i].getType() == allSeries[i - 1].getType()) {
+      z.push(z[i - 1]);
+    } else {
+      z.push(anychart.core.ChartWithSeries.ZINDEX_SERIES + (1 - (1 / (i + 1))));
+      isSingletyped = false;
+    }
+  }
 
   for (var i = 0; i < allSeries.length; i++) {
     var directIndex = allSeries.length - i - 1;
     var actualIndex = isStacked && stackIsDirect ? directIndex : i;
     series = allSeries[actualIndex];
-    var maxZIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES + i + 1;
+    var maxZIndex = anychart.core.ChartWithSeries.ZINDEX_SERIES + (1 - (1 / (i + 1)));
     if (series && series.enabled()) {
       if (series.check(anychart.core.drawers.Capabilities.IS_3D_BASED)) {
         if (series.isDiscreteBased()) {
           var iterator = series.getResetIterator();
           while (iterator.advance()) {
-            var zIndex = this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length);
+            var zIndex = this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length, z[i], isSingletyped);
             if (maxZIndex < zIndex) {
               maxZIndex = zIndex;
             }
