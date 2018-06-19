@@ -19,7 +19,14 @@ anychart.core.drawers.RangeSplineArea = function(series) {
    * @type {!anychart.core.drawers.SplineDrawer}
    * @private
    */
-  this.queue_ = new anychart.core.drawers.SplineDrawer();
+  this.strokeQueue_ = new anychart.core.drawers.SplineDrawer();
+
+  /**
+   * Stroke spline drawer.
+   * @type {!anychart.core.drawers.SplineDrawer}
+   * @private
+   */
+  this.fillQueue_ = new anychart.core.drawers.SplineDrawer();
 };
 goog.inherits(anychart.core.drawers.RangeSplineArea, anychart.core.drawers.Base);
 anychart.core.drawers.AvailableDrawers[anychart.enums.SeriesDrawerTypes.RANGE_SPLINE_AREA] = anychart.core.drawers.RangeSplineArea;
@@ -56,10 +63,12 @@ anychart.core.drawers.RangeSplineArea.prototype.flags = (
 /** @inheritDoc */
 anychart.core.drawers.RangeSplineArea.prototype.requiredShapes = (function() {
   var res = {};
-  res['fill'] = anychart.enums.ShapeType.PATH;
-  res['hatchFill'] = anychart.enums.ShapeType.PATH;
-  res['low'] = anychart.enums.ShapeType.PATH;
-  res['high'] = anychart.enums.ShapeType.PATH;
+  res['highFill'] = anychart.enums.ShapeType.PATH;
+  res['lowFill'] = anychart.enums.ShapeType.PATH;
+  res['highStroke'] = anychart.enums.ShapeType.PATH;
+  res['lowStroke'] = anychart.enums.ShapeType.PATH;
+  res['highHatchFill'] = anychart.enums.ShapeType.PATH;
+  res['lowHatchFill'] = anychart.enums.ShapeType.PATH;
   return res;
 })();
 
@@ -69,85 +78,201 @@ anychart.core.drawers.RangeSplineArea.prototype.yValueNames = (function () { ret
 
 
 /** @inheritDoc */
+anychart.core.drawers.RangeSplineArea.prototype.getShapeNames = function(var_args) {
+  var high = /** @type {number} */(arguments[0]);
+  var low = /** @type {number} */(arguments[1]);
+
+  var names = {};
+  var fillName, hatchFillName;
+
+  if (high > low) {
+    fillName = 'highFill';
+    hatchFillName = 'highHatchFill';
+  } else {
+    fillName = 'lowFill';
+    hatchFillName = 'lowHatchFill';
+  }
+
+  names.highStroke = 'highStroke';
+  names.lowStroke = 'lowStroke';
+  names.fill = fillName;
+  names.hatchFill = hatchFillName;
+
+  return names;
+};
+
+
+/** @inheritDoc */
 anychart.core.drawers.RangeSplineArea.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.RangeSplineArea.base(this, 'startDrawing', shapeManager);
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
-  this.queue_.isVertical(this.isVertical);
-  this.queue_.rtl(this.series.planIsXScaleInverted());
-  /**
-   * @type {Array.<acgraph.vector.Path>}
-   * @private
-   */
-  this.forwardPaths_ = [
-    /** @type {acgraph.vector.Path} */(shapes['fill']),
-    /** @type {acgraph.vector.Path} */(shapes['hatchFill']),
-    /** @type {acgraph.vector.Path} */(shapes['high'])];
-  /**
-   * @type {Array.<acgraph.vector.Path>}
-   * @private
-   */
-  this.backwardPaths_ = [
-    /** @type {acgraph.vector.Path} */(shapes['fill']),
-    /** @type {acgraph.vector.Path} */(shapes['hatchFill']),
-    /** @type {acgraph.vector.Path} */(shapes['low'])];
+  this.strokeQueue_.isVertical(this.isVertical);
+  this.strokeQueue_.rtl(this.series.planIsXScaleInverted());
+  this.fillQueue_.isVertical(this.isVertical);
+  this.fillQueue_.rtl(this.series.planIsXScaleInverted());
+
+  this.highSplineCoords = [];
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.RangeSplineArea.prototype.drawFirstPoint = function(point, state) {
+  var shapesManager = this.shapesManager;
+  // var valueNames = this.series.getYValueNames();
+  //
+  // var highValue = point.get(valueNames[1]);
+  // var lowValue = point.get(valueNames[0]);
+  //
+  // var names = this.getShapeNames(highValue, lowValue);
+  //
+  var shapeNames = {};
+  shapeNames['highStroke'] = true;
+  shapeNames['lowStroke'] = true;
+
+  var strokeShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  this.hightStrokeShape = strokeShapes['highStroke'];
+  this.lowStrokeShape = strokeShapes['lowStroke'];
+
+  // shapeNames = {};
+  // shapeNames[names.fill] = true;
+  // shapeNames[names.hatchFill] = true;
+  //
+  // this.currentShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var high = /** @type {number} */(point.meta('high'));
-  var low = /** @type {number} */(point.meta('low'));
 
-  this.queue_.setPaths(this.forwardPaths_);
-  this.queue_.resetDrawer(false);
-  anychart.core.drawers.move(this.forwardPaths_[0], this.isVertical, x, low);
-  anychart.core.drawers.line(this.forwardPaths_[0], this.isVertical, x, high);
-  anychart.core.drawers.move(this.forwardPaths_[1], this.isVertical, x, low);
-  anychart.core.drawers.line(this.forwardPaths_[1], this.isVertical, x, high);
-  anychart.core.drawers.move(this.forwardPaths_[2], this.isVertical, x, high);
-  this.queue_.processPoint(x, high);
+  // var fillShape = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+  // var hatchShape = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
+
+  this.strokeQueue_.resetDrawer(false);
+  this.strokeQueue_.setPaths([this.hightStrokeShape]);
+  var splineCoords = this.strokeQueue_.processPoint(x, high);
+
+  if (splineCoords)
+    this.highSplineCoords.push.apply(this.highSplineCoords, splineCoords);
 
   /** @type {Array.<number>} */
-  this.lowsStack = [x, low];
+  this.lowsStack = [point];
+
+  // this.prevX_ = x;
+  // this.prevHigh_ = high;
+  // this.prevLow_ = low;
+  // this.prevNames_ = names;
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.RangeSplineArea.prototype.drawSubsequentPoint = function(point, state) {
+  // var shapesManager = this.shapesManager;
+  // var valueNames = this.series.getYValueNames();
+  //
+  // var highValue = point.get(valueNames[1]);
+  // var lowValue = point.get(valueNames[0]);
+  //
+  // var names = this.getShapeNames(highValue, lowValue, true);
+  //
+  // var shapeNames = {};
+  // shapeNames[names.fill] = true;
+  // shapeNames[names.hatchFill] = true;
+  //
+  // var fill, hatchFill;
+  //
+  // var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
   var x = /** @type {number} */(point.meta('x'));
   var high = /** @type {number} */(point.meta('high'));
-  var low = /** @type {number} */(point.meta('low'));
 
-  this.queue_.processPoint(x, high);
+  var splineCoords = this.strokeQueue_.processPoint(x, high);
 
-  this.lowsStack.push(x, low);
+  if (splineCoords)
+    this.highSplineCoords.push.apply(this.highSplineCoords, splineCoords);
+
+  this.lowsStack.push(point);
+  //
+  // this.prevX_ = x;
+  // this.prevHigh_ = high;
+  // this.prevLow_ = low;
+  // this.prevNames_ = names;
 };
 
 
 /** @inheritDoc */
 anychart.core.drawers.RangeSplineArea.prototype.finalizeSegment = function() {
+  // if (shapes != this.currentShapes) {
+  //   fill = /** @type {acgraph.vector.Path} */(shapes[names.fill]);
+  //   hatchFill = /** @type {acgraph.vector.Path} */(shapes[names.hatchFill]);
+  //
+  //   this.strokeQueue_.setBreak([x_, low, this.prevX_, low], [fill, this.hightStrokeShape, hatchFill]);
+  //   this.currentShapes = shapes;
+  //
+  //   this.lowsStack.push(NaN, NaN, fill, hatchFill);
+  // }
+
+  var shapesManager = this.shapesManager;
+
   if (!this.prevPointDrawn) return;
-  this.queue_.finalizeProcessing();
+  var splineCoords = this.strokeQueue_.finalizeProcessing();
+
+  if (splineCoords)
+    this.highSplineCoords.push.apply(this.highSplineCoords, splineCoords);
+
+  this.strokeQueue_.setPaths([this.lowStrokeShape]);
+  this.strokeQueue_.resetDrawer(true);
+  this.fillQueue_.resetDrawer(true);
+
+  var fill, hatchFill;
+  var valueNames = this.series.getYValueNames();
+
   if (this.lowsStack) {
     /** @type {boolean} */
     var firstPoint = true;
-    for (var i = this.lowsStack.length - 1; i >= 0; i -= 2) {
-      /** @type {number} */
-      var x = /** @type {number} */(this.lowsStack[i - 1]);
-      /** @type {number} */
-      var y = /** @type {number} */(this.lowsStack[i]);
+    for (var i = this.lowsStack.length - 1; i >= 0; i -= 1) {
+      var point = this.lowsStack[i];
+
+      var highValue = point.get(valueNames[1]);
+      var lowValue = point.get(valueNames[0]);
+
+      var names = this.getShapeNames(highValue, lowValue, true);
+
+      var shapeNames = {};
+      shapeNames[names.fill] = true;
+      shapeNames[names.hatchFill] = true;
+
+      var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+
+      var x = /** @type {number} */(point.meta('x'));
+      var high = /** @type {number} */(point.meta('high'));
+      var low = /** @type {number} */(point.meta('low'));
+
+      this.fillQueue_.processPoint(x, low);
+
       if (firstPoint) {
-        this.queue_.setPaths(this.backwardPaths_);
-        this.queue_.resetDrawer(true);
-        anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, y);
-        anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, y);
-        anychart.core.drawers.move(this.backwardPaths_[2], this.isVertical, x, y);
+        this.currentShapes = shapes;
+
+        fill = /** @type {acgraph.vector.Path} */(shapes[names.fill]);
+        hatchFill = /** @type {acgraph.vector.Path} */(shapes[names.hatchFill]);
+
+        this.fillQueue_.setPaths([fill, hatchFill]);
         firstPoint = false;
+      } else {
+        if (this.currentShapes != shapes) {
+          fill = /** @type {acgraph.vector.Path} */(shapes[names.fill]);
+          hatchFill = /** @type {acgraph.vector.Path} */(shapes[names.hatchFill]);
+
+
+          //
+          console.log('break');
+
+
+          this.fillQueue_.setBreak([x_, low, this.prevX_, low], [fill, hatchFill]);
+
+          // this.highSplineCoords
+          // this.currentShapes = shapes;
+        }
       }
-      this.queue_.processPoint(x, y);
+
     }
-    this.queue_.finalizeProcessing();
+    this.strokeQueue_.finalizeProcessing();
     this.lowsStack = null;
   }
 };

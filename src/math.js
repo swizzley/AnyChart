@@ -1446,5 +1446,151 @@ anychart.math.intersectBezier2Line = function(p0x, p0y, p1x, p1y, p2x, p2y, a0x,
 };
 
 
+anychart.math.intersectBezier2Bezier2 = function(a0x, a0y, a1x, a1y, a2x, a2y, b0x, b0y, b1x, b1y, b2x, b2y) {
+  var a1 = new anychart.math.Point2D(a0x, a0y);
+  var a2 = new anychart.math.Point2D(a1x, a1y);
+  var a3 = new anychart.math.Point2D(a2x, a2y);
+  var b1 = new anychart.math.Point2D(b0x, b0y);
+  var b2 = new anychart.math.Point2D(b1x, b1y);
+  var b3 = new anychart.math.Point2D(b2x, b2y);
+
+  var a, b;
+  var c12, c11, c10;
+  var c22, c21, c20;
+  var result = [];
+  var poly;
+
+  a = a2.multiply(-2);
+  c12 = a1.add(a.add(a3));
+
+  a = a1.multiply(-2);
+  b = a2.multiply(2);
+  c11 = a.add(b);
+
+  c10 = new anychart.math.Point2D(a1.x, a1.y);
+
+  a = b2.multiply(-2);
+  c22 = b1.add(a.add(b3));
+
+  a = b1.multiply(-2);
+  b = b2.multiply(2);
+  c21 = a.add(b);
+
+  c20 = new anychart.math.Point2D(b1.x, b1.y);
+
+  if ( c12.y == 0 ) {
+    var v0 = c12.x*(c10.y - c20.y);
+    var v1 = v0 - c11.x*c11.y;
+    var v2 = v0 + v1;
+    var v3 = c11.y*c11.y;
+
+    poly = new anychart.math.Polynomial(
+        c12.x*c22.y*c22.y,
+        2*c12.x*c21.y*c22.y,
+        c12.x*c21.y*c21.y - c22.x*v3 - c22.y*v0 - c22.y*v1,
+        -c21.x*v3 - c21.y*v0 - c21.y*v1,
+        (c10.x - c20.x)*v3 + (c10.y - c20.y)*v1
+    );
+  } else {
+    var v0 = c12.x*c22.y - c12.y*c22.x;
+    var v1 = c12.x*c21.y - c21.x*c12.y;
+    var v2 = c11.x*c12.y - c11.y*c12.x;
+    var v3 = c10.y - c20.y;
+    var v4 = c12.y*(c10.x - c20.x) - c12.x*v3;
+    var v5 = -c11.y*v2 + c12.y*v4;
+    var v6 = v2*v2;
+
+    poly = new anychart.math.Polynomial(
+        v0*v0,
+        2*v0*v1,
+        (-c22.y*v6 + c12.y*v1*v1 + c12.y*v0*v4 + v0*v5) / c12.y,
+        (-c21.y*v6 + c12.y*v1*v4 + v1*v5) / c12.y,
+        (v3*v6 + v4*v5) / c12.y
+    );
+  }
+
+  var roots = poly.getRoots();
+  for (var i = 0; i < roots.length; i++) {
+    var s = roots[i];
+
+    if (0 <= s && s <= 1) {
+      var xRoots = new anychart.math.Polynomial(
+          c12.x,
+          c11.x,
+          c10.x - c20.x - s * c21.x - s * s * c22.x
+      ).getRoots();
+      var yRoots = new anychart.math.Polynomial(
+          c12.y,
+          c11.y,
+          c10.y - c20.y - s * c21.y - s * s * c22.y
+      ).getRoots();
+
+      if (xRoots.length > 0 && yRoots.length > 0) {
+        var TOLERANCE = 1e-4;
+
+        checkRoots:
+            for (var j = 0; j < xRoots.length; j++) {
+              var xRoot = xRoots[j];
+
+              if (0 <= xRoot && xRoot <= 1) {
+                for (var k = 0; k < yRoots.length; k++) {
+                  if (Math.abs(xRoot - yRoots[k]) < TOLERANCE) {
+                    result.push(c22.multiply(s * s).add(c21.multiply(s).add(c20)));
+                    break checkRoots;
+                  }
+                }
+              }
+            }
+      }
+    }
+  }
+
+  return result;
+};
+
+
+/**
+ * @param {number} a1x .
+ * @param {number} a1y .
+ * @param {number} a2x .
+ * @param {number} a2y .
+ * @param {number} b1x .
+ * @param {number} b1y .
+ * @param {number} b2x .
+ * @param {number} b2y .
+ * @return {anychart.math.Point2D}
+ */
+anychart.math.intersectLineLine = function(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y) {
+  var result;
+
+  var ua_t = (b2x - b1x) * (a1y - b1y) - (b2y - b1y) * (a1x - b1x);
+  var ub_t = (a2x - a1x) * (a1y - b1y) - (a2y - a1y) * (a1x - b1x);
+  var u_b = (b2y - b1y) * (a2x - a1x) - (b2x - b1x) * (a2y - a1y);
+
+  if (u_b != 0) {
+    var ua = ua_t / u_b;
+    var ub = ub_t / u_b;
+
+    if (0 <= ua && ua <= 1 && 0 <= ub && ub <= 1) {
+      result = new anychart.math.Point2D(a1x + ua * (a2x - a1x), a1y + ua * (a2y - a1y));
+    } else {
+      //no intersection
+      result = null;
+    }
+  } else {
+    if (ua_t == 0 || ub_t == 0) {
+      //coincident
+      result = null;
+    } else {
+      //parallel
+      result = null;
+    }
+  }
+
+  return result;
+};
+
+
+
 //exports
 goog.exportSymbol('anychart.math.rect', anychart.math.rect);

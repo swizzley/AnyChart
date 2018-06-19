@@ -24,7 +24,7 @@ anychart.core.drawers.RangeArea.prototype.type = anychart.enums.SeriesDrawerType
 
 /** @inheritDoc */
 anychart.core.drawers.RangeArea.prototype.flags = (
-    anychart.core.drawers.Capabilities.NEEDS_ZERO |
+    // anychart.core.drawers.Capabilities.NEEDS_ZERO |
     // anychart.core.drawers.Capabilities.NEEDS_SIZE_SCALE |
     // anychart.core.drawers.Capabilities.USES_CONTAINER_AS_ROOT |
     // anychart.core.drawers.Capabilities.USES_STROKE_AS_FILL |
@@ -75,9 +75,6 @@ anychart.core.drawers.RangeArea.prototype.getShapeNames = function(var_args) {
   var names = {};
   var fillName, hatchFillName;
 
-  // fillName = 'highFill';
-  // hatchFillName = 'highHatchFill';
-
   if (high > low) {
     fillName = 'highFill';
     hatchFillName = 'highHatchFill';
@@ -106,10 +103,16 @@ anychart.core.drawers.RangeArea.prototype.drawFirstPoint = function(point, state
   var names = this.getShapeNames(highValue, lowValue);
 
   var shapeNames = {};
-  shapeNames[names.fill] = true;
-  shapeNames[names.hatchFill] = true;
   shapeNames[names.highStroke] = true;
   shapeNames[names.lowStroke] = true;
+
+  var strokeShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
+  this.hightStrokeShape = strokeShapes[names.highStroke];
+  this.lowStrokeShape = strokeShapes[names.lowStroke];
+
+  shapeNames = {};
+  shapeNames[names.fill] = true;
+  shapeNames[names.hatchFill] = true;
 
   this.currentShapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
@@ -119,20 +122,19 @@ anychart.core.drawers.RangeArea.prototype.drawFirstPoint = function(point, state
 
   var fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
   var hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
-  var highStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.highStroke]);
-  var lowStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.lowStroke]);
 
   anychart.core.drawers.move(fill, this.isVertical, x, low);
   anychart.core.drawers.line(fill, this.isVertical, x, high);
   anychart.core.drawers.move(hatchFill, this.isVertical, x, low);
   anychart.core.drawers.line(hatchFill, this.isVertical, x, high);
-  anychart.core.drawers.move(highStroke, this.isVertical, x, high);
+  anychart.core.drawers.move(this.hightStrokeShape, this.isVertical, x, high);
 
-  this.lowsStack = [x, low, lowStroke, fill, hatchFill];
+  this.lowsStack = [x, low, fill, hatchFill];
 
   this.prevX_ = x;
   this.prevHigh_ = high;
   this.prevLow_ = low;
+  this.prevNames_ = names;
 };
 
 
@@ -149,8 +151,8 @@ anychart.core.drawers.RangeArea.prototype.drawSubsequentPoint = function(point, 
   var shapeNames = {};
   shapeNames[names.fill] = true;
   shapeNames[names.hatchFill] = true;
-  shapeNames[names.highStroke] = true;
-  shapeNames[names.lowStroke] = true;
+
+  var fill, hatchFill;
 
   var shapes = shapesManager.getShapesGroup(this.seriesState, shapeNames);
 
@@ -159,21 +161,44 @@ anychart.core.drawers.RangeArea.prototype.drawSubsequentPoint = function(point, 
   var low = /** @type {number} */(point.meta('low'));
 
   if (this.currentShapes != shapes) {
-    var crossX = (x - this.prevX_) / 2;
-    var crossY = (y - this.prevX_) / 2;
+    var crossPoint = anychart.math.intersectLineLine(
+        this.prevX_, this.prevHigh_,
+        x, high,
+        this.prevX_, this.prevLow_,
+        x, low);
 
+    fill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevNames_.fill]);
+    hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevNames_.hatchFill]);
+
+    anychart.core.drawers.line(fill, this.isVertical, crossPoint.x, crossPoint.y);
+    anychart.core.drawers.line(hatchFill, this.isVertical, crossPoint.x, crossPoint.y);
+
+    this.lowsStack.push(crossPoint.x, crossPoint.y, fill, hatchFill);
+
+    this.currentShapes = shapes;
+
+    fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+    hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
+
+    anychart.core.drawers.move(fill, this.isVertical, crossPoint.x, crossPoint.y);
+    anychart.core.drawers.move(hatchFill, this.isVertical, crossPoint.x, crossPoint.y);
+
+    this.lowsStack.push(crossPoint.x, crossPoint.y, fill, hatchFill);
   }
 
-  var fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
-  var hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
-  var highStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.highStroke]);
-  var lowStroke = /** @type {acgraph.vector.Path} */(this.currentShapes[names.lowStroke]);
+  fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+  hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
 
   anychart.core.drawers.line(fill, this.isVertical, x, high);
   anychart.core.drawers.line(hatchFill, this.isVertical, x, high);
-  anychart.core.drawers.line(highStroke, this.isVertical, x, high);
+  anychart.core.drawers.line(this.hightStrokeShape, this.isVertical, x, high);
 
-  this.lowsStack.push(x, low, lowStroke, fill, hatchFill);
+  this.lowsStack.push(x, low, fill, hatchFill);
+
+  this.prevX_ = x;
+  this.prevHigh_ = high;
+  this.prevLow_ = low;
+  this.prevNames_ = names;
 };
 
 
@@ -182,24 +207,30 @@ anychart.core.drawers.RangeArea.prototype.finalizeSegment = function() {
   if (!this.prevPointDrawn) return;
   if (this.lowsStack) {
     var first = true;
-    for (var i = this.lowsStack.length - 1; i >= 0; i -= 5) {
-      var x = this.lowsStack[i - 4];
-      var y = this.lowsStack[i - 3];
-      var stroke = this.lowsStack[i - 2];
+    var prevShape = null;
+    for (var i = this.lowsStack.length - 1; i >= 0; i -= 4) {
+      var x = this.lowsStack[i - 3];
+      var y = this.lowsStack[i - 2];
       var fill = this.lowsStack[i - 1];
       var hatchFill = this.lowsStack[i];
 
-      anychart.core.drawers.line(fill, this.isVertical, x, y);
-      anychart.core.drawers.line(hatchFill, this.isVertical, x, y);
+      if (prevShape && fill != prevShape) {
+        anychart.core.drawers.move(fill, this.isVertical, x, y);
+        anychart.core.drawers.move(hatchFill, this.isVertical, x, y);
+      } else {
+        anychart.core.drawers.line(fill, this.isVertical, x, y);
+        anychart.core.drawers.line(hatchFill, this.isVertical, x, y);
+      }
+
       if (first) {
-        anychart.core.drawers.move(stroke, this.isVertical, x, y);
+        anychart.core.drawers.move(this.lowStrokeShape, this.isVertical, x, y);
         first = false;
       } else {
-        anychart.core.drawers.line(stroke, this.isVertical, x, y);
+        anychart.core.drawers.line(this.lowStrokeShape, this.isVertical, x, y);
       }
+
+      prevShape = fill;
     }
-    // shapes['fill'].close();
-    // shapes['hatchFill'].close();
     this.lowsStack = null;
   }
 };

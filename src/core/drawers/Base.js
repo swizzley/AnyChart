@@ -256,7 +256,9 @@ anychart.core.drawers.Base.prototype.startDrawing = function(shapeManager) {
    * @type {boolean}
    */
   this.hasRisingFallingColoring = goog.isDef(normSettings.getOption('risingStroke')) ||
-      goog.isDef(normSettings.getOption('fallingStroke'));
+      goog.isDef(normSettings.getOption('fallingStroke')) ||
+      goog.isDef(normSettings.getOption('risingFill')) ||
+      goog.isDef(normSettings.getOption('fallingFill'));
 };
 
 
