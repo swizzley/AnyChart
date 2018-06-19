@@ -97,8 +97,8 @@ anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
   if (this.autoCount_ != val) {
     this.autoCount_ = val;
-    if (!isNaN(this.count_) && goog.isNumber(this.count_))
-      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REAPPLICATION);
+    if (isNaN(this.count_) || goog.isNull(this.count_))
+      this.invalidate(anychart.ConsistencyState.APPEARANCE);
   }
 };
 
