@@ -809,10 +809,14 @@ anychart.core.ui.Tooltip.prototype.showAsSingle_ = function(points, clientX, cli
     this.hideChildTooltips_([this.tooltipInUse_]);
   }
 
-  if ((this.getOption('useHtml') && !this.tooltipInUse_.htmlTooltip.container()) || !this.tooltipInUse_.getRootLayer_().parent()) {
+  var isHtml = this.getOption('useHtml');
+  if ((isHtml && !this.tooltipInUse_.htmlTooltip.container()) || !this.tooltipInUse_.getRootLayer_().parent()) {
     this.tooltipInUse_.invalidate(anychart.ConsistencyState.CONTAINER);
-    this.tooltipInUse_.htmlTooltip.updateTexts();
   }
+
+  if (isHtml)
+    this.tooltipInUse_.htmlTooltip.updateTexts();
+
   this.setContainerToTooltip_(this.tooltipInUse_);
   this.setPositionForSingle_(this.tooltipInUse_, clientX, clientY, firstSeries);
   this.tooltipInUse_.showForPosition_(clientX, clientY);
