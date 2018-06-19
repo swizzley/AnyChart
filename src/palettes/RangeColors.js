@@ -84,11 +84,10 @@ anychart.palettes.RangeColors.prototype.colorPalette_;
  * Checks if palette is consistent and if not - recreates it
  */
 anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
-  if (!this.isConsistent()) {
+  if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
     this.processColorRange_();
     this.markConsistent(anychart.ConsistencyState.APPEARANCE);
   }
-
 };
 
 
@@ -98,7 +97,8 @@ anychart.palettes.RangeColors.prototype.ensureProcessed = function() {
 anychart.palettes.RangeColors.prototype.setAutoCount = function(val) {
   if (this.autoCount_ != val) {
     this.autoCount_ = val;
-    this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REAPPLICATION);
+    if (!isNaN(this.count_) && goog.isNumber(this.count_))
+      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REAPPLICATION);
   }
 };
 
