@@ -5042,14 +5042,6 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.calcDomain = function(
 
       this.labelToDrop = this.labels[dropIndex];
       this.dropIndex = dropIndex;
-
-      //if (nextLabel && nextIterator.get('value') < iterator.get('value')) {
-      //  this.labelToDrop = nextLabel;
-      //  this.dropIndex = j + 1;
-      //} else {
-      //  this.labelToDrop = label;
-      //  this.dropIndex = j;
-      //}
     }
     if (dAngle > criticalAngle || isNotValidConnectorLength) this.isCriticalAngle = true;
 
