@@ -5022,6 +5022,8 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.calcDomain = function(
         nextIterator.select(prevLabel.getIndex());
         prevValue = nextIterator.get('value');
       }
+      if (goog.isNull(prevValue)) prevValue = Infinity;
+      if (goog.isNull(nextValue)) nextValue = Infinity;
 
       var minValue = Math.min(currValue, Math.min(nextValue, prevValue));
       var dropIndex = 0;
