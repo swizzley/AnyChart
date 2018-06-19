@@ -277,9 +277,30 @@ anychart.core.drawers.SplineDrawer.prototype.calcTangent_ = function(p1x, p1y, p
  *
  */
 anychart.core.drawers.SplineDrawer.prototype.makeSplineBreak = function(p0x, p0y, p1x, p1y, p2x, p2y) {
-  var t, tt, cX1x, cX1y, cX2x, cX2y, crossPoint;
+  var t, t2, tt, cX1x, cX1y, cX2x, cX2y, crossPoint;
   if (goog.isArray(this.breakPos_)) {
-    crossPoint = anychart.math.intersectBezier2Bezier2(p0x, p0y, p1x, p1y, p2x, p2y, p0x, this.breakPos_, p2x, this.breakPos_)[0];
+    for (var i = 0; i < this.breakPos_.length;  i += 6) {
+      var b0x = this.breakPos_[i];
+      var b0y = this.breakPos_[i + 1];
+      var b1x = this.breakPos_[i + 2];
+      var b1y = this.breakPos_[i + 3];
+      var b2x = this.breakPos_[i + 4];
+      var b2y = this.breakPos_[i + 5];
+
+      // this.paths_[0].getStage().pie(b0x, b0y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('red').zIndex(1000);
+      // this.paths_[0].getStage().pie(b1x, b1y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('red').zIndex(1000);
+      // this.paths_[0].getStage().pie(b2x, b2y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('red').zIndex(1000);
+      //
+      // this.paths_[0].getStage().pie(p0x, p0y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('blue').zIndex(1000);
+      // this.paths_[0].getStage().pie(p1x, p1y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('blue').zIndex(1000);
+      // this.paths_[0].getStage().pie(p2x, p2y, 5, 0, 360).fill(this.paths_[0].fill()).stroke('blue').zIndex(1000);
+
+      crossPoint = anychart.math.intersectBezier2Bezier2(p0x, p0y, p1x, p1y, p2x, p2y, b0x, b0y, b1x, b1y, b2x, b2y)[0];
+      if (crossPoint)
+        break;
+    }
+    t = anychart.math.getQuadraticCurveDistanceByPoint(p0x, p0y, p1x, p1y, p2x, p2y, crossPoint.x, crossPoint.y);
+    t2 = anychart.math.getQuadraticCurveDistanceByPoint(b0x, b0y, b1x, b1y, b2x, b2y, crossPoint.x, crossPoint.y);
   } else if (this.breakPos_ == 'middle') {
     t = .5;
     tt = 1 - t;
@@ -298,13 +319,43 @@ anychart.core.drawers.SplineDrawer.prototype.makeSplineBreak = function(p0x, p0y
     t = anychart.math.getQuadraticCurveDistanceByPoint(p0x, p0y, p1x, p1y, p2x, p2y, crossPoint.x, crossPoint.y);
   }
 
+  var result = [];
+
   tt = 1 - t;
   cX1x = p0x * tt + p1x * t;
   cX1y = p0y * tt + p1y * t;
   cX2x = p1x * tt + p2x * t;
   cX2y = p1y * tt + p2y * t;
 
-  return [p0x, p0y, cX1x, cX1y, crossPoint.x, crossPoint.y, cX2x, cX2y, p2x, p2y];
+  if (crossPoint) {
+    p1x = crossPoint.x;
+    p1y = crossPoint.y;
+  } else {
+    p1x = NaN;
+    p1y = NaN;
+  }
+
+  result.push(p0x, p0y, cX1x, cX1y, p1x, p1y, cX2x, cX2y, p2x, p2y);
+
+  if (goog.isArray(this.breakPos_)) {
+    tt = 1 - t2;
+    cX1x = b0x * tt + b1x * t;
+    cX1y = b0y * tt + b1y * t;
+    cX2x = b1x * tt + b2x * t;
+    cX2y = b1y * tt + b2y * t;
+
+    if (crossPoint) {
+      p1x = crossPoint.x;
+      p1y = crossPoint.y;
+    } else {
+      p1x = NaN;
+      p1y = NaN;
+    }
+
+    result.push(b0x, b0y, cX1x, cX1y, p1x, p1y, cX2x, cX2y, b2x, b2y);
+  }
+
+  return result;
 };
 
 
@@ -442,6 +493,31 @@ anychart.core.drawers.SplineDrawer.prototype.startSplineDrawing_ = function(p1x,
 
 
 /**
+ *
+ */
+anychart.core.drawers.SplineDrawer.prototype.isSegmentIntersected = function(p0x, p0y, p1x, p1y, p2x, p2y) {
+  var result = false;
+  if (goog.isArray(this.breakPos_)) {
+    for (var i = 0; i < this.breakPos_.length; i += 6) {
+      var b0x = this.breakPos_[i];
+      var b0y = this.breakPos_[i + 1];
+      var b1x = this.breakPos_[i + 2];
+      var b1y = this.breakPos_[i + 3];
+      var b2x = this.breakPos_[i + 4];
+      var b2y = this.breakPos_[i + 5];
+
+      var crossPoint = anychart.math.intersectBezier2Bezier2(p0x, p0y, p1x, p1y, p2x, p2y, b0x, b0y, b1x, b1y, b2x, b2y)[0];
+      result = !!crossPoint;
+      if (result) break;
+    }
+  } else {
+    result = (p0y <= this.breakPos_ && p1y >= this.breakPos_) || (p0y >= this.breakPos_ && p1y <= this.breakPos_);
+  }
+  return result;
+};
+
+
+/**
  * Curve from p1 to p2
  * @param {number} p1x .
  * @param {number} p1y .
@@ -474,12 +550,14 @@ anychart.core.drawers.SplineDrawer.prototype.drawNextSplinePoint_ = function(p1x
     if (this.breakPaths_) {
       if (this.breakPos_ == 'middle')
         this.breakPos_ = mpy;
-      var firsSegmentCrossed = (p1y <= this.breakPos_ && mpy >= this.breakPos_) || (p1y >= this.breakPos_ && mpy <= this.breakPos_);
+
+      var firsSegmentCrossed = this.isSegmentIntersected(p1x, p1y, c1x, c1y, mpx, mpy);
       if (firsSegmentCrossed) {
         points = this.makeSplineBreak(p1x, p1y, c1x, c1y, mpx, mpy);
         this.splineTo(
             'c', points[2], points[3], points[4], points[5],
-            'bc', points[4], this.baseline_);
+            'bc', points[4], this.baseline_,
+            'br', points[16], points[17], points[18], points[19]);
         this.applyBreakPath();
         this.splineTo(
             'bs', points[4], this.baseline_, points[4], points[5],
