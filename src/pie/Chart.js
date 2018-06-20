@@ -5011,16 +5011,16 @@ anychart.pieModule.Chart.PieOutsideLabelsDomain.prototype.calcDomain = function(
       this.maxAngle = leg < 0 ? Number.POSITIVE_INFINITY : dAngle;
       var nextLabel = (j == len - 1) ? null : this.labels[j + 1];
       var prevLabel = (j == 0) ? null : this.labels[j - 1];
-      var nextIterator = this.pie.getDetachedIterator();
+      var newIterator = this.pie.getDetachedIterator();
       var nextValue = null, prevValue = null, currValue;
       currValue = iterator.get('value');
       if (nextLabel) {
-        nextIterator.select(nextLabel.getIndex());
-        nextValue = nextIterator.get('value');
+        newIterator.select(nextLabel.getIndex());
+        nextValue = newIterator.get('value');
       }
       if (prevLabel) {
-        nextIterator.select(prevLabel.getIndex());
-        prevValue = nextIterator.get('value');
+        newIterator.select(prevLabel.getIndex());
+        prevValue = newIterator.get('value');
       }
       if (goog.isNull(prevValue)) prevValue = Infinity;
       if (goog.isNull(nextValue)) nextValue = Infinity;
