@@ -541,6 +541,8 @@ anychart.cartesian3dModule.Chart.prototype.createTextMarkerInstance = function()
  * @param {anychart.core.series.Cartesian} series
  * @param {number} yPosition Current y position of series.
  * @param {number} maxY Count of series.
+ * @param {number} zIndex
+ * @param {boolean} isMono
  * @return {number} zIndex ZIndex for series.
  * @private
  */
@@ -622,13 +624,14 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
   var isStacked = /** @type {anychart.enums.ScaleStackMode} */ (this.yScale().stackMode()) != anychart.enums.ScaleStackMode.NONE;
   var stackDirection = /** @type {anychart.enums.ScaleStackDirection} */ (this.yScale().stackDirection());
   var stackIsDirect = stackDirection == anychart.enums.ScaleStackDirection.DIRECT;
-  var z = [anychart.core.ChartWithSeries.ZINDEX_SERIES];
+  var zIndexes = [anychart.core.ChartWithSeries.ZINDEX_SERIES];
   var isSingletyped = true;
+
   for (var i = 1; i < allSeries.length; i++) {
     if (allSeries[i].getType() == allSeries[i - 1].getType()) {
-      z.push(z[i - 1]);
+      zIndexes.push(zIndexes[i - 1]);
     } else {
-      z.push(anychart.core.ChartWithSeries.ZINDEX_SERIES + (1 - (1 / (i + 1))));
+      zIndexes.push(anychart.core.ChartWithSeries.ZINDEX_SERIES + (1 - (1 / (i + 1))));
       isSingletyped = false;
     }
   }
@@ -643,13 +646,19 @@ anychart.cartesian3dModule.Chart.prototype.prepare3d = function() {
         if (series.isDiscreteBased()) {
           var iterator = series.getResetIterator();
           while (iterator.advance()) {
-            var zIndex = this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length, z[i], isSingletyped);
+            var zIndex = this.setSeriesPointZIndex_(/** @type {anychart.core.series.Cartesian} */(series), i, allSeries.length, zIndexes[i], isSingletyped);
             if (maxZIndex < zIndex) {
               maxZIndex = zIndex;
             }
           }
+        } else {
+          //Set zIndex for area and line series if it was set manually.
+          if (series.zIndex() != series.autoZIndex &&
+              series.zIndex() != maxZIndex) {
+            maxZIndex = series.zIndex();
+          }
         }
-        series.zIndex(maxZIndex);
+        series.zIndex(/**@type {number}*/(maxZIndex));
       } else if (series.supportsStack()) {
         this.lastEnabledAreaSeriesMap[series.getScalesPairIdentifier()] = actualIndex;
       }
