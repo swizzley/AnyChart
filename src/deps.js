@@ -610,7 +610,7 @@ goog.addDependency('../../../graphicsjs/src/math.js', ['acgraph.math'], ['goog.m
 goog.addDependency('../../../graphicsjs/src/utils/HTMLParser.js', ['acgraph.utils.HTMLParser'], ['goog.object'], {});
 goog.addDependency('../../../graphicsjs/src/utils/IdGenerator.js', ['acgraph.utils.IdGenerator'], [], {});
 goog.addDependency('../../../graphicsjs/src/utils/exporting.js', ['acgraph.utils.exporting'], ['goog.Timer', 'goog.dom', 'goog.style'], {});
-goog.addDependency('../../../graphicsjs/src/utils/utils.js', ['acgraph.utils'], ['goog.userAgent'], {});
+goog.addDependency('../../../graphicsjs/src/utils/utils.js', ['acgraph.utils'], ['goog.string', 'goog.userAgent'], {});
 goog.addDependency('../../../graphicsjs/src/vector/Circle.js', ['acgraph.vector.Circle'], ['acgraph.utils.IdGenerator', 'acgraph.vector.Ellipse'], {});
 goog.addDependency('../../../graphicsjs/src/vector/Clip.js', ['acgraph.vector.Clip'], ['acgraph.vector.Circle', 'acgraph.vector.ILayer', 'acgraph.vector.Path', 'acgraph.vector.Rect', 'goog.Disposable', 'goog.array', 'goog.math.Rect'], {});
 goog.addDependency('../../../graphicsjs/src/vector/Defs.js', ['acgraph.vector.Defs'], ['acgraph.vector.HatchFill', 'acgraph.vector.ILayer', 'acgraph.vector.LinearGradient', 'acgraph.vector.PatternFill', 'acgraph.vector.RadialGradient', 'goog.Disposable', 'goog.math.Rect'], {});
