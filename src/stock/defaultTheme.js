@@ -401,7 +401,7 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
            * @return {string}
            */
           'format': function() {
-            var date = this['tickValue'];
+            var date = this['dataValue'];
             return anychart.format.dateTime(date, anychart.format.getDateTimeFormat(anychart.format.getIntervalIdentifier(this['majorIntervalUnit'])));
           }
         },
@@ -420,7 +420,7 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
            * @return {string}
            */
           'format': function() {
-            var date = this['tickValue'];
+            var date = this['dataValue'];
             return anychart.format.dateTime(date, anychart.format.getDateTimeFormat(anychart.format.getIntervalIdentifier(this['minorIntervalUnit'], this['majorIntervalUnit'])));
           }
         }
@@ -679,7 +679,7 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
            * @return {string}
            */
           'format': function() {
-            var date = this['tickValue'];
+            var date = this['dataValue'];
             return anychart.format.dateTime(date, anychart.format.getDateTimeFormat(anychart.format.getIntervalIdentifier(this['majorIntervalUnit'])));
           }
         },
@@ -693,7 +693,7 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
            * @return {string}
            */
           'format': function() {
-            var date = this['tickValue'];
+            var date = this['dataValue'];
             return anychart.format.dateTime(date, anychart.format.getDateTimeFormat(anychart.format.getIntervalIdentifier(this['minorIntervalUnit'], this['majorIntervalUnit'])));
           }
         },
