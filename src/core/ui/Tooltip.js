@@ -639,6 +639,7 @@ anychart.core.ui.Tooltip.prototype.getTooltipContainer = function() {
  * @return {anychart.core.ui.Tooltip}
  */
 anychart.core.ui.Tooltip.prototype.draw = function() {
+  // debugger;
   this.updateForceInvalidation();
 
   if (!this.checkDrawingNeeded())
@@ -930,6 +931,7 @@ anychart.core.ui.Tooltip.prototype.setPositionForSingle_ = function(tooltip, cli
  * @private
  */
 anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clientY, hoveredSeries, opt_tooltipContextLoad) {
+  debugger;
   if (this.check(anychart.core.ui.Tooltip.Capabilities.CAN_CHANGE_DISPLAY_MODE |
           anychart.core.ui.Tooltip.Capabilities.CAN_CHANGE_POSITION_MODE)) {
 
@@ -972,6 +974,7 @@ anychart.core.ui.Tooltip.prototype.showAsUnion_ = function(points, clientX, clie
           unionContext['name'] = {value: contextProvider.getData('name'), type: anychart.enums.TokenType.STRING};
         }
 
+        console.log(unionContext['formattedValues']);
         if (goog.isArray(point['points'])) {
           allPoints.push({
             'series': series,
@@ -1108,8 +1111,9 @@ anychart.core.ui.Tooltip.prototype.showForSeriesPoints = function(points, client
  * @private
  */
 anychart.core.ui.Tooltip.prototype.showForPosition_ = function(clientX, clientY) {
+  // debugger;
   if (!this.enabled()) {
-    return;
+    // return;
   }
 
   this.updateForceInvalidation();
