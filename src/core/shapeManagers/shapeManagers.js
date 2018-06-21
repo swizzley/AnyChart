@@ -70,7 +70,7 @@ anychart.core.shapeManagers.LEFT_SHAPES_ZINDEX = anychart.core.shapeManagers.ZIN
  * Z index shift for the bottom shapes of 3D series.
  * @const {number}
  */
-anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX = 2 * anychart.core.shapeManagers.ZINDEX_STEP;
+anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX = 3.5 * anychart.core.shapeManagers.ZINDEX_STEP;
 
 
 /**

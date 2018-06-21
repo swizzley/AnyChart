@@ -126,14 +126,6 @@ anychart.cartesian3dModule.drawers.Area.prototype.startDrawing = function(shapeM
     this.shapesManager.replaceZIndex('left', anychart.core.shapeManagers.LEFT_SHAPES_ZINDEX);
     this.shapesManager.replaceZIndex('right', anychart.core.shapeManagers.RIGHT_SHAPES_ZINDEX);
   }
-
-  if (provider.yInverted()) {
-    this.shapesManager.replaceZIndex('top', anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX);
-    this.shapesManager.replaceZIndex('bottom', anychart.core.shapeManagers.TOP_SHAPES_ZINDEX);
-  } else {
-    this.shapesManager.replaceZIndex('top', anychart.core.shapeManagers.TOP_SHAPES_ZINDEX);
-    this.shapesManager.replaceZIndex('bottom', anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX);
-  }
 };
 
 
@@ -162,10 +154,11 @@ anychart.cartesian3dModule.drawers.Area.prototype.drawFirstPoint = function(poin
         .moveTo(x + this.x3dShift_, zero - this.y3dShift_)
         .lineTo(x + this.x3dShift_, y - this.y3dShift_);
 
-    shapes['bottom']
+    if (y > zero) {
+      shapes['bottom']
         .moveTo(x, zero)
         .lineTo(x + this.x3dShift_, zero - this.y3dShift_);
-
+    }
     shapes['left']
         .moveTo(x, zero)
         .lineTo(x, y)
@@ -204,12 +197,11 @@ anychart.cartesian3dModule.drawers.Area.prototype.drawSubsequentPoint = function
   if (this.series.planIsStacked()) {
     this.zeroesStack.push(x, zero, zeroMissing);
   } else {
-    shapes['bottom'].lineTo(x + this.x3dShift_, zero - this.y3dShift_);
     shapes['back'].lineTo(x + this.x3dShift_, y - this.y3dShift_);
   }
 
+  var currentPoint = shapes['front'].getCurrentPoint();
   if (this.isNeedDrawTopSide_) {
-    var currentPoint = shapes['front'].getCurrentPoint();
     if (this.evenTopSide_) {
       shapes['top']
           .moveTo(currentPoint.x, currentPoint.y)
@@ -240,6 +232,18 @@ anychart.cartesian3dModule.drawers.Area.prototype.drawSubsequentPoint = function
     }
 
     this.evenTopSide_ = !this.evenTopSide_;
+  }
+
+  var x2 = (zero - currentPoint.y) * (x - currentPoint.x ) / (y - currentPoint.y) + currentPoint.x; //equation of line from 2 points
+  if (y - currentPoint.y > 0 && (currentPoint.y < zero && y > zero)) { //start bottom
+    shapes['bottom']
+      .moveTo(x2, zero)
+      .lineTo(x2 + this.x3dShift_, zero - this.y3dShift_);
+  } else if (y - currentPoint.y < 0 && currentPoint.y > zero && y < zero) { //close previous
+    shapes['bottom']
+      .lineTo(x2 + this.x3dShift_, zero - this.y3dShift_)
+      .lineTo(x2, zero)
+      .close();
   }
 
   shapes['front'].lineTo(x, y);
@@ -299,7 +303,9 @@ anychart.cartesian3dModule.drawers.Area.prototype.finalizeSegment = function() {
         .lineTo(this.lastDrawnX + this.x3dShift_, this.zeroY - this.y3dShift_)
         .close();
 
-    shapes['bottom']
+    if (this.lastDrawnY > this.series.zeroY)
+      shapes['bottom']
+        .lineTo(this.lastDrawnX + this.x3dShift_, this.zeroY -  this.y3dShift_)
         .lineTo(this.lastDrawnX, this.zeroY)
         .close();
   }
