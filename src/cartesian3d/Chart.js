@@ -275,7 +275,7 @@ anychart.cartesian3dModule.Chart.prototype.seriesConfig = (function() {
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_SERIES,
     shapesConfig: [
       anychart.core.shapeManagers.pathTopArea3DConfig,
-      anychart.core.shapeManagers.pathBottom3DConfig,
+      anychart.core.shapeManagers.pathBottomArea3DConfig,
       anychart.core.shapeManagers.pathLeft3DConfig,
       anychart.core.shapeManagers.pathRight3DConfig,
       anychart.core.shapeManagers.pathBack3DConfig,

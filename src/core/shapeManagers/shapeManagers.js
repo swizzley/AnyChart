@@ -70,7 +70,7 @@ anychart.core.shapeManagers.LEFT_SHAPES_ZINDEX = anychart.core.shapeManagers.ZIN
  * Z index shift for the bottom shapes of 3D series.
  * @const {number}
  */
-anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX = 3.5 * anychart.core.shapeManagers.ZINDEX_STEP;
+anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX = 2 * anychart.core.shapeManagers.ZINDEX_STEP;
 
 
 /**
@@ -78,6 +78,13 @@ anychart.core.shapeManagers.BOTTOM_SHAPES_ZINDEX = 3.5 * anychart.core.shapeMana
  * @const {number}
  */
 anychart.core.shapeManagers.TOP_SHAPES_ZINDEX = 3 * anychart.core.shapeManagers.ZINDEX_STEP;
+
+
+/**
+ * Z index shift for the bottom shapes of 3D area series.
+ * @const {number}
+ */
+anychart.core.shapeManagers.AREA_BOTTOM_SHAPES_ZINDEX = 3.5 * anychart.core.shapeManagers.ZINDEX_STEP;
 
 
 /**
@@ -492,6 +499,21 @@ anychart.core.shapeManagers.pathTopArea3DConfig = {
   canBeHoveredSelected: false,
   isHatchFill: false,
   zIndex: anychart.core.shapeManagers.TOP_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.pathBottomArea3DConfig = {
+  name: 'bottom',
+  shapeType: anychart.enums.ShapeType.PATH,
+  fillName: null,
+  strokeName: null,
+  canBeHoveredSelected: false,
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.AREA_BOTTOM_SHAPES_ZINDEX
 };
 
 
