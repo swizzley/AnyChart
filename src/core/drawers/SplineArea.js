@@ -66,17 +66,9 @@ anychart.core.drawers.SplineArea.prototype.requiredShapes = (function() {
 /** @inheritDoc */
 anychart.core.drawers.SplineArea.prototype.startDrawing = function(shapeManager) {
   anychart.core.drawers.SplineArea.base(this, 'startDrawing', shapeManager);
-  var shapes = this.shapesManager.getShapesGroup(this.seriesState);
+  // var shapes = this.shapesManager.getShapesGroup(this.seriesState);
   this.queue_.isVertical(this.isVertical);
   this.queue_.rtl(this.series.planIsXScaleInverted());
-
-  /**
-   * @type {Array.<acgraph.vector.Path>}
-   * @private
-   */
-  this.backwardPaths_ = [
-    /** @type {acgraph.vector.Path} */(shapes['fill']),
-    /** @type {acgraph.vector.Path} */(shapes['hatchFill'])];
 };
 
 
@@ -201,50 +193,50 @@ anychart.core.drawers.SplineArea.prototype.finalizeSegment = function() {
   if (!isNaN(this.lastDrawnX)) {
 
   } else if (this.zeroesStack) {
-    this.queue_.setPaths(this.backwardPaths_);
-    this.queue_.resetDrawer(true);
-    /** @type {number} */
-    var prevX = NaN;
-    /** @type {number} */
-    var prevY = NaN;
-    /** @type {boolean} */
-    var prevWasMissing = false;
-    /** @type {boolean} */
-    var firstPoint = true;
-    for (var i = this.zeroesStack.length - 1; i >= 0; i -= 3) {
-      /** @type {number} */
-      var x = /** @type {number} */(this.zeroesStack[i - 2]);
-      /** @type {number} */
-      var y = /** @type {number} */(this.zeroesStack[i - 1]);
-      /** @type {boolean} */
-      var isMissing = /** @type {boolean} */(this.zeroesStack[i]);
-      if (firstPoint) {
-        anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, y);
-        anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, y);
-        if (!isMissing)
-          this.queue_.processPoint(x, y);
-        firstPoint = false;
-      } else if (isMissing && prevWasMissing) {
-        anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, y);
-        anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, y);
-      } else if (isMissing) {
-        this.queue_.finalizeProcessing();
-        this.queue_.resetDrawer(true);
-        anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, prevX, y, x, y);
-        anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, prevX, y, x, y);
-      } else if (prevWasMissing) {
-        anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, prevY, x, y);
-        anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, prevY, x, y);
-        this.queue_.processPoint(x, y);
-      } else {
-        this.queue_.processPoint(x, y);
-      }
-      prevX = x;
-      prevY = y;
-      prevWasMissing = isMissing;
-    }
-    this.queue_.finalizeProcessing();
-    this.zeroesStack = null;
+    // this.queue_.setPaths(this.backwardPaths_);
+    // this.queue_.resetDrawer(true);
+    // /** @type {number} */
+    // var prevX = NaN;
+    // /** @type {number} */
+    // var prevY = NaN;
+    // /** @type {boolean} */
+    // var prevWasMissing = false;
+    // /** @type {boolean} */
+    // var firstPoint = true;
+    // for (var i = this.zeroesStack.length - 1; i >= 0; i -= 3) {
+    //   /** @type {number} */
+    //   var x = /** @type {number} */(this.zeroesStack[i - 2]);
+    //   /** @type {number} */
+    //   var y = /** @type {number} */(this.zeroesStack[i - 1]);
+    //   /** @type {boolean} */
+    //   var isMissing = /** @type {boolean} */(this.zeroesStack[i]);
+    //   if (firstPoint) {
+    //     anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, y);
+    //     anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, y);
+    //     if (!isMissing)
+    //       this.queue_.processPoint(x, y);
+    //     firstPoint = false;
+    //   } else if (isMissing && prevWasMissing) {
+    //     anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, y);
+    //     anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, y);
+    //   } else if (isMissing) {
+    //     this.queue_.finalizeProcessing();
+    //     this.queue_.resetDrawer(true);
+    //     anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, prevX, y, x, y);
+    //     anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, prevX, y, x, y);
+    //   } else if (prevWasMissing) {
+    //     anychart.core.drawers.line(this.backwardPaths_[0], this.isVertical, x, prevY, x, y);
+    //     anychart.core.drawers.line(this.backwardPaths_[1], this.isVertical, x, prevY, x, y);
+    //     this.queue_.processPoint(x, y);
+    //   } else {
+    //     this.queue_.processPoint(x, y);
+    //   }
+    //   prevX = x;
+    //   prevY = y;
+    //   prevWasMissing = isMissing;
+    // }
+    // this.queue_.finalizeProcessing();
+    // this.zeroesStack = null;
   }
 };
 
