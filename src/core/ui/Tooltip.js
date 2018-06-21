@@ -2367,7 +2367,7 @@ anychart.core.ui.Tooltip.prototype.disposeInternal = function() {
   if (this.tooltipContainer_ && !this.tooltipContainer_.isLocal())
     this.tooltipContainer_.release(this);
 
-  goog.disposeAll(this.title_, this.separator_, this.content_, this.background_, this.padding_, this.rootLayer_, this.delay_);
+  goog.disposeAll(this.title_, this.separator_, this.content_, this.background_, this.padding_, this.rootLayer_, this.delay_, this.htmlTooltip);
 
   delete this.title_;
   delete this.separator_;
