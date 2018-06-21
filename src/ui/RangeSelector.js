@@ -383,9 +383,15 @@ anychart.ui.RangeSelector.prototype.delayedRenderOnChartDraw_ = function(opt_par
 anychart.ui.RangeSelector.prototype.render = function(opt_parentElement) {
   var container = this.extractChartContainer_(opt_parentElement || this.target_);
   var rangeSelected = this.target_ ? !isNaN(this.target_['getSelectedRange']()['firstSelected']) : false;
+  var range = this.target_ ? this.target_['getSelectedRange']() : null;
+  range['firstKey'] = this.target_.getDragAnchor().firstKey;
+  range['lastKey'] = this.target_.getDragAnchor().lastKey;
 
   if (container && rangeSelected) {
     anychart.ui.RangeSelector.base(this, 'render', container);
+    if (range) {
+      this.changeSelectedRange_(range);
+    }
   } else {
     var bind = goog.bind(this.delayedRenderOnChartDraw_, this, container || this.target_);
     this.target_.listenOnce(anychart.enums.EventType.CHART_DRAW, bind, false, this);
