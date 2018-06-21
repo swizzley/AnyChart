@@ -167,23 +167,25 @@ anychart.core.drawers.RangeArea.prototype.drawSubsequentPoint = function(point, 
         this.prevX_, this.prevLow_,
         x, low);
 
-    fill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevNames_.fill]);
-    hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevNames_.hatchFill]);
+    if (crossPoint) {
+      fill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevNames_.fill]);
+      hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[this.prevNames_.hatchFill]);
 
-    anychart.core.drawers.line(fill, this.isVertical, crossPoint.x, crossPoint.y);
-    anychart.core.drawers.line(hatchFill, this.isVertical, crossPoint.x, crossPoint.y);
+      anychart.core.drawers.line(fill, this.isVertical, crossPoint.x, crossPoint.y);
+      anychart.core.drawers.line(hatchFill, this.isVertical, crossPoint.x, crossPoint.y);
 
-    this.lowsStack.push(crossPoint.x, crossPoint.y, fill, hatchFill);
+      this.lowsStack.push(crossPoint.x, crossPoint.y, fill, hatchFill);
 
-    this.currentShapes = shapes;
+      this.currentShapes = shapes;
 
-    fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
-    hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
+      fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);
+      hatchFill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.hatchFill]);
 
-    anychart.core.drawers.move(fill, this.isVertical, crossPoint.x, crossPoint.y);
-    anychart.core.drawers.move(hatchFill, this.isVertical, crossPoint.x, crossPoint.y);
+      anychart.core.drawers.move(fill, this.isVertical, crossPoint.x, crossPoint.y);
+      anychart.core.drawers.move(hatchFill, this.isVertical, crossPoint.x, crossPoint.y);
 
-    this.lowsStack.push(crossPoint.x, crossPoint.y, fill, hatchFill);
+      this.lowsStack.push(crossPoint.x, crossPoint.y, fill, hatchFill);
+    }
   }
 
   fill = /** @type {acgraph.vector.Path} */(this.currentShapes[names.fill]);

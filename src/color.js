@@ -590,24 +590,6 @@ anychart.color.getNullColor = function() {
 
 
 /**
- * Returns normalized null stroke or fill.
- * @return {string}
- */
-anychart.color.getSourceColor = function() {
-  return this['sourceColor'];
-};
-
-
-/**
- * Returns normalized null stroke or fill.
- * @return {string}
- */
-anychart.color.getScaledColor = function() {
-  return this['scaledColor'];
-};
-
-
-/**
  * Returns final color or hatch fill for passed params.
  * @param {string} colorName
  * @param {!Function} normalizer
@@ -638,23 +620,9 @@ anychart.color.getColor = function(colorName, normalizer, isHatchFill, canBeHove
     }
   }
   // we can get here only if state color is undefined or is a function
-
   var color = series.resolveOption(colorName, 0, iterator, normalizer, scrollerSelected, void 0, opt_ignorePointSettings);
   if (isHatchFill && color === true)
     color = normalizer(series.getAutoHatchFill());
-
-  var colorScaleName = 'scaled_' + colorName;
-  if (goog.isString(color)) {
-    var colorScale = series.colorScale && series.colorScale();
-    if (colorScale) {
-      color = anychart.color.getScaledColor;
-      iterator.meta(colorScaleName, true);
-    } else {
-      color = anychart.color.getSourceColor;
-    }
-  } else {
-    iterator.meta(colorScaleName, false);
-  }
   if (goog.isFunction(color)) {
     context = isHatchFill ?
         series.getHatchFillResolutionContext(opt_ignorePointSettings) :

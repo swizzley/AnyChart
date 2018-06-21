@@ -1477,35 +1477,36 @@ anychart.math.intersectBezier2Bezier2 = function(a0x, a0y, a1x, a1y, a2x, a2y, b
   c21 = a.add(b);
 
   c20 = new anychart.math.Point2D(b1.x, b1.y);
+  var v0, v1, v2, v3, v4, v5, v6;
 
-  if ( c12.y == 0 ) {
-    var v0 = c12.x*(c10.y - c20.y);
-    var v1 = v0 - c11.x*c11.y;
-    var v2 = v0 + v1;
-    var v3 = c11.y*c11.y;
+  if (c12.y == 0) {
+    v0 = c12.x * (c10.y - c20.y);
+    v1 = v0 - c11.x * c11.y;
+    v2 = v0 + v1;
+    v3 = c11.y * c11.y;
 
     poly = new anychart.math.Polynomial(
-        c12.x*c22.y*c22.y,
-        2*c12.x*c21.y*c22.y,
-        c12.x*c21.y*c21.y - c22.x*v3 - c22.y*v0 - c22.y*v1,
-        -c21.x*v3 - c21.y*v0 - c21.y*v1,
-        (c10.x - c20.x)*v3 + (c10.y - c20.y)*v1
+        c12.x * c22.y * c22.y,
+        2 * c12.x * c21.y * c22.y,
+        c12.x * c21.y * c21.y - c22.x * v3 - c22.y * v0 - c22.y * v1,
+        -c21.x * v3 - c21.y * v0 - c21.y * v1,
+        (c10.x - c20.x) * v3 + (c10.y - c20.y) * v1
     );
   } else {
-    var v0 = c12.x*c22.y - c12.y*c22.x;
-    var v1 = c12.x*c21.y - c21.x*c12.y;
-    var v2 = c11.x*c12.y - c11.y*c12.x;
-    var v3 = c10.y - c20.y;
-    var v4 = c12.y*(c10.x - c20.x) - c12.x*v3;
-    var v5 = -c11.y*v2 + c12.y*v4;
-    var v6 = v2*v2;
+    v0 = c12.x * c22.y - c12.y * c22.x;
+    v1 = c12.x * c21.y - c21.x * c12.y;
+    v2 = c11.x * c12.y - c11.y * c12.x;
+    v3 = c10.y - c20.y;
+    v4 = c12.y * (c10.x - c20.x) - c12.x * v3;
+    v5 = -c11.y * v2 + c12.y * v4;
+    v6 = v2 * v2;
 
     poly = new anychart.math.Polynomial(
-        v0*v0,
-        2*v0*v1,
-        (-c22.y*v6 + c12.y*v1*v1 + c12.y*v0*v4 + v0*v5) / c12.y,
-        (-c21.y*v6 + c12.y*v1*v4 + v1*v5) / c12.y,
-        (v3*v6 + v4*v5) / c12.y
+        v0 * v0,
+        2 * v0 * v1,
+        (-c22.y * v6 + c12.y * v1 * v1 + c12.y * v0 * v4 + v0 * v5) / c12.y,
+        (-c21.y * v6 + c12.y * v1 * v4 + v1 * v5) / c12.y,
+        (v3 * v6 + v4 * v5) / c12.y
     );
   }
 
