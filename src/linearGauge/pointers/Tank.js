@@ -430,7 +430,7 @@ anychart.linearGaugeModule.pointers.Tank.prototype.colorizePointer = function(po
   var angle = isVertical ? 0 : 90;
 
   var color = /** @type {acgraph.vector.Fill} */ (this.fillResolver(this, pointerState, false));
-  var opacity = goog.isObject(color) ? color.opacity : 1;
+  var opacity = anychart.color.getOpacity(color);
   var colorDarken = anychart.color.darken(color);
   colorDarken = goog.isObject(colorDarken) ? colorDarken.color : colorDarken;
   var colorLighten = anychart.color.lighten(color);
